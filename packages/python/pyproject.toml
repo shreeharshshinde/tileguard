@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tileguard"
+version = "0.1.0"
+description = "Tile quality testing toolkit for open-source geospatial projects"
+readme = "../../README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["maplibre", "tiles", "vector-tiles", "geospatial", "testing", "ci"]
+
+[project.scripts]
+tileguard = "tileguard.__main__:main"
