@@ -1,91 +1,59 @@
-TileGuard — Remodified Specification
+# TileGuard — Remodified Specification
+**Version 2.0 | FOSS4G 2026 Edition**
+**Author:** Shreeharsh Shinde | **Target:** August 30, 2026 — Hiroshima, Japan
 
-Version 2.0 | FOSS4G 2026 EditionAuthor: Shreeharsh Shinde | Target: August 30, 2026 — Hiroshima, Japan
+> This document supersedes the previous TileGuard spec entirely.
+> It is the single source of truth for architecture, implementation order, and scope.
 
-This document supersedes the previous TileGuard spec entirely.It is the single source of truth for architecture, implementation order, and scope.
+---
 
-Why This Exists
+## Why This Exists
 
-The talk is:"Ensuring Tile Quality in MapLibre Through Automated Testing and CI"
+The talk is:
+**"Ensuring Tile Quality in MapLibre Through Automated Testing and CI"**
 
-TileGuard is the answer to the question every attendee asks after:"Where do I start?"
+TileGuard is the answer to the question every attendee asks after:
+**"Where do I start?"**
 
 It is not a presentation aid. It is a real, published, cloneable framework that implements the exact patterns described in the talk — before the talk happens.
 
 The demo moment on stage:
-
+```bash
 npx tileguard validate ./tile.pbf --layers water roads buildings
 npx tileguard style-lint ./style.json
 npx tileguard render --fixtures ./fixtures/
+```
 
 Three commands. Every concept from the 30-minute talk, runnable in 3 minutes.
 
-What Changed From V1 and Why
+---
 
-V1 (old spec)
+## What Changed From V1 and Why
 
-V2 (this spec)
+| V1 (old spec) | V2 (this spec) | Why |
+|---|---|---|
+| Plain JavaScript | TypeScript | Type safety, IDE support, contributor confidence |
+| Jest | Vitest | MapLibre itself uses Vitest — exact match |
+| 4 standalone scripts | Monorepo with `packages/core` | Framework vs tools |
+| Procedural validation | Rule engine | Extensible, composable, community-friendly |
+| No config file | `tileguard.config.ts` | ESLint-style project configuration |
+| No plugin surface | Plugin API (internal first) | Long-term sustainability |
+| Reporter inside validators | Separate reporter packages | Separation of concerns |
+| No Python strategy | Python mirrors JS API | FOSS4G audience is ~50% Python |
 
-Why
+---
 
-Plain JavaScript
+## Architecture
 
-TypeScript
+### The Fundamental Principle
 
-Type safety, IDE support, contributor confidence
-
-Jest
-
-Vitest
-
-MapLibre itself uses Vitest — exact match
-
-4 standalone scripts
-
-Monorepo with packages/core
-
-Framework vs tools
-
-Procedural validation
-
-Rule engine
-
-Extensible, composable, community-friendly
-
-No config file
-
-tileguard.config.ts
-
-ESLint-style project configuration
-
-No plugin surface
-
-Plugin API (internal first)
-
-Long-term sustainability
-
-Reporter inside validators
-
-Separate reporter packages
-
-Separation of concerns
-
-No Python strategy
-
-Python mirrors JS API
-
-FOSS4G audience is ~50% Python
-
-Architecture
-
-The Fundamental Principle
-
-packages/core must own everything that is shared. Every module depends on core. Core depends on nothing.
+**`packages/core` must own everything that is shared. Every module depends on core. Core depends on nothing.**
 
 If a module ever modifies core to work, the architecture has failed.
 
-Monorepo Structure
+### Monorepo Structure
 
+```
 tileguard/                            ← pnpm monorepo
 ├── packages/
 │   ├── core/                         ← BUILT FIRST. Zero dependencies.
@@ -169,11 +137,15 @@ tileguard/                            ← pnpm monorepo
 ├── README.md
 ├── CONTRIBUTING.md
 └── ARCHITECTURE.md
+```
 
-The Diagnostic Model
+---
 
-This is the first thing built. Everything else depends on it.
+## The Diagnostic Model
 
+**This is the first thing built. Everything else depends on it.**
+
+```typescript
 // packages/core/src/diagnostic.ts
 
 export type Severity = 'error' | 'warn' | 'info';
@@ -203,15 +175,22 @@ export interface RunResult {
   durationMs: number;
   source: string;
 }
+```
 
-Why this shape matters:
+**Why this shape matters:**
 
-Every reporter — text, JSON, SARIF, GitHub annotations — renders Diagnostic[].No reporter ever asks "what kind of thing just ran."No validator ever cares how its output will be displayed.The separation is total.
+Every reporter — text, JSON, SARIF, GitHub annotations — renders `Diagnostic[]`.
+No reporter ever asks "what kind of thing just ran."
+No validator ever cares how its output will be displayed.
+The separation is total.
 
-The Rule Interface
+---
 
-The second thing frozen. Never changes after week 1.
+## The Rule Interface
 
+**The second thing frozen. Never changes after week 1.**
+
+```typescript
 // packages/core/src/rule.ts
 
 export interface RuleMeta {
@@ -252,19 +231,25 @@ export type ArtifactType =
   | 'style'
   | 'style:layer'
   | 'render:output';
+```
 
-The ID convention:
+**The ID convention:**
 
+```
 tile/required-layers        ← core tile rules
 style/duplicate-layer-id    ← core style rules
 render/pixel-diff           ← core render rules
 maplibre/3d-building-pitch  ← future: maplibre plugin rules (v1.1)
 openmaptiles/schema         ← future: openmaptiles plugin rules (v1.1)
+```
 
-This mirrors ESLint's plugin/rule-name convention. External contributors immediately understand it.
+This mirrors ESLint's `plugin/rule-name` convention. External contributors immediately understand it.
 
-The Engine
+---
 
+## The Engine
+
+```typescript
 // packages/core/src/engine.ts
 
 export class TileGuardEngine {
@@ -350,9 +335,13 @@ export class TileGuardEngine {
     return ruleConfig.severity !== 'off';
   }
 }
+```
 
-Configuration — tileguard.config.ts
+---
 
+## Configuration — `tileguard.config.ts`
+
+```typescript
 // tileguard.config.ts (in user's project)
 import { defineConfig } from 'tileguard';
 
@@ -396,9 +385,13 @@ export default defineConfig({
     useSwiftShader: true  // Software renderer for CI consistency
   }
 });
+```
 
-A Complete Rule — Example
+---
 
+## A Complete Rule — Example
+
+```typescript
 // packages/tile-validator/src/rules/required-layers.ts
 
 import type { Rule, Diagnostic, RuleContext } from '@tileguard/core';
@@ -439,11 +432,15 @@ export const requiredLayersRule: Rule<DecodedTile> = {
     return diagnostics;
   }
 };
+```
 
-The pattern: Every rule is this short. validate() receives one artifact, returns zero or more diagnostics. It knows nothing about how those diagnostics will be displayed.
+**The pattern:** Every rule is this short. `validate()` receives one artifact, returns zero or more diagnostics. It knows nothing about how those diagnostics will be displayed.
 
-The CLI — What Users Type
+---
 
+## The CLI — What Users Type
+
+```bash
 # Validate a tile
 npx tileguard validate https://tiles.example.com/14/8741/5321.pbf
 
@@ -475,11 +472,15 @@ npx tileguard check
 npx tileguard validate ./tile.pbf --format json
 npx tileguard validate ./tile.pbf --format sarif     # GitHub Code Scanning
 npx tileguard validate ./tile.pbf --format github    # GitHub annotations
+```
 
-The npx tileguard check command is the most important one for the talk. One command runs all three validators in sequence, respects the tiered pipeline (style-lint → validate → render), and exits non-zero if anything fails. This is what goes in CI.
+**The `npx tileguard check` command** is the most important one for the talk. One command runs all three validators in sequence, respects the tiered pipeline (style-lint → validate → render), and exits non-zero if anything fails. This is what goes in CI.
 
-GitHub Actions — The Copy-Paste File
+---
 
+## GitHub Actions — The Copy-Paste File
+
+```yaml
 # .github/workflows/tile-quality.yml
 # ── Copy this file into your repo to get tile quality CI on every PR ──
 
@@ -562,25 +563,24 @@ jobs:
               repo: context.repo.repo,
               body
             });
+```
 
-Python Package — Mirrors the JS API
+---
+
+## Python Package — Mirrors the JS API
 
 The Python package ships independently. It does not wrap the JS package. It implements the same validation logic natively using Python geospatial libraries.
 
-Key decisions:
-
-validate_tile() and style_lint() are the public API — same names, snake_case
-
-mapbox-vector-tile for .pbf decoding
-
-shapely for geometry validity
-
-click for CLI, rich for terminal output
-
-pytest integration: from tileguard import validate_tile in any pytest test
+**Key decisions:**
+- `validate_tile()` and `style_lint()` are the public API — same names, snake_case
+- `mapbox-vector-tile` for .pbf decoding
+- `shapely` for geometry validity
+- `click` for CLI, `rich` for terminal output
+- `pytest` integration: `from tileguard import validate_tile` in any pytest test
 
 The Python package does NOT implement render-compare. Pixel diff requires a browser runtime — that stays in JS.
 
+```toml
 # pyproject.toml
 [project]
 name = "tileguard"
@@ -595,11 +595,15 @@ dependencies = [
 
 [project.scripts]
 tileguard = "tileguard.__main__:cli"
+```
 
-Fixtures — The Exact Format
+---
+
+## Fixtures — The Exact Format
 
 Mirroring MapLibre's own render test format is not an accident. When you stand on stage and say "TileGuard uses the same fixture format as MapLibre itself — you can copy their fixtures directly," that is the credibility moment.
 
+```
 fixtures/
 ├── fill-color/              ← Tests basic fill color accuracy
 │   ├── style.json           ← The MapLibre style to render
@@ -613,9 +617,10 @@ fixtures/
     ├── style.json
     ├── info.json
     └── expected.png
+```
 
-info.json schema:
-
+`info.json` schema:
+```json
 {
   "width": 256,
   "height": 256,
@@ -625,86 +630,55 @@ info.json schema:
   "pitch": 0,
   "description": "Solid fill polygon — basic color correctness"
 }
+```
 
 The 6 core fixtures to ship by August:
 
-Fixture
+| Fixture | Tests | Connects to talk |
+|---------|-------|-----------------|
+| `fill-color` | Basic color accuracy | Render test explainer |
+| `fill-opacity` | Transparent fill blending | Anti-aliasing tolerance |
+| `line-width` | Width interpolation | Zoom-dependent rendering |
+| `line-dasharray` | Dash phase accuracy | **The war story fixture** |
+| `symbol-placement` | Label collision | **Platform drift war story** |
+| `raster-opacity` | Raster blending | Tile source variety |
 
-Tests
+---
 
-Connects to talk
-
-fill-color
-
-Basic color accuracy
-
-Render test explainer
-
-fill-opacity
-
-Transparent fill blending
-
-Anti-aliasing tolerance
-
-line-width
-
-Width interpolation
-
-Zoom-dependent rendering
-
-line-dasharray
-
-Dash phase accuracy
-
-The war story fixture
-
-symbol-placement
-
-Label collision
-
-Platform drift war story
-
-raster-opacity
-
-Raster blending
-
-Tile source variety
-
-What Is NOT In Scope For August 30
+## What Is NOT In Scope For August 30
 
 These are correct ideas. They are v1.1 and v2.0. Do not build them before the talk.
 
-Public plugin API (build internal plugins first, stabilize API after)
+- Public plugin API (build internal plugins first, stabilize API after)
+- HTML report output
+- PMTiles / MBTiles source support
+- Multi-platform render comparison (Linux vs macOS vs Windows)
+- Web dashboard with trend graphs
+- MapLibre Native (Android/iOS) render tests
+- OpenMapTiles schema plugin
+- Auto-fix functionality
+- VSCode extension
 
-HTML report output
+---
 
-PMTiles / MBTiles source support
+## The Rule ID Space — Reserved
 
-Multi-platform render comparison (Linux vs macOS vs Windows)
-
-Web dashboard with trend graphs
-
-MapLibre Native (Android/iOS) render tests
-
-OpenMapTiles schema plugin
-
-Auto-fix functionality
-
-VSCode extension
-
-The Rule ID Space — Reserved
-
+```
 tile/*         ← tile-validator (core)
 style/*        ← style-linter (core)
 render/*       ← render-compare (core)
 maplibre/*     ← future maplibre plugin (v1.1)
 openmaptiles/* ← future openmaptiles plugin (v1.1)
 planetiler/*   ← future planetiler plugin (v1.1+)
+```
 
-External contributors namespace under their own prefix. The core never owns maplibre/*.
+External contributors namespace under their own prefix. The core never owns `maplibre/*`.
 
-Publishing Plan
+---
 
+## Publishing Plan
+
+```bash
 # Week 13 — first publish
 npm publish packages/core      # @tileguard/core@0.1.0
 npm publish packages/tile-validator  # @tileguard/tile-validator@0.1.0
@@ -717,19 +691,19 @@ npm publish  # tileguard@0.1.0 — re-exports all packages
 
 # Python
 pip publish packages/python  # tileguard@0.1.0 on PyPI
+```
 
-The GitHub repo: github.com/shreeharsh-shinde/tileguard
+**The GitHub repo:** `github.com/shreeharsh-shinde/tileguard`
+- Public from day one
+- MIT license
+- Issues enabled — let people file bugs during development
+- Star count by talk day is a real metric. The LinkedIn post, Harel's mention, the talk acceptance tweet all drive stars.
 
-Public from day one
+---
 
-MIT license
+## The Talk Demo — Exact Script
 
-Issues enabled — let people file bugs during development
-
-Star count by talk day is a real metric. The LinkedIn post, Harel's mention, the talk acceptance tweet all drive stars.
-
-The Talk Demo — Exact Script
-
+```
 SLIDE: "What if you could catch this in CI?"
 
 [open terminal, split view with browser demo on left, terminal on right]
@@ -768,141 +742,94 @@ $ cat .github/workflows/tile-quality.yml
 
 SLIDE: "TileGuard — github.com/shreeharsh-shinde/tileguard"
 [QR code]
+```
 
 Total demo time: 4–5 minutes. The remaining 25 minutes is the conceptual talk that makes this demo meaningful.
 
-Week-by-Week Build Checklist
-
-Weeks 1–2: Core Foundation (Apr 22 – May 4)
-
-pnpm monorepo setup with workspaces
-
-packages/core/src/diagnostic.ts — the contract
-
-packages/core/src/rule.ts — Rule interface frozen
-
-packages/core/src/engine.ts — skeleton (zero rules, runs cleanly)
-
-packages/core/src/visitor.ts — ArtifactType enum + registry
-
-packages/core/src/config.ts — defineConfig() + loader
-
-packages/core/src/plugin.ts — TileGuardPlugin interface
-
-First vitest tests on core
-
-packages/reporters/src/text.ts — colored terminal output
-
-Weeks 3–4: Tile Validator (May 5–18)
-
-tile/decode rule
-
-tile/required-layers rule
-
-tile/coordinate-range rule
-
-tile/geometry-validity rule (turf.js for geometry checks)
-
-tile/feature-count rule
-
-CLI: tileguard validate command wired to engine
-
-npx tileguard validate ./tile.pbf works end-to-end
-
-Vitest tests for all rules, >80% coverage
-
-JSON reporter ships
-
-Weeks 5–6: Style Linter + Python starts (May 19 – Jun 1)
-
-style/spec-compliance rule (wraps @maplibre/maplibre-gl-style-spec)
-
-style/duplicate-layer-id rule
-
-style/missing-source-layer rule
-
-style/invalid-zoom-range rule
-
-style/deprecated-ref rule
-
-CLI: tileguard style-lint command
-
-npx tileguard style-lint ./style.json works end-to-end
-
-Python: validate.py + __main__.py validate command
-
-pip install tileguard + tileguard validate ./tile.pbf works
-
-Weeks 7–8: Render Compare + Fixtures (Jun 2–15)
-
-playwright-runner.ts — headless Chromium + SwiftShader
-
-pixel-diff.ts — pixelmatch + perceptual threshold
-
-render/pixel-diff rule
-
-render/no-reference rule
-
-CLI: tileguard render command
-
-6 fixtures created and reference images generated
-
-xvfb-run -a npx tileguard render --fixtures ./fixtures/ passes in CI
-
-Python: style_lint.py + CLI style-lint command
-
-Weeks 9–10: CI + Config + Polish (Jun 16–29)
-
-tileguard.config.ts loading in CLI
-
-tileguard check command (runs all three)
-
-.github/workflows/tile-quality.yml finalized
-
-SARIF reporter
-
-GitHub annotations reporter
-
-PR comment script tested on real PR
-
-CODE COMPLETE — no new features after June 29
-
-Weeks 11–12: Documentation + Publish (Jun 30 – Jul 13)
-
-README.md — 3-command quickstart above the fold
-
-CONTRIBUTING.md — rule authoring guide (adding a new rule = 20 lines)
-
-ARCHITECTURE.md — the framework decisions explained
-
-tileguard@0.1.0 published to npm
-
-tileguard@0.1.0 published to PyPI
-
-GitHub Releases with changelog
-
-Weeks 13–16: Talk Prep Only (Jul 14 – Aug 28)
-
-Bug fixes ONLY. No new features.
-
-Slides built (master guide has the outline)
-
-Demo sequence practiced until muscle memory
-
-Full 30-minute run-through × 3 timed
-
-Demo tested offline (WiFi off)
-
-Slide PDF backup created
-
-QR code tested
-
-First File to Write
-
-packages/core/src/diagnostic.ts
-
-It has zero dependencies, is 30 lines, and everything else depends on it. You cannot start rule.ts or engine.ts until this is finished and reviewed.
+---
+
+## Week-by-Week Build Checklist
+
+### Weeks 1–2: Core Foundation (Apr 22 – May 4)
+- [ ] pnpm monorepo setup with workspaces
+- [ ] `packages/core/src/diagnostic.ts` — the contract
+- [ ] `packages/core/src/rule.ts` — Rule interface frozen
+- [ ] `packages/core/src/engine.ts` — skeleton (zero rules, runs cleanly)
+- [ ] `packages/core/src/visitor.ts` — ArtifactType enum + registry
+- [ ] `packages/core/src/config.ts` — `defineConfig()` + loader
+- [ ] `packages/core/src/plugin.ts` — TileGuardPlugin interface
+- [ ] First vitest tests on core
+- [ ] `packages/reporters/src/text.ts` — colored terminal output
+
+### Weeks 3–4: Tile Validator (May 5–18)
+- [ ] `tile/decode` rule
+- [ ] `tile/required-layers` rule
+- [ ] `tile/coordinate-range` rule
+- [ ] `tile/geometry-validity` rule (turf.js for geometry checks)
+- [ ] `tile/feature-count` rule
+- [ ] CLI: `tileguard validate` command wired to engine
+- [ ] `npx tileguard validate ./tile.pbf` works end-to-end
+- [ ] Vitest tests for all rules, >80% coverage
+- [ ] JSON reporter ships
+
+### Weeks 5–6: Style Linter + Python starts (May 19 – Jun 1)
+- [ ] `style/spec-compliance` rule (wraps `@maplibre/maplibre-gl-style-spec`)
+- [ ] `style/duplicate-layer-id` rule
+- [ ] `style/missing-source-layer` rule
+- [ ] `style/invalid-zoom-range` rule
+- [ ] `style/deprecated-ref` rule
+- [ ] CLI: `tileguard style-lint` command
+- [ ] `npx tileguard style-lint ./style.json` works end-to-end
+- [ ] Python: `validate.py` + `__main__.py` validate command
+- [ ] `pip install tileguard` + `tileguard validate ./tile.pbf` works
+
+### Weeks 7–8: Render Compare + Fixtures (Jun 2–15)
+- [ ] `playwright-runner.ts` — headless Chromium + SwiftShader
+- [ ] `pixel-diff.ts` — pixelmatch + perceptual threshold
+- [ ] `render/pixel-diff` rule
+- [ ] `render/no-reference` rule
+- [ ] CLI: `tileguard render` command
+- [ ] 6 fixtures created and reference images generated
+- [ ] `xvfb-run -a npx tileguard render --fixtures ./fixtures/` passes in CI
+- [ ] Python: `style_lint.py` + CLI style-lint command
+
+### Weeks 9–10: CI + Config + Polish (Jun 16–29)
+- [ ] `tileguard.config.ts` loading in CLI
+- [ ] `tileguard check` command (runs all three)
+- [ ] `.github/workflows/tile-quality.yml` finalized
+- [ ] SARIF reporter
+- [ ] GitHub annotations reporter
+- [ ] PR comment script tested on real PR
+- [ ] `CODE COMPLETE` — no new features after June 29
+
+### Weeks 11–12: Documentation + Publish (Jun 30 – Jul 13)
+- [ ] `README.md` — 3-command quickstart above the fold
+- [ ] `CONTRIBUTING.md` — rule authoring guide (adding a new rule = 20 lines)
+- [ ] `ARCHITECTURE.md` — the framework decisions explained
+- [ ] `tileguard@0.1.0` published to npm
+- [ ] `tileguard@0.1.0` published to PyPI
+- [ ] GitHub Releases with changelog
+
+### Weeks 13–16: Talk Prep Only (Jul 14 – Aug 28)
+- [ ] Bug fixes ONLY. No new features.
+- [ ] Slides built (master guide has the outline)
+- [ ] Demo sequence practiced until muscle memory
+- [ ] Full 30-minute run-through × 3 timed
+- [ ] Demo tested offline (WiFi off)
+- [ ] Slide PDF backup created
+- [ ] QR code tested
+
+---
+
+## First File to Write
+
+`packages/core/src/diagnostic.ts`
+
+It has zero dependencies, is 30 lines, and everything else depends on it. You cannot start `rule.ts` or `engine.ts` until this is finished and reviewed.
 
 Start there. Today.
 
-TileGuard v2 spec | Shreeharsh Shinde | April 2026Talk: "Ensuring Tile Quality in MapLibre Through Automated Testing and CI" | FOSS4G 2026 Hiroshima
+---
+
+*TileGuard v2 spec | Shreeharsh Shinde | April 2026*
+*Talk: "Ensuring Tile Quality in MapLibre Through Automated Testing and CI" | FOSS4G 2026 Hiroshima*
