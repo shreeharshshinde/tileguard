@@ -85,7 +85,9 @@ jobs:
           cache-dependency-path: packages/python/requirements.txt
 
       - name: Install dependencies
-        run: pip install mapbox-vector-tile requests click shapely Pillow rich pytest
+        run: |
+          pip install mapbox-vector-tile requests click shapely Pillow rich pytest
+          pip install -e .
         working-directory: packages/python
 
       - run: pytest tests/ -v
