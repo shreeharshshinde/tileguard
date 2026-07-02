@@ -13,7 +13,7 @@ concurrency:
 jobs:
   style-lint:
     name: Style Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +32,7 @@ jobs:
 
   tile-validate:
     name: Tile Validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: style-lint
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
 
   js-tests:
     name: JS Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -68,7 +68,7 @@ jobs:
 
   python-tests:
     name: Python Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -89,7 +89,7 @@ jobs:
 
   render-test:
     name: Render Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [style-lint, tile-validate]
     steps:
       - uses: actions/checkout@v4
