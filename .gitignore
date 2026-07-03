@@ -1,21 +1,29 @@
 # Node
 node_modules/
-packages/js/node_modules/
 npm-debug.log*
 package-lock.json
 
+# Legacy prototype node_modules (preserved as-is, not tracked)
+legacy/js/node_modules/
+
+# TypeScript build output
+packages/*/dist/
+dist/
+
 # Python
-packages/python/venv/
+legacy/python/venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
-dist/
 .eggs/
 
 # Test artifacts
 fixtures/**/actual.png
 fixtures/**/diff.png
 *-results.json
+
+# pnpm
+.pnpm-store/
 
 # OS
 .DS_Store
