@@ -44,6 +44,16 @@ They are referenced from the subsystem documents where relevant.
 | [ADR-004](./adr/004-direct-artifact-access.md) | Direct artifact access over visitor pattern |
 | [ADR-005](./adr/005-flat-configuration.md) | Flat configuration over cascading config resolution |
 
+### Guidelines & Operations
+
+| Directory | Documents | Description |
+|:----------|:----------|:------------|
+| `../guides/` | [Development Guide](../guides/development-guide.md) | How to write rules, plugins, providers, reporters; Testing and Performance strategies |
+| `../governance/` | [Project Governance](../governance/project-governance.md) | Release process, Versioning policy, Deprecation policy, RFC process, Security policy |
+| `../contributing/` | [Contributor Guide](../contributing/contributor-guide.md) | Onboarding, coding standards, PR workflows, maintenance guidelines |
+| `../ecosystem/` | [Future Vision](../ecosystem/future-vision.md) | Long-term planning beyond v1.0 (LSP, Auto-fix, 3rd party plugins) |
+| `../engineering/` | [Codebase Assessment](../engineering/CURRENT_CODEBASE_ASSESSMENT.md) | Audit of the pre-redesign prototype, reusable algorithms, and file-by-file action plan |
+
 ---
 
 ## Conventions
