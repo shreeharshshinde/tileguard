@@ -1,51 +1,14 @@
-name: Release
+name: Release Readiness
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
+permissions:
+  contents: read
+
+# Publishing stays manual until the new workspace packages have stable
+# versions, package contents, and registry provenance configured.
 jobs:
-  publish-npm:
-    name: Publish to npm
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-          cache: npm
-          cache-dependency-path: packages/js/package-lock.json
-
-      - run: npm ci
-        working-directory: packages/js
-
-      - run: npm publish --provenance --access public
-        working-directory: packages/js
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  publish-pypi:
-    name: Publish to PyPI
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - run: pip install hatchling build
-      - run: python -m build
-        working-directory: packages/python
-
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: packages/python/dist/
+  ci:
+    name: Validate workspace
+    uses: ./.github/workflows/tile-quality.yml
