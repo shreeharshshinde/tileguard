@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/shared" },
+    { "path": "packages/reporters" },
+    { "path": "packages/config" },
+    { "path": "packages/tile-rules" },
+    { "path": "packages/style-rules" },
+    { "path": "packages/cli" }
+  ]
+}

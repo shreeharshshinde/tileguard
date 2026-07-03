@@ -1,0 +1,105 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/cli:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+      '@tileguard/reporters':
+        specifier: workspace:*
+        version: link:../reporters
+      '@tileguard/style-rules':
+        specifier: workspace:*
+        version: link:../style-rules
+      '@tileguard/tile-rules':
+        specifier: workspace:*
+        version: link:../tile-rules
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/config:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/core:
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/reporters:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/shared:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/style-rules:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+      '@tileguard/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+  packages/tile-rules:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+      '@tileguard/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
+packages:
+
+  typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  typescript@5.4.5: {}

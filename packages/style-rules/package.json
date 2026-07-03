@@ -1,0 +1,22 @@
+{
+  "name": "@tileguard/style-rules",
+  "version": "0.0.0",
+  "description": "MapLibre style specification provider and style lint rules",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "maplibre", "style", "lint", "geospatial"],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*",
+    "@tileguard/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

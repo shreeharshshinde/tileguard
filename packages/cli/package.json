@@ -1,0 +1,27 @@
+{
+  "name": "tileguard",
+  "version": "0.0.0",
+  "description": "Command-line interface for TileGuard — geospatial quality analysis framework",
+  "type": "module",
+  "bin": {
+    "tileguard": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "cli", "geospatial", "validation"],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*",
+    "@tileguard/reporters": "workspace:*",
+    "@tileguard/tile-rules": "workspace:*",
+    "@tileguard/style-rules": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

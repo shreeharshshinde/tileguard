@@ -1,0 +1,19 @@
+{
+  "name": "@tileguard/core",
+  "version": "0.0.0",
+  "description": "Framework contracts: Diagnostic, Artifact, Rule, Reporter, Engine",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "geospatial", "validation"],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

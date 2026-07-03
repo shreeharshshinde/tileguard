@@ -1,0 +1,21 @@
+{
+  "name": "@tileguard/reporters",
+  "version": "0.0.0",
+  "description": "Built-in output reporters for TileGuard: text, JSON, SARIF",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "reporter", "sarif", "geospatial"],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

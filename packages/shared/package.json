@@ -1,0 +1,21 @@
+{
+  "name": "@tileguard/shared",
+  "version": "0.0.0",
+  "description": "Shared utilities and helpers used across TileGuard packages",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "utilities", "geospatial"],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

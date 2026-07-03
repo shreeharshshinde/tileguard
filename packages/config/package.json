@@ -1,0 +1,21 @@
+{
+  "name": "@tileguard/config",
+  "version": "0.0.0",
+  "description": "Configuration loading, schema validation, and preset resolution for TileGuard",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test"
+  },
+  "keywords": ["tileguard", "config", "geospatial"],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

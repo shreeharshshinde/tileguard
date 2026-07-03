@@ -9,6 +9,7 @@ legacy/js/node_modules/
 # TypeScript build output
 packages/*/dist/
 dist/
+*.tsbuildinfo
 
 # Python
 legacy/python/venv/
