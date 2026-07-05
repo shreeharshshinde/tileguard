@@ -1279,7 +1279,7 @@ type RuleConfig =
 interface Override {
   /**
    * Glob patterns matched against artifact source strings.
-   * Uses minimatch semantics (same as .gitignore patterns).
+   * Supports *, **, and ? path wildcards.
    * Example: ['fixtures/experimental/**', '**/*.test.pbf']
    */
   files: string[];
@@ -1294,7 +1294,8 @@ interface GlobalOptions {
   timeout?: number;
 
   /**
-   * Maximum total diagnostics to collect before stopping.
+   * Maximum total diagnostics to collect before stopping, including
+   * infrastructure failures and the engine/max-diagnostics notice.
    * Prevents runaway output on pathological artifacts.
    * Default: 1000.
    */
@@ -1329,6 +1330,9 @@ interface ResolvedConfig {
 
   /** Resolved global options (all fields present, defaults applied). */
   readonly options: Required<GlobalOptions>;
+
+  /** Compiled path overrides, evaluated per source in declaration order. */
+  readonly overrides: readonly ResolvedOverride[];
 }
 
 interface ResolvedRuleConfig {
@@ -1339,6 +1343,20 @@ interface ResolvedRuleConfig {
   readonly severity: Severity;
 
   /** The validated options to pass to the rule's context. undefined if none. */
+  readonly options: unknown;
+}
+
+interface ResolvedOverride {
+  /** Compiled OR-matcher for the override's file patterns. */
+  readonly matches: (source: string) => boolean;
+
+  /** Rule deltas applied when matches(source) is true. */
+  readonly rules: ReadonlyMap<string, ResolvedRuleOverride>;
+}
+
+interface ResolvedRuleOverride {
+  readonly rule: Rule;
+  readonly severity: Severity | 'off';
   readonly options: unknown;
 }
 ```
@@ -1382,7 +1400,7 @@ flowchart TD
 
 When the engine loads an artifact, it checks the artifact's source against all `config.overrides[].files` glob patterns. Overrides that match are applied on top of the base rule configuration, in declaration order. Later overrides take precedence over earlier ones.
 
-Override resolution happens per-artifact at load time, not at startup. The engine uses a lightweight matcher (minimatch) to evaluate glob patterns against source strings.
+Override patterns are compiled at startup, then matched and merged per source before rule dispatch. The built-in matcher supports `*`, `**`, and `?`. A matching override may disable an enabled base rule or enable a rule that is otherwise off. Later matching overrides take precedence over earlier ones.
 
 ### Flat Configuration Invariants
 
@@ -1811,7 +1829,7 @@ Once a Diagnostic is created by the engine from a `DiagnosticDescriptor`, it is 
 
 ### 9. Configuration is resolved once.
 
-The configuration resolver runs exactly once per `createEngine()` call, before any artifact is loaded. The resulting `ResolvedConfig` is used for the entire run without re-reading the config file, re-evaluating schemas, or re-applying overrides. Deterministic runs require deterministic configuration.
+The configuration resolver runs exactly once per `createEngine()` call, before any artifact is loaded. The resulting `ResolvedConfig` is used for the entire run without re-reading the config file or re-evaluating schemas. Path override matchers are compiled during this resolution step; their already-resolved rule deltas are merged per source during dispatch. Deterministic runs require deterministic configuration.
 
 *Applied when:* Considering whether to re-read config between artifacts.
 

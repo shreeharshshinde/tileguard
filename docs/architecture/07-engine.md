@@ -139,10 +139,16 @@ If loading fails (file not found, network error, decode error), the engine
 emits an `artifact/load-failed` diagnostic and continues. This is important:
 a single bad file should not prevent validation of all other files.
 
+All infrastructure diagnostics use the same `maxDiagnostics` budget as rule
+diagnostics. Once the hard cap is reached, the final slot contains
+`engine/max-diagnostics` and the engine stops dispatching further work.
+
 ### Stage 4: Rule Execution
 
 For each successfully loaded artifact, the engine looks up matching rules
-in the rule index using `artifact.type`. For each matching, enabled rule:
+in the rule index using `artifact.type`. Before that lookup, it applies every
+path override matching the source, in declaration order. For each matching,
+enabled rule:
 
 1. Create a `RuleContext` with the artifact and the rule's resolved options.
 2. Call `rule.create(context)`.

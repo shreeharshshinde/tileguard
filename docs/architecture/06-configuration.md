@@ -90,6 +90,9 @@ interface GlobalOptions {
 
   /** Maximum number of diagnostic details to include per rule. */
   maxDetails?: number;
+
+  /** Hard cap for all diagnostics, including the truncation notice. */
+  maxDiagnostics?: number;
 }
 ```
 
@@ -206,7 +209,10 @@ default to `'off'`).
 **Step 6: Apply user overrides.** Merge user-specified `rules` entries on top
 of defaults.
 
-**Step 7: Validate.** For each rule with user-provided options, validate
+**Step 7: Compile path overrides.** Compile each override's file globs and
+resolve its rule deltas. Matching and merging still happen per source.
+
+**Step 8: Validate.** For each rule with user-provided options, validate
 against the rule's JSON schema. Report all validation errors at once rather
 than failing on the first one.
 
@@ -229,6 +235,9 @@ interface ResolvedConfig {
 
   /** Resolved global options. */
   options: Required<GlobalOptions>;
+
+  /** Compiled path overrides, evaluated per source in declaration order. */
+  overrides: ResolvedOverride[];
 }
 
 interface ResolvedRuleConfig {
@@ -236,6 +245,11 @@ interface ResolvedRuleConfig {
   severity: Severity;
   options: unknown;
   enabled: boolean;
+}
+
+interface ResolvedOverride {
+  matches(source: string): boolean;
+  rules: ReadonlyMap<string, ResolvedRuleOverride>;
 }
 ```
 
