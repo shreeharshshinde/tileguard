@@ -1,0 +1,41 @@
+{
+  "version": 8,
+  "name": "Smoke Test — Valid Style",
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "https://example.com/tiles.json"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#f8f4f0" }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "paint": { "fill-color": "#a0c8f0" }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
+      "maxzoom": 22,
+      "paint": { "line-color": "#ffffff", "line-width": 2 }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "minzoom": 13,
+      "paint": { "fill-color": "#d9d0c9", "fill-opacity": 0.8 }
+    }
+  ]
+}
