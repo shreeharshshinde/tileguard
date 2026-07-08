@@ -1,0 +1,12 @@
+{
+  "_comment": "Triggers: style/no-deprecated-ref (layer uses deprecated 'ref' property)",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "id": "background", "type": "background" },
+    { "id": "roads", "type": "line", "source": "openmaptiles" },
+    { "id": "roads-tunnels", "ref": "roads" }
+  ]
+}
