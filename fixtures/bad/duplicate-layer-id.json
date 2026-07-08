@@ -1,0 +1,12 @@
+{
+  "_comment": "Triggers: style/unique-layer-id (duplicate layer id 'roads')",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "id": "background", "type": "background" },
+    { "id": "roads", "type": "line", "source": "openmaptiles" },
+    { "id": "roads", "type": "fill", "source": "openmaptiles" }
+  ]
+}
