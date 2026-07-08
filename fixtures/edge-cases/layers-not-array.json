@@ -1,0 +1,6 @@
+{
+  "_comment": "Edge case: layers is an object (not array). Triggers style/layers-present.",
+  "version": 8,
+  "sources": {},
+  "layers": {}
+}

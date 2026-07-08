@@ -1,0 +1,7 @@
+{
+  "_comment": "Triggers: style/layers-present (missing top-level layers key)",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  }
+}
