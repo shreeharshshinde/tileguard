@@ -1,0 +1,8 @@
+{
+  "_comment": "Edge case: background layer has no 'source' property — this is VALID. Known-source rule must skip backgroundlayers without a source field.",
+  "version": 8,
+  "sources": {},
+  "layers": [
+    { "id": "background", "type": "background" }
+  ]
+}

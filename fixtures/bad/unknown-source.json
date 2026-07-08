@@ -1,0 +1,11 @@
+{
+  "_comment": "Triggers: style/known-source (layer references undeclared source 'nonexistent')",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "id": "background", "type": "background" },
+    { "id": "roads", "type": "line", "source": "nonexistent" }
+  ]
+}
