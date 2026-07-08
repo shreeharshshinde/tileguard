@@ -1,0 +1,11 @@
+{
+  "_comment": "Triggers: style/layer-id-required (layer entry missing id field)",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "type": "background" },
+    { "type": "fill", "source": "openmaptiles" }
+  ]
+}
