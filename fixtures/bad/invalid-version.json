@@ -1,0 +1,10 @@
+{
+  "_comment": "Triggers: style/version (version must be 8)",
+  "version": 7,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "id": "background", "type": "background" }
+  ]
+}

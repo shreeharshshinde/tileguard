@@ -1,0 +1,6 @@
+{
+  "_comment": "Edge case: style version is present but is a string, not an integer. Triggers style/version.",
+  "version": "8",
+  "sources": {},
+  "layers": []
+}
