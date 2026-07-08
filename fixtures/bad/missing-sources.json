@@ -1,0 +1,7 @@
+{
+  "_comment": "Triggers: style/sources-present (missing top-level sources key)",
+  "version": 8,
+  "layers": [
+    { "id": "background", "type": "background" }
+  ]
+}

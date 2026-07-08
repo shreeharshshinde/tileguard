@@ -1,0 +1,6 @@
+{
+  "_comment": "Edge case: sources is present but is null, not an object. Triggers style/sources-present.",
+  "version": 8,
+  "sources": null,
+  "layers": []
+}
