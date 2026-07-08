@@ -1,0 +1,17 @@
+{
+  "_comment": "Triggers: style/zoom-range (minzoom > maxzoom on 'roads' layer)",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    { "id": "background", "type": "background" },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "openmaptiles",
+      "minzoom": 18,
+      "maxzoom": 5
+    }
+  ]
+}

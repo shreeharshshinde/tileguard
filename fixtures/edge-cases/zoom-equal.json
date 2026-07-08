@@ -1,0 +1,16 @@
+{
+  "_comment": "Edge case: minzoom equals maxzoom — this is VALID (equal is permitted). No style/zoom-range diagnostic expected.",
+  "version": 8,
+  "sources": {
+    "openmaptiles": { "type": "vector" }
+  },
+  "layers": [
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "openmaptiles",
+      "minzoom": 10,
+      "maxzoom": 10
+    }
+  ]
+}
