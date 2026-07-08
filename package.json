@@ -6,13 +6,15 @@
   "scripts": {
     "build": "tsc --build --pretty false",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
     "clean": "pnpm -r --parallel exec rm -rf dist"
   },
   "keywords": [],
   "license": "MIT",
   "packageManager": "pnpm@9.15.9",
   "devDependencies": {
+    "@biomejs/biome": "^2.5.3",
     "typescript": "5.4.5"
   },
   "engines": {
