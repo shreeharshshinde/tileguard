@@ -1,29 +1,30 @@
 # TileGuard 🛡️
 
-**The quality analysis framework for geospatial software.**
+**Automated quality gates for geospatial software.**
 
-TileGuard brings automated quality gates to the geospatial ecosystem — the same engineering discipline that ESLint, Ruff, and pytest provide for application code, applied to vector tiles, style specifications, and map rendering.
+TileGuard is a rule-based validation framework for vector tiles and MapLibre style specifications — the same engineering discipline ESLint brings to JavaScript, applied to the geospatial stack.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![CI](https://github.com/shreeharsh-shinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharsh-shinde/tileguard/actions/workflows/tile-quality.yml)
 [![FOSS4G 2026](https://img.shields.io/badge/Presented%20at-FOSS4G%202026%20Hiroshima-red)](https://2026.foss4g.org)
 
 ---
 
 ## The Problem
 
-Map tile bugs are **silent**. A road layer disappears at zoom 14. A polygon self-intersects and causes an invisible render failure. A style expression references a property that doesn't exist. These regressions survive code review because there are no automated checks — they're discovered when a user reports them, often weeks after the change that caused them.
+Map tile bugs are **silent**. A road layer disappears at zoom 14. A polygon self-intersects and causes an invisible render failure. A style expression references a property that doesn't exist. These regressions survive code review because there are no automated checks — they surface when a user reports them, often weeks after the change that caused them.
 
-The broader software engineering ecosystem solved this long ago with lint tools, test frameworks, and CI pipelines. The geospatial ecosystem has not. Teams still rely on manual visual inspection to catch tile and rendering bugs.
+Application developers solved this years ago: linters, test frameworks, CI pipelines. The geospatial ecosystem hasn't. Teams still rely on manual visual inspection.
 
-**TileGuard closes this gap.** It provides configurable, automated quality gates that validate tile structures, lint style specifications, and detect visual regressions — all integrated into standard CI/CD workflows.
+**TileGuard closes this gap** — configurable, automated quality checks that run in CI the same way unit tests do.
 
 ---
 
-## What TileGuard Is (and Is Not)
+## What TileGuard Is
 
-TileGuard is a **framework**, not a collection of scripts. Its core is a rule engine that discovers validation rules, routes geospatial artifacts to the rules that understand them, collects structured diagnostics, and hands those diagnostics to reporter backends. The core engine validates nothing — the rules validate everything.
+TileGuard is a **framework**, not a script collection. At its center is a domain-agnostic rule engine: it loads geospatial artifacts, routes them to the rules that understand them, collects structured diagnostics, and delivers those diagnostics to a reporter. The engine validates nothing itself — the rules validate everything.
 
-TileGuard is **not** a rendering engine, a tile server, or a GIS desktop application. It does not generate tiles or replace MapLibre's internal test suite. It acts as an independent quality assurance layer that integrates with existing tools and improves developer workflows.
+**TileGuard is not** a rendering engine, a tile server, or a GIS application. It is an independent quality assurance layer that sits alongside existing tools in a standard CI pipeline.
 
 ---
 
@@ -44,56 +45,67 @@ TileGuard is **not** a rendering engine, a tile server, or a GIS desktop applica
          │
          ▼  Diagnostic[]
   ┌─────────────────────┐
-  │      Reporter        │  ── Formats output (text, JSON, SARIF)
+  │      Reporter        │  ── Formats output (text, JSON)
   └─────────────────────┘
          │
          ▼
     Terminal / CI / IDE
 ```
 
-**Artifacts** are the things being validated — vector tiles, style specifications, render snapshots. **Artifact Providers** load and decode them. **Rules** are small, independent, deterministic functions that validate one concern each. **Diagnostics** are the structured results — every rule produces them, every reporter consumes them. **Reporters** transform diagnostics into output formats.
+**Artifacts** are the things being validated — vector tiles and style specifications today, render snapshots in an upcoming release. **Providers** load and decode them. **Rules** are small, independent, deterministic functions — each validates one concern. **Diagnostics** are the structured results every rule produces and every reporter consumes.
 
-The key insight: rules never print output. Reporters never validate. The engine connects them. This separation means adding a new validation check never requires changing output formatting, and adding a new output format never requires changing validation logic.
+The key separation: rules never print output, reporters never validate. Adding a new rule never requires touching output formatting. Adding a new reporter never requires touching validation logic.
 
 ---
 
 ## Capabilities
 
-### Tile Validation
+### Tile Validation — `@tileguard/tile-rules`
 
-Validates vector tile structure, geometry, feature metadata, and content.
-
-| Check | What it catches |
-|:------|:----------------|
-| Required layers | Missing layers in the tile |
-| Coordinate range | Coordinates outside tile extent |
-| Geometry validity | Unclosed rings, self-intersections, degenerate polygons, zero-area rings |
-| Feature count | Too many or too few features (global and per-layer) |
-| Required properties | Missing properties on features |
-
-### Style Linting
-
-Validates MapLibre style specifications against structural and semantic rules.
+Validates Mapbox Vector Tile (MVT) structure, geometry, feature metadata, and content. **10 rules, fully tested against real `.pbf` fixtures.**
 
 | Check | What it catches |
 |:------|:----------------|
-| Version | Style version must be `8` |
-| Source references | Layers referencing non-existent sources |
-| Layer IDs | Missing or duplicate layer identifiers |
+| Required layers | Missing expected layers in the tile |
+| Required properties | Features missing declared properties |
+| Coordinate range | Coordinates outside the valid tile extent |
+| Feature count | Too many or too few features, globally or per-layer |
+| Unclosed rings | Polygon rings whose first vertex doesn't equal its last |
+| Zero-area polygons | Degenerate polygons with no meaningful area |
+| Self-intersecting geometry | Polygons or lines that cross themselves |
+| Structural conformance | Tile metadata, schema, version, and extent validity |
+| Geometry consistency | Feature geometry type matching its declared type |
+| Empty tiles | Tiles with zero features (configurable — sometimes intentional) |
+
+### Style Linting — `@tileguard/style-rules`
+
+Validates MapLibre style specifications against structural and semantic rules. **9 rules, fully tested.**
+
+| Check | What it catches |
+|:------|:----------------|
+| Style version | Version must be `8` |
+| Source references | Layers pointing to undeclared sources |
+| Source-layer validation | Vector layers missing a required `source-layer` |
+| Layer structure | Missing or structurally broken layer references |
+| Duplicate layer IDs | Two layers silently overriding each other |
 | Zoom ranges | `minzoom` greater than `maxzoom` |
-| Deprecated properties | Usage of unsupported `ref` property |
+| Deprecated properties | Usage of the unsupported `ref` property |
+| Expression types | Paint/layout expressions with type mismatches |
+| Semantic conformance | Broader style specification validity |
 
-### Render Regression Testing
+### Render Regression Testing — *coming in a future release*
 
-Compares deterministic render outputs against reference images using perceptual pixel comparison. Catches visual regressions that structural validation cannot detect.
+Will compare deterministic render outputs against reference images using perceptual pixel comparison — catching visual regressions that structural checks cannot detect.
 
 ### CI Integration
 
-A ready-made GitHub Actions workflow that runs all quality gates in a tiered pipeline: fast checks first (style lint), structural checks next (tile validation), expensive checks last (render tests). One file to copy, zero configuration required.
+A GitHub Actions workflow runs the full quality gate in a tiered pipeline: dependency boundary checks, per-rule test coverage enforcement, build, lint, and tests. See [CI Pipeline](#ci-pipeline) below.
 
 ---
 
 ## Quick Start
+
+> **CLI status:** The `tileguard` CLI is the current development milestone. Until it ships, use TileGuard programmatically — see [Programmatic Usage](#programmatic-usage) below. The commands here show the intended end-user interface.
 
 ```bash
 # Validate a vector tile
@@ -102,22 +114,26 @@ npx tileguard check ./tile.pbf
 # Lint a MapLibre style
 npx tileguard check ./style.json
 
-# Validate multiple sources
+# Validate multiple sources in one run
 npx tileguard check ./tile.pbf ./style.json
 
-# JSON output for CI integration
+# JSON output for CI or downstream tooling
 npx tileguard check ./tile.pbf --reporter json
+
+# Scaffold a starter config file
+npx tileguard init
 ```
 
 ### Configuration
 
-Create a `tileguard.config.ts` at your project root to customize rules:
+Create `tileguard.config.ts` at your project root to customize rules:
 
 ```typescript
+import type { TileGuardConfig } from '@tileguard/core';
 import { tilePlugin } from '@tileguard/tile-rules';
 import { stylePlugin } from '@tileguard/style-rules';
 
-export default {
+const config: TileGuardConfig = {
   plugins: [tilePlugin, stylePlugin],
   rules: {
     'tile/required-layers': ['error', { layers: ['water', 'roads', 'buildings'] }],
@@ -125,14 +141,39 @@ export default {
     'tile/no-empty': 'off',
     'style/known-source': 'error',
   },
+  reporter: 'text',
 };
+
+export default config;
 ```
 
-Rules can be set to `'error'`, `'warning'`, `'info'`, or `'off'`. Rules with configurable options use the `[severity, options]` tuple format. Without a config file, TileGuard runs all recommended rules at their default severities.
+Rules accept `'error'`, `'warning'`, `'info'`, or `'off'`. Rules with options use the `[severity, options]` tuple. Without a config file, all recommended rules run at their default severities.
+
+### Programmatic Usage
+
+Available today, ahead of the CLI:
+
+```typescript
+import { createEngine } from '@tileguard/core';
+import { tilePlugin } from '@tileguard/tile-rules';
+import { stylePlugin } from '@tileguard/style-rules';
+
+const engine = createEngine({
+  plugins: [tilePlugin, stylePlugin],
+  rules: {
+    'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
+  },
+});
+
+const result = await engine.run(['./tile.pbf', './style.json']);
+
+console.log(result.summary.pass);        // true | false
+console.log(result.diagnostics.length);  // number of findings
+```
 
 ### CI Pipeline
 
-Copy the workflow file into your repository:
+Drop this workflow into your repository to run tile quality checks on every pull request:
 
 ```yaml
 # .github/workflows/tile-quality.yml
@@ -152,13 +193,11 @@ jobs:
       - run: npx tileguard check ./tiles/ ./styles/ --reporter json
 ```
 
-Every pull request now runs automated quality checks before merge.
-
 ---
 
 ## Writing a Rule
 
-A rule is a plain object. No base classes, no decorators, no magic.
+A rule is a plain object. No base classes, no decorators, no framework-specific boilerplate.
 
 ```typescript
 import type { Rule } from '@tileguard/core';
@@ -175,7 +214,11 @@ export const zoomRangeRule: Rule = {
   create(context) {
     const style = context.artifact.content;
     for (const layer of style.layers ?? []) {
-      if (layer.minzoom !== undefined && layer.maxzoom !== undefined && layer.minzoom > layer.maxzoom) {
+      if (
+        layer.minzoom !== undefined &&
+        layer.maxzoom !== undefined &&
+        layer.minzoom > layer.maxzoom
+      ) {
         context.report({
           message: `Layer "${layer.id}" has minzoom (${layer.minzoom}) greater than maxzoom (${layer.maxzoom}).`,
           location: { jsonPath: `layers[].id="${layer.id}"` },
@@ -187,97 +230,87 @@ export const zoomRangeRule: Rule = {
 };
 ```
 
-The engine automatically fills in `ruleId`, `severity`, `artifact`, and `docsUrl` from the rule's metadata. The rule only provides the `message`, `location`, and optional `suggestion`. This keeps rules short, focused, and free of boilerplate.
+The engine fills in `ruleId`, `severity`, `artifact`, and `docsUrl` from the rule's metadata and resolved config. The rule provides only `message`, `location`, and an optional `suggestion`. Rules stay short and focused.
 
 ---
 
 ## Architecture
 
-TileGuard is built as a monorepo of focused packages:
+TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends on nothing; domain packages depend only on Core.
 
-| Package | Responsibility |
-|:--------|:---------------|
-| `@tileguard/core` | Framework contracts: Diagnostic, Artifact, Rule, Reporter, Engine |
-| `@tileguard/tile-rules` | Vector tile provider + all tile validation rules |
-| `@tileguard/style-rules` | Style specification provider + all style lint rules |
-| `tileguard` (CLI) | Command-line interface, config loading, built-in reporters |
+| Package | Responsibility | Status |
+|:--------|:----------------|:-------|
+| `@tileguard/core` | Framework contracts: Diagnostic, Artifact, Rule, Plugin, Reporter, Engine | ✅ Stable |
+| `@tileguard/shared` | Utilities shared across domain packages | ✅ Stable |
+| `@tileguard/tile-rules` | MVT provider + 10 tile validation rules | ✅ Stable |
+| `@tileguard/style-rules` | Style provider + 9 style lint rules | ✅ Stable |
+| `@tileguard/reporters` | Built-in `text` and `json` reporters | 🔨 In progress |
+| `tileguard` (CLI) | `check` / `init` commands, config loading | 🔨 In progress |
 
-Dependencies always point inward. Domain packages depend on Core. Core depends on nothing. Domain packages are independent of each other — a project using only tile validation never loads the style linter.
+A project using only tile validation never loads the style package. A project using only style linting never loads the tile package. Packages are independently installable.
 
-### Architectural Principles
+### Design Principles
 
-1. **Contracts before implementation.** Components interact through explicit interfaces. Implementations are replaceable.
-2. **Dependencies point inward.** Core has zero dependencies on outer packages.
-3. **Rules are pure.** Given an artifact and config, a rule produces only diagnostics. No side effects.
-4. **Diagnostics are the universal language.** Every validation result is a structured `Diagnostic`. Every reporter consumes the same type.
-5. **Composition over inheritance.** Rules and reporters are plain objects, not class hierarchies.
-6. **Explicit over clever.** Flat configuration, clear error messages, no magic.
+1. **Contracts before implementation.** Components interact through explicit interfaces; implementations are replaceable.
+2. **Dependencies point inward.** Core has zero runtime dependencies. Every outer package depends only toward Core.
+3. **Rules are pure.** Given an artifact and resolved options, a rule produces diagnostics only — no I/O, no side effects, no shared state.
+4. **Diagnostics are the universal currency.** Every rule produces a `Diagnostic`. Every reporter consumes the same type, regardless of which rule or package produced it.
+5. **Composition over inheritance.** Rules, providers, and reporters are plain objects, not class hierarchies.
+6. **Explicit over clever.** Flat configuration, no cascading, clear error messages, no implicit discovery.
 
 ### Architecture Handbook
 
-The complete architectural specification — including interface definitions, design rationale, alternatives considered, and implementation roadmap — lives in the [Architecture Handbook](docs/architecture/README.md):
+Full interface specifications, design rationale, and decision records live in [`docs/architecture/`](docs/architecture/):
 
 | Document | Contents |
 |:---------|:---------|
-| [Architecture Overview](docs/architecture/01-overview.md) | System design, component map, run pipeline |
-| [Diagnostic Model](docs/architecture/02-diagnostic-model.md) | The universal contract between rules and reporters |
-| [Artifact Model](docs/architecture/03-artifact-model.md) | Artifacts, providers, loading lifecycle |
-| [Rule System](docs/architecture/04-rule-system.md) | Rule interface, context, registration, examples |
-| [Reporter System](docs/architecture/05-reporter-system.md) | Reporter interface, built-in reporters |
-| [Configuration](docs/architecture/06-configuration.md) | Config schema, resolution, presets |
-| [Engine](docs/architecture/07-engine.md) | Core orchestration pipeline |
-| [Package Structure](docs/architecture/08-package-structure.md) | Monorepo layout, dependency rules |
-| [Implementation Roadmap](docs/architecture/09-implementation-roadmap.md) | Phased milestones |
+| [CORE_CONTRACTS.md](docs/architecture/CORE_CONTRACTS.md) | Authoritative spec for every public interface in `@tileguard/core` |
+| [PROJECT_VISION.md](docs/PROJECT_VISION.md) | Why TileGuard exists and where it's going |
+| [PROBLEM_STATEMENT.md](docs/PROBLEM_STATEMENT.md) | The concrete, evidence-based problem TileGuard solves |
+| [Implementation Guidelines](docs/engineering/IMPLEMENTATION_GUIDELINES.md) | Engineering conventions: naming, testing, error handling, CI gates |
+| [Execution Roadmap](docs/engineering/ROADMAP.md) | Phase-by-phase delivery plan |
+| [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) | Legacy-to-framework migration map |
 
-### Architecture Decision Records
-
-Key design decisions are documented as ADRs:
-
-| ADR | Decision |
-|:----|:---------|
-| [ADR-001](docs/architecture/adr/001-typescript-reference-implementation.md) | TypeScript as the single reference implementation |
-| [ADR-002](docs/architecture/adr/002-rule-based-architecture.md) | Rule-based validation over procedural validators |
-| [ADR-003](docs/architecture/adr/003-diagnostic-as-contract.md) | Structured diagnostics as universal interface |
-| [ADR-004](docs/architecture/adr/004-direct-artifact-access.md) | Direct artifact access over visitor pattern |
-| [ADR-005](docs/architecture/adr/005-flat-configuration.md) | Flat configuration over cascading config |
+Key design decisions are documented as ADRs in [`docs/architecture/adr/`](docs/architecture/adr/): rule-based architecture over procedural validators, structured diagnostics as the universal interface, direct artifact access over a visitor pattern, flat configuration over cascading config.
 
 ---
 
 ## Project Status
 
-TileGuard is in active development, transitioning from a working procedural prototype to the framework architecture described above.
+The framework's architectural foundation is complete. Two domain packages are fully implemented, tested end-to-end against real fixture files, and stable. The CLI and reporters are the active development milestone.
 
-| Component | Status |
-|:----------|:-------|
-| Architecture handbook | ✅ Complete |
-| Core framework (`@tileguard/core`) | 🔨 In progress |
-| Tile validation rules | 📋 Planned (prototype logic exists) |
-| Style lint rules | 📋 Planned (prototype logic exists) |
-| CLI | 📋 Planned |
-| Render regression | 📋 Planned |
-| CI workflow | ✅ Complete (existing) |
+| Component | Status | Notes |
+|:----------|:-------|:------|
+| Architecture & Core contracts | ✅ Complete | Every public interface specified and stable |
+| `@tileguard/core` | ✅ Complete | Zero runtime dependencies, full engine pipeline |
+| `@tileguard/tile-rules` | ✅ Complete | 10 rules, verified against physical `.pbf` fixtures |
+| `@tileguard/style-rules` | ✅ Complete | 9 rules, verified against physical style fixtures |
+| `@tileguard/reporters` | 🔨 In progress | `text` and `json` reporters |
+| CLI (`tileguard`) | 🔨 In progress | `check` and `init` commands |
+| Render regression testing | 📋 Planned | Perceptual pixel comparison via headless rendering |
+| CI workflow | ✅ Complete | Build, test, dependency boundary lint, per-rule test coverage |
 
-The existing prototype in `packages/js/` and `packages/python/` demonstrates the validation logic that will be decomposed into framework rules. The [Implementation Roadmap](docs/architecture/09-implementation-roadmap.md) describes the phased migration plan.
+**131 tests passing**, including end-to-end verification against real files on disk — not mocked artifacts — for both domain packages. The prototype in `legacy/js/` and `legacy/python/` is frozen and retained as a behavioral regression oracle; see the [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) for the full migration map.
 
 ---
 
 ## Why TileGuard Exists
 
-In 2013, the JavaScript ecosystem had no consistent way to enforce code quality. ESLint changed this — not by writing better validators, but by creating a framework where validation rules are isolated, composable, and community-maintained.
+In 2013, the JavaScript ecosystem had no consistent way to enforce code quality. ESLint didn't add better validators — it built a framework where validation rules are isolated, composable, and community-maintained. That architectural decision is why the ecosystem has thousands of rules today rather than a handful of blessed checkers.
 
-The geospatial ecosystem is in 2013. Teams running tile pipelines discover bugs when users report them. Style regressions survive code review because no tool checks whether a filter expression references a property that doesn't exist. Render changes merge silently because the CI pipeline has no pixel-level gate.
+The geospatial ecosystem is in 2013. Teams running tile pipelines discover bugs when users report them. Style regressions survive code review because nothing checks whether a filter expression references a property that doesn't exist. Render changes merge silently because most CI pipelines have no pixel-level gate at all.
 
-TileGuard is the framework that changes this. It applies proven patterns — rule engines, structured diagnostics, plugin architectures — to geospatial quality assurance. The long-term objective is not to build a tool, but to make automated geospatial quality gates as common and expected as linting or unit testing.
+TileGuard applies the same proven patterns — rule engines, structured diagnostics, plugin architectures — to geospatial quality assurance. The goal isn't to build another tool; it's to make automated geospatial quality checks as common and expected as linting or unit tests already are.
 
-Read the full vision: [Project Vision](docs/PROJECT_VISION.md)
+Read the full vision: [PROJECT_VISION.md](docs/PROJECT_VISION.md) · [PROBLEM_STATEMENT.md](docs/PROBLEM_STATEMENT.md)
 
 ---
 
 ## Contributing
 
-TileGuard is designed for community contribution. The primary extension point is writing new rules — a rule is a plain object with fewer than 25 lines of validation logic.
+The primary extension point is writing new rules. A rule is a plain TypeScript object, typically under 25 lines, that plugs into the engine without modifying it. No framework internals to understand, no class hierarchies to navigate.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, the rule authoring guide, and code review expectations.
 
 ---
 
