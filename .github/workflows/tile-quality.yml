@@ -38,6 +38,9 @@ jobs:
       - name: Build and type-check all packages
         run: pnpm build
 
+      - name: Check code formatting and linting
+        run: pnpm lint
+
       - name: Run all tests
         run: pnpm test
 
@@ -86,11 +89,14 @@ jobs:
           set -euo pipefail
           BASE="origin/${{ github.event.pull_request.base.ref }}"
           echo "### Changed public API surfaces in this PR" >> "$GITHUB_STEP_SUMMARY"
-          echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-          if ! git diff "$BASE"...HEAD -- '**/src/index.ts' >> "$GITHUB_STEP_SUMMARY"; then
+          DIFF=$(git diff "$BASE"...HEAD -- '**/src/index.ts' || true)
+          if [[ -z "$DIFF" ]]; then
             echo "No index.ts changes in this PR." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '```diff' >> "$GITHUB_STEP_SUMMARY"
+            echo "$DIFF" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
   legacy-js:
     name: Legacy JavaScript oracle
