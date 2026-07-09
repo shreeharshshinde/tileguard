@@ -41,6 +41,57 @@ jobs:
       - name: Run all tests
         run: pnpm test
 
+  boundaries:
+    name: Dependency boundary lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Enforce package dependency graph
+        run: node scripts/check-boundaries.mjs
+
+  test-coverage:
+    name: Every rule has a test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Verify every rule file has a matching test file
+        shell: bash
+        run: bash scripts/check-rule-tests.sh
+
+  api-surface:
+    name: Public API surface diff
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Show index.ts diffs for reviewer visibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="origin/${{ github.event.pull_request.base.ref }}"
+          echo "### Changed public API surfaces in this PR" >> "$GITHUB_STEP_SUMMARY"
+          echo '```diff' >> "$GITHUB_STEP_SUMMARY"
+          if ! git diff "$BASE"...HEAD -- '**/src/index.ts' >> "$GITHUB_STEP_SUMMARY"; then
+            echo "No index.ts changes in this PR." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
   legacy-js:
     name: Legacy JavaScript oracle
     runs-on: ubuntu-latest
