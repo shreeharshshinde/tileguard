@@ -31,27 +31,8 @@
  *     createEngine, Engine, EngineOptions, RunResult, RunSummary
  */
 
-// Diagnostic model — the universal contract between rules and reporters
-export type {
-  ArtifactRef,
-  Diagnostic,
-  DiagnosticDescriptor,
-  Location,
-  Severity,
-} from './diagnostic.js';
-
 // Artifact model — artifact loading and decoding contracts
 export type { Artifact, ArtifactProvider, ProviderOptions } from './artifact.js';
-
-// Rule system — the primary extension mechanism
-export type { Rule, RuleContext, RuleMeta } from './rule.js';
-
-// Reporter system — diagnostic output formatting
-export type { Reporter, ReporterContext } from './reporter.js';
-
-// Plugin system — bundles providers and rules
-export type { Plugin } from './plugin.js';
-
 // Configuration system — user config shape and resolved internals
 export type {
   GlobalOptions,
@@ -63,7 +44,20 @@ export type {
   RuleConfig,
   TileGuardConfig,
 } from './config.js';
-
+// Diagnostic model — the universal contract between rules and reporters
+export type {
+  ArtifactRef,
+  Diagnostic,
+  DiagnosticDescriptor,
+  Location,
+  Severity,
+} from './diagnostic.js';
+export type { Engine, EngineOptions, RunResult, RunSummary } from './engine.js';
 // Engine — the orchestration pipeline
 export { createEngine } from './engine.js';
-export type { Engine, EngineOptions, RunResult, RunSummary } from './engine.js';
+// Plugin system — bundles providers and rules
+export type { Plugin } from './plugin.js';
+// Reporter system — diagnostic output formatting
+export type { Reporter, ReporterContext } from './reporter.js';
+// Rule system — the primary extension mechanism
+export type { Rule, RuleContext, RuleMeta } from './rule.js';

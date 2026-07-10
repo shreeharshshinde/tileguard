@@ -43,10 +43,7 @@ import type { Rule } from './rule.js';
  *   'tile/no-empty': 'off'
  *   'tile/required-layers': ['error', { layers: ['water', 'roads'] }]
  */
-export type RuleConfig =
-  | Severity
-  | 'off'
-  | readonly [Severity, unknown];
+export type RuleConfig = Severity | 'off' | readonly [Severity, unknown];
 
 // ---------------------------------------------------------------------------
 // GlobalOptions

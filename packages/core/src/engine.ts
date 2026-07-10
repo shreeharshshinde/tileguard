@@ -240,9 +240,7 @@ function resolveOverrides(
 function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
   // Step 1: Collect all rules from plugins
   const allRules = new Map<string, Rule>();
-  const allProviders = userConfig.plugins?.flatMap(
-    (p) => p.providers ?? [],
-  ) ?? [];
+  const allProviders = userConfig.plugins?.flatMap((p) => p.providers ?? []) ?? [];
 
   for (const plugin of userConfig.plugins ?? []) {
     for (const rule of plugin.rules ?? []) {
@@ -263,7 +261,7 @@ function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
     // Default severity: recommended rules use meta.defaultSeverity, others are 'off'
     const recommended = rule.meta.recommended ?? false;
     let severity: Severity | 'off' = recommended ? rule.meta.defaultSeverity : 'off';
-    let options: unknown = undefined;
+    let options: unknown;
 
     // Apply user overrides
     const userEntry = userConfig.rules?.[id];
@@ -314,9 +312,7 @@ function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
  * Reporter object may also be passed through the programmatic API by placing
  * it in a wrapper that accepts `Reporter` directly.
  */
-function resolveReporter(
-  reporterConfig: TileGuardConfig['reporter'],
-): Reporter {
+function resolveReporter(reporterConfig: TileGuardConfig['reporter']): Reporter {
   if (reporterConfig === undefined || typeof reporterConfig === 'string') {
     // Phase 2 note: actual reporter resolution (text, json, sarif) is
     // implemented in @tileguard/reporters and wired up in the CLI package.
@@ -584,7 +580,8 @@ export function createEngine(config: EngineOptions = {}): Engine {
           emitDiagnostic({
             ruleId: 'artifact/no-provider',
             severity: 'error',
-            message: `No registered provider can handle source "${source}". ` +
+            message:
+              `No registered provider can handle source "${source}". ` +
               'Ensure the appropriate plugin is loaded in your configuration.',
             artifact: { type: 'unknown', source },
           });
@@ -600,8 +597,7 @@ export function createEngine(config: EngineOptions = {}): Engine {
           });
           artifactCount += 1;
         } catch (err) {
-          const message =
-            err instanceof Error ? err.message : String(err);
+          const message = err instanceof Error ? err.message : String(err);
           emitDiagnostic({
             ruleId: 'artifact/load-failed',
             severity: 'error',

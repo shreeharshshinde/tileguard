@@ -23,24 +23,20 @@
  *   - Reporter crash does not affect RunResult
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Artifact, ArtifactProvider } from '../src/artifact.js';
 import type { Diagnostic } from '../src/diagnostic.js';
+import { createEngine } from '../src/engine.js';
 import type { Plugin } from '../src/plugin.js';
 import type { Reporter, ReporterContext } from '../src/reporter.js';
 import type { Rule } from '../src/rule.js';
-import { createEngine } from '../src/engine.js';
 
 // ---------------------------------------------------------------------------
 // Mock helpers
 // ---------------------------------------------------------------------------
 
 /** Creates a minimal in-memory artifact for a given type and content. */
-function makeArtifact<C>(
-  type: string,
-  source: string,
-  content: C,
-): Artifact<string, C> {
+function makeArtifact<C>(type: string, source: string, content: C): Artifact<string, C> {
   return {
     type,
     ref: { type, source },
@@ -80,11 +76,7 @@ function makeFailingProvider(
 }
 
 /** A rule that always reports one diagnostic with the given message. */
-function makeAlwaysFailRule(
-  id: string,
-  artifactType: string,
-  message: string,
-): Rule {
+function makeAlwaysFailRule(id: string, artifactType: string, message: string): Rule {
   return {
     id,
     meta: {
@@ -189,11 +181,7 @@ function makeMockReporter(): {
 }
 
 /** Builds a minimal plugin with one provider and one rule. */
-function makePlugin(
-  id: string,
-  provider: ArtifactProvider,
-  rules: Rule[],
-): Plugin {
+function makePlugin(id: string, provider: ArtifactProvider, rules: Rule[]): Plugin {
   return { id, providers: [provider], rules };
 }
 
@@ -286,9 +274,7 @@ describe('engine.run', () => {
     const result = await engine.run(['bad://will-fail', 'good://will-pass']);
 
     // One load-failed diagnostic for the bad source
-    const loadFailed = result.diagnostics.filter(
-      (d) => d.ruleId === 'artifact/load-failed',
-    );
+    const loadFailed = result.diagnostics.filter((d) => d.ruleId === 'artifact/load-failed');
     expect(loadFailed).toHaveLength(1);
     expect(loadFailed[0]?.message).toContain('Simulated load failure');
 
@@ -310,9 +296,7 @@ describe('engine.run', () => {
 
     const result = await engine.run(['mock://tile.pbf']);
 
-    const ruleErrors = result.diagnostics.filter(
-      (d) => d.ruleId === 'engine/rule-error',
-    );
+    const ruleErrors = result.diagnostics.filter((d) => d.ruleId === 'engine/rule-error');
     expect(ruleErrors).toHaveLength(1);
     expect(ruleErrors[0]?.message).toContain('mock/crash');
     expect(ruleErrors[0]?.message).toContain('Simulated rule crash');
@@ -348,7 +332,7 @@ describe('engine.run', () => {
       meta: {
         description: 'Optional rule',
         defaultSeverity: 'warning',
-        recommended: false,   // <-- not recommended
+        recommended: false, // <-- not recommended
       },
       artifactTypes: ['MockArtifact'],
       create(context) {
@@ -495,10 +479,7 @@ describe('engine.run', () => {
       ],
     });
 
-    const result = await engine.run([
-      'mock://stable/tile.pbf',
-      'mock://experimental/tile.pbf',
-    ]);
+    const result = await engine.run(['mock://stable/tile.pbf', 'mock://experimental/tile.pbf']);
 
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.severity).toBe('error');
@@ -553,21 +534,27 @@ describe('engine.run', () => {
       id: 'check/error-rule',
       meta: { description: 'Error rule', defaultSeverity: 'error', recommended: true },
       artifactTypes: ['TypeA'],
-      create(ctx) { ctx.report({ message: 'Error finding' }); },
+      create(ctx) {
+        ctx.report({ message: 'Error finding' });
+      },
     };
 
     const warnRule: Rule = {
       id: 'check/warn-rule',
       meta: { description: 'Warn rule', defaultSeverity: 'warning', recommended: true },
       artifactTypes: ['TypeA'],
-      create(ctx) { ctx.report({ message: 'Warning finding' }); },
+      create(ctx) {
+        ctx.report({ message: 'Warning finding' });
+      },
     };
 
     const bRule: Rule = {
       id: 'check/b-rule',
       meta: { description: 'B rule', defaultSeverity: 'error', recommended: true },
       artifactTypes: ['TypeB'],
-      create(ctx) { ctx.report({ message: 'B finding' }); },
+      create(ctx) {
+        ctx.report({ message: 'B finding' });
+      },
     };
 
     const engine = createEngine({
@@ -647,19 +634,25 @@ describe('engine.run', () => {
       id: 'mock/err',
       meta: { description: 'Error', defaultSeverity: 'error', recommended: true },
       artifactTypes: ['MockArtifact'],
-      create(ctx) { ctx.report({ message: 'E' }); },
+      create(ctx) {
+        ctx.report({ message: 'E' });
+      },
     };
     const warnRule: Rule = {
       id: 'mock/warn',
       meta: { description: 'Warning', defaultSeverity: 'warning', recommended: true },
       artifactTypes: ['MockArtifact'],
-      create(ctx) { ctx.report({ message: 'W' }); },
+      create(ctx) {
+        ctx.report({ message: 'W' });
+      },
     };
     const infoRule: Rule = {
       id: 'mock/info',
       meta: { description: 'Info', defaultSeverity: 'info', recommended: true },
       artifactTypes: ['MockArtifact'],
-      create(ctx) { ctx.report({ message: 'I' }); },
+      create(ctx) {
+        ctx.report({ message: 'I' });
+      },
     };
 
     const engine = createEngine({
@@ -699,12 +692,8 @@ describe('engine.run', () => {
 
     // The notice is included in the hard cap: 2 findings + 1 notice.
     expect(result.diagnostics).toHaveLength(3);
-    expect(
-      result.diagnostics.filter((d) => d.ruleId === 'mock/spammy'),
-    ).toHaveLength(2);
-    const truncation = result.diagnostics.find(
-      (d) => d.ruleId === 'engine/max-diagnostics',
-    );
+    expect(result.diagnostics.filter((d) => d.ruleId === 'mock/spammy')).toHaveLength(2);
+    const truncation = result.diagnostics.find((d) => d.ruleId === 'engine/max-diagnostics');
     expect(truncation).toBeDefined();
   });
 
@@ -795,9 +784,7 @@ describe('engine.run', () => {
     });
 
     const result = await engine.run(['mock://tile.pbf']);
-    expect(result.diagnostics[0]?.docsUrl).toBe(
-      'https://tileguard.dev/rules/mock/docs-rule',
-    );
+    expect(result.diagnostics[0]?.docsUrl).toBe('https://tileguard.dev/rules/mock/docs-rule');
   });
 
   // ── Location and suggestion forwarding ───────────────────────────────────

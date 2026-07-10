@@ -139,8 +139,5 @@ export interface Reporter {
    * stdout closing unexpectedly). These should be handled gracefully within
    * the reporter.
    */
-  report(
-    diagnostics: readonly Diagnostic[],
-    context: ReporterContext,
-  ): void | Promise<void>;
+  report(diagnostics: readonly Diagnostic[], context: ReporterContext): void | Promise<void>;
 }
