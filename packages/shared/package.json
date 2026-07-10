@@ -10,7 +10,11 @@
     "build": "tsc --build",
     "test": "node --test"
   },
-  "keywords": ["tileguard", "utilities", "geospatial"],
+  "keywords": [
+    "tileguard",
+    "utilities",
+    "geospatial"
+  ],
   "license": "MIT",
   "dependencies": {
     "@tileguard/core": "workspace:*"

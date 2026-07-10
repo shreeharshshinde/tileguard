@@ -13,7 +13,12 @@
     "build": "tsc --build",
     "test": "node --test"
   },
-  "keywords": ["tileguard", "cli", "geospatial", "validation"],
+  "keywords": [
+    "tileguard",
+    "cli",
+    "geospatial",
+    "validation"
+  ],
   "license": "MIT",
   "dependencies": {
     "@tileguard/core": "workspace:*",
