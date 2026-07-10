@@ -1,5 +1,5 @@
 import type { Rule } from '@tileguard/core';
-import { STYLE_ARTIFACT_TYPE, getLayerId, getStyleLayers, getStyleObject } from '../types.js';
+import { getLayerId, getStyleLayers, getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
 
 export const noDeprecatedRefRule: Rule = {
   id: 'style/no-deprecated-ref',
@@ -18,7 +18,7 @@ export const noDeprecatedRefRule: Rule = {
 
     for (let index = 0; index < layers.length; index += 1) {
       const layer = layers[index]!;
-      if (!Object.prototype.hasOwnProperty.call(layer, 'ref')) continue;
+      if (!Object.hasOwn(layer, 'ref')) continue;
 
       const layerId = getLayerId(layer) ?? `<layer ${index}>`;
       context.report({
@@ -30,4 +30,3 @@ export const noDeprecatedRefRule: Rule = {
     }
   },
 };
-

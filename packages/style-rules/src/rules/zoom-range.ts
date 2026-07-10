@@ -1,5 +1,5 @@
 import type { Rule } from '@tileguard/core';
-import { STYLE_ARTIFACT_TYPE, getLayerId, getStyleLayers, getStyleObject } from '../types.js';
+import { getLayerId, getStyleLayers, getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
 
 export const zoomRangeRule: Rule = {
   id: 'style/zoom-range',
@@ -37,4 +37,3 @@ export const zoomRangeRule: Rule = {
     }
   },
 };
-

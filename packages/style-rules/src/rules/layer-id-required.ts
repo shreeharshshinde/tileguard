@@ -1,5 +1,5 @@
 import type { Rule } from '@tileguard/core';
-import { STYLE_ARTIFACT_TYPE, getStyleObject, isRecord } from '../types.js';
+import { getStyleObject, isRecord, STYLE_ARTIFACT_TYPE } from '../types.js';
 
 export const layerIdRequiredRule: Rule = {
   id: 'style/layer-id-required',
@@ -31,4 +31,3 @@ export const layerIdRequiredRule: Rule = {
     }
   },
 };
-

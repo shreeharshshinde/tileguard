@@ -2,8 +2,8 @@ import type { Rule } from '@tileguard/core';
 import {
   EMPTY_STYLE_ARTIFACT_TYPE,
   INVALID_STYLE_ARTIFACT_TYPE,
-  STYLE_ARTIFACT_TYPE,
   type InvalidStyleSpecificationContent,
+  STYLE_ARTIFACT_TYPE,
 } from '../types.js';
 
 export const validJsonRule: Rule = {
@@ -15,11 +15,7 @@ export const validJsonRule: Rule = {
     recommended: true,
     since: '0.3.0',
   },
-  artifactTypes: [
-    STYLE_ARTIFACT_TYPE,
-    INVALID_STYLE_ARTIFACT_TYPE,
-    EMPTY_STYLE_ARTIFACT_TYPE,
-  ],
+  artifactTypes: [STYLE_ARTIFACT_TYPE, INVALID_STYLE_ARTIFACT_TYPE, EMPTY_STYLE_ARTIFACT_TYPE],
 
   create(context) {
     if (context.artifact.type === EMPTY_STYLE_ARTIFACT_TYPE) {
@@ -37,4 +33,3 @@ export const validJsonRule: Rule = {
     });
   },
 };
-

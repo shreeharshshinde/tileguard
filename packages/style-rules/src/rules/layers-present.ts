@@ -1,5 +1,5 @@
 import type { Rule } from '@tileguard/core';
-import { STYLE_ARTIFACT_TYPE, getStyleObject } from '../types.js';
+import { getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
 
 export const layersPresentRule: Rule = {
   id: 'style/layers-present',
@@ -24,4 +24,3 @@ export const layersPresentRule: Rule = {
     });
   },
 };
-

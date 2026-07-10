@@ -1,10 +1,10 @@
 import type { Rule } from '@tileguard/core';
 import {
-  STYLE_ARTIFACT_TYPE,
   getLayerId,
   getStyleLayers,
   getStyleObject,
   isRecord,
+  STYLE_ARTIFACT_TYPE,
 } from '../types.js';
 
 export const knownSourceRule: Rule = {
@@ -43,4 +43,3 @@ export const knownSourceRule: Rule = {
     }
   },
 };
-
