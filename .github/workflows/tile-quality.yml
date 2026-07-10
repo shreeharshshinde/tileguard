@@ -130,7 +130,14 @@ jobs:
           done < <(find fixtures -name style.json -print0)
 
       - name: Smoke-test render fixtures
-        run: node legacy/js/bin/tileguard.js render --fixtures fixtures --format json
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in fixtures/*/; do
+            if [[ -f "${dir}expected.png" ]]; then
+              node legacy/js/bin/tileguard.js render --fixture "$dir" --format json
+            fi
+          done
 
   legacy-python:
     name: Legacy Python oracle
