@@ -5,9 +5,6 @@
     "outDir": "dist",
     "composite": true
   },
-  "references": [
-    { "path": "../core" },
-    { "path": "../shared" }
-  ],
+  "references": [{ "path": "../core" }, { "path": "../shared" }],
   "include": ["src"]
 }

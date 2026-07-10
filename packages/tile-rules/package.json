@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/tile-rules",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "description": "Vector tile artifact provider and tile validation rules",
   "type": "module",
   "exports": {
@@ -8,15 +8,23 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "test": "node --test"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
-  "keywords": ["tileguard", "vector-tiles", "validation", "pbf"],
+  "keywords": [
+    "tileguard",
+    "vector-tiles",
+    "validation",
+    "pbf"
+  ],
   "license": "MIT",
   "dependencies": {
     "@tileguard/core": "workspace:*",
     "@tileguard/shared": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "5.4.5"
+    "@types/node": "^26.1.0",
+    "typescript": "5.4.5",
+    "vitest": "^1.6.0"
   }
 }
