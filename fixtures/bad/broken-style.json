@@ -1,0 +1,31 @@
+{
+  "_comment": "This fixture intentionally triggers multiple style lint rules. Used as regression test for style/version, style/known-source, style/unique-layer-id, style/zoom-range.",
+  "version": 7,
+  "sources": {
+    "openmaptiles": {
+      "type": "vector"
+    }
+  },
+  "layers": [
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles"
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "unknown-source-that-does-not-exist"
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "also-unknown",
+      "minzoom": 18,
+      "maxzoom": 5
+    },
+    {
+      "type": "background"
+    }
+  ]
+}
