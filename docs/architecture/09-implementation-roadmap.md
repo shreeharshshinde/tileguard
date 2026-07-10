@@ -105,6 +105,9 @@ not theoretical.
 as independent rules. After this phase, `tileguard check tile.pbf` works
 end-to-end using the new architecture.
 
+**Status:** Implemented in v0.3.0 for direct `.pbf`/`.mvt` artifacts. CLI
+wiring remains part of the later CLI phase.
+
 ### Deliverables
 
 | Deliverable | Source | Description |
@@ -125,19 +128,24 @@ end-to-end using the new architecture.
 
 ### Acceptance Criteria
 
-- [ ] Every existing test case from `validate.test.js` has an equivalent
+- [x] Every existing test case from `validate.test.js` has an equivalent
       test in the new test suite (coverage parity).
-- [ ] The VectorTile provider correctly handles gzip, raw PBF, and error cases.
-- [ ] Each rule is independently testable with a minimal fixture.
-- [ ] Running all tile rules through the engine produces the same validation
+- [x] The VectorTile provider correctly handles gzip, raw PBF, and error cases.
+- [x] Each rule is independently testable with a minimal fixture.
+- [x] Running all tile rules through the engine produces the same validation
       results as the legacy `validateTile()` function.
-- [ ] The PBF decoder TypeScript port passes all existing decoder tests.
+- [x] The PBF decoder TypeScript port passes all existing decoder tests.
+
+**Phase 2 Status:** ✅ Complete — 49/49 tests passing as of v0.3.0.
 
 ---
 
 ## Phase 3: Style Rules (`@tileguard/style-rules`)
 
 **Goal:** Migrate the existing style linter logic into independent rules.
+
+**Status:** Implemented in v0.3.0 for valid, invalid, and empty-placeholder
+style JSON artifacts.
 
 ### Deliverables
 
@@ -156,10 +164,12 @@ end-to-end using the new architecture.
 
 ### Acceptance Criteria
 
-- [ ] All checks from `style-lint.js` are covered by independent rules.
-- [ ] Empty/placeholder style fixtures are handled gracefully.
-- [ ] The JSON parsing error is correctly handled by `style/valid-json` and
+- [x] All checks from `style-lint.js` are covered by independent rules.
+- [x] Empty/placeholder style fixtures are handled gracefully.
+- [x] The JSON parsing error is correctly handled by `style/valid-json` and
       prevents other style rules from executing on the malformed artifact.
+
+**Phase 3 Status:** ✅ Complete — 33/33 tests passing as of v0.3.0.
 
 ---
 
@@ -218,13 +228,15 @@ backward compatibility.
 
 ### Deliverables
 
-| Deliverable | Description |
-|:------------|:------------|
-| README rewrite | Honest, accurate README reflecting the framework architecture |
-| CONTRIBUTING.md | Development setup, testing, rule authoring guide |
-| Rule documentation | Per-rule docs (auto-generated + manual descriptions) |
-| CI workflow update | Update `.github/workflows/tile-quality.yml` for new package structure |
-| Legacy archival | Move `packages/legacy/` to a separate branch or archive |
+| Deliverable | Status | Description |
+|:------------|:-------|:------------|
+| README rewrite | ✅ Done | Accurate README reflecting the framework architecture |
+| CONTRIBUTING.md | ✅ Done | Development setup, testing, rule authoring guide |
+| Rule documentation | ✅ Done | `docs/rules/` — per-rule reference for all 19 rules |
+| CHANGELOG.md | ✅ Done | Root `CHANGELOG.md` following Keep a Changelog format |
+| MIGRATION_COVERAGE.md | ✅ Done | `docs/engineering/MIGRATION_COVERAGE.md` — legacy → framework mapping |
+| CI workflow update | ⏳ Pending | Update `.github/workflows/` for new package structure |
+| Legacy archival | ⏳ Pending | Archive `packages/legacy/` or move to separate branch |
 
 ---
 

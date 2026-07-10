@@ -74,10 +74,12 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 ### v0.2.0: Framework Core
 *   **Goal:** A working `@tileguard/core` package defining all fundamental runtime systems.
 *   **Scope:** Rule Engine, Artifact Model, Diagnostic System, Reporter System, Configuration System, and the modular plugin architecture itself. Capable of loading mock plugins, executing mock rules, and aggregating diagnostics.
+*   **Status:** Complete and tagged as `v0.2.0`.
 
 ### v0.3.0: Rule Parity
 *   **Goal:** Re-implement all existing legacy checks as decoupled, granular rules.
 *   **Scope:** `@tileguard/tile-rules` and `@tileguard/style-rules` packages fully functional. The custom MVT/PBF decoder and geometry utilities ported to TypeScript.
+*   **Status:** Implemented in the codebase. `@tileguard/style-rules` now ships the StyleSpecification provider plus 9 style rules. `@tileguard/tile-rules` now ships the VectorTile provider, custom MVT/PBF decoder, geometry helpers, and 10 granular tile rules.
 
 ### v0.4.0: Developer Experience
 *   **Goal:** Provide a productive CLI and configuration environment for engineers.
@@ -194,7 +196,7 @@ TileGuard employs a layered testing approach:
 *   **Unit Testing (Vitest):** Core engine logic, individual rules (using mocked artifact payloads), and utility functions (geometry math, PBF decoding). Required coverage: >90%.
 *   **Integration Testing:** CLI commands, configuration resolution, and reporter output formatting.
 *   **Fixture Testing (End-to-End):** The `.fixtures/` directory acts as the canonical source of truth, mirroring MapLibre's testing strategy. We test the compiled CLI against real `.pbf` and `style.json` files to guarantee systemic correctness.
-*   **Performance Benchmarking:** Baseline benchmarks are run on the `tile/geometry-validity` rules to prevent degradation in tile parsing speeds.
+*   **Performance Benchmarking:** Baseline benchmarks are run on the granular tile geometry rules (`tile/coordinate-range`, `tile/degenerate-geometry`, `tile/unclosed-ring`, `tile/zero-area-ring`, and `tile/self-intersection`) to prevent degradation in tile parsing speeds.
 
 ### 5.2 Documentation Roadmap
 Documentation is built iteratively:

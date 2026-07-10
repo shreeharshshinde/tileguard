@@ -1698,7 +1698,7 @@ The test for `@tileguard/shared` content: would two or more domain packages dupl
 | `VectorTileArtifact` type | The concrete `Artifact<'VectorTile', VectorTileContent>` type |
 | `TileProvider` | Loads `.pbf` files, handles gzip decompression, decodes MVT |
 | `tilePlugin` | The plugin object bundling the provider and all tile rules |
-| Tile rules | `tile/required-layers`, `tile/coordinate-range`, `tile/geometry-validity`, `tile/unclosed-ring`, `tile/zero-area-ring`, `tile/self-intersection`, `tile/feature-count`, `tile/required-properties`, `tile/no-empty`, etc. |
+| Tile rules | `tile/required-layers`, `tile/feature-count`, `tile/layer-feature-count`, `tile/required-properties`, `tile/coordinate-range`, `tile/degenerate-geometry`, `tile/unclosed-ring`, `tile/zero-area-ring`, `tile/self-intersection`, `tile/no-empty`, etc. |
 | PBF decoder | Ported from `legacy/js/src/utils/pbf-decoder.js` |
 | Geometry utilities | Ported from `legacy/js/src/utils/geometry.js` |
 
@@ -1715,7 +1715,7 @@ The test for `@tileguard/shared` content: would two or more domain packages dupl
 | `StyleArtifact` type | The concrete `Artifact<'StyleSpecification', StyleSpecificationContent>` type |
 | `StyleProvider` | Loads `.json` style files |
 | `stylePlugin` | The plugin object bundling the provider and all style rules |
-| Style rules | `style/version`, `style/known-source`, `style/layer-ids`, `style/zoom-range`, `style/no-deprecated-ref`, etc. |
+| Style rules | `style/valid-json`, `style/version`, `style/sources-present`, `style/layers-present`, `style/layer-id-required`, `style/unique-layer-id`, `style/known-source`, `style/zoom-range`, `style/no-deprecated-ref`, etc. |
 
 **Does not own:** Any tile rules, any render rules, any reporter implementations.
 

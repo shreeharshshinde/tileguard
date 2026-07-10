@@ -1,7 +1,7 @@
 # TileGuard Migration Plan
 
 **Document status:** Active  
-**Last updated:** 2026-07-02  
+**Last updated:** 2026-07-07  
 **Author:** TileGuard maintainers
 
 ---
@@ -85,10 +85,10 @@ The tile validation engine. Contains logic for:
 | PBF decoding, layer iteration | `@tileguard/tile-rules` — `TileProvider` (ArtifactProvider) |
 | Required layers check | `@tileguard/tile-rules` — `tile/required-layers` rule |
 | Coordinate range check | `@tileguard/tile-rules` — `tile/coordinate-range` rule |
-| Ring closure and self-intersection checks | `@tileguard/tile-rules` — `tile/geometry-validity` rule |
-| Feature count bounds | `@tileguard/tile-rules` — `tile/feature-count` rule |
+| Ring closure and self-intersection checks | `@tileguard/tile-rules` — granular geometry rules |
+| Feature count bounds | `@tileguard/tile-rules` — `tile/feature-count` and `tile/layer-feature-count` rules |
 | Required properties on features | `@tileguard/tile-rules` — `tile/required-properties` rule |
-| Geometry helper functions | `@tileguard/shared` — geometry utilities module |
+| Geometry helper functions | `@tileguard/tile-rules` — geometry utilities module |
 
 ### `legacy/js/src/style-lint.js`
 
@@ -99,9 +99,9 @@ The style specification linter. Contains logic for:
 | JSON loading, style object parsing | `@tileguard/style-rules` — `StyleProvider` (ArtifactProvider) |
 | Version check | `@tileguard/style-rules` — `style/version` rule |
 | Source reference validation | `@tileguard/style-rules` — `style/known-source` rule |
-| Layer ID uniqueness | `@tileguard/style-rules` — `style/layer-ids` rule |
+| Layer ID uniqueness | `@tileguard/style-rules` — `style/layer-id-required` and `style/unique-layer-id` rules |
 | Zoom range validation | `@tileguard/style-rules` — `style/zoom-range` rule |
-| Deprecated `ref` property | `@tileguard/style-rules` — `style/no-ref` rule |
+| Deprecated `ref` property | `@tileguard/style-rules` — `style/no-deprecated-ref` rule |
 
 ### `legacy/js/src/reporter.js`
 
@@ -219,6 +219,9 @@ Reference: [`docs/architecture/06-configuration.md`](../architecture/06-configur
 
 **Goal:** Migrate all style lint rules from `legacy/js/src/style-lint.js`.
 
+**Status:** Complete in v0.3.0. The package now exports `stylePlugin`,
+`styleProvider`, `styleRules`, concrete artifact types, and independent rules.
+
 Style rules are chosen before tile rules because they are simpler (operate on JSON, no binary decoding) and can be verified against the existing test suite more easily.
 
 Deliverables per rule (repeat for each):
@@ -227,7 +230,9 @@ Deliverables per rule (repeat for each):
 3. Verify the rule produces identical results to the legacy linter on the same inputs
 4. Register the rule in `stylePlugin`
 
-Rules: `style/version`, `style/known-source`, `style/layer-ids`, `style/zoom-range`, `style/no-ref`
+Rules: `style/valid-json`, `style/version`, `style/sources-present`,
+`style/layers-present`, `style/layer-id-required`, `style/unique-layer-id`,
+`style/known-source`, `style/zoom-range`, `style/no-deprecated-ref`
 
 ---
 
@@ -235,10 +240,13 @@ Rules: `style/version`, `style/known-source`, `style/layer-ids`, `style/zoom-ran
 
 **Goal:** Migrate all tile validation rules from `legacy/js/src/validate.js` and cross-reference with `legacy/python/tileguard/validate.py`.
 
+**Status:** Complete in v0.3.0 for direct vector tile files/URLs. Archive
+formats remain scheduled for a later provider phase.
+
 Deliverables:
-- `TileProvider` — ArtifactProvider that loads `.pbf` files using `@mapbox/vector-tile` and `pbf`
-- Shared geometry utilities in `@tileguard/shared` (ring closure, coordinate math)
-- Rules: `tile/required-layers`, `tile/coordinate-range`, `tile/geometry-validity`, `tile/feature-count`, `tile/required-properties`
+- `TileProvider` — ArtifactProvider that loads raw or gzipped `.pbf`/`.mvt` tiles using the migrated custom decoder
+- Geometry utilities in `@tileguard/tile-rules` (ring closure, coordinate math, segment intersection)
+- Rules: `tile/required-layers`, `tile/feature-count`, `tile/layer-feature-count`, `tile/required-properties`, `tile/coordinate-range`, `tile/degenerate-geometry`, `tile/unclosed-ring`, `tile/zero-area-ring`, `tile/self-intersection`, `tile/no-empty`
 - Unit tests for each rule; acceptance tests against legacy outputs
 
 ---

@@ -33,6 +33,8 @@ tileguard/
 │   │   │   ├── index.ts            ← Plugin export + all rules
 │   │   │   ├── provider.ts         ← VectorTile artifact provider
 │   │   │   ├── types.ts            ← VectorTileArtifact, VectorTileContent, etc.
+│   │   │   ├── pbf-decoder.ts      ← Migrated custom MVT/PBF decoder
+│   │   │   ├── geometry.ts         ← Migrated geometry helpers
 │   │   │   ├── rules/
 │   │   │   │   ├── required-layers.ts
 │   │   │   │   ├── feature-count.ts
@@ -44,9 +46,6 @@ tileguard/
 │   │   │   │   ├── zero-area-ring.ts
 │   │   │   │   ├── self-intersection.ts
 │   │   │   │   └── no-empty.ts
-│   │   │   └── utils/
-│   │   │       ├── pbf-decoder.ts  ← Migrated from packages/js/src/utils/
-│   │   │       └── geometry.ts     ← Migrated from packages/js/src/utils/
 │   │   ├── tests/
 │   │   ├── package.json
 │   │   └── tsconfig.json
