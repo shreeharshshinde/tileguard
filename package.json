@@ -2,6 +2,7 @@
   "name": "tileguard-monorepo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "TileGuard — the quality analysis framework for geospatial software",
   "scripts": {
     "build": "tsc --build --pretty false",
