@@ -9,6 +9,7 @@ A layer's `minzoom` value must not be greater than its `maxzoom` value. An inver
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 When both `minzoom` and `maxzoom` are specified on a layer, `minzoom` must be less than or equal to `maxzoom`. The rule checks every layer where **both** values are present and numeric. Layers with only one or neither value are skipped — missing zoom values are treated as the implicit defaults (`0` and `24`).
 

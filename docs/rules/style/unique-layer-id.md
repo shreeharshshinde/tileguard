@@ -9,6 +9,7 @@ Layer IDs must be unique across the entire `layers` array. Duplicate IDs cause u
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 The MapLibre style specification requires that every layer has a globally unique `id` within the style. When two or more layers share an `id`, SDK methods like `getLayer()`, `setFilter()`, and `setPaintProperty()` will target the wrong layer unpredictably.
 

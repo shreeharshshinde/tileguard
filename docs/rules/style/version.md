@@ -9,6 +9,7 @@ Style specifications must declare MapLibre style version 8. Any other value (inc
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 MapLibre GL JS and compatible renderers only support version 8 of the style specification. Styles with any other version will not render correctly. This rule enforces the `"version": 8` field at the top level of the style JSON.
 

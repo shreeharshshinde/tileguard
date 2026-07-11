@@ -9,6 +9,7 @@ Every layer `source` reference must point to a key declared in the top-level `so
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 When a layer specifies a `source` property, that value must match a key in the style's top-level `sources` object. Layers that do **not** have a `source` property (e.g., `background` layers) are skipped.
 

@@ -9,6 +9,7 @@ Style specifications must include a top-level `sources` object. A missing, `null
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 The MapLibre style specification requires a `sources` object that maps source IDs to source definitions. Without it, all tile data references fail. This rule validates the structural presence of `sources`.
 

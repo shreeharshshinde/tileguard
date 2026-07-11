@@ -9,6 +9,7 @@ Vector tiles should contain at least one feature. An empty tile may indicate a b
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 This rule sums all features across all layers. If the total is zero, a warning is reported. If `options.allowEmpty` is `true`, the rule silently passes — useful for sparse datasets where some tile coordinates are legitimately empty.
 

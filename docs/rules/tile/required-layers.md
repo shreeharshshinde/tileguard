@@ -9,6 +9,7 @@ Required vector tile layers must be present. If any layer name listed in `option
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 This rule is a no-op when `options.layers` is empty or not provided. It iterates the configured list of required layer names and compares them against the layers present in the decoded `VectorTile`.
 

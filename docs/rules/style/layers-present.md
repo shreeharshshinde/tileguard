@@ -9,6 +9,7 @@ Style specifications must include a top-level `layers` array. A missing, `null`,
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 The MapLibre style specification requires a `layers` array listing all render layers. Without it, no content can be rendered. This rule validates the structural presence of `layers`.
 

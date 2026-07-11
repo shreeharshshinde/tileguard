@@ -9,6 +9,7 @@ Vector tile geometries must have enough unique vertices for their declared geome
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 
 Degenerate geometries cannot be meaningfully rendered or measured. They usually indicate bugs in tile generation pipelines (duplicate points, collapsed features after simplification). This rule delegates to `findDegenerateGeometryIssues()` from `geometry.ts`.
 

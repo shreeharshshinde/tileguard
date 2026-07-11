@@ -9,6 +9,7 @@ The total number of features across all layers in a vector tile must satisfy con
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 This rule sums the feature count across every layer in the tile and compares the total against `options.min` and `options.max`. Either bound is optional. When neither is configured, the rule is a no-op.
 

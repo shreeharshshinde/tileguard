@@ -9,6 +9,7 @@ Every layer entry in the `layers` array must declare an `id` string field. Layer
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 The MapLibre style specification requires each layer to have a unique `id` string. This rule checks every element in the `layers` array for the presence of an `id` field. Non-string `id` values (including `null` or numeric) are also flagged.
 

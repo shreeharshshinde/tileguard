@@ -9,6 +9,7 @@ Layers must not use the deprecated `ref` property. The `ref` mechanism was remov
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 In an earlier version of the Mapbox/MapLibre style specification, layers could inherit properties from another layer using a `"ref": "<other-layer-id>"` field. This feature was removed and is no longer supported. Layers using `ref` will be silently ignored or cause rendering errors.
 

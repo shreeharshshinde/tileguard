@@ -9,6 +9,7 @@ Style files must contain valid JSON. If a style file cannot be parsed as JSON, t
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
 The `style/valid-json` rule runs on three artifact types:
 

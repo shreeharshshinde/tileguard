@@ -9,6 +9,7 @@ Every feature in a configured layer must include all required property keys. Mis
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 The rule accepts a map of layer names to arrays of required property keys. For each feature in each configured layer, it checks that every required property key is present (using `hasOwnProperty`). The **value** of the property is not validated — `null` and `""` are considered present.
 

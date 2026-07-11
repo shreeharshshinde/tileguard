@@ -9,6 +9,7 @@ Each named vector tile layer must satisfy independently configured minimum and m
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 Unlike `tile/feature-count` (which operates on the total across all layers), this rule checks bounds on a **per-layer** basis. Each layer can have its own `min` and `max`. Layers not listed in `options.layers` are skipped. Layers listed but absent from the tile are also skipped (use `tile/required-layers` to enforce presence).
 
