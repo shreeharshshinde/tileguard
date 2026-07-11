@@ -141,12 +141,19 @@ export function createTextReporter(options: TextReporterOptions = {}): Reporter 
         console.log(text.endsWith('\n') ? text.slice(0, -1) : text);
       }
     });
-  const useColor = options.color ?? (typeof process !== 'undefined' && process.stdout?.isTTY === true);
+  const useColor =
+    options.color ?? (typeof process !== 'undefined' && process.stdout?.isTTY === true);
 
   // Strip ANSI codes when color is disabled
   const c = (code: string, text: string): string => (useColor ? `${code}${text}${RESET}` : text);
   const icon = (severity: Severity): string =>
-    useColor ? SEVERITY_ICON[severity] : severity === 'error' ? '✗' : severity === 'warning' ? '⚠' : 'ℹ';
+    useColor
+      ? SEVERITY_ICON[severity]
+      : severity === 'error'
+        ? '✗'
+        : severity === 'warning'
+          ? '⚠'
+          : 'ℹ';
 
   return {
     id: 'text',

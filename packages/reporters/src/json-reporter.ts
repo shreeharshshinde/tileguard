@@ -123,16 +123,18 @@ export function createJsonReporter(options: JsonReporterOptions = {}): Reporter 
     // It does not re-sort them.
     report(diagnostics: readonly Diagnostic[], context: ReporterContext): void {
       const output: JsonReporterOutput = {
-        diagnostics: diagnostics.map((d): SerializedDiagnostic => ({
-          ruleId: d.ruleId,
-          severity: d.severity,
-          message: d.message,
-          artifact: d.artifact,
-          ...(d.location !== undefined && { location: d.location }),
-          ...(d.suggestion !== undefined && { suggestion: d.suggestion }),
-          ...(d.docsUrl !== undefined && { docsUrl: d.docsUrl }),
-          ...(d.data !== undefined && { data: d.data }),
-        })),
+        diagnostics: diagnostics.map(
+          (d): SerializedDiagnostic => ({
+            ruleId: d.ruleId,
+            severity: d.severity,
+            message: d.message,
+            artifact: d.artifact,
+            ...(d.location !== undefined && { location: d.location }),
+            ...(d.suggestion !== undefined && { suggestion: d.suggestion }),
+            ...(d.docsUrl !== undefined && { docsUrl: d.docsUrl }),
+            ...(d.data !== undefined && { data: d.data }),
+          }),
+        ),
         summary: {
           errors: context.summary.errors,
           warnings: context.summary.warnings,

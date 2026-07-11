@@ -45,11 +45,7 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
   };
 }
 
-function captureText(
-  diags: readonly Diagnostic[],
-  ctx: ReporterContext,
-  color = false,
-): string {
+function captureText(diags: readonly Diagnostic[], ctx: ReporterContext, color = false): string {
   const chunks: string[] = [];
   createTextReporter({ write: (t) => chunks.push(t), color }).report(diags, ctx);
   return chunks.join('');
@@ -253,8 +249,8 @@ describe('reporters stress and edge-cases', () => {
       // biome-ignore lint/performance/noDelete: simulating browser environment
       delete (globalThis as any).process;
 
-      const spyLog = vi.spyOn(console, 'log').mockImplementation(() => { });
-      const spyInfo = vi.spyOn(console, 'info').mockImplementation(() => { });
+      const spyLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const spyInfo = vi.spyOn(console, 'info').mockImplementation(() => {});
 
       try {
         const textReporter = createTextReporter();

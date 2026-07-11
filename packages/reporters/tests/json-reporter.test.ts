@@ -110,9 +110,7 @@ describe('jsonReporter', () => {
       const serialized = output.diagnostics[0]!;
       expect(serialized.ruleId).toBe('tile/required-layers');
       expect(serialized.severity).toBe('error');
-      expect(serialized.message).toBe(
-        'Required layer "buildings" is not present in the tile.',
-      );
+      expect(serialized.message).toBe('Required layer "buildings" is not present in the tile.');
       expect(serialized.artifact.type).toBe('VectorTile');
       expect(serialized.artifact.source).toBe('test.pbf');
     });
