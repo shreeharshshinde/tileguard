@@ -11,8 +11,8 @@
 
 import type { Diagnostic, ReporterContext } from '@tileguard/core';
 import { describe, expect, it } from 'vitest';
-import { createJsonReporter } from '../src/json-reporter.js';
 import type { JsonReporterOutput } from '../src/json-reporter.js';
+import { createJsonReporter } from '../src/json-reporter.js';
 
 // ---------------------------------------------------------------------------
 // Test helpers

@@ -13,8 +13,8 @@
 
 import type { Diagnostic, ReporterContext } from '@tileguard/core';
 import { describe, expect, it, vi } from 'vitest';
-import { createJsonReporter } from '../src/json-reporter.js';
 import type { JsonReporterOutput } from '../src/json-reporter.js';
+import { createJsonReporter } from '../src/json-reporter.js';
 import { createTextReporter } from '../src/text-reporter.js';
 
 // ---------------------------------------------------------------------------
@@ -130,7 +130,7 @@ describe('reporters stress and edge-cases', () => {
   // -------------------------------------------------------------------------
   describe('extremely long inputs', () => {
     it('renders extremely long file paths and messages without truncation', () => {
-      const longPath = 'tiles/region/'.repeat(50) + 'test.pbf';
+      const longPath = `${'tiles/region/'.repeat(50)}test.pbf`;
       const longMessage = 'Layer "roads" is missing required property "name". '.repeat(100).trim();
       const diag = makeDiagnostic({
         message: longMessage,

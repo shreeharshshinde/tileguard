@@ -12,7 +12,7 @@
       "!**/node_modules",
       "!**/legacy",
       "!**/pnpm-lock.yaml",
-      "!fixtures"
+      "!**/fixtures"
     ]
   },
   "formatter": {
