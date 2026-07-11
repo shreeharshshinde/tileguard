@@ -29,43 +29,9 @@ TileGuard is a **framework**, not a script collection. At its center is a domain
 ---
 
 ## How It Works
-<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
-
-**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
-1. `User/Shell` runs the CLI check command.
-2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
-3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
-4. `cli.ts` instantiates the `Engine` with the resolved configuration.
-5. `cli.ts` calls `engine.run(sources)`.
-6. The `Engine` initializes the `RulesRunner` check loop.
-7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
-8. Rules call `context.report()` to append diagnostics back to the engine.
-9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
-10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
-11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+<img width="1448" height="1086" alt="image" src="https://github.com/user-attachments/assets/33770335-1602-4ce5-9273-1ff0cc184871" />
 
 
-```
-  Source (tile.pbf, style.json)
-         │
-         ▼
-  ┌─────────────────────┐
-  │   Artifact Provider  │  ── Loads, detects format, decodes
-  └─────────────────────┘
-         │
-         ▼  Decoded Artifact
-  ┌─────────────────────┐
-  │     Rule Engine      │  ── Routes artifact to matching rules
-  └─────────────────────┘
-         │
-         ▼  Diagnostic[]
-  ┌─────────────────────┐
-  │      Reporter        │  ── Formats output (text, JSON)
-  └─────────────────────┘
-         │
-         ▼
-    Terminal / CI / IDE
-```
 
 **Artifacts** are the things being validated — vector tiles and style specifications today, render snapshots in an upcoming release. **Providers** load and decode them. **Rules** are small, independent, deterministic functions — each validates one concern. **Diagnostics** are the structured results every rule produces and every reporter consumes.
 
