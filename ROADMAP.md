@@ -172,6 +172,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
     *   MBTiles/PMTiles archive providers.
     *   SARIF and HTML reporters.
     *   Finalized Plugin API specifications.
+    *   Engine API hardening (expose `ReporterContext` on `RunResult` and track unique `enabledRuleCount` dynamically).
 *   **Completion Criteria:** Render tests run successfully via CLI. Plugin API is documented and verified via a community-built test plugin.
 *   **Target Release:** v0.6.0 – v0.9.0
 
