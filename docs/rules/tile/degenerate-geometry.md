@@ -11,6 +11,19 @@ Vector tile geometries must have enough unique vertices for their declared geome
 ## Details
 <!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 
+**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
+1. Input: A sequence of coordinate vertices representing a polygon ring.
+2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
+   - No: Emit `DEGENERATE_POLYGON` diagnostic.
+   - Yes: Proceed to next check.
+3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
+   - No: Emit `UNCLOSED_RING` diagnostic.
+   - Yes: Proceed to next check.
+4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
+   - No: Emit `ZERO_AREA_RING` diagnostic.
+   - Yes: The polygon ring is considered topologically sound (Pass).
+
+
 Degenerate geometries cannot be meaningfully rendered or measured. They usually indicate bugs in tile generation pipelines (duplicate points, collapsed features after simplification). This rule delegates to `findDegenerateGeometryIssues()` from `geometry.ts`.
 
 Two issue codes:

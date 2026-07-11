@@ -33,6 +33,9 @@ other parts of the system as long as they satisfy their interface contract.
 ### 2. Dependencies Point Inward
 <!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
+**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
+
+
 The dependency graph forms concentric rings. The Core package is at the center and
 has zero dependencies on outer packages. Domain packages (tile-rules, style-rules)
 depend on Core. The CLI depends on domain packages and Core. No package in an inner
@@ -149,6 +152,20 @@ graph TD
 
 ## The Run Pipeline
 <!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+
+**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
+1. `User/Shell` runs the CLI check command.
+2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
+3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
+4. `cli.ts` instantiates the `Engine` with the resolved configuration.
+5. `cli.ts` calls `engine.run(sources)`.
+6. The `Engine` initializes the `RulesRunner` check loop.
+7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
+8. Rules call `context.report()` to append diagnostics back to the engine.
+9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
+10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
+11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+
 
 When TileGuard executes, the following stages occur in order:
 
@@ -287,6 +304,20 @@ types) and custom reporters (for new output formats).
 
 ## Relationship to Existing Code
 <!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+
+**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
+1. `User/Shell` runs the CLI check command.
+2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
+3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
+4. `cli.ts` instantiates the `Engine` with the resolved configuration.
+5. `cli.ts` calls `engine.run(sources)`.
+6. The `Engine` initializes the `RulesRunner` check loop.
+7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
+8. Rules call `context.report()` to append diagnostics back to the engine.
+9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
+10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
+11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+
 
 The current codebase (`packages/js/`, `packages/python/`) is a working procedural
 prototype. It will be superseded by the framework implementation but its logic

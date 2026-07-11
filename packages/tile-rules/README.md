@@ -57,6 +57,22 @@ for (const d of result.diagnostics) {
 ## Artifact type
 <!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
+**Image Description / Generation Prompt:** A block diagram representing the hierarchical structure of a decoded Mapbox Vector Tile (MVT) binary payload.
+1. The top-level block is the raw `VectorTile` binary buffer (protobuf format).
+2. Underneath, show that the buffer contains one or more `Layers`.
+3. Each `Layer` contains:
+   - `Name` (string identifier)
+   - `Extent` (typically 4096 coordinate grid dimensions)
+   - `Feature Pool` (an array of individual feature objects)
+   - `Key Pool` (a list of unique property keys)
+   - `Value Pool` (a list of unique property values across different types: string, float, integer, boolean)
+4. Each `Feature` within the pool contains:
+   - `ID` (unique identifier)
+   - `Type` (Geometry Type: Point, LineString, or Polygon)
+   - `Packed Tags` (an array of alternating integers mapping key indices to value indices in the layer pools)
+   - `Geometry Commands` (packed draw commands containing command IDs and coordinate parameters: MoveTo, LineTo, ClosePath)
+
+
 The provider produces a single `VectorTile` artifact for every source it handles. The artifact's `content` is fully decoded into plain JavaScript objects before any rule sees it.
 
 ```typescript
@@ -372,6 +388,14 @@ export default {
 ## Provider details
 <!-- TODO: INSERT DIAGRAM 7: ZigZag Coordinate Decoding (Bitwise Workflow) -->
 
+**Image Description / Generation Prompt:** A flowchart illustrating the mathematical and bitwise operations used to decode relative coordinate offsets from MVT draw commands in `pbf-decoder.ts`.
+1. Input: An unsigned integer `N` decoded from a raw protobuf varint.
+2. Step 1: Perform the ZigZag decode bitwise shift: `(N >>> 1) ^ -(N & 1)` to obtain the signed coordinate delta offset `dValue` (which can be `dx` or `dy`).
+3. Step 2: Feed `dValue` into the coordinate accumulator.
+4. Step 3: Compute the absolute position relative to the previous point: `x_new = x_prev + dx` and `y_new = y_prev + dy`.
+5. Output: Absolute 2D coordinates `(x_new, y_new)` plotted on the vector grid extent.
+
+
 ### Handled sources
 
 The `tileProvider` handles sources ending in:
@@ -401,8 +425,42 @@ Tiles are inspected for the gzip magic bytes (`0x1f 0x8b`) before decoding. Gzip
 
 ## Geometry utilities
 <!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+
+**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
+1. Input: A sequence of coordinate vertices representing a polygon ring.
+2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
+   - No: Emit `DEGENERATE_POLYGON` diagnostic.
+   - Yes: Proceed to next check.
+3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
+   - No: Emit `UNCLOSED_RING` diagnostic.
+   - Yes: Proceed to next check.
+4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
+   - No: Emit `ZERO_AREA_RING` diagnostic.
+   - Yes: The polygon ring is considered topologically sound (Pass).
+
 <!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver -->
+
+**Image Description / Generation Prompt:** A geometric matrix diagram visualizing the Shoelace algorithm calculation for signed area.
+1. Show a 2D coordinate grid with a 4-vertex polygon: P0(x0, y0), P1(x1, y1), P2(x2, y2), and P3(x3, y3).
+2. Render the Shoelace matrix:
+   - Column 1: x0, x1, x2, x3, x0
+   - Column 2: y0, y1, y2, y3, y0
+3. Draw diagonal arrows:
+   - Downward-right diagonal green arrows indicating positive term multiplications: x0 * y1, x1 * y2, x2 * y3, x3 * y0.
+   - Downward-left diagonal red arrows indicating negative term multiplications: y0 * x1, y1 * x2, y2 * x3, y3 * x0.
+4. Equation Box: Show the area formula: Area = 1/2 * sum(x_i * y_{i+1} - x_{i+1} * y_i). Indicate that a positive value means clockwise winding (outer ring), and a negative value means counter-clockwise winding (inner hole).
+
 <!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
+
+**Image Description / Generation Prompt:** A vector geometry diagram explaining the segment orientation tests used to determine if two line segments AB and CD intersect without using float division.
+1. Show two intersecting line segments AB and CD on a 2D plane.
+2. Write the 2D cross-product orientation formula: val = (B_y - A_y)(C_x - B_x) - (B_x - A_x)(C_y - B_y).
+3. Render three diagrams representing the three possible orientation outputs:
+   - val > 0: Clockwise curvature.
+   - val < 0: Counter-clockwise curvature.
+   - val = 0: Collinear segments.
+4. Intersection Condition: Show that segments AB and CD intersect if and only if the orientation of (A, B, C) and (A, B, D) have different signs, AND the orientation of (C, D, A) and (C, D, B) have different signs.
+
 
 The geometry analysis functions are exported from the package for use in custom rules or test helpers. They operate on decoded `VectorTileFeature` objects and return typed `GeometryIssue[]` arrays.
 

@@ -25,21 +25,76 @@ TileGuard is the framework that changes this. Not by writing better validators t
 TileGuard is a **quality analysis framework** for geospatial artifacts.
 <!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
+**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
+
+
 Its core is a rule engine that discovers validation rules, routes artifacts to the rules that understand them, collects structured diagnostics, and hands those diagnostics to reporter backends. The core itself validates nothing. The rules validate everything.
 
 On top of this engine sit four capabilities:
 
 **Tile validation** — Fetches a vector tile (.pbf), decodes it, and runs configured rules against its structure, geometry, and content. Runs in milliseconds. Catches the category of bugs that render tests never will: missing layers, invalid geometries, coordinate range violations, inconsistent feature metadata.
 <!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+
+**Image Description / Generation Prompt:** A block diagram representing the hierarchical structure of a decoded Mapbox Vector Tile (MVT) binary payload.
+1. The top-level block is the raw `VectorTile` binary buffer (protobuf format).
+2. Underneath, show that the buffer contains one or more `Layers`.
+3. Each `Layer` contains:
+   - `Name` (string identifier)
+   - `Extent` (typically 4096 coordinate grid dimensions)
+   - `Feature Pool` (an array of individual feature objects)
+   - `Key Pool` (a list of unique property keys)
+   - `Value Pool` (a list of unique property values across different types: string, float, integer, boolean)
+4. Each `Feature` within the pool contains:
+   - `ID` (unique identifier)
+   - `Type` (Geometry Type: Point, LineString, or Polygon)
+   - `Packed Tags` (an array of alternating integers mapping key indices to value indices in the layer pools)
+   - `Geometry Commands` (packed draw commands containing command IDs and coordinate parameters: MoveTo, LineTo, ClosePath)
+
 <!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+
+**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
+1. Input: A sequence of coordinate vertices representing a polygon ring.
+2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
+   - No: Emit `DEGENERATE_POLYGON` diagnostic.
+   - Yes: Proceed to next check.
+3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
+   - No: Emit `UNCLOSED_RING` diagnostic.
+   - Yes: Proceed to next check.
+4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
+   - No: Emit `ZERO_AREA_RING` diagnostic.
+   - Yes: The polygon ring is considered topologically sound (Pass).
+
 
 **Style linting** — Parses a MapLibre style JSON and runs configured rules against its structure, source references, layer definitions, and expressions. Catches specification violations, semantic errors, and deprecated patterns before anything is rendered.
 
 **Render regression testing** — Renders a MapLibre style against a known tile set using a headless browser, captures the output as pixels, and compares against a stored reference image with a configurable perceptual threshold. The same mechanism MapLibre uses internally, made available as a standalone tool.
 <!-- TODO: INSERT DIAGRAM 11: Perceptual Visual Regression Stub -->
 
+**Image Description / Generation Prompt:** A workflow pipeline diagram visualizing the Playwright-based canvas rendering regression comparison flow.
+1. Input: A MapLibre Style JSON configuration sheet.
+2. Step 1: Launch a headless Chromium browser instance using Playwright.
+3. Step 2: Load the style sheet into a mock canvas page. Disable GL transition animations to prevent frame mismatching.
+4. Step 3: Take a high-resolution canvas snapshot of the map rendering output (actual.png).
+5. Step 4: Pass actual.png and expected.png (reference baseline) into the pixelmatch comparison utility.
+6. Output: A highlighted difference image (diff.png) indicating mismatching pixel regions, generating a regression error diagnostic if the pixel diff count exceeds the threshold.
+
+
 **CI integration** — A ready-made GitHub Actions workflow that runs all three capabilities in a tiered pipeline: fast gates first, expensive gates last. One file to copy. Zero configuration required to get started.
 <!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+
+**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
+1. `User/Shell` runs the CLI check command.
+2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
+3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
+4. `cli.ts` instantiates the `Engine` with the resolved configuration.
+5. `cli.ts` calls `engine.run(sources)`.
+6. The `Engine` initializes the `RulesRunner` check loop.
+7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
+8. Rules call `context.report()` to append diagnostics back to the engine.
+9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
+10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
+11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+
 
 ---
 

@@ -16,6 +16,19 @@ Software teams operating geospatial pipelines face a class of bugs that their ex
 
 **Structural tile defects** that survive the tile generation step:
 <!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+
+**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
+1. Input: A sequence of coordinate vertices representing a polygon ring.
+2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
+   - No: Emit `DEGENERATE_POLYGON` diagnostic.
+   - Yes: Proceed to next check.
+3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
+   - No: Emit `UNCLOSED_RING` diagnostic.
+   - Yes: Proceed to next check.
+4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
+   - No: Emit `ZERO_AREA_RING` diagnostic.
+   - Yes: The polygon ring is considered topologically sound (Pass).
+
 - Polygon rings that are not closed (first vertex ≠ last vertex)
 - Self-intersecting geometries that cause rendering artifacts
 - Coordinate values outside the valid tile extent
@@ -24,6 +37,9 @@ Software teams operating geospatial pipelines face a class of bugs that their ex
 
 **Style specification errors** that survive visual review:
 <!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
+
+**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
+
 - Layers referencing source keys that don't exist in the style's `sources` block
 - `minzoom` values greater than `maxzoom` (silently ignored by renderers — the layer disappears)
 - Duplicate layer IDs (the second layer silently overrides the first)
@@ -111,6 +127,22 @@ TileGuard targets four concrete failure modes:
 **Root cause:** No standard tooling for running configurable validation rules against decoded tile content outside of a renderer.
 <!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
+**Image Description / Generation Prompt:** A block diagram representing the hierarchical structure of a decoded Mapbox Vector Tile (MVT) binary payload.
+1. The top-level block is the raw `VectorTile` binary buffer (protobuf format).
+2. Underneath, show that the buffer contains one or more `Layers`.
+3. Each `Layer` contains:
+   - `Name` (string identifier)
+   - `Extent` (typically 4096 coordinate grid dimensions)
+   - `Feature Pool` (an array of individual feature objects)
+   - `Key Pool` (a list of unique property keys)
+   - `Value Pool` (a list of unique property values across different types: string, float, integer, boolean)
+4. Each `Feature` within the pool contains:
+   - `ID` (unique identifier)
+   - `Type` (Geometry Type: Point, LineString, or Polygon)
+   - `Packed Tags` (an array of alternating integers mapping key indices to value indices in the layer pools)
+   - `Geometry Commands` (packed draw commands containing command IDs and coordinate parameters: MoveTo, LineTo, ClosePath)
+
+
 **What TileGuard provides:** A provider-rule pipeline that decodes `.pbf` files using the MVT spec, routes decoded tiles to configured rules, and produces structured diagnostics — all without requiring a browser or rendering context.
 
 ### 2. Undetected semantic errors in style specifications
@@ -118,12 +150,43 @@ TileGuard targets four concrete failure modes:
 **Root cause:** Existing schema validators check structure, not semantics. Source references, zoom range logic, and deprecated property usage require domain knowledge that JSON Schema cannot express.
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
+**Image Description / Generation Prompt:** An activity flowchart demonstrating the parallel non-short-circuiting configuration schema validation logic in `validator.ts`.
+1. Start with the incoming configuration object.
+2. Check: "Is the root configuration a plain object?"
+   - No: Throw `ConfigValidationError` immediately (fast-fail root check).
+   - Yes: Proceed to run validation sub-checkers.
+3. Perform the following checks concurrently without stopping on failures:
+   - `validatePlugins`: Check that plugins are not defined in JSON config files.
+   - `validateRules`: Verify the syntax of rules, severities, and options shapes.
+   - `validateReporters`: Verify reporter configurations (strings or tuples).
+   - `validateOverrides`: Validate file globs and rule override maps.
+   - `checkUnknownKeys`: Detect extraneous properties and collect warning diagnostics.
+4. Aggregation Step: Accumulate all collected validation errors and warnings.
+5. Decision: "Are there any errors in the accumulated list?"
+   - Yes: Throw a single `ConfigValidationError` containing the complete list of errors and warnings.
+   - No: Return the verified configuration object alongside any advisory warnings.
+
+
 **What TileGuard provides:** A style provider that parses and normalizes style JSON, and a set of semantic rules that check cross-field relationships (source reference validity, zoom range ordering, duplicate identity), not just field types.
 
 ### 3. No CI integration path for geospatial quality checks
 
 **Root cause:** Existing validation tools are either interactive desktop tools or embedding-only libraries with no standalone execution model, command-line interface, or structured output format.
 <!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+
+**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
+1. `User/Shell` runs the CLI check command.
+2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
+3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
+4. `cli.ts` instantiates the `Engine` with the resolved configuration.
+5. `cli.ts` calls `engine.run(sources)`.
+6. The `Engine` initializes the `RulesRunner` check loop.
+7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
+8. Rules call `context.report()` to append diagnostics back to the engine.
+9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
+10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
+11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+
 
 **What TileGuard provides:** A CLI (`tileguard check`) with structured `text` and `json` output, exit codes compatible with CI pass/fail semantics, and a ready-made GitHub Actions workflow.
 

@@ -110,6 +110,22 @@ knows about `Artifact<string, unknown>`. This keeps Core free of domain knowledg
 ## Artifact Providers
 <!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
+**Image Description / Generation Prompt:** A UML Activity Diagram illustrating the dynamic file format evaluation and loading execution paths in `loader.ts`. The process accepts an absolute file path.
+1. Branch: Check the file extension.
+2. If the extension is `.json`:
+   - Read the file using `fs.readFileSync`.
+   - Parse the contents using `JSON.parse`.
+   - Validate that the parsed value is a plain object.
+   - If any parsing/reading fails, catch the error, wrap it in a `ConfigLoadError` using ES2022 cause chaining, and throw.
+3. If the extension is `.ts`, `.js`, or `.mjs`:
+   - Load the file dynamically using `jiti`'s runtime compiler (`jiti.import`).
+   - Verify that the module namespace has a `default` property (`'default' in module`).
+   - Extract the default export value as the configuration object.
+   - Validate that the value is a plain object.
+   - If loading or validation fails, catch the error, wrap it in a `ConfigLoadError` with ES2022 cause chaining, and throw.
+4. Output the loaded configuration object.
+
+
 ```typescript
 /**
  * An ArtifactProvider loads artifacts from sources. It handles the full
@@ -268,6 +284,22 @@ domain packages to extend it with both providers and rules.
 
 ## Artifact Lifecycle
 <!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+
+**Image Description / Generation Prompt:** A UML Activity Diagram illustrating the dynamic file format evaluation and loading execution paths in `loader.ts`. The process accepts an absolute file path.
+1. Branch: Check the file extension.
+2. If the extension is `.json`:
+   - Read the file using `fs.readFileSync`.
+   - Parse the contents using `JSON.parse`.
+   - Validate that the parsed value is a plain object.
+   - If any parsing/reading fails, catch the error, wrap it in a `ConfigLoadError` using ES2022 cause chaining, and throw.
+3. If the extension is `.ts`, `.js`, or `.mjs`:
+   - Load the file dynamically using `jiti`'s runtime compiler (`jiti.import`).
+   - Verify that the module namespace has a `default` property (`'default' in module`).
+   - Extract the default export value as the configuration object.
+   - Validate that the value is a plain object.
+   - If loading or validation fails, catch the error, wrap it in a `ConfigLoadError` with ES2022 cause chaining, and throw.
+4. Output the loaded configuration object.
+
 
 ```mermaid
 stateDiagram-v2

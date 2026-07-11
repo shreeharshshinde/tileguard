@@ -11,6 +11,23 @@ A layer's `minzoom` value must not be greater than its `maxzoom` value. An inver
 ## Details
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
+**Image Description / Generation Prompt:** An activity flowchart demonstrating the parallel non-short-circuiting configuration schema validation logic in `validator.ts`.
+1. Start with the incoming configuration object.
+2. Check: "Is the root configuration a plain object?"
+   - No: Throw `ConfigValidationError` immediately (fast-fail root check).
+   - Yes: Proceed to run validation sub-checkers.
+3. Perform the following checks concurrently without stopping on failures:
+   - `validatePlugins`: Check that plugins are not defined in JSON config files.
+   - `validateRules`: Verify the syntax of rules, severities, and options shapes.
+   - `validateReporters`: Verify reporter configurations (strings or tuples).
+   - `validateOverrides`: Validate file globs and rule override maps.
+   - `checkUnknownKeys`: Detect extraneous properties and collect warning diagnostics.
+4. Aggregation Step: Accumulate all collected validation errors and warnings.
+5. Decision: "Are there any errors in the accumulated list?"
+   - Yes: Throw a single `ConfigValidationError` containing the complete list of errors and warnings.
+   - No: Return the verified configuration object alongside any advisory warnings.
+
+
 When both `minzoom` and `maxzoom` are specified on a layer, `minzoom` must be less than or equal to `maxzoom`. The rule checks every layer where **both** values are present and numeric. Layers with only one or neither value are skipped — missing zoom values are treated as the implicit defaults (`0` and `24`).
 
 Equal values (`minzoom === maxzoom`) are **valid** — the layer renders at exactly one zoom level.

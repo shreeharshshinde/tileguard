@@ -101,6 +101,9 @@ default configuration and can be overridden per-project in configuration.
 ## Artifact Reference
 <!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
+**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
+
+
 ```typescript
 /**
  * A lightweight, serializable pointer to an artifact. Does not contain the
@@ -296,7 +299,40 @@ keep Core free of domain-specific types.
 
 ## Mapping to Current Error Codes
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
+
+**Image Description / Generation Prompt:** An activity flowchart demonstrating the parallel non-short-circuiting configuration schema validation logic in `validator.ts`.
+1. Start with the incoming configuration object.
+2. Check: "Is the root configuration a plain object?"
+   - No: Throw `ConfigValidationError` immediately (fast-fail root check).
+   - Yes: Proceed to run validation sub-checkers.
+3. Perform the following checks concurrently without stopping on failures:
+   - `validatePlugins`: Check that plugins are not defined in JSON config files.
+   - `validateRules`: Verify the syntax of rules, severities, and options shapes.
+   - `validateReporters`: Verify reporter configurations (strings or tuples).
+   - `validateOverrides`: Validate file globs and rule override maps.
+   - `checkUnknownKeys`: Detect extraneous properties and collect warning diagnostics.
+4. Aggregation Step: Accumulate all collected validation errors and warnings.
+5. Decision: "Are there any errors in the accumulated list?"
+   - Yes: Throw a single `ConfigValidationError` containing the complete list of errors and warnings.
+   - No: Return the verified configuration object alongside any advisory warnings.
+
 <!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+
+**Image Description / Generation Prompt:** A block diagram representing the hierarchical structure of a decoded Mapbox Vector Tile (MVT) binary payload.
+1. The top-level block is the raw `VectorTile` binary buffer (protobuf format).
+2. Underneath, show that the buffer contains one or more `Layers`.
+3. Each `Layer` contains:
+   - `Name` (string identifier)
+   - `Extent` (typically 4096 coordinate grid dimensions)
+   - `Feature Pool` (an array of individual feature objects)
+   - `Key Pool` (a list of unique property keys)
+   - `Value Pool` (a list of unique property values across different types: string, float, integer, boolean)
+4. Each `Feature` within the pool contains:
+   - `ID` (unique identifier)
+   - `Type` (Geometry Type: Point, LineString, or Polygon)
+   - `Packed Tags` (an array of alternating integers mapping key indices to value indices in the layer pools)
+   - `Geometry Commands` (packed draw commands containing command IDs and coordinate parameters: MoveTo, LineTo, ClosePath)
+
 
 The existing codebase uses ad-hoc error codes (`MISSING_LAYER`, `GEOMETRY_INVALID`,
 etc.). These map directly to rule IDs in the framework:

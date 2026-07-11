@@ -11,6 +11,22 @@ The total number of features across all layers in a vector tile must satisfy con
 ## Details
 <!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
+**Image Description / Generation Prompt:** A block diagram representing the hierarchical structure of a decoded Mapbox Vector Tile (MVT) binary payload.
+1. The top-level block is the raw `VectorTile` binary buffer (protobuf format).
+2. Underneath, show that the buffer contains one or more `Layers`.
+3. Each `Layer` contains:
+   - `Name` (string identifier)
+   - `Extent` (typically 4096 coordinate grid dimensions)
+   - `Feature Pool` (an array of individual feature objects)
+   - `Key Pool` (a list of unique property keys)
+   - `Value Pool` (a list of unique property values across different types: string, float, integer, boolean)
+4. Each `Feature` within the pool contains:
+   - `ID` (unique identifier)
+   - `Type` (Geometry Type: Point, LineString, or Polygon)
+   - `Packed Tags` (an array of alternating integers mapping key indices to value indices in the layer pools)
+   - `Geometry Commands` (packed draw commands containing command IDs and coordinate parameters: MoveTo, LineTo, ClosePath)
+
+
 This rule sums the feature count across every layer in the tile and compares the total against `options.min` and `options.max`. Either bound is optional. When neither is configured, the rule is a no-op.
 
 Both `min`/`max` (preferred) and `minFeatures`/`maxFeatures` (legacy alias) are accepted.

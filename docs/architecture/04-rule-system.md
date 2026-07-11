@@ -175,6 +175,9 @@ The callback pattern (`context.report()`) is preferred for several reasons:
 ### tile/required-layers
 <!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
+**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
+
+
 ```typescript
 import type { Rule, VectorTileArtifact } from '@tileguard/core';
 
@@ -295,7 +298,30 @@ export const knownSourceRule: Rule = {
 
 ## Rule Granularity
 <!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+
+**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
+1. Input: A sequence of coordinate vertices representing a polygon ring.
+2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
+   - No: Emit `DEGENERATE_POLYGON` diagnostic.
+   - Yes: Proceed to next check.
+3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
+   - No: Emit `UNCLOSED_RING` diagnostic.
+   - Yes: Proceed to next check.
+4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
+   - No: Emit `ZERO_AREA_RING` diagnostic.
+   - Yes: The polygon ring is considered topologically sound (Pass).
+
 <!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
+
+**Image Description / Generation Prompt:** A vector geometry diagram explaining the segment orientation tests used to determine if two line segments AB and CD intersect without using float division.
+1. Show two intersecting line segments AB and CD on a 2D plane.
+2. Write the 2D cross-product orientation formula: val = (B_y - A_y)(C_x - B_x) - (B_x - A_x)(C_y - B_y).
+3. Render three diagrams representing the three possible orientation outputs:
+   - val > 0: Clockwise curvature.
+   - val < 0: Counter-clockwise curvature.
+   - val = 0: Collinear segments.
+4. Intersection Condition: Show that segments AB and CD intersect if and only if the orientation of (A, B, C) and (A, B, D) have different signs, AND the orientation of (C, D, A) and (C, D, B) have different signs.
+
 
 Each rule validates **exactly one concern**. This is a deliberate design decision
 with significant trade-offs.
@@ -418,6 +444,20 @@ execution. Invalid options produce a configuration error, not a runtime crash.
 
 ## Rule Lifecycle
 <!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+
+**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
+1. `User/Shell` runs the CLI check command.
+2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
+3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
+4. `cli.ts` instantiates the `Engine` with the resolved configuration.
+5. `cli.ts` calls `engine.run(sources)`.
+6. The `Engine` initializes the `RulesRunner` check loop.
+7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
+8. Rules call `context.report()` to append diagnostics back to the engine.
+9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
+10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
+11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
+
 
 ```mermaid
 sequenceDiagram
