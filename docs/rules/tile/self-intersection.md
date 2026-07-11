@@ -9,6 +9,7 @@ Line and polygon geometries must not self-intersect. Non-adjacent segments that 
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
 
 Self-intersecting geometry violates the OGC Simple Features specification and causes unpredictable behaviour in fill extrusion, area calculations, and clip operations.
 

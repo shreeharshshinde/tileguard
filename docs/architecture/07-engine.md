@@ -10,6 +10,7 @@ output formats. It is a generic quality analysis runner.
 ---
 
 ## The Engine Interface
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```typescript
 /**
@@ -74,6 +75,8 @@ interface RunSummary {
 ---
 
 ## Execution Pipeline
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
 
 The engine's `run()` method executes a deterministic pipeline:
 
@@ -144,6 +147,8 @@ diagnostics. Once the hard cap is reached, the final slot contains
 `engine/max-diagnostics` and the engine stops dispatching further work.
 
 ### Stage 4: Rule Execution
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 For each successfully loaded artifact, the engine looks up matching rules
 in the rule index using `artifact.type`. Before that lookup, it applies every

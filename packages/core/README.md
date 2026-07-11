@@ -22,6 +22,7 @@ This package defines every interface and type that TileGuard's runtime is built 
 ---
 
 ## Architecture in one diagram
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```
   Source string (file path, URL, …)
@@ -138,6 +139,7 @@ type VectorTileArtifact = Artifact<'VectorTile', VectorTileContent>;
 ```
 
 ### ArtifactProvider
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
 An `ArtifactProvider` encapsulates the full load pipeline: source detection → byte fetching → format detection → decoding → `Artifact` construction.
 
@@ -325,6 +327,7 @@ interface GlobalOptions {
 ```
 
 ### Configuration resolution
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 When the engine starts, it resolves configuration through these steps:
 
@@ -454,6 +457,7 @@ interface RunSummary {
 ```
 
 ### Execution pipeline
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```
 run(sources)

@@ -108,6 +108,7 @@ knows about `Artifact<string, unknown>`. This keeps Core free of domain knowledg
 ---
 
 ## Artifact Providers
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
 ```typescript
 /**
@@ -266,6 +267,7 @@ domain packages to extend it with both providers and rules.
 ---
 
 ## Artifact Lifecycle
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
 ```mermaid
 stateDiagram-v2

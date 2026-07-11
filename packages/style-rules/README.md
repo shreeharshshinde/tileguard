@@ -54,6 +54,7 @@ const result = await engine.run([JSON.stringify({ version: 8, sources: {}, layer
 ---
 
 ## Artifact types
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 The provider produces one of three artifact types depending on what it reads:
 
@@ -241,6 +242,7 @@ None of the current style rules accept options, so the third form is not used he
 ---
 
 ## Provider details
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 ### Handled sources
 

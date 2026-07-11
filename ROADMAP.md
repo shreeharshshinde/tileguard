@@ -26,6 +26,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Versions** are public-facing milestones that group completed packages, CLI functionality, and integrations for user consumption. Each version represents a meaningful, usable release with well-defined goals.
 
 ### Phase-to-Version Mapping Matrix
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```text
 ┌──────────────────────────────────────┐
@@ -104,6 +105,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 ---
 
 ## 4. Internal Implementation Phases
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ---
 
@@ -207,6 +209,9 @@ Documentation is built iteratively:
 *   **Phase 6/7:** Plugin Authoring Guide and API Reference.
 
 ### 5.3 Release Management & API Stability Policy
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 *   **Pre-v1.0 (v0.x):** Minor versions (`0.x.0`) may introduce breaking changes to internal APIs (Rule contexts, engine internals). Patch versions (`0.x.y`) are strictly backward compatible. The CLI command structure is frozen at `v0.5.0`.
 *   **Post-v1.0:** Strict Semantic Versioning. Breaking changes to the Configuration Schema, CLI commands, or Plugin API will require a major version bump (`v2.0`).
 

@@ -64,6 +64,7 @@ interface ReporterContext {
 ---
 
 ## Built-In Reporters
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ### Text Reporter
 
@@ -153,6 +154,7 @@ annotation pointing to the relevant file.
 ---
 
 ## Reporter Selection
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 The user selects a reporter through configuration or CLI flags:
 

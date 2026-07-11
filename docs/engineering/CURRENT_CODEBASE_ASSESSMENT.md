@@ -5,6 +5,7 @@ This document provides a comprehensive engineering assessment of the existing Ti
 ---
 
 ## 1. High-Level Repository Overview
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 The current repository represents a functional **procedural prototype** written in two parallel codebases:
 1.  **JavaScript/Node.js Prototype:** Located in `packages/js/`.
@@ -156,6 +157,7 @@ The following components contain high-quality algorithms that must be preserved 
 ---
 
 ## 11. Migration & Evolution Map
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 The following map shows how legacy files map to the new package architecture:
 

@@ -142,6 +142,7 @@ typical user needs.
 ---
 
 ## Dependency Rules
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 The dependency graph must follow the inward-pointing rule from the
 [Architecture Overview](./01-overview.md):
@@ -292,6 +293,7 @@ version is 18 (current LTS at time of writing).
 ---
 
 ## Migration Path from Current Codebase
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 The existing code in `packages/js/` and `packages/python/` is moved to
 `packages/legacy/` and preserved as a reference. It is not deleted — it

@@ -73,6 +73,7 @@ tileguard/
 ## 2. Low-Level Component Architecture
 
 ### A. PBF / MVT Protobuf Decoders
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder (Data Layout Diagram) -->
 Vector tiles contain binary-encoded layers according to the Mapbox Vector Tile (MVT) specification. TileGuard includes custom protocol buffer decoders to avoid external dependencies where possible and maintain consistency between Javascript and Python engines.
 
 - **Location**: `packages/js/src/utils/pbf-decoder.js` and `packages/python/tileguard/utils/pbf_decoder.py`
@@ -91,6 +92,7 @@ Vector tiles contain binary-encoded layers according to the Mapbox Vector Tile (
     - Geometry Commands (Field `4`, Wire Type `2`): Packed varint draw commands defining drawing paths.
 
 - **Geometry Decimation & Parsing**:
+  <!-- TODO: INSERT DIAGRAM 7: ZigZag Coordinate Decoding (Bitwise Workflow) -->
   - Drawings are defined by command integers. Command types are:
     - `MoveTo` (`1`): Move to a starting coordinate.
     - `LineTo` (`2`): Draw lines to coordinates.
@@ -120,6 +122,9 @@ This component handles decompression, decodes protobuf structures into runtime m
 ---
 
 ### C. Geometry Validation Subsystem
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks (Decision Tree) -->
+<!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver (Geometric Layout) -->
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check (Math Geometry Diagram) -->
 A robust custom geometry check engine ensuring coordinate bounds, topology soundness, and structural integrity.
 
 - **Location**: `packages/js/src/utils/geometry.js` and `packages/python/tileguard/utils/geometry.py`
@@ -157,6 +162,7 @@ Enforces strict spec compliance and best practices on MapLibre style JSON defini
 ---
 
 ### E. Render Compare (Visual Regression Engine)
+<!-- TODO: INSERT DIAGRAM 11: Perceptual Visual Regression Stub (Pipeline Diagram) -->
 Designed to run headless integration visual regression tests.
 
 - **Location**: `packages/js/src/render-compare.js`

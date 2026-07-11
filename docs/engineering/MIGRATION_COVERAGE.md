@@ -13,6 +13,7 @@ This document maps every validation check from the legacy JavaScript and Python 
 ---
 
 ## Tile Validation Coverage
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ### Legacy: `validate.js` / `validate.py`
 
@@ -73,6 +74,7 @@ The render comparison logic (Playwright + pixelmatch) was prototyped in the lega
 ---
 
 ## Configuration Mapping
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 ### Legacy Config Shape → Framework Config
 

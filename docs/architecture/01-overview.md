@@ -31,6 +31,7 @@ details are private. Components can be replaced or rewritten without affecting
 other parts of the system as long as they satisfy their interface contract.
 
 ### 2. Dependencies Point Inward
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 The dependency graph forms concentric rings. The Core package is at the center and
 has zero dependencies on outer packages. Domain packages (tile-rules, style-rules)
@@ -147,6 +148,7 @@ graph TD
 ---
 
 ## The Run Pipeline
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 When TileGuard executes, the following stages occur in order:
 
@@ -284,6 +286,7 @@ types) and custom reporters (for new output formats).
 ---
 
 ## Relationship to Existing Code
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 The current codebase (`packages/js/`, `packages/python/`) is a working procedural
 prototype. It will be superseded by the framework implementation but its logic

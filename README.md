@@ -29,6 +29,7 @@ TileGuard is a **framework**, not a script collection. At its center is a domain
 ---
 
 ## How It Works
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```
   Source (tile.pbf, style.json)
@@ -61,6 +62,7 @@ The key separation: rules never print output, reporters never validate. Adding a
 ## Capabilities
 
 ### Tile Validation — `@tileguard/tile-rules`
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 Validates Mapbox Vector Tile (MVT) structure, geometry, feature metadata, and content. **10 rules, fully tested against real `.pbf` fixtures.**
 
@@ -78,6 +80,7 @@ Validates Mapbox Vector Tile (MVT) structure, geometry, feature metadata, and co
 | Empty tiles | Tiles with zero features (configurable — sometimes intentional) |
 
 ### Style Linting — `@tileguard/style-rules`
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 Validates MapLibre style specifications against structural and semantic rules. **9 rules, fully tested.**
 
@@ -235,6 +238,7 @@ The engine fills in `ruleId`, `severity`, `artifact`, and `docsUrl` from the rul
 ---
 
 ## Architecture
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends on nothing; domain packages depend only on Core.
 

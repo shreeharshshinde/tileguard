@@ -3,6 +3,7 @@
 This directory contains per-rule reference documentation for all 19 TileGuard v0.3.0 rules.
 
 ## Style Rules (`@tileguard/style-rules`)
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 | Rule ID | File | Description |
 |:--------|:-----|:------------|
@@ -17,6 +18,8 @@ This directory contains per-rule reference documentation for all 19 TileGuard v0
 | `style/no-deprecated-ref` | [no-deprecated-ref.md](./style/no-deprecated-ref.md) | Layers must not use deprecated `ref` property |
 
 ## Tile Rules (`@tileguard/tile-rules`)
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 
 | Rule ID | File | Description |
 |:--------|:-----|:------------|

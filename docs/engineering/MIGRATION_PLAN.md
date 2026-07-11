@@ -7,6 +7,7 @@
 ---
 
 ## Overview
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 TileGuard began as a working procedural prototype — a Node.js implementation and a Python implementation that validated vector tiles and style specifications. These prototypes demonstrated the problem is solvable and captured the core algorithms. They are not, however, the architecture that TileGuard will ship as a stable framework.
 
@@ -45,6 +46,7 @@ Starting with empty packages makes it explicit where work has not yet happened a
 ---
 
 ## Repository structure
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```text
 tileguard/
@@ -291,6 +293,7 @@ This is listed last because it is additive functionality not present in the lega
 ---
 
 ## Dependency order summary
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
 
 ```
 Phase 1: @tileguard/core          (no deps)

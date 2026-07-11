@@ -7,6 +7,7 @@
 ---
 
 ## How to Read This Handbook
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 Start with the **Architecture Overview** to understand the full system. Then read the
 **Diagnostic Model** — it is the single most important abstraction and influences
@@ -19,6 +20,7 @@ They are referenced from the subsystem documents where relevant.
 ---
 
 ## Documents
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ### Subsystem Specifications
 

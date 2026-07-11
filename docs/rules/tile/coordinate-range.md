@@ -9,6 +9,7 @@ All vector tile coordinates must stay within the layer's declared extent (typica
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 7: ZigZag Coordinate Decoding -->
 
 Each vector tile layer declares an `extent` (commonly `4096`). All coordinates in all features must fall within `[0, extent]` on both axes. This rule delegates to `findCoordinateRangeIssues()` from `geometry.ts`, which inspects each geometry point of every feature.
 

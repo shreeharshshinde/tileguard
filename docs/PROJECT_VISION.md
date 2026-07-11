@@ -23,18 +23,23 @@ TileGuard is the framework that changes this. Not by writing better validators t
 ## What TileGuard Is
 
 TileGuard is a **quality analysis framework** for geospatial artifacts.
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 Its core is a rule engine that discovers validation rules, routes artifacts to the rules that understand them, collects structured diagnostics, and hands those diagnostics to reporter backends. The core itself validates nothing. The rules validate everything.
 
 On top of this engine sit four capabilities:
 
 **Tile validation** — Fetches a vector tile (.pbf), decodes it, and runs configured rules against its structure, geometry, and content. Runs in milliseconds. Catches the category of bugs that render tests never will: missing layers, invalid geometries, coordinate range violations, inconsistent feature metadata.
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 
 **Style linting** — Parses a MapLibre style JSON and runs configured rules against its structure, source references, layer definitions, and expressions. Catches specification violations, semantic errors, and deprecated patterns before anything is rendered.
 
 **Render regression testing** — Renders a MapLibre style against a known tile set using a headless browser, captures the output as pixels, and compares against a stored reference image with a configurable perceptual threshold. The same mechanism MapLibre uses internally, made available as a standalone tool.
+<!-- TODO: INSERT DIAGRAM 11: Perceptual Visual Regression Stub -->
 
 **CI integration** — A ready-made GitHub Actions workflow that runs all three capabilities in a tiered pipeline: fast gates first, expensive gates last. One file to copy. Zero configuration required to get started.
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ---
 

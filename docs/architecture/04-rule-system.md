@@ -173,6 +173,7 @@ The callback pattern (`context.report()`) is preferred for several reasons:
 ## Example Rules
 
 ### tile/required-layers
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```typescript
 import type { Rule, VectorTileArtifact } from '@tileguard/core';
@@ -293,6 +294,8 @@ export const knownSourceRule: Rule = {
 ---
 
 ## Rule Granularity
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
 
 Each rule validates **exactly one concern**. This is a deliberate design decision
 with significant trade-offs.
@@ -414,6 +417,7 @@ execution. Invalid options produce a configuration error, not a runtime crash.
 ---
 
 ## Rule Lifecycle
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```mermaid
 sequenceDiagram

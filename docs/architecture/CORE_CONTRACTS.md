@@ -103,6 +103,7 @@ The concrete test: **if adding support for GeoJSON validation requires changing 
 ---
 
 ## 2. Dependency Rules
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ### The Dependency Graph
 
@@ -448,6 +449,8 @@ Two diagnostics represent the same finding if they share `ruleId`, `artifact.sou
 ---
 
 ## 4. Artifact Contract
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+<!-- TODO: INSERT DIAGRAM 7: ZigZag Coordinate Decoding -->
 
 ### Purpose
 
@@ -654,6 +657,9 @@ The single-provider approach is simpler: each provider is authoritative over its
 ---
 
 ## 5. Rule Contract
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+<!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver -->
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
 
 ### Purpose
 
@@ -1185,6 +1191,9 @@ The Diagnostic type is carefully designed to carry all the information any repor
 ---
 
 ## 8. Configuration Contract
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 ### Purpose
 
@@ -1415,6 +1424,7 @@ See [ADR-005](./adr/005-flat-configuration.md) for the full rationale.
 ---
 
 ## 9. Engine Contract
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ### Purpose
 
@@ -2141,6 +2151,7 @@ The single-provider approach is simpler: each provider is authoritative over its
 ---
 
 ## 14. Future Evolution
+<!-- TODO: INSERT DIAGRAM 11: Perceptual Visual Regression Stub -->
 
 This section describes how the Core contracts support future capabilities without requiring breaking changes.
 

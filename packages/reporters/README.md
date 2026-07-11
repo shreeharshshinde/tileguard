@@ -158,6 +158,7 @@ const captureReporter = createTextReporter({
 ## Architecture
 
 Reporters sit at the end of the TileGuard execution pipeline:
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```
 Rules emit diagnostics → Engine collects & sorts → Reporter presents output
@@ -171,6 +172,7 @@ The engine calls `reporter.report(diagnostics, context)` exactly once per run, a
 Reporters control their own output destination. The engine does not constrain where output goes.
 
 ### Dependency graph
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```
 @tileguard/reporters ──┐

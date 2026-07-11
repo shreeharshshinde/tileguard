@@ -9,6 +9,7 @@ Every polygon ring in a vector tile must be closed — the first and last coordi
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 
 The Mapbox Vector Tile (MVT) specification requires polygon rings to be explicitly closed. This rule delegates to `findUnclosedRingIssues()` from `geometry.ts`, which checks every ring of every `Polygon` feature.
 

@@ -803,6 +803,7 @@ CORE_CONTRACTS.md is the specification. The implementation follows the specifica
 ---
 
 ## 9. Performance Expectations
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ### Rule Performance Budget
 
@@ -993,6 +994,7 @@ The `legacy/` directory is frozen. No new commits should modify files in `legacy
 ---
 
 ## 11. Release Engineering
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ### Release Philosophy
 

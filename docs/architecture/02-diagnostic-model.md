@@ -99,6 +99,7 @@ default configuration and can be overridden per-project in configuration.
 ---
 
 ## Artifact Reference
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 ```typescript
 /**
@@ -294,6 +295,8 @@ keep Core free of domain-specific types.
 ---
 
 ## Mapping to Current Error Codes
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 The existing codebase uses ad-hoc error codes (`MISSING_LAYER`, `GEOMETRY_INVALID`,
 etc.). These map directly to rule IDs in the framework:

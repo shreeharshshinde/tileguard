@@ -15,6 +15,7 @@ This is the category of problem TileGuard exists to close.
 Software teams operating geospatial pipelines face a class of bugs that their existing tools don't catch:
 
 **Structural tile defects** that survive the tile generation step:
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
 - Polygon rings that are not closed (first vertex ≠ last vertex)
 - Self-intersecting geometries that cause rendering artifacts
 - Coordinate values outside the valid tile extent
@@ -22,6 +23,7 @@ Software teams operating geospatial pipelines face a class of bugs that their ex
 - Feature counts far below or above expected ranges
 
 **Style specification errors** that survive visual review:
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 - Layers referencing source keys that don't exist in the style's `sources` block
 - `minzoom` values greater than `maxzoom` (silently ignored by renderers — the layer disappears)
 - Duplicate layer IDs (the second layer silently overrides the first)
@@ -107,18 +109,21 @@ TileGuard targets four concrete failure modes:
 ### 1. Undetected structural defects in tile content
 
 **Root cause:** No standard tooling for running configurable validation rules against decoded tile content outside of a renderer.
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 **What TileGuard provides:** A provider-rule pipeline that decodes `.pbf` files using the MVT spec, routes decoded tiles to configured rules, and produces structured diagnostics — all without requiring a browser or rendering context.
 
 ### 2. Undetected semantic errors in style specifications
 
 **Root cause:** Existing schema validators check structure, not semantics. Source references, zoom range logic, and deprecated property usage require domain knowledge that JSON Schema cannot express.
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 **What TileGuard provides:** A style provider that parses and normalizes style JSON, and a set of semantic rules that check cross-field relationships (source reference validity, zoom range ordering, duplicate identity), not just field types.
 
 ### 3. No CI integration path for geospatial quality checks
 
 **Root cause:** Existing validation tools are either interactive desktop tools or embedding-only libraries with no standalone execution model, command-line interface, or structured output format.
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 **What TileGuard provides:** A CLI (`tileguard check`) with structured `text` and `json` output, exit codes compatible with CI pass/fail semantics, and a ready-made GitHub Actions workflow.
 

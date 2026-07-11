@@ -4,6 +4,7 @@ This document maps the complete list of 174 desired project outcomes to their re
 
 ## v0.1.0: Architectural Baseline
 *The architectural foundation and documentation freezing phase.*
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 *   1. A reusable geospatial quality analysis framework (not just a validator).
 *   2. A stable framework core (`@tileguard/core`) that contains no geospatial-specific logic.
@@ -32,6 +33,7 @@ This document maps the complete list of 174 desired project outcomes to their re
 
 ## v0.2.0: Framework Core
 *Implementation of the framework core, runtime engine, and modular plugin system.*
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 *   4. A modular plugin architecture for extending TileGuard without modifying the core.
 *   8. A configurable Rule System where every validation concern is an independent rule.
@@ -58,6 +60,9 @@ This document maps the complete list of 174 desired project outcomes to their re
 
 ## v0.3.0: Rule Parity (Domain Rules)
 *Migration of legacy validation checks into independent rules.*
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
 
 *   17. Vector Tile Validator.
 *   18. MapLibre Style Linter.
@@ -98,6 +103,7 @@ This document maps the complete list of 174 desired project outcomes to their re
 
 ## v0.4.0: Developer Experience
 *The user-facing CLI and core reporting functionality.*
+<!-- TODO: INSERT DIAGRAM 11: Perceptual Visual Regression Stub -->
 
 *   7. Artifact Providers/Loaders that load, decode, and normalize different artifact types.
 *   25. Configurable rule execution pipeline.
@@ -128,6 +134,9 @@ This document maps the complete list of 174 desired project outcomes to their re
 
 ## v0.5.0: FOSS4G Release (Quality Gate)
 *The public pre-conference release featuring CI integration and plugin packaging.*
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 *   3. A rule-based validation engine inspired by ESLint and Ruff.
 *   20. GitHub Actions CI integration.

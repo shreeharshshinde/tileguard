@@ -17,6 +17,8 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ---
 
 ## [0.3.0] — 2026-07-07
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 This is the first release of the TileGuard framework architecture. All tile and style
 validation logic from the legacy prototype has been migrated to independent, configurable rules.
@@ -74,6 +76,7 @@ validation logic from the legacy prototype has been migrated to independent, con
 - `fixtures/edge-cases/background-no-source.json` — Background layer without `source` (valid)
 
 #### Documentation
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 - `docs/architecture/` — 9-chapter architecture handbook (01–09)
 - `docs/architecture/adr/` — 5 Architecture Decision Records
 - `docs/architecture/CORE_CONTRACTS.md` — Full interface reference

@@ -9,6 +9,7 @@ Every polygon ring must enclose a non-zero area. A ring whose signed area is zer
 ---
 
 ## Details
+<!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver -->
 
 Zero-area rings usually result from tile simplification collapsing small polygons to a line or point while maintaining the `Polygon` geometry type. They break area-based rendering, measurements, and hit testing.
 

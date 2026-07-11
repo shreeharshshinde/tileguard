@@ -9,10 +9,12 @@ npx tileguard check ./tile.pbf ./style.json --reporter json
 ```
 
 ## Status
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 📋 **Pending implementation.** See [`docs/engineering/MIGRATION_PLAN.md`](../../docs/engineering/MIGRATION_PLAN.md).
 
 ## Responsibilities
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 - Load and resolve `tileguard.config.ts`
 - Register rule plugins

@@ -55,6 +55,7 @@ for (const d of result.diagnostics) {
 ---
 
 ## Artifact type
+<!-- TODO: INSERT DIAGRAM 6: Vector Tile Decoder -->
 
 The provider produces a single `VectorTile` artifact for every source it handles. The artifact's `content` is fully decoded into plain JavaScript objects before any rule sees it.
 
@@ -369,6 +370,7 @@ export default {
 ---
 
 ## Provider details
+<!-- TODO: INSERT DIAGRAM 7: ZigZag Coordinate Decoding (Bitwise Workflow) -->
 
 ### Handled sources
 
@@ -398,6 +400,9 @@ Tiles are inspected for the gzip magic bytes (`0x1f 0x8b`) before decoding. Gzip
 ---
 
 ## Geometry utilities
+<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks -->
+<!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver -->
+<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check -->
 
 The geometry analysis functions are exported from the package for use in custom rules or test helpers. They operate on decoded `VectorTileFeature` objects and return typed `GeometryIssue[]` arrays.
 

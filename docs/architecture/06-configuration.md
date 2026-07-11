@@ -10,6 +10,7 @@ predictable.
 ---
 
 ## Configuration File
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 TileGuard supports a single configuration file at the project root:
 
@@ -176,6 +177,8 @@ projects.
 ---
 
 ## Configuration Resolution
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
+<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
 
 When the engine starts, it resolves configuration through these steps:
 
@@ -291,6 +294,7 @@ the abstraction weight of ESLint's "extends" mechanism.
 ---
 
 ## What Configuration Does Not Do
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
 
 1. **No directory cascading.** There is exactly one config file per project.
    Use `overrides` with glob patterns for path-specific configuration.

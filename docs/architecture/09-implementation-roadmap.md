@@ -14,6 +14,7 @@ evolve, but the public API surface is frozen.
 ---
 
 ## Phase Map
+<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
 
 ```mermaid
 gantt
@@ -60,6 +61,7 @@ gantt
 ---
 
 ## Phase 1: Core Package (`@tileguard/core`)
+<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
 
 **Goal:** Implement all framework contracts and the engine orchestrator.
 After this phase, the framework can load plugins, execute rules, collect
@@ -174,6 +176,8 @@ style JSON artifacts.
 ---
 
 ## Phase 4: CLI (`tileguard`)
+<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
+<!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
 
 **Goal:** Rebuild the CLI on top of the engine. After this phase, `npx tileguard`
 works end-to-end with the new architecture.
