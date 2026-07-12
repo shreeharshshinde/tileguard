@@ -251,9 +251,8 @@ The engine fills in `ruleId`, `severity`, `artifact`, and `docsUrl` from the rul
 ---
 
 ## Architecture
-<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
+<img width="1448" height="1086" alt="image" src="https://github.com/user-attachments/assets/31fa61fc-14cc-4a43-af21-30b8a5e4eae3" />
 
-**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
 
 
 TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends on nothing; domain packages depend only on Core.
