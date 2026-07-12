@@ -264,8 +264,9 @@ TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends
 | `@tileguard/shared` | Utilities shared across domain packages | ✅ Stable |
 | `@tileguard/tile-rules` | MVT provider + 10 tile validation rules | ✅ Stable |
 | `@tileguard/style-rules` | Style provider + 9 style lint rules | ✅ Stable |
-| `@tileguard/reporters` | Built-in `text` and `json` reporters | 🔨 In progress |
-| `tileguard` (CLI) | `check` / `init` commands, config loading | 🔨 In progress |
+| `@tileguard/config` | Configuration file discovery, compilation, and schema validation | ✅ Stable |
+| `@tileguard/reporters` | Built-in `text` and `json` reporters | ✅ Stable |
+| `tileguard` (CLI) | Unified command-line interface check/init commands | 🔨 In progress |
 
 A project using only tile validation never loads the style package. A project using only style linting never loads the tile package. Packages are independently installable.
 
@@ -305,7 +306,8 @@ The framework's architectural foundation is complete. Two domain packages are fu
 | `@tileguard/core` | ✅ Complete | Zero runtime dependencies, full engine pipeline |
 | `@tileguard/tile-rules` | ✅ Complete | 10 rules, verified against physical `.pbf` fixtures |
 | `@tileguard/style-rules` | ✅ Complete | 9 rules, verified against physical style fixtures |
-| `@tileguard/reporters` | 🔨 In progress | `text` and `json` reporters |
+| `@tileguard/config` | ✅ Complete | Pre-engine config discovery, loading, and shape validation |
+| `@tileguard/reporters` | ✅ Complete | `text` and `json` reporters |
 | CLI (`tileguard`) | 🔨 In progress | `check` and `init` commands |
 | Render regression testing | 📋 Planned | Perceptual pixel comparison via headless rendering |
 | CI workflow | ✅ Complete | Build, test, dependency boundary lint, per-rule test coverage |

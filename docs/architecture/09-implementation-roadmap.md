@@ -84,6 +84,8 @@ gantt
 After this phase, the framework can load plugins, execute rules, collect
 diagnostics, and invoke reporters — even if no real rules exist yet.
 
+**Phase 1 Status:** ✅ Complete — 100% test coverage as of v0.2.0.
+
 ### Deliverables
 
 | Deliverable | Description | Test Strategy |
@@ -227,6 +229,8 @@ This flowchart must emphasize that directory level proximity is checked complete
 **Goal:** Rebuild the CLI on top of the engine. After this phase, `npx tileguard`
 works end-to-end with the new architecture.
 
+**Phase 4 Status:** ⏳ In Progress — configuration loading and reporters are complete as of v0.5.0; CLI commands and integration tests are pending.
+
 ### Deliverables
 
 | Deliverable | Description |
@@ -274,6 +278,8 @@ backward compatibility.
 ## Phase 5: Polish and Documentation
 
 **Goal:** Prepare the project for public release and FOSS4G presentation.
+
+**Phase 5 Status:** ⏳ In Progress — docs, README, CONTRIBUTING, rules reference, and migration coverage are complete; CI workflow and legacy archival are pending.
 
 ### Deliverables
 

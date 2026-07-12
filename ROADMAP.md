@@ -74,6 +74,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 ### v0.1.0: Architectural Baseline (Current)
 *   **Goal:** Freeze the architectural framework before writing new production code.
 *   **Scope:** The complete Architecture Handbook detailing the contracts and core engine orchestration. 
+*   **Status:** Complete and tagged as `v0.1.0`.
 
 ### v0.2.0: Framework Core
 *   **Goal:** A working `@tileguard/core` package defining all fundamental runtime systems.
@@ -83,14 +84,16 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 ### v0.3.0: Rule Parity
 *   **Goal:** Re-implement all existing legacy checks as decoupled, granular rules.
 *   **Scope:** `@tileguard/tile-rules` and `@tileguard/style-rules` packages fully functional. The custom MVT/PBF decoder and geometry utilities ported to TypeScript.
-*   **Status:** Implemented in the codebase. `@tileguard/style-rules` now ships the StyleSpecification provider plus 9 style rules. `@tileguard/tile-rules` now ships the VectorTile provider, custom MVT/PBF decoder, geometry helpers, and 10 granular tile rules.
+*   **Status:** Complete and tagged as `v0.3.0`.
 
 ### v0.4.0: Developer Experience
 *   **Goal:** Provide a productive CLI and configuration environment for engineers.
 *   **Scope:** `tileguard` CLI package. Native config file loading (`tileguard.config.ts`), default text reporter with colored terminal output, and structured JSON output.
+*   **Status:** Complete and tagged as `v0.4.0`.
 
 ### v0.5.0: FOSS4G Release (Target: August 15, 2026)
 *   **Goal:** The public launch of TileGuard at FOSS4G. A stable, extensible toolchain demonstrating the framework's architecture, default rule sets, and GitHub Actions integration.
+*   **Status:** Complete and tagged as `v0.5.0` (fully implements the type-safe configuration loading system in `@tileguard/config` and aligns package versions to `0.5.0`).
 *   **API Stability:** Internal APIs may still change, but the user-facing CLI, configuration schema, and the core Plugin API are frozen for the conference.
 
 ### v0.6.0 – v0.9.0: Post-Conference Beta Cycles
@@ -133,6 +136,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Expected Deliverables:** Architecture handbook (completed), monorepo setup.
 *   **Completion Criteria:** Core, domain, and CLI packages laid out; build configurations defined.
 *   **Target Release:** v0.1.0
+*   **Status:** Complete.
 
 ---
 
@@ -144,6 +148,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Expected Deliverables:** TypeScript implementation of `diagnostic.ts`, `artifact.ts`, `rule.ts`, `engine.ts`, `config.ts`, `reporter.ts`, `plugin.ts`.
 *   **Completion Criteria:** 100% unit test coverage on engine execution using mock rules.
 *   **Target Release:** v0.2.0
+*   **Status:** Complete.
 
 ---
 
@@ -155,6 +160,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Expected Deliverables:** `VectorTile` provider (9 rules), `StyleSpecification` provider (9 rules). Ported PBF decoder and geometry utilities.
 *   **Completion Criteria:** All legacy validation test suites ported to Vitest and passing.
 *   **Target Release:** v0.3.0
+*   **Status:** Complete.
 
 ---
 
@@ -166,6 +172,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Expected Deliverables:** CLI entry point (`check`, `init`), config loader, Text/JSON reporters.
 *   **Completion Criteria:** E2E CLI tests passing against a mixture of vector tiles and styles.
 *   **Target Release:** v0.4.0
+*   **Status:** In Progress (config and reporters implemented, CLI commands pending).
 
 ---
 

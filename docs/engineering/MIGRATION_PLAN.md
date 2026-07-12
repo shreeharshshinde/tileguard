@@ -190,6 +190,8 @@ These principles govern every step of the migration:
 
 **Goal:** Define all the TypeScript interfaces that the rest of the system depends on. No implementation yet.
 
+**Status:** Complete in v0.1.0.
+
 Deliverables:
 - `Diagnostic` interface — rule ID, severity, message, location, suggestion, artifact reference
 - `Artifact` and `ArtifactProvider` interfaces
@@ -208,6 +210,8 @@ Reference: [`docs/architecture/02-diagnostic-model.md`](../architecture/02-diagn
 
 **Goal:** Implement the orchestration pipeline and the built-in output reporters.
 
+**Status:** Complete in v0.2.0 (reporters implemented in v0.5.0).
+
 Deliverables:
 - `@tileguard/core` — `Engine` implementation: receives an artifact + rule set, runs rules, collects diagnostics
 - `@tileguard/reporters` — `textReporter`, `jsonReporter`
@@ -223,6 +227,8 @@ Reference: [`docs/architecture/07-engine.md`](../architecture/07-engine.md), [`d
 ### Phase 3 — Configuration loading (`@tileguard/config`)
 
 **Goal:** Implement config file discovery, loading, and resolution.
+
+**Status:** Complete in v0.5.0. Pre-engine config file discovery, loader modules, validation logic, custom configuration error classes, and test suites are fully implemented.
 
 Deliverables:
 - Locate `tileguard.config.ts` / `tileguard.config.js` from the working directory upward
@@ -274,6 +280,8 @@ Deliverables:
 
 **Goal:** Implement the `tileguard` CLI wired to the engine.
 
+**Status:** In Progress (config loader and reporters are complete; CLI entry point and commands are scheduled).
+
 Deliverables:
 - Argument parsing (file paths, `--reporter` flag, `--config` flag)
 - Artifact path resolution
@@ -291,6 +299,8 @@ Behavioral reference: `legacy/js/bin/tileguard.js`
 
 **Goal:** Confirm the new framework reproduces all legacy behavior on all existing fixtures and test cases.
 
+**Status:** In Progress (rules and config implemented; CLI entry point, action workflow, and archival are scheduled).
+
 Deliverables:
 - Run legacy test suites against both the legacy CLI and the new framework CLI; outputs must match
 - Update `README.md` to remove the `legacy/` references and point to the new packages
@@ -304,6 +314,8 @@ Once this phase is complete, the legacy directory is no longer the primary imple
 ### Phase 8 — SARIF reporter and IDE integration (post-parity)
 
 **Goal:** Add the SARIF reporter for GitHub Code Scanning integration.
+
+**Status:** Scheduled.
 
 This is listed last because it is additive functionality not present in the legacy implementation. It should only be built once the framework is stable.
 
