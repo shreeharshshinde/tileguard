@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/config",
-  "version": "0.0.0",
+  "version": "0.5.0",
   "description": "Configuration loading, schema validation, and preset resolution for TileGuard",
   "type": "module",
   "exports": {
@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "test": "node --test"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "tileguard",
@@ -17,9 +18,12 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@tileguard/core": "workspace:*"
+    "@tileguard/core": "workspace:*",
+    "jiti": "^2.4.2"
   },
   "devDependencies": {
-    "typescript": "5.4.5"
+    "@types/node": "^26.1.0",
+    "typescript": "5.4.5",
+    "vitest": "^1.6.0"
   }
 }
