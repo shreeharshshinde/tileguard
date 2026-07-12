@@ -146,42 +146,103 @@ This component handles decompression, decodes protobuf structures into runtime m
 ---
 
 ### C. Geometry Validation Subsystem
-<!-- TODO: INSERT DIAGRAM 8: Polygon Topology Sanity Checks (Decision Tree) -->
+The Geometry Validation Subsystem is responsible for ensuring that every geometry contained within a vector tile is mathematically valid, structurally consistent, and safe to render. Before higher-level semantic rules execute, TileGuard validates the underlying coordinate data to detect malformed geometries that could lead to rendering artifacts, incorrect analysis, or invalid map data.
 
-**Image Description / Generation Prompt:** A decision tree diagram mapping out the polygon topology sanity validation checks executed in `geometry.ts`.
-1. Input: A sequence of coordinate vertices representing a polygon ring.
-2. Condition 1: "Does the ring contain at least 3 unique vertices and 4 total points?"
-   - No: Emit `DEGENERATE_POLYGON` diagnostic.
-   - Yes: Proceed to next check.
-3. Condition 2: "Is the first vertex identical to the last vertex (closure check)?"
-   - No: Emit `UNCLOSED_RING` diagnostic.
-   - Yes: Proceed to next check.
-4. Condition 3: "Is the absolute signed area of the ring greater than zero (using Shoelace formula)?"
-   - No: Emit `ZERO_AREA_RING` diagnostic.
-   - Yes: The polygon ring is considered topologically sound (Pass).
+The subsystem performs a deterministic sequence of topology checks including coordinate bounds validation, degeneracy detection, polygon closure verification, signed area computation, and self-intersection detection. These checks form the mathematical foundation of TileGuard's geometry engine and are implemented consistently across both JavaScript and Python runtimes.
 
-<!-- TODO: INSERT DIAGRAM 9: Shoelace Algorithm Math Solver (Geometric Layout) -->
+---
 
-**Image Description / Generation Prompt:** A geometric matrix diagram visualizing the Shoelace algorithm calculation for signed area.
-1. Show a 2D coordinate grid with a 4-vertex polygon: P0(x0, y0), P1(x1, y1), P2(x2, y2), and P3(x3, y3).
-2. Render the Shoelace matrix:
-   - Column 1: x0, x1, x2, x3, x0
-   - Column 2: y0, y1, y2, y3, y0
-3. Draw diagonal arrows:
-   - Downward-right diagonal green arrows indicating positive term multiplications: x0 * y1, x1 * y2, x2 * y3, x3 * y0.
-   - Downward-left diagonal red arrows indicating negative term multiplications: y0 * x1, y1 * x2, y2 * x3, y3 * x0.
-4. Equation Box: Show the area formula: Area = 1/2 * sum(x_i * y_{i+1} - x_{i+1} * y_i). Indicate that a positive value means clockwise winding (outer ring), and a negative value means counter-clockwise winding (inner hole).
+## Geometry Validation Pipeline
 
-<!-- TODO: INSERT DIAGRAM 10: Segment Orientation Self-Intersection Check (Math Geometry Diagram) -->
+Every polygon ring follows the same validation pipeline. The engine evaluates each topology constraint sequentially and immediately emits a diagnostic whenever a check fails. Only geometries that successfully pass every stage continue through the remainder of the validation engine.
 
-**Image Description / Generation Prompt:** A vector geometry diagram explaining the segment orientation tests used to determine if two line segments AB and CD intersect without using float division.
-1. Show two intersecting line segments AB and CD on a 2D plane.
-2. Write the 2D cross-product orientation formula: val = (B_y - A_y)(C_x - B_x) - (B_x - A_x)(C_y - B_y).
-3. Render three diagrams representing the three possible orientation outputs:
-   - val > 0: Clockwise curvature.
-   - val < 0: Counter-clockwise curvature.
-   - val = 0: Collinear segments.
-4. Intersection Condition: Show that segments AB and CD intersect if and only if the orientation of (A, B, C) and (A, B, D) have different signs, AND the orientation of (C, D, A) and (C, D, B) have different signs.
+<p align="center">
+  <img width="100%" alt="Geometry Validation Pipeline" src="https://github.com/user-attachments/assets/7b1f1680-f1b4-4354-b6f4-9c28f8e1caf5" />
+</p>
+
+<p align="center">
+<i>Figure C-1. Geometry validation pipeline executed for every polygon ring before rule evaluation.</i>
+</p>
+
+---
+
+## Mathematical Foundations
+
+The previous diagram illustrates **what** the validation engine checks. The following mathematical algorithms explain **how** those validation decisions are computed internally.
+
+### Coordinate Bounds Validation
+
+Every coordinate is verified to lie within the valid vector tile extent (with a small configurable tolerance for boundary geometries). Coordinates outside the permitted range indicate corrupted tile data or invalid encoding and immediately produce an out-of-range diagnostic.
+
+### Signed Area (Shoelace Formula)
+
+Polygon validity requires a non-zero enclosed area. TileGuard computes the signed area of each polygon ring using the Shoelace formula:
+
+\[
+Area=\frac12\sum_{i=0}^{n-1}(x_i y_{i+1}-x_{i+1}y_i)
+\]
+
+The sign of the computed area also determines polygon winding direction:
+
+- **Area > 0** → Clockwise winding (outer ring)
+- **Area < 0** → Counter-clockwise winding (inner hole)
+- **|Area| = 0** → `ZERO_AREA_RING`
+
+### Orientation Test
+
+To detect edge crossings, TileGuard evaluates the orientation of three points using the integer-only cross product:
+
+\[
+val=(B_y-A_y)(C_x-B_x)-(B_x-A_x)(C_y-B_y)
+\]
+
+The orientation result is interpreted as:
+
+- **val > 0** → Clockwise
+- **val < 0** → Counter-clockwise
+- **val = 0** → Collinear
+
+Because this algorithm relies exclusively on integer arithmetic, it remains deterministic and avoids floating-point precision issues.
+
+### Segment Intersection
+
+Self-intersections are detected by comparing non-adjacent polygon edges. Two segments intersect when the orientations of both endpoint pairs differ:
+
+- `orient(A, B, C)` and `orient(A, B, D)` have opposite signs.
+- `orient(C, D, A)` and `orient(C, D, B)` have opposite signs.
+
+Any detected intersection produces a `SELF_INTERSECTION` diagnostic.
+
+---
+
+## Geometry Algorithms Under the Hood
+
+The following figure summarizes the computational geometry algorithms that power TileGuard's validation engine, including the Shoelace area calculation, orientation testing, and segment intersection detection.
+
+<p align="center">
+  <img width="100%" alt="Geometry Algorithms Under the Hood" src="https://github.com/user-attachments/assets/ea3160bf-00dd-449f-961b-d4644b629586" />
+</p>
+
+<p align="center">
+<i>Figure C-2. Mathematical algorithms used internally by the geometry validation engine.</i>
+</p>
+
+---
+
+## Implementation
+
+**JavaScript**
+
+```text
+packages/js/src/utils/geometry.js
+```
+
+**Python**
+
+```text
+packages/python/tileguard/utils/geometry.py
+```
+
 
 A robust custom geometry check engine ensuring coordinate bounds, topology soundness, and structural integrity.
 
