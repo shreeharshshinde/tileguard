@@ -101,4 +101,60 @@ describe('tile/coordinate-range', () => {
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(0);
   });
+
+  it('buffer — allows coordinates within buffer tolerance', async () => {
+    const engine = createEngine({
+      plugins: [plugin],
+      rules: {
+        'tile/coordinate-range': ['error', { buffer: 100 }],
+      },
+    });
+    const source = await makeTile([
+      {
+        name: 'roads',
+        features: [
+          {
+            type: 2,
+            points: [
+              [
+                { x: -50, y: 0 },
+                { x: 4150, y: 4150 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    const result = await engine.run([source]);
+    expect(result.diagnostics).toHaveLength(0);
+  });
+
+  it('buffer — fails when coordinates exceed buffer tolerance', async () => {
+    const engine = createEngine({
+      plugins: [plugin],
+      rules: {
+        'tile/coordinate-range': ['error', { buffer: 100 }],
+      },
+    });
+    const source = await makeTile([
+      {
+        name: 'roads',
+        features: [
+          {
+            type: 2,
+            points: [
+              [
+                { x: -101, y: 0 },
+                { x: 4096, y: 4197 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    const result = await engine.run([source]);
+    expect(result.diagnostics).toHaveLength(2);
+  });
 });

@@ -20,6 +20,7 @@ export interface GeometryIssue {
 export function findCoordinateRangeIssues(
   feature: VectorTileFeature,
   extent: number,
+  buffer = 0,
 ): readonly GeometryIssue[] {
   const issues: GeometryIssue[] = [];
   const parts = getFeatureParts(feature);
@@ -29,14 +30,17 @@ export function findCoordinateRangeIssues(
     return issues;
   }
 
+  const min = -buffer;
+  const max = extent + buffer;
+
   for (let partIndex = 0; partIndex < parts.length; partIndex += 1) {
     const points = parts[partIndex]!;
     for (let pointIndex = 0; pointIndex < points.length; pointIndex += 1) {
       const point = points[pointIndex]!;
-      if (point.x < 0 || point.x > extent || point.y < 0 || point.y > extent) {
+      if (point.x < min || point.x > max || point.y < min || point.y > max) {
         issues.push({
           code: 'OUT_OF_RANGE',
-          message: `Coordinate (${point.x}, ${point.y}) is outside tile extent 0-${extent}.`,
+          message: `Coordinate (${point.x}, ${point.y}) is outside tile extent 0-${extent} with buffer ${buffer}.`,
           partIndex,
           pointIndex,
           point,
