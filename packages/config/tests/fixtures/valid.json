@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "tile/required-layers": "error",
+    "tile/no-empty": "off"
+  },
+  "reporter": "json"
+}
