@@ -229,7 +229,7 @@ This flowchart must emphasize that directory level proximity is checked complete
 **Goal:** Rebuild the CLI on top of the engine. After this phase, `npx tileguard`
 works end-to-end with the new architecture.
 
-**Phase 4 Status:** ⏳ In Progress — configuration loading and reporters are complete as of v0.5.0; CLI commands and integration tests are pending.
+**Phase 4 Status:** ⏳ In Progress — configuration loading is complete as of v0.4.1, and reporters are complete as of v0.4.0; CLI commands and integration tests are pending.
 
 ### Deliverables
 

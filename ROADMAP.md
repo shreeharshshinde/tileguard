@@ -86,14 +86,19 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Scope:** `@tileguard/tile-rules` and `@tileguard/style-rules` packages fully functional. The custom MVT/PBF decoder and geometry utilities ported to TypeScript.
 *   **Status:** Complete and tagged as `v0.3.0`.
 
-### v0.4.0: Developer Experience
-*   **Goal:** Provide a productive CLI and configuration environment for engineers.
-*   **Scope:** `tileguard` CLI package. Native config file loading (`tileguard.config.ts`), default text reporter with colored terminal output, and structured JSON output.
+### v0.4.0: Developer Experience (Built-in Reporters)
+*   **Goal:** Implement built-in output reporters.
+*   **Scope:** `@tileguard/reporters` package with text and JSON output reporters.
 *   **Status:** Complete and tagged as `v0.4.0`.
 
-### v0.5.0: FOSS4G Release (Target: August 15, 2026)
-*   **Goal:** The public launch of TileGuard at FOSS4G. A stable, extensible toolchain demonstrating the framework's architecture, default rule sets, and GitHub Actions integration.
-*   **Status:** Complete and tagged as `v0.5.0` (fully implements the type-safe configuration loading system in `@tileguard/config` and aligns package versions to `0.5.0`).
+### v0.4.1: Configuration Loader
+*   **Goal:** Implement the pre-engine configuration file loader and discovery logic.
+*   **Scope:** `@tileguard/config` package with upward discovery and non-short-circuiting schema validation.
+*   **Status:** Complete and tagged as `v0.4.1` (fully implements the type-safe configuration loading system in `@tileguard/config` and aligns package versions to `0.4.1`).
+
+### v0.5.0: FOSS4G Release & CLI (Target: August 15, 2026)
+*   **Goal:** The public launch of TileGuard at FOSS4G. A stable, extensible toolchain demonstrating the framework's architecture, default rule sets, CLI commands, and GitHub Actions integration.
+*   **Status:** In Progress (reporters and configuration loader implemented, CLI commands and CI setup pending).
 *   **API Stability:** Internal APIs may still change, but the user-facing CLI, configuration schema, and the core Plugin API are frozen for the conference.
 
 ### v0.6.0 – v0.9.0: Post-Conference Beta Cycles

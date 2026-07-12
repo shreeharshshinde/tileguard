@@ -1,6 +1,6 @@
 {
   "name": "tileguard",
-  "version": "0.5.0",
+  "version": "0.4.1",
   "description": "Command-line interface for TileGuard — geospatial quality analysis framework",
   "type": "module",
   "bin": {

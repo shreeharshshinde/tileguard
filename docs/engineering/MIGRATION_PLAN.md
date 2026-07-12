@@ -210,7 +210,7 @@ Reference: [`docs/architecture/02-diagnostic-model.md`](../architecture/02-diagn
 
 **Goal:** Implement the orchestration pipeline and the built-in output reporters.
 
-**Status:** Complete in v0.2.0 (reporters implemented in v0.5.0).
+**Status:** Complete in v0.2.0 (reporters implemented in v0.4.0).
 
 Deliverables:
 - `@tileguard/core` — `Engine` implementation: receives an artifact + rule set, runs rules, collects diagnostics
@@ -228,7 +228,7 @@ Reference: [`docs/architecture/07-engine.md`](../architecture/07-engine.md), [`d
 
 **Goal:** Implement config file discovery, loading, and resolution.
 
-**Status:** Complete in v0.5.0. Pre-engine config file discovery, loader modules, validation logic, custom configuration error classes, and test suites are fully implemented.
+**Status:** Complete in v0.4.1. Pre-engine config file discovery, loader modules, validation logic, custom configuration error classes, and test suites are fully implemented.
 
 Deliverables:
 - Locate `tileguard.config.ts` / `tileguard.config.js` from the working directory upward

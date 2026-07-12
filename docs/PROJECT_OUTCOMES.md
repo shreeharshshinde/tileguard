@@ -197,8 +197,9 @@ This document maps the complete list of 174 desired project outcomes to their re
 *   169. JSON Reporter.
 *   171. Working end-to-end validation pipeline.
 
-## v0.5.0: FOSS4G Release (Quality Gate)
-*The public pre-conference release featuring CI integration and plugin packaging.*
+## v0.4.1: Configuration Loader
+*Implementation of the configuration file discovery, loading, and validation system.*
+
 <!-- TODO: INSERT DIAGRAM 3: Upward Configuration Discovery Walk -->
 
 **Image Description / Generation Prompt:** A control flowchart explaining the directory-proximity-first configuration discovery walk performed by `finder.ts`. Start with a node "Start at current working directory (CWD)". For each directory level:
@@ -247,6 +248,9 @@ This flowchart must emphasize that directory level proximity is checked complete
    - Yes: Throw a single `ConfigValidationError` containing the complete list of errors and warnings.
    - No: Return the verified configuration object alongside any advisory warnings.
 
+
+## v0.5.0: FOSS4G Release (Quality Gate)
+*The public pre-conference release featuring CI integration and plugin packaging.*
 
 *   3. A rule-based validation engine inspired by ESLint and Ruff.
 *   20. GitHub Actions CI integration.

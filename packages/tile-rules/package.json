@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/tile-rules",
-  "version": "0.5.0",
+  "version": "0.4.1",
   "description": "Vector tile artifact provider and tile validation rules",
   "type": "module",
   "exports": {

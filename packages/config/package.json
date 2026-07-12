@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/config",
-  "version": "0.5.0",
+  "version": "0.4.1",
   "description": "Configuration loading, schema validation, and preset resolution for TileGuard",
   "type": "module",
   "exports": {
