@@ -4,7 +4,7 @@
   "description": "Shared utilities and helpers used across TileGuard packages",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc --build",

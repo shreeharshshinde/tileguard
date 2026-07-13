@@ -12,6 +12,14 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "@tileguard/core": ["./packages/core/src/index.ts"],
+      "@tileguard/shared": ["./packages/shared/src/index.ts"],
+      "@tileguard/config": ["./packages/config/src/index.ts"],
+      "@tileguard/reporters": ["./packages/reporters/src/index.ts"],
+      "@tileguard/tile-rules": ["./packages/tile-rules/src/index.ts"],
+      "@tileguard/style-rules": ["./packages/style-rules/src/index.ts"]
+    }
   }
 }

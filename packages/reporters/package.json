@@ -4,7 +4,7 @@
   "description": "Built-in output reporters for TileGuard: text and JSON",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc --build",

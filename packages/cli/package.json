@@ -1,13 +1,13 @@
 {
   "name": "tileguard",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Command-line interface for TileGuard — geospatial quality analysis framework",
   "type": "module",
   "bin": {
     "tileguard": "./dist/bin.js"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc --build",
@@ -27,12 +27,12 @@
     "@tileguard/reporters": "workspace:*",
     "@tileguard/tile-rules": "workspace:*",
     "@tileguard/style-rules": "workspace:*",
-    "commander": "^12.1.0",
-    "fast-glob": "^3.3.2"
+    "commander": "12.1.0",
+    "fast-glob": "3.3.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.0",
+    "@types/node": "26.1.0",
     "typescript": "5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "1.6.1"
   }
 }

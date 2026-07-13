@@ -4,7 +4,7 @@
   "description": "Vector tile artifact provider and tile validation rules",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc --build",
