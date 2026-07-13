@@ -7,6 +7,7 @@
   },
   "references": [
     { "path": "../core" },
+    { "path": "../config" },
     { "path": "../reporters" },
     { "path": "../tile-rules" },
     { "path": "../style-rules" }
