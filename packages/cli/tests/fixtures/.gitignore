@@ -1,0 +1,10 @@
+# Integration test scratch directories.
+#
+# These directories are created fresh by beforeEach() and removed by afterEach()
+# in the integration test suite. They must never be committed — if a test run
+# is interrupted and cleanup doesn't execute, this gitignore prevents the
+# leftover directories from appearing in `git status`.
+
+integration-check/
+integration-init/
+integration-rules/
