@@ -121,7 +121,7 @@ A GitHub Actions workflow runs the full quality gate in a tiered pipeline: depen
 
 ## Quick Start
 
-> **CLI status:** The `tileguard` CLI is the current development milestone. Until it ships, use TileGuard programmatically — see [Programmatic Usage](#programmatic-usage) below. The commands here show the intended end-user interface.
+> **CLI status:** The `tileguard` CLI is fully implemented and stable. You can use it to validate vector tiles, styles, and scaffold config files directly. Refer to [Quick Start](#quick-start) below.
 
 ```bash
 # Validate a vector tile
@@ -265,7 +265,7 @@ TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends
 | `@tileguard/style-rules` | Style provider + 9 style lint rules | ✅ Stable |
 | `@tileguard/config` | Configuration file discovery, compilation, and schema validation | ✅ Stable |
 | `@tileguard/reporters` | Built-in `text` and `json` reporters | ✅ Stable |
-| `tileguard` (CLI) | Unified command-line interface check/init commands | 🔨 In progress |
+| `tileguard` (CLI) | Unified command-line interface check/init commands | ✅ Stable |
 
 A project using only tile validation never loads the style package. A project using only style linting never loads the tile package. Packages are independently installable.
 
@@ -307,7 +307,7 @@ The framework's architectural foundation is complete. Two domain packages are fu
 | `@tileguard/style-rules` | ✅ Complete | 9 rules, verified against physical style fixtures |
 | `@tileguard/config` | ✅ Complete | Pre-engine config discovery, loading, and shape validation |
 | `@tileguard/reporters` | ✅ Complete | `text` and `json` reporters |
-| CLI (`tileguard`) | 🔨 In progress | `check` and `init` commands |
+| CLI (`tileguard`) | ✅ Complete | `check` and `init` commands |
 | Render regression testing | 📋 Planned | Perceptual pixel comparison via headless rendering |
 | CI workflow | ✅ Complete | Build, test, dependency boundary lint, per-rule test coverage |
 
