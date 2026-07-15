@@ -37,3 +37,4 @@ Thumbs.db
 
 # Real test tiles
 fixtures/real-tiles/
+fixtures/benchmark-cache/
