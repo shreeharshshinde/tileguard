@@ -5,12 +5,14 @@ import { join } from 'node:path';
 const ALLOWED = {
   '@tileguard/core': [],
   '@tileguard/shared': ['@tileguard/core'],
+  '@tileguard/config': ['@tileguard/core'],
   '@tileguard/reporters': ['@tileguard/core'],
   '@tileguard/tile-rules': ['@tileguard/core', '@tileguard/shared'],
   '@tileguard/style-rules': ['@tileguard/core', '@tileguard/shared'],
   tileguard: [
     '@tileguard/core',
     '@tileguard/shared',
+    '@tileguard/config',
     '@tileguard/reporters',
     '@tileguard/tile-rules',
     '@tileguard/style-rules',
