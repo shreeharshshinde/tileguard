@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated": "2026-07-18T03:18:00Z",
+    "tileguardVersion": "0.5.0",
+    "datasetsAnalyzed": ["OpenMapTiles", "OpenFreeMap", "CARTO Streets"],
+    "tilesAnalyzed": 294,
+    "totalOutOfRangeCoordinates": 148268,
+    "decoderCrossValidation": "PASS (0 divergences across 562 features)"
+  },
+  "hypothesisResolution": {
+    "A_buffer_margin": {
+      "status": "confirmed",
+      "evidence": "Bimodal distribution with ~symmetric direction balance (59.2% below-zero, 64.0% above-extent). Two distinct populations: geometry clipping (median ~40, p95 ≤ 80) and label duplication (median ~2000, max 4096). 1,695 cross-provider identity-confirmed features show identical offsets."
+    },
+    "B_wrap_around": {
+      "status": "rejected",
+      "evidence": "Direction balance is roughly symmetric across both axes and all datasets. No concentration at a specific modulus boundary. The offset distribution is continuous, not clustered at a wrap-around value."
+    },
+    "C_decoder_bug": {
+      "status": "eliminated",
+      "evidence": "Step 1.1 decoder cross-validation: 0 divergences across 562 features, 13 layers, 5 dimensions. Reference: analysis/decoder-crosscheck.json"
+    }
+  },
+  "tile/coordinate-range": {
+    "label-duplication": {
+      "status": "intentional_implementation_behavior",
+      "affectedLayers": ["place", "water_name", "centroids"],
+      "affectedGeometryTypes": ["Point"],
+      "offsetRange": {
+        "min": 1,
+        "median": 2034,
+        "p95": 3875,
+        "p99": 4058,
+        "max": 4096
+      },
+      "directionBalance": "symmetric (place: 45,634 below-zero / 45,386 above-extent)",
+      "diagnosticCount": 63944,
+      "percentOfTotal": 43.1,
+      "source": "Tile compilers (Planetiler, OpenMapTiles, CARTO) intentionally duplicate label features across tile boundaries so rendering engines can display labels that span multiple tiles without clipping mid-character.",
+      "evidence": [
+        "1,695 cross-provider identity-confirmed matches via property values (name, class)",
+        "Same named features (e.g., 'Europe', 'North Atlantic Ocean') produce identical offsets across independent providers",
+        "Offsets span entire tile extent (up to 4096 = 100% of extent), consistent with labels placed at their geographic center regardless of tile boundaries",
+        "Roughly symmetric direction balance rules out directional encoding artifacts"
+      ],
+      "specReference": "MVT Specification §4.3.1 permits features to extend beyond the tile's clipping bounds for cross-tile rendering",
+      "action": "suppress_via_configuration"
+    },
+    "geometry-clipping-buffer": {
+      "status": "intentional_implementation_behavior",
+      "affectedLayers": ["countries", "water", "boundary", "landcover", "park", "waterway", "geolines"],
+      "affectedGeometryTypes": ["Polygon", "LineString"],
+      "offsetRange": {
+        "min": 1,
+        "median": 40,
+        "p95": 80,
+        "p99": 80,
+        "max": 80
+      },
+      "directionBalance": "moderately symmetric (countries: 21,700 below / 25,627 above)",
+      "diagnosticCount": 84324,
+      "percentOfTotal": 56.9,
+      "source": "Tile compilers apply a clipping buffer (typically 64–80 units for extent=4096) when cutting geometry at tile boundaries. This prevents rendering gaps at tile edges where anti-aliasing or stroke width would otherwise leave visible seams.",
+      "evidence": [
+        "P95 offset is exactly 80 for countries/geolines and exactly 64 for water/boundary/landcover/park/waterway",
+        "Two distinct buffer values (64 and 80) correspond to different layer configurations in tile compilers",
+        "Offsets are small relative to extent (max 80/4096 = 1.95%) — consistent with edge buffers, not placement errors",
+        "All affected layers use Polygon or LineString geometry, never Point"
+      ],
+      "specReference": "MVT Specification §4.3.4.3 notes that geometry may extend beyond the tile's area for buffer clipping",
+      "action": "suppress_via_buffer_configuration",
+      "recommendedBuffer": 80
+    }
+  },
+  "tile/self-intersection": {
+    "quantization-false-positive": {
+      "status": "requires_investigation",
+      "source": "Tile compilers quantize floating-point coordinates to integer grid. At high zoom levels with dense geometry, this can create artificial self-intersections at tile edges.",
+      "action": "deferred_to_step_5",
+      "note": "Step 5 will add minimum vertex guard and optional edge tolerance"
+    }
+  }
+}
