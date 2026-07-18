@@ -6,8 +6,8 @@
  * config-file-only fields (plugins, rules, overrides) are preserved untouched.
  */
 
-import { describe, expect, it } from 'vitest';
 import type { TileGuardConfig } from '@tileguard/core';
+import { describe, expect, it } from 'vitest';
 import { mergeConfig } from '../src/merge-config.js';
 
 describe('mergeConfig', () => {

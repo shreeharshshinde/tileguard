@@ -16,16 +16,14 @@
 // ── Command functions — pure, embeddable, never call process.exit() ───────
 export { runCheck } from './commands/check.js';
 export { runInit } from './commands/init.js';
-export { runRulesList, runRulesExplain, runRulesDocs } from './commands/rules.js';
-
-// ── Lower-level utilities — exported for testing and programmatic use ─────
-export { expandSources } from './expand-sources.js';
-export { toRunResult, toUsageResult } from './exit.js';
-export { mergeConfig } from './merge-config.js';
-export { DEFAULT_REPORTER_ID, resolveReporterById } from './resolve-reporter.js';
-
+export { runRulesDocs, runRulesExplain, runRulesList } from './commands/rules.js';
 // ── Error classes ─────────────────────────────────────────────────────────
 export { CliUsageError } from './errors.js';
+export { toRunResult, toUsageResult } from './exit.js';
+// ── Lower-level utilities — exported for testing and programmatic use ─────
+export { expandSources } from './expand-sources.js';
+export { mergeConfig } from './merge-config.js';
+export { DEFAULT_REPORTER_ID, resolveReporterById } from './resolve-reporter.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────
 export type { CheckFlags, CommandResult, InitFlags, RulesListFlags } from './types.js';

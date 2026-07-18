@@ -11,9 +11,9 @@
  * completely side-effect-free and safe to call in any host context.
  */
 
+import type { RunSummary } from '@tileguard/core';
 import { describe, expect, it, vi } from 'vitest';
 import { toRunResult, toUsageResult } from '../src/exit.js';
-import type { RunSummary } from '@tileguard/core';
 
 // A minimal RunSummary fixture used across multiple tests.
 const summaryFixture: RunSummary = {

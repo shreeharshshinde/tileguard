@@ -55,9 +55,7 @@ export function resolveReporterById(id: string | undefined): Reporter {
 
   if (reporter === undefined) {
     const available = [...BUILTIN_REPORTERS.keys()].join(', ');
-    throw new CliUsageError(
-      `Unknown reporter "${reporterId}". Available reporters: ${available}`,
-    );
+    throw new CliUsageError(`Unknown reporter "${reporterId}". Available reporters: ${available}`);
   }
 
   return reporter;

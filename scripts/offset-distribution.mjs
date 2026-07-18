@@ -33,12 +33,29 @@ for (let x = 0; x < 2; x++) for (let y = 0; y < 2; y++) TILES.push({ z: 1, x, y 
 for (let x = 0; x < 4; x++) for (let y = 0; y < 4; y++) TILES.push({ z: 2, x, y });
 for (let x = 0; x < 8; x++) for (let y = 0; y < 8; y++) TILES.push({ z: 3, x, y });
 let z4count = 0;
-for (let x = 0; x < 4; x++) for (let y = 0; y < 4; y++) { if (z4count < 15) { TILES.push({ z: 4, x, y }); z4count++; } }
+for (let x = 0; x < 4; x++)
+  for (let y = 0; y < 4; y++) {
+    if (z4count < 15) {
+      TILES.push({ z: 4, x, y });
+      z4count++;
+    }
+  }
 
 const DATASETS = [
-  { name: 'OpenMapTiles', urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf` },
-  { name: 'OpenFreeMap', urlPattern: (z, x, y) => `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf` },
-  { name: 'CARTO Streets', urlPattern: (z, x, y) => `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt` },
+  {
+    name: 'OpenMapTiles',
+    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
+  },
+  {
+    name: 'OpenFreeMap',
+    urlPattern: (z, x, y) =>
+      `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf`,
+  },
+  {
+    name: 'CARTO Streets',
+    urlPattern: (z, x, y) =>
+      `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt`,
+  },
 ];
 
 const GEOMETRY_TYPE_NAMES = { 0: 'Unknown', 1: 'Point', 2: 'LineString', 3: 'Polygon' };
@@ -52,11 +69,15 @@ async function ensureCached(dataset) {
   const dir = path.join(CACHE_DIR, dataset.name);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-  let success = 0, fail = 0;
+  let success = 0,
+    fail = 0;
   for (const t of TILES) {
     const filename = `${t.z}-${t.x}-${t.y}.pbf`;
     const filepath = path.join(dir, filename);
-    if (fs.existsSync(filepath) && fs.statSync(filepath).size > 0) { success++; continue; }
+    if (fs.existsSync(filepath) && fs.statSync(filepath).size > 0) {
+      success++;
+      continue;
+    }
 
     const url = dataset.urlPattern(t.z, t.x, t.y);
     try {
@@ -73,8 +94,8 @@ async function ensureCached(dataset) {
     }
   }
   console.log(`  Cache: ${success}/${TILES.length} tiles, ${fail} failed`);
-  if (success / TILES.length < 0.90) {
-    throw new Error(`Cache rate ${(success/TILES.length*100).toFixed(1)}% < 90% threshold`);
+  if (success / TILES.length < 0.9) {
+    throw new Error(`Cache rate ${((success / TILES.length) * 100).toFixed(1)}% < 90% threshold`);
   }
   return { success, fail };
 }
@@ -104,8 +125,8 @@ async function main() {
   console.log('=== STEP 1.2: SIGNED OFFSET DISTRIBUTION ANALYSIS ===\n');
   if (!fs.existsSync(ANALYSIS_DIR)) fs.mkdirSync(ANALYSIS_DIR, { recursive: true });
 
-  const allEntries = [];          // Every out-of-range coordinate
-  const crossProviderMap = {};    // tile → layer → featureIndex → { providers, properties }
+  const allEntries = []; // Every out-of-range coordinate
+  const crossProviderMap = {}; // tile → layer → featureIndex → { providers, properties }
 
   for (const dataset of DATASETS) {
     console.log(`Processing ${dataset.name}...`);
@@ -182,9 +203,12 @@ async function main() {
                   crossProviderMap[tileKey][featureKey] = { providers: {}, properties: {} };
                 }
                 crossProviderMap[tileKey][featureKey].providers[dataset.name] = {
-                  x: point.x, y: point.y,
-                  xOffset: xClass.offset, yOffset: yClass.offset,
-                  xDirection: xClass.direction, yDirection: yClass.direction,
+                  x: point.x,
+                  y: point.y,
+                  xOffset: xClass.offset,
+                  yOffset: yClass.offset,
+                  xDirection: xClass.direction,
+                  yDirection: yClass.direction,
                 };
                 crossProviderMap[tileKey][featureKey].properties[dataset.name] = identityProps;
               }
@@ -195,7 +219,9 @@ async function main() {
     }
 
     console.log(`  Tiles processed: ${tilesProcessed}`);
-    console.log(`  Out-of-range entries so far: ${allEntries.filter(e => e.dataset === dataset.name).length}`);
+    console.log(
+      `  Out-of-range entries so far: ${allEntries.filter((e) => e.dataset === dataset.name).length}`,
+    );
   }
 
   // ─── Compute aggregates ─────────────────────────────────────────────────
@@ -243,12 +269,12 @@ async function main() {
       if (hasName) {
         // Verify all providers have the same 'name' property
         const names = propSets.map(([, p]) => p.name);
-        identityConfirmed = names.every(n => n === names[0]);
+        identityConfirmed = names.every((n) => n === names[0]);
         identityMethod = identityConfirmed ? 'name-match' : 'name-mismatch';
       } else {
         // No name property — check class+subclass
         const classes = propSets.map(([, p]) => `${p.class || ''}:${p.subclass || ''}`);
-        identityConfirmed = classes.every(c => c === classes[0]);
+        identityConfirmed = classes.every((c) => c === classes[0]);
         identityMethod = identityConfirmed ? 'class-match' : 'class-mismatch';
       }
 
@@ -263,8 +289,8 @@ async function main() {
     }
   }
 
-  const confirmedSameFeature = crossProviderMatches.filter(m => m.identityConfirmed);
-  const unconfirmedSameFeature = crossProviderMatches.filter(m => !m.identityConfirmed);
+  const confirmedSameFeature = crossProviderMatches.filter((m) => m.identityConfirmed);
+  const unconfirmedSameFeature = crossProviderMatches.filter((m) => !m.identityConfirmed);
 
   // ─── Build report ───────────────────────────────────────────────────────
   const report = {
@@ -289,20 +315,24 @@ async function main() {
   // ─── Write JSON ─────────────────────────────────────────────────────────
   fs.writeFileSync(
     path.join(ANALYSIS_DIR, 'offset-distribution.json'),
-    JSON.stringify(report, null, 2)
+    JSON.stringify(report, null, 2),
   );
 
   // ─── Write CSV ──────────────────────────────────────────────────────────
-  const csvHeader = 'dataset,tile,layer,featureIndex,geometryType,extent,x,y,xOffset,yOffset,xDirection,yDirection,xBucket,yBucket,name,class\n';
-  const csvRows = allEntries.map(e =>
-    `${e.dataset},${e.tile},${e.layer},${e.featureIndex},${e.geometryType},${e.extent},${e.x},${e.y},${e.xOffset},${e.yOffset},${e.xDirection},${e.yDirection},"${e.xBucket}","${e.yBucket}","${e.properties.name || ''}","${e.properties.class || ''}"`
-  ).join('\n');
+  const csvHeader =
+    'dataset,tile,layer,featureIndex,geometryType,extent,x,y,xOffset,yOffset,xDirection,yDirection,xBucket,yBucket,name,class\n';
+  const csvRows = allEntries
+    .map(
+      (e) =>
+        `${e.dataset},${e.tile},${e.layer},${e.featureIndex},${e.geometryType},${e.extent},${e.x},${e.y},${e.xOffset},${e.yOffset},${e.xDirection},${e.yDirection},"${e.xBucket}","${e.yBucket}","${e.properties.name || ''}","${e.properties.class || ''}"`,
+    )
+    .join('\n');
   fs.writeFileSync(path.join(ANALYSIS_DIR, 'offset-distribution.csv'), csvHeader + csvRows);
 
   // ─── Write Markdown histogram ───────────────────────────────────────────
   const sortedBuckets = Object.entries(histogram).sort((a, b) => {
     // Sort by numeric magnitude, negatives first
-    const parseKey = k => {
+    const parseKey = (k) => {
       if (k === '0 (in-range)') return 0;
       const match = k.match(/([+-])(\d+|>?\d+)/);
       if (!match) return 0;
@@ -383,7 +413,7 @@ async function main() {
   console.log(`\nArtifacts written to: ${ANALYSIS_DIR}/`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Offset distribution analysis failed:', err);
   process.exit(1);
 });

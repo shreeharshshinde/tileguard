@@ -29,9 +29,10 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
 
           const minAllowed = -buffer;
           const maxAllowed = layer.extent + buffer;
-          const rangeStr = buffer > 0
-            ? `[${minAllowed}, ${maxAllowed}] (extent: ${layer.extent}, buffer: ${buffer})`
-            : `[0, ${layer.extent}]`;
+          const rangeStr =
+            buffer > 0
+              ? `[${minAllowed}, ${maxAllowed}] (extent: ${layer.extent}, buffer: ${buffer})`
+              : `[0, ${layer.extent}]`;
 
           context.report({
             message: `Coordinate "${issue.point?.x},${issue.point?.y}" in layer "${layerName}" is outside allowed range ${rangeStr}.`,

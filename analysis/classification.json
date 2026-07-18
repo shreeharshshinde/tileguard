@@ -51,7 +51,15 @@
     },
     "geometry-clipping-buffer": {
       "status": "intentional_implementation_behavior",
-      "affectedLayers": ["countries", "water", "boundary", "landcover", "park", "waterway", "geolines"],
+      "affectedLayers": [
+        "countries",
+        "water",
+        "boundary",
+        "landcover",
+        "park",
+        "waterway",
+        "geolines"
+      ],
       "affectedGeometryTypes": ["Polygon", "LineString"],
       "offsetRange": {
         "min": 1,

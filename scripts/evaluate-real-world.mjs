@@ -4,7 +4,7 @@ import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 // Define the tile list (85 tiles from z0-z3, plus 15 high-zoom urban tiles for Tokyo/Manhattan)
 const baseTiles = [];
 for (let z = 0; z <= 3; z++) {
-  const limit = Math.pow(2, z);
+  const limit = 2 ** z;
   for (let x = 0; x < limit; x++) {
     for (let y = 0; y < limit; y++) {
       baseTiles.push({ z, x, y });
@@ -28,7 +28,7 @@ const urbanTiles = [
   { z: 14, x: 4825, y: 6159 }, // Manhattan Core
   { z: 14, x: 4826, y: 6159 },
   { z: 14, x: 4825, y: 6160 },
-  { z: 14, x: 4826, y: 6160 }
+  { z: 14, x: 4826, y: 6160 },
 ];
 
 const allTiles = [...baseTiles, ...urbanTiles];
@@ -36,16 +36,18 @@ const allTiles = [...baseTiles, ...urbanTiles];
 const datasets = [
   {
     name: 'OpenMapTiles (MapLibre Demo)',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`
+    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'OpenFreeMap',
-    urlPattern: (z, x, y) => `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf`
+    urlPattern: (z, x, y) =>
+      `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'CARTO Streets',
-    urlPattern: (z, x, y) => `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt`
-  }
+    urlPattern: (z, x, y) =>
+      `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt`,
+  },
 ];
 
 async function runEvaluation() {
@@ -53,7 +55,7 @@ async function runEvaluation() {
 
   // Silence standard logger to clean script output
   const silentReporter = {
-    report() { }
+    report() {},
   };
 
   const engine = createEngine({
@@ -65,8 +67,8 @@ async function runEvaluation() {
       'tile/unclosed-ring': 'error',
       'tile/zero-area-ring': 'error',
       'tile/self-intersection': 'error',
-      'tile/no-empty': 'warning'
-    }
+      'tile/no-empty': 'warning',
+    },
   });
 
   const summaryTable = [];
@@ -107,7 +109,7 @@ async function runEvaluation() {
       Dataset: dataset.name,
       Tiles: processed,
       Diagnostics: totalDiagnostics,
-      Breakdown: ruleDiagnostics
+      Breakdown: ruleDiagnostics,
     });
   }
 
@@ -115,7 +117,7 @@ async function runEvaluation() {
   console.table(summaryTable);
 }
 
-runEvaluation().catch(err => {
+runEvaluation().catch((err) => {
   console.error('Evaluation run failed:', err);
   process.exit(1);
 });

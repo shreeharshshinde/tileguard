@@ -42,9 +42,9 @@
  * See Decision D7 in the CLI implementation plan.
  */
 
-import fg from 'fast-glob';
 import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import fg from 'fast-glob';
 
 /**
  * File extensions treated as TileGuard artifacts in the v0.5.0 release.

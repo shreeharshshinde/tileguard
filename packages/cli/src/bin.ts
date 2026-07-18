@@ -60,10 +60,8 @@ program
   .argument('<sources...>', 'Files, directories, globs, or "." to validate')
   .option('-c, --config <path>', 'Path to config file (auto-discovered if omitted)')
   .option('-r, --reporter <id>', 'Reporter to use: text | json')
-  .option(
-    '--max-diagnostics <n>',
-    'Maximum total diagnostics to collect',
-    (v: string) => parseInt(v, 10),
+  .option('--max-diagnostics <n>', 'Maximum total diagnostics to collect', (v: string) =>
+    parseInt(v, 10),
   )
   .action(async (sources: string[], flags) => {
     const result = await runCheck(sources, flags);
@@ -87,7 +85,7 @@ rules
   .command('list')
   .description(
     'List all rules from configured plugins ' +
-    '(shows default severities as declared by plugins, not your config\'s overrides)',
+      "(shows default severities as declared by plugins, not your config's overrides)",
   )
   .option('-c, --config <path>', 'Path to config file (auto-discovered if omitted)')
   .option('-f, --format <format>', 'Output format: text | json', 'text')

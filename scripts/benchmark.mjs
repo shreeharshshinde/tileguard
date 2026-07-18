@@ -49,16 +49,18 @@ for (let x = 0; x < 4; x++) {
 const DATASETS = [
   {
     name: 'OpenMapTiles',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`
+    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'OpenFreeMap',
-    urlPattern: (z, x, y) => `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf`
+    urlPattern: (z, x, y) =>
+      `https://tiles.openfreemap.org/planet/20260621_080001_pt/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'CARTO Streets',
-    urlPattern: (z, x, y) => `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt`
-  }
+    urlPattern: (z, x, y) =>
+      `https://tiles-a.basemaps.cartocdn.com/vectortiles/carto.streets/v1/${z}/${x}/${y}.mvt`,
+  },
 ];
 
 async function ensureCached(dataset) {
@@ -103,11 +105,15 @@ async function ensureCached(dataset) {
     }
   }
 
-  console.log(`[Cache Summary for ${dataset.name}]: ${successCount}/${BENCHMARK_TILES.length} tiles cached successfully, ${failCount} failed.`);
-  
+  console.log(
+    `[Cache Summary for ${dataset.name}]: ${successCount}/${BENCHMARK_TILES.length} tiles cached successfully, ${failCount} failed.`,
+  );
+
   const successRate = successCount / BENCHMARK_TILES.length;
-  if (successRate < 0.90) {
-    throw new Error(`CRITICAL: Cache success rate for ${dataset.name} is ${(successRate * 100).toFixed(1)}%, which is below the required 90% threshold. Aborting benchmark run.`);
+  if (successRate < 0.9) {
+    throw new Error(
+      `CRITICAL: Cache success rate for ${dataset.name} is ${(successRate * 100).toFixed(1)}%, which is below the required 90% threshold. Aborting benchmark run.`,
+    );
   }
 
   return paths;
@@ -152,11 +158,11 @@ async function runBenchmark() {
       'tile/unclosed-ring': 'error',
       'tile/zero-area-ring': 'error',
       'tile/self-intersection': 'error',
-      'tile/no-empty': 'warning'
+      'tile/no-empty': 'warning',
     },
     options: {
-      maxDiagnostics: 100_000 // Avoid truncation artifacts
-    }
+      maxDiagnostics: 100_000, // Avoid truncation artifacts
+    },
   });
 
   const results = [];
@@ -164,7 +170,7 @@ async function runBenchmark() {
   for (const dataset of DATASETS) {
     console.log(`Caching and preparing dataset: ${dataset.name}...`);
     const filepaths = await ensureCached(dataset);
-    
+
     // Find first valid file for warm-up
     let warmupFile = null;
     for (const fp of filepaths) {
@@ -197,11 +203,13 @@ async function runBenchmark() {
       if (!fs.existsSync(filepath) || fs.statSync(filepath).size === 0) {
         continue; // Skip missing/empty tiles
       }
-      
+
       const result = await engine.run([filepath]);
-      
+
       // Safety Check: Verify that we did not fail to load the tile
-      const loadFailure = result.diagnostics.find(d => d.ruleId === 'artifact/load-failed' || d.ruleId === 'artifact/no-provider');
+      const loadFailure = result.diagnostics.find(
+        (d) => d.ruleId === 'artifact/load-failed' || d.ruleId === 'artifact/no-provider',
+      );
       if (loadFailure) {
         throw new Error(`CRITICAL: Tile failed to load during benchmark: ${loadFailure.message}`);
       }
@@ -211,13 +219,13 @@ async function runBenchmark() {
     }
 
     const endTime = process.hrtime.bigint();
-    
+
     // Force final GC before measuring memory delta
     if (global.gc) {
       global.gc();
       global.gc();
     }
-    
+
     const endMemory = process.memoryUsage().heapUsed;
 
     const timeNs = endTime - startTime;
@@ -232,7 +240,7 @@ async function runBenchmark() {
       avgTimeMs: (timeMs / processed).toFixed(2),
       memoryMb: memoryDiffMb.toFixed(2),
       throughput,
-      diagnostics: totalDiagnostics
+      diagnostics: totalDiagnostics,
     });
   }
 
@@ -255,7 +263,7 @@ This report presents the execution performance, memory overhead, and diagnostic 
 
 | Dataset | Tiles Processed | Total Time (ms) | Avg Time/Tile (ms) | Heap Memory Diff (MB) | Throughput (tiles/sec) | Diagnostics Found |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-${results.map(r => `| **${r.dataset}** | ${r.tiles} | ${r.timeMs} | ${r.avgTimeMs} | ${r.memoryMb} | ${r.throughput} | ${r.diagnostics} |`).join('\n')}
+${results.map((r) => `| **${r.dataset}** | ${r.tiles} | ${r.timeMs} | ${r.avgTimeMs} | ${r.memoryMb} | ${r.throughput} | ${r.diagnostics} |`).join('\n')}
 
 ---
 
@@ -275,7 +283,7 @@ Based on execution times and geometry structure:
   console.log(`\nBenchmark run completed successfully. Report saved to: ${reportPath}`);
 }
 
-runBenchmark().catch(err => {
+runBenchmark().catch((err) => {
   console.error('Benchmark execution failed:', err);
   process.exit(1);
 });

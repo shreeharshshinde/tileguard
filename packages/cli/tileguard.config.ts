@@ -9,8 +9,8 @@
  */
 
 import type { TileGuardConfig } from '@tileguard/core';
-import { tilePlugin } from '@tileguard/tile-rules';
 import { stylePlugin } from '@tileguard/style-rules';
+import { tilePlugin } from '@tileguard/tile-rules';
 
 const config: TileGuardConfig = {
   plugins: [tilePlugin, stylePlugin],

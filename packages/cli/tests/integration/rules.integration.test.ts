@@ -48,10 +48,7 @@ describe('CLI Integration: rules', () => {
 
   describe('list', () => {
     it('exits 0 and reports no rules when plugins are not configured', () => {
-      writeFileSync(
-        join(FIXTURE_DIR, 'tileguard.config.json'),
-        JSON.stringify({}),
-      );
+      writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
 
       const result = runRules(['list']);
 
@@ -62,10 +59,7 @@ describe('CLI Integration: rules', () => {
     it('routes "No rules found" to stderr, not stdout — Proposal 2 stream routing', () => {
       // runRulesList returns { message: 'No rules found...' } with no output.
       // bin.ts present() writes result.message to stderr; stdout must be empty.
-      writeFileSync(
-        join(FIXTURE_DIR, 'tileguard.config.json'),
-        JSON.stringify({}),
-      );
+      writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
 
       const result = runRules(['list']);
 
@@ -75,10 +69,7 @@ describe('CLI Integration: rules', () => {
     });
 
     it('outputs a valid empty JSON array when format is json and no plugins are configured', () => {
-      writeFileSync(
-        join(FIXTURE_DIR, 'tileguard.config.json'),
-        JSON.stringify({}),
-      );
+      writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
 
       const result = runRules(['list', '--format', 'json']);
 

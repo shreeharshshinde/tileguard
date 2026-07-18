@@ -13,8 +13,8 @@
  *   - process.exit is never called (D3 enforcement)
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ── Module mock — must be declared before any imports that use them ───────
 vi.mock('@tileguard/config', () => ({

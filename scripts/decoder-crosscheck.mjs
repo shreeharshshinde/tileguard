@@ -13,13 +13,13 @@
  * must not proceed — it would be measuring a decoder bug, not tile data.
  */
 
+import { VectorTile } from '@mapbox/vector-tile';
 import fs from 'fs';
 import path from 'path';
+import { PbfReader as Pbf } from 'pbf';
 import { fileURLToPath } from 'url';
 import { gunzipSync } from 'zlib';
 import { decodeMvt } from '../packages/tile-rules/dist/pbf-decoder.js';
-import { VectorTile } from '@mapbox/vector-tile';
-import { PbfReader as Pbf } from 'pbf';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -108,12 +108,10 @@ function decodeWithTileGuard(bytes) {
       if (feature.type === 1) {
         // Point: geometry is flat array of {x,y} — wrap each point in its own sub-array
         // to match reference decoder's [[p1], [p2], ...] format
-        coords = feature.geometry.map(p => [{ x: p.x, y: p.y }]);
+        coords = feature.geometry.map((p) => [{ x: p.x, y: p.y }]);
       } else {
         // LineString/Polygon: geometry is array of arrays of {x,y}
-        coords = feature.geometry.map(ring =>
-          ring.map(p => ({ x: p.x, y: p.y }))
-        );
+        coords = feature.geometry.map((ring) => ring.map((p) => ({ x: p.x, y: p.y })));
       }
 
       features.push({
@@ -222,8 +220,14 @@ function compareDecoders(tgLayers, refLayers, tileId) {
       }
 
       // Dimension 5: Feature properties
-      const refPropStr = JSON.stringify(refFeature.properties, Object.keys(refFeature.properties).sort());
-      const tgPropStr = JSON.stringify(tgFeature.properties, Object.keys(tgFeature.properties).sort());
+      const refPropStr = JSON.stringify(
+        refFeature.properties,
+        Object.keys(refFeature.properties).sort(),
+      );
+      const tgPropStr = JSON.stringify(
+        tgFeature.properties,
+        Object.keys(tgFeature.properties).sort(),
+      );
 
       if (refPropStr !== tgPropStr) {
         const refKeys = Object.keys(refFeature.properties).sort();
@@ -322,7 +326,9 @@ async function main() {
 
   console.log('\n=== VERDICT ===');
   if (allDivergences.length === 0) {
-    console.log(`✅ PASS — TileGuard decoder matches reference across ${totalFeatures} features in ${totalLayers} layers.`);
+    console.log(
+      `✅ PASS — TileGuard decoder matches reference across ${totalFeatures} features in ${totalLayers} layers.`,
+    );
     console.log('   Hypothesis C (decoder bug) is ELIMINATED.');
     console.log('   Offset distribution analysis (Step 1.2) may proceed.');
   } else {
@@ -332,7 +338,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Decoder cross-validation failed:', err);
   process.exit(1);
 });

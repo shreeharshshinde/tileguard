@@ -89,8 +89,8 @@ describe('expandSources', () => {
   it('handles mixed source types in a single call', async () => {
     const result = await expandSources([
       join(FIXTURE_DIR, 'tile.pbf'), // plain file — passes through
-      FIXTURE_DIR,                    // directory — expanded recursively
-      '/nonexistent/path.pbf',        // nonexistent — passes through
+      FIXTURE_DIR, // directory — expanded recursively
+      '/nonexistent/path.pbf', // nonexistent — passes through
     ]);
 
     expect(result.some((f) => f.endsWith('tile.pbf'))).toBe(true);
@@ -119,9 +119,9 @@ describe('expandSources', () => {
     const globPattern = join(FIXTURE_DIR, '*.pbf');
 
     const result = await expandSources([
-      filePath,       // explicit pass-through
-      FIXTURE_DIR,    // directory expansion — tile.pbf will appear again
-      globPattern,    // glob expansion — tile.pbf will appear a third time
+      filePath, // explicit pass-through
+      FIXTURE_DIR, // directory expansion — tile.pbf will appear again
+      globPattern, // glob expansion — tile.pbf will appear a third time
     ]);
 
     const tileCount = result.filter((f) => f.endsWith('tile.pbf')).length;

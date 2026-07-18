@@ -17,9 +17,9 @@
  *   - Result is always a plain serializable object
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RunResult } from '@tileguard/core';
 import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ── Module mocks — must be declared before any imports that use them ──────
 vi.mock('@tileguard/config', () => ({
@@ -44,14 +44,17 @@ const mockCreateEngine = createEngine as Mock;
 /** Build a fake engine whose run() resolves with a passing or failing result. */
 function makeFakeEngine(pass: boolean, errorCount = 0): { run: Mock } {
   const runResult: RunResult = {
-    diagnostics: errorCount > 0
-      ? [{
-          ruleId: 'artifact/no-provider',
-          severity: 'error' as const,
-          message: 'no provider for this source',
-          artifact: { type: 'VectorTile' as const, source: 'tile.pbf' },
-        }]
-      : [],
+    diagnostics:
+      errorCount > 0
+        ? [
+            {
+              ruleId: 'artifact/no-provider',
+              severity: 'error' as const,
+              message: 'no provider for this source',
+              artifact: { type: 'VectorTile' as const, source: 'tile.pbf' },
+            },
+          ]
+        : [],
     summary: {
       errors: errorCount,
       warnings: 0,
