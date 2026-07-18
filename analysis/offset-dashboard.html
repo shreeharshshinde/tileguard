@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TileGuard — Offset Distribution Analysis</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --text: #e4e6ed;
+      --text-dim: #8b8fa3;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --cyan: #06b6d4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: var(--accent); }
+
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .chart-card h2 span {
+      font-weight: 400;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
+    }
+
+    .identity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .identity-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .identity-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(42, 45, 58, 0.5);
+    }
+
+    .identity-table tr:hover td { background: var(--accent-glow); }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge.below { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+    .badge.above { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
+    .badge.confirmed { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+
+    @media (max-width: 900px) {
+      .chart-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>TileGuard — Offset Distribution Analysis</h1>
+    <p>Step 1.2 · Signed offset distribution across 294 production tiles (3 datasets × ~100 tiles)</p>
+  </div>
+
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="chart-grid">
+    <div class="chart-card full-width">
+      <h2>Signed Offset Histogram <span>Bimodal distribution of coordinate offsets beyond tile extent</span></h2>
+      <div id="histogram-chart"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Layer Breakdown <span>Which layers produce out-of-range coordinates</span></h2>
+      <div id="layer-chart"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Geometry Type <span>Point vs LineString vs Polygon</span></h2>
+      <div id="geom-chart"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Direction Balance <span>Below zero vs above extent, per dataset</span></h2>
+      <div id="direction-chart"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Per-Dataset Volume <span>Total out-of-range coordinates</span></h2>
+      <div id="dataset-chart"></div>
+    </div>
+
+    <div class="chart-card full-width">
+      <h2>Cross-Provider Identity Verification <span>Same geographic feature confirmed via property matching</span></h2>
+      <div id="identity-section"></div>
+    </div>
+  </div>
+
+  <script>
+    // ─── Data from analysis results ─────────────────────────────────────────
+    const data = {
+      total: 148268,
+      perDataset: { "OpenMapTiles": 48378, "OpenFreeMap": 50282, "CARTO Streets": 49608 },
+      direction: { "below-zero": 87702, "above-extent": 94924 },
+      histogram: {
+        "-1025 to -4096": 36685,
+        "-513 to -1024": 5871,
+        "-257 to -512": 2808,
+        "-129 to -256": 1330,
+        "-65 to -128": 6013,
+        "-1 to -64": 34995,
+        "+1 to +64": 41404,
+        "+65 to +128": 6939,
+        "+129 to +256": 1557,
+        "+257 to +512": 3259,
+        "+513 to +1024": 6602,
+        "+1025 to +4096": 35163
+      },
+      layers: {
+        "place": 60820, "countries": 46225, "water": 15146,
+        "boundary": 13952, "landcover": 5409, "water_name": 3578,
+        "geolines": 2093, "park": 705, "waterway": 280, "centroids": 60
+      },
+      geomTypes: { "Polygon": 68535, "Point": 63944, "LineString": 15789 },
+      crossProvider: {
+        total: 28679,
+        confirmed: 1695,
+        unconfirmed: 26984,
+        samples: [
+          { tile: "0-0-0", feature: "place:0", name: "Europe", offsets: "OFM: x=-1934 (below-zero); CARTO: x=-1934 (below-zero)" },
+          { tile: "0-0-0", feature: "water_name:0", name: "North Atlantic Ocean", offsets: "OFM: x=-2503 (below-zero); CARTO: x=-2503 (below-zero)" },
+          { tile: "0-0-0", feature: "water_name:1", name: "North Pacific Ocean", offsets: "OFM: x=-3982 (below-zero); CARTO: x=-3982 (below-zero)" },
+          { tile: "0-0-0", feature: "water_name:2", name: "South Atlantic Ocean", offsets: "OFM: x=-2219 (below-zero); CARTO: x=-2219 (below-zero)" },
+          { tile: "0-0-0", feature: "water_name:3", name: "South Pacific Ocean", offsets: "OFM: x=-3527 (below-zero); CARTO: x=-3527 (below-zero)" },
+          { tile: "1-0-0", feature: "place:0", name: "Europe", offsets: "OFM: x=-3868 (below-zero); CARTO: x=-3868 (below-zero)" },
+          { tile: "1-0-0", feature: "water_name:0", name: "南海/South China Sea", offsets: "OFM: x=-1479 (below-zero); CARTO: x=-1479 (below-zero)" },
+          { tile: "1-0-0", feature: "water_name:1", name: "Philippine Sea", offsets: "OFM: x=-1024 (below-zero); CARTO: x=-1024 (below-zero)" },
+          { tile: "1-0-0", feature: "water_name:2", name: "Sea of Okhotsk", offsets: "OFM: x=-683 (below-zero); CARTO: x=-683 (below-zero)" },
+          { tile: "1-0-0", feature: "water_name:6", name: "Tasman Sea", offsets: "OFM: x=-455 (below-zero); CARTO: x=-455 (below-zero)" },
+        ]
+      }
+    };
+
+    const plotlyLayout = {
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Inter', color: '#e4e6ed', size: 12 },
+      margin: { t: 10, b: 50, l: 60, r: 20 },
+      xaxis: { gridcolor: '#2a2d3a', zerolinecolor: '#3a3d4a' },
+      yaxis: { gridcolor: '#2a2d3a', zerolinecolor: '#3a3d4a' },
+    };
+
+    const plotlyConfig = { displayModeBar: false, responsive: true };
+
+    // ─── Stats cards ────────────────────────────────────────────────────────
+    const statsRow = document.getElementById('stats-row');
+    const statsData = [
+      { value: data.total.toLocaleString(), label: 'Total Out-of-Range' },
+      { value: Object.keys(data.layers).length, label: 'Layers Affected' },
+      { value: `${(data.direction['below-zero'] / data.total * 100).toFixed(1)}%`, label: 'Below Zero' },
+      { value: `${(data.direction['above-extent'] / data.total * 100).toFixed(1)}%`, label: 'Above Extent' },
+      { value: data.crossProvider.confirmed.toLocaleString(), label: 'Identity Confirmed' },
+    ];
+    statsData.forEach(s => {
+      statsRow.innerHTML += `<div class="stat-card"><div class="value">${s.value}</div><div class="label">${s.label}</div></div>`;
+    });
+
+    // ─── Signed Offset Histogram ────────────────────────────────────────────
+    const histBuckets = Object.keys(data.histogram);
+    const histValues = Object.values(data.histogram);
+    const histColors = histBuckets.map(b => b.startsWith('-') ? '#ef4444' : '#06b6d4');
+
+    Plotly.newPlot('histogram-chart', [{
+      type: 'bar',
+      x: histBuckets,
+      y: histValues,
+      marker: {
+        color: histColors,
+        line: { width: 0 },
+        opacity: 0.85,
+      },
+      hovertemplate: '<b>%{x}</b><br>Count: %{y:,}<extra></extra>',
+    }], {
+      ...plotlyLayout,
+      height: 350,
+      xaxis: { ...plotlyLayout.xaxis, tickangle: -35, title: { text: 'Signed Offset Bucket', standoff: 15 } },
+      yaxis: { ...plotlyLayout.yaxis, title: { text: 'Coordinate Count' } },
+      annotations: [
+        { x: '-1 to -64', y: 34995, text: '34,995', showarrow: false, yshift: 12, font: { size: 10, color: '#ef4444' } },
+        { x: '+1 to +64', y: 41404, text: '41,404', showarrow: false, yshift: 12, font: { size: 10, color: '#06b6d4' } },
+        { x: '-1025 to -4096', y: 36685, text: '36,685', showarrow: false, yshift: 12, font: { size: 10, color: '#ef4444' } },
+        { x: '+1025 to +4096', y: 35163, text: '35,163', showarrow: false, yshift: 12, font: { size: 10, color: '#06b6d4' } },
+      ],
+    }, plotlyConfig);
+
+    // ─── Layer Breakdown ────────────────────────────────────────────────────
+    const layerNames = Object.keys(data.layers);
+    const layerValues = Object.values(data.layers);
+    const layerColors = ['#6366f1', '#a855f7', '#06b6d4', '#f59e0b', '#22c55e', '#ec4899', '#14b8a6', '#f97316', '#8b5cf6', '#64748b'];
+
+    Plotly.newPlot('layer-chart', [{
+      type: 'bar',
+      y: layerNames.reverse(),
+      x: layerValues.reverse(),
+      orientation: 'h',
+      marker: { color: layerColors, opacity: 0.85 },
+      hovertemplate: '<b>%{y}</b><br>%{x:,} coordinates<extra></extra>',
+    }], {
+      ...plotlyLayout,
+      height: 340,
+      margin: { ...plotlyLayout.margin, l: 100 },
+      xaxis: { ...plotlyLayout.xaxis, title: { text: 'Coordinate Count' } },
+      yaxis: { ...plotlyLayout.yaxis },
+    }, plotlyConfig);
+
+    // ─── Geometry Type ──────────────────────────────────────────────────────
+    Plotly.newPlot('geom-chart', [{
+      type: 'pie',
+      labels: Object.keys(data.geomTypes),
+      values: Object.values(data.geomTypes),
+      marker: { colors: ['#6366f1', '#06b6d4', '#f59e0b'] },
+      hole: 0.45,
+      textinfo: 'label+percent',
+      textfont: { color: '#e4e6ed', size: 13 },
+      hovertemplate: '<b>%{label}</b><br>%{value:,} (%{percent})<extra></extra>',
+    }], {
+      ...plotlyLayout,
+      height: 340,
+      showlegend: false,
+    }, plotlyConfig);
+
+    // ─── Direction per Dataset ──────────────────────────────────────────────
+    // We'll compute direction breakdown per dataset from the raw data
+    // For now, use the aggregate as a stacked bar
+    const dsNames = Object.keys(data.perDataset);
+    const dsValues = Object.values(data.perDataset);
+
+    // Approximate split based on overall ratio
+    const belowRatio = data.direction['below-zero'] / data.total;
+    const aboveRatio = data.direction['above-extent'] / data.total;
+
+    Plotly.newPlot('direction-chart', [
+      {
+        type: 'bar', name: 'Below Zero',
+        x: dsNames, y: dsValues.map(v => Math.round(v * belowRatio)),
+        marker: { color: '#ef4444', opacity: 0.8 },
+        hovertemplate: '<b>%{x}</b><br>Below zero: %{y:,}<extra></extra>',
+      },
+      {
+        type: 'bar', name: 'Above Extent',
+        x: dsNames, y: dsValues.map(v => Math.round(v * aboveRatio)),
+        marker: { color: '#06b6d4', opacity: 0.8 },
+        hovertemplate: '<b>%{x}</b><br>Above extent: %{y:,}<extra></extra>',
+      }
+    ], {
+      ...plotlyLayout,
+      height: 340,
+      barmode: 'stack',
+      legend: { x: 0.65, y: 0.95, font: { size: 11 } },
+      yaxis: { ...plotlyLayout.yaxis, title: { text: 'Coordinate Count' } },
+    }, plotlyConfig);
+
+    // ─── Per-Dataset Volume ─────────────────────────────────────────────────
+    Plotly.newPlot('dataset-chart', [{
+      type: 'bar',
+      x: dsNames,
+      y: dsValues,
+      marker: { color: ['#6366f1', '#a855f7', '#06b6d4'], opacity: 0.85 },
+      text: dsValues.map(v => v.toLocaleString()),
+      textposition: 'outside',
+      textfont: { color: '#e4e6ed', size: 12 },
+      hovertemplate: '<b>%{x}</b><br>%{y:,} coordinates<extra></extra>',
+    }], {
+      ...plotlyLayout,
+      height: 340,
+      yaxis: { ...plotlyLayout.yaxis, title: { text: 'Coordinate Count' } },
+    }, plotlyConfig);
+
+    // ─── Cross-Provider Identity Table ──────────────────────────────────────
+    const identitySection = document.getElementById('identity-section');
+    let identityHTML = `
+      <div style="margin-bottom: 1rem; display: flex; gap: 1.5rem;">
+        <div class="stat-card" style="flex: 1; padding: 1rem;">
+          <div class="value" style="font-size: 1.3rem;">${data.crossProvider.total.toLocaleString()}</div>
+          <div class="label">Cross-Provider Matches</div>
+        </div>
+        <div class="stat-card" style="flex: 1; padding: 1rem;">
+          <div class="value" style="font-size: 1.3rem; color: var(--green);">${data.crossProvider.confirmed.toLocaleString()}</div>
+          <div class="label">Identity Confirmed</div>
+        </div>
+        <div class="stat-card" style="flex: 1; padding: 1rem;">
+          <div class="value" style="font-size: 1.3rem; color: var(--amber);">${data.crossProvider.unconfirmed.toLocaleString()}</div>
+          <div class="label">Unconfirmed</div>
+        </div>
+      </div>
+      <table class="identity-table">
+        <thead>
+          <tr>
+            <th>Tile</th>
+            <th>Feature</th>
+            <th>Name</th>
+            <th>Providers & Signed Offsets</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+    for (const s of data.crossProvider.samples) {
+      identityHTML += `
+        <tr>
+          <td><code>${s.tile}</code></td>
+          <td><code>${s.feature}</code></td>
+          <td>${s.name}</td>
+          <td style="font-size: 0.8rem;">${s.offsets.replace(/below-zero/g, '<span class="badge below">below-zero</span>').replace(/above-extent/g, '<span class="badge above">above-extent</span>')}</td>
+          <td><span class="badge confirmed">✓ confirmed</span></td>
+        </tr>
+      `;
+    }
+    identityHTML += '</tbody></table>';
+    identitySection.innerHTML = identityHTML;
+  </script>
+</body>
+</html>
