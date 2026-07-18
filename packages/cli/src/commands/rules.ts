@@ -24,6 +24,7 @@
  */
 
 import { loadConfig } from '@tileguard/config';
+import type { TileGuardConfig } from '@tileguard/core';
 import { toUsageResult } from '../exit.js';
 import type { CommandResult, RulesListFlags } from '../types.js';
 
@@ -44,7 +45,7 @@ import type { CommandResult, RulesListFlags } from '../types.js';
  */
 export async function runRulesList(flags: RulesListFlags): Promise<CommandResult> {
   // Load config to discover which plugins are active.
-  let config;
+  let config: TileGuardConfig;
   try {
     const loadOptions = flags.config !== undefined ? { configPath: flags.config } : {};
     ({ config } = await loadConfig(loadOptions));
@@ -78,7 +79,7 @@ export async function runRulesList(flags: RulesListFlags): Promise<CommandResult
     // No result.message so stderr is completely silent (safe for piping to `jq`).
     return {
       exitCode: 0,
-      output: JSON.stringify(rules, null, 2) + '\n',
+      output: `${JSON.stringify(rules, null, 2)}\n`,
     };
   }
 
@@ -104,7 +105,7 @@ export async function runRulesList(flags: RulesListFlags): Promise<CommandResult
   return {
     exitCode: 0,
     message: `Found ${rules.length} rule(s):`,
-    output: '\n' + lines.join('\n') + '\n',
+    output: `\n${lines.join('\n')}\n`,
   };
 }
 

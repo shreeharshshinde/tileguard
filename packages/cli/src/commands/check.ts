@@ -22,6 +22,7 @@
  */
 
 import { loadConfig } from '@tileguard/config';
+import type { TileGuardConfig } from '@tileguard/core';
 import { createEngine } from '@tileguard/core';
 import { CliUsageError } from '../errors.js';
 import { toRunResult, toUsageResult } from '../exit.js';
@@ -37,14 +38,11 @@ import type { CheckFlags, CommandResult } from '../types.js';
  * @param flags - Parsed CLI flags from commander.
  * @returns A `CommandResult` with exit code 0 (pass), 1 (fail), or 2 (error).
  */
-export async function runCheck(
-  sources: string[],
-  flags: CheckFlags,
-): Promise<CommandResult> {
+export async function runCheck(sources: string[], flags: CheckFlags): Promise<CommandResult> {
   // ── 1. Load configuration ──────────────────────────────────────────────
   // ConfigNotFoundError, ConfigLoadError, and ConfigValidationError from
   // @tileguard/config are caught here and surfaced as code-2 results.
-  let fileConfig;
+  let fileConfig: TileGuardConfig;
   try {
     const loadOptions = flags.config !== undefined ? { configPath: flags.config } : {};
     ({ config: fileConfig } = await loadConfig(loadOptions));
@@ -58,9 +56,7 @@ export async function runCheck(
   const expandedSources = await expandSources(sources);
   if (expandedSources.length === 0) {
     return toUsageResult(
-      new CliUsageError(
-        'No sources provided or matched. Usage: tileguard check <sources...>',
-      ),
+      new CliUsageError('No sources provided or matched. Usage: tileguard check <sources...>'),
     );
   }
 
@@ -72,7 +68,7 @@ export async function runCheck(
 
   // ── 4. Resolve the reporter ────────────────────────────────────────────
   // Throws CliUsageError for unknown IDs, caught and returned as code-2.
-  let reporter;
+  let reporter: ReturnType<typeof resolveReporterById>;
   try {
     reporter = resolveReporterById(
       typeof mergedConfig.reporter === 'string' ? mergedConfig.reporter : undefined,
