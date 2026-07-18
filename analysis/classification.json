@@ -45,7 +45,9 @@
         "Roughly symmetric direction balance rules out directional encoding artifacts"
       ],
       "specReference": "MVT Specification §4.3.1 permits features to extend beyond the tile's clipping bounds for cross-tile rendering",
-      "action": "suppress_via_configuration"
+      "action": "suppress_via_layer_exclusion",
+      "defaultExcludeLayers": ["place", "water_name", "centroids"],
+      "note": "Layer exclusion, NOT geometry-type exclusion. All 63,944 Point entries come from exactly these three layers. Point features in other layers (e.g., poi, address) retain full coordinate-range protection."
     },
     "geometry-clipping-buffer": {
       "status": "intentional_implementation_behavior",

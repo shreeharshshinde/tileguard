@@ -142,17 +142,20 @@ Deferred to Step 5. Suspected quantization-induced false positives at tile edges
 | # | Action | Justification | Target |
 | :--- | :--- | :--- | :--- |
 | 1 | **Set default buffer to 80** | Covers P95 of all geometry clipping layers | `tile/coordinate-range` rule config |
-| 2 | **Add `excludeLayers` option** | Allow users to suppress specific label layers | `tile/coordinate-range` rule config |
-| 3 | **Exclude Point geometry by default** for coordinate-range | Label duplication is intentional; validating Point coordinates against extent is not meaningful | `tile/coordinate-range` rule logic |
+| 2 | **Add `excludeLayers` option** | Allow users to suppress specific label-duplication layers | `tile/coordinate-range` rule config |
+| 3 | **Default `excludeLayers` to `['place', 'water_name', 'centroids']`** | These three layers account for all 63,944 label-duplication entries (verified: 0 Point entries from any other layer). Targeting by layer preserves coordinate-range protection for Point features in other layers (e.g., `poi`, `address`) where a genuinely corrupt coordinate should still be caught. | `tile/coordinate-range` rule config |
 | 4 | **Document buffer values** | Users should understand why 80 is the default and when to increase it | Rule documentation |
+
+> [!IMPORTANT]
+> Action #3 uses **layer exclusion**, not geometry-type exclusion. Disabling the rule for all Point features would go beyond what the evidence supports — the data only demonstrates that these three specific layers produce intentional label duplication. A blanket Point exclusion would silently suppress real violations in any Point-geometry layer not in this dataset.
 
 ### Expected Impact
 
-With buffer=80 and Point geometry exclusion:
-- **Label duplication (63,944):** 100% suppressed by Point exclusion
-- **Geometry clipping ≤80 (84,324):** ~100% suppressed by buffer=80
-- **Remaining diagnostics:** ~0 (no entries exceed buffer=80 in any geometry layer)
-- **Estimated false-positive reduction:** ≥99%
+With buffer=80 and `excludeLayers: ['place', 'water_name', 'centroids']`:
+- **Label duplication (63,944):** 100% suppressed by layer exclusion (verified: all 63,944 Point entries come from exactly these three layers)
+- **Geometry clipping ≤80 (84,324):** 100% suppressed by buffer=80 (verified: no geometry-layer entry exceeds offset=80)
+- **Remaining diagnostics:** 0
+- **Measured false-positive reduction:** 100% (148,268 → 0)
 
 This exceeds the ≥80% acceptance threshold defined in the plan.
 
