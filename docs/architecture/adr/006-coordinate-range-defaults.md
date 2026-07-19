@@ -42,12 +42,13 @@ Targeting the three specific layers proven to use label duplication (`place`, `w
 ## Consequences
 
 ### Benefits
-- **100% False-Positive Reduction:** In our 294-tile production sample, coordinate-range false positives drop from 148,268 to 0.
+- **Expected 100% False-Positive Reduction:** Based on classification data, this configuration is projected to eliminate all 148,268 false positives in our 294-tile sample, pending verification in Step 4.
 - **Zero False-Negative Increase:** Validation remains fully active for Point coordinates in other layers and geometry coordinates exceeding the 80-unit buffer.
 - **Configurability:** Users can adjust the buffer or override `excludeLayers` via their `tileguard.config.ts` if their tile compiler uses different schemas or buffers.
 
 ### Costs
 - **Slightly more complex rule options:** The rule options schema now supports both `buffer` (number) and `excludeLayers` (array of strings).
+- **Schema dependency:** The default `excludeLayers` values are tailored to OpenMapTiles/Planetiler schema conventions. Users with alternative schemas (e.g., custom Tippecanoe-generated tiles or distinct layer names) must configure their own custom list in `tileguard.config.ts` to suppress label-duplication false positives.
 
 ## Alternatives Considered
 
@@ -55,7 +56,7 @@ Targeting the three specific layers proven to use label duplication (`place`, `w
 Exclude all Point features from validation. Rejected because it would leave other Point layers (e.g., POIs, addresses) vulnerable to undetected coordinate corruption.
 
 ### Alternative 2: Subsuming Label Duplication into a Large Buffer (e.g., 4096)
-Increase the buffer to 4096 to cover label offsets. Rejected because a buffer of 4096 effectively disables the rule for all layers and geometries, letting corrupted coordinates pass undetected.
+Increase the buffer to 4096 to cover label offsets. Rejected because a buffer of 4096 would suppress not just label duplication but also any genuinely corrupt Point coordinate up to a full tile-width away, providing no meaningful protection for Point geometry at all.
 
 ### Alternative 3: Provider-Specific Presets
 Build different default settings depending on the tile provider. Rejected because it adds unnecessary architectural complexity. A single default configuration (buffer=80, excluding the three standard label layers) resolves 100% of false positives across all three tested providers.
