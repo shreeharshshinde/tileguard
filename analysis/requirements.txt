@@ -1,0 +1,9 @@
+# Data processing
+pandas
+
+# Visualization
+plotly
+
+# Jupyter Notebook support
+nbformat
+jupyter
