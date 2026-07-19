@@ -1,0 +1,84 @@
+Found 405 coordinate-range issues.
+Issues by layer: { park: 5, housenumber: 400 }
+Sample issues: [
+  {
+    tile: '5/28/14',
+    layer: 'park',
+    message: 'Coordinate "-3550,3883" in layer "park" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: -3550, y: 3883 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '5/28/14',
+    layer: 'park',
+    message: 'Coordinate "-2644,7977" in layer "park" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: -2644, y: 7977 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '5/28/14',
+    layer: 'park',
+    message: 'Coordinate "-3256,4592" in layer "park" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: -3256, y: 4592 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '5/28/14',
+    layer: 'park',
+    message: 'Coordinate "-3908,2368" in layer "park" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: -3908, y: 2368 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '5/28/14',
+    layer: 'park',
+    message: 'Coordinate "4754,1786" in layer "park" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: 4754, y: 1786 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '14/4825/6159',
+    layer: 'housenumber',
+    message: 'Coordinate "3461,4191" in layer "housenumber" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: 3461, y: 4191 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '14/4825/6159',
+    layer: 'housenumber',
+    message: 'Coordinate "4207,2518" in layer "housenumber" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: 4207, y: 2518 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '14/4825/6159',
+    layer: 'housenumber',
+    message: 'Coordinate "4220,2833" in layer "housenumber" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: 4220, y: 2833 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '14/4825/6159',
+    layer: 'housenumber',
+    message: 'Coordinate "-124,2920" in layer "housenumber" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: -124, y: 2920 },
+    buffer: 80,
+    extent: 4096
+  },
+  {
+    tile: '14/4825/6159',
+    layer: 'housenumber',
+    message: 'Coordinate "4205,3087" in layer "housenumber" is outside allowed range [-80, 4176] (extent: 4096, buffer: 80).',
+    point: { x: 4205, y: 3087 },
+    buffer: 80,
+    extent: 4096
+  }
+]
