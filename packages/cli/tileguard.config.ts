@@ -15,7 +15,6 @@ import { tilePlugin } from '@tileguard/tile-rules';
 const config: TileGuardConfig = {
   plugins: [tilePlugin, stylePlugin],
   rules: {
-    'tile/coordinate-range': ['error', { buffer: 64 }],
     'tile/self-intersection': 'warning',
     'tile/no-empty': 'warning',
   },

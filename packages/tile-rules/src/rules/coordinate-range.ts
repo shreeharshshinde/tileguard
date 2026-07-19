@@ -4,6 +4,7 @@ import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 
 export interface CoordinateRangeOptions {
   readonly buffer?: number;
+  readonly excludeLayers?: readonly string[];
 }
 
 export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
@@ -19,9 +20,18 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
 
   create(context) {
     const tile = getVectorTile(context.artifact);
-    const buffer = context.options?.buffer ?? 0;
+
+    // Default clipping buffer derived from empirical evaluation of production vector tiles.
+    const buffer = context.options?.buffer ?? 80;
+
+    // Skip layers that use label duplication (placing points far outside extent for cross-tile rendering).
+    const excludeLayers = new Set(
+      context.options?.excludeLayers ?? ['place', 'water_name', 'centroids'],
+    );
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
+      if (excludeLayers.has(layerName)) continue;
+
       for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findCoordinateRangeIssues(feature, layer.extent, buffer)) {
