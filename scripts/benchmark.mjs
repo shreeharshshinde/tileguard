@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createEngine } from '../packages/core/dist/index.js';
 import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
@@ -8,6 +8,38 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CACHE_DIR = path.join(__dirname, '..', 'fixtures', 'benchmark-cache');
+const args = new Map(
+  process.argv.slice(2).map((arg) => {
+    const [key, value] = arg.split('=');
+    return [key, value ?? true];
+  }),
+);
+const mode = args.get('--mode') ?? 'after';
+const jsonOutput = args.has('--json');
+
+function buildRules() {
+  const rules = {
+    'tile/degenerate-geometry': 'error',
+    'tile/unclosed-ring': 'error',
+    'tile/zero-area-ring': 'error',
+    'tile/self-intersection': 'error',
+    'tile/no-empty': 'warning',
+  };
+
+  if (mode === 'legacy') {
+    rules['tile/coordinate-range'] = ['error', { buffer: 0, excludeLayers: [] }];
+  } else if (mode === 'after') {
+    rules['tile/coordinate-range'] = 'error';
+  } else if (mode !== 'disabled') {
+    throw new Error(`Unknown benchmark mode: ${mode}`);
+  }
+
+  return rules;
+}
+
+function log(message) {
+  if (!jsonOutput) console.log(message);
+}
 
 // Dynamically generate a list of 100 tiles:
 // Zoom 0 (1 tile)
@@ -105,7 +137,7 @@ async function ensureCached(dataset) {
     }
   }
 
-  console.log(
+  log(
     `[Cache Summary for ${dataset.name}]: ${successCount}/${BENCHMARK_TILES.length} tiles cached successfully, ${failCount} failed.`,
   );
 
@@ -142,8 +174,9 @@ function getDirInfo(dirPath) {
 }
 
 async function runBenchmark() {
-  console.log('=== TILEGUARD BENCHMARK RUN ===');
-  console.log('Preparing cache directory...');
+  log('=== TILEGUARD BENCHMARK RUN ===');
+  log(`Mode: ${mode}`);
+  log('Preparing cache directory...');
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
   }
@@ -152,14 +185,7 @@ async function runBenchmark() {
   const engine = createEngine({
     plugins: [tilePlugin],
     reporter: silentReporter,
-    rules: {
-      'tile/coordinate-range': ['error', { buffer: 64 }],
-      'tile/degenerate-geometry': 'error',
-      'tile/unclosed-ring': 'error',
-      'tile/zero-area-ring': 'error',
-      'tile/self-intersection': 'error',
-      'tile/no-empty': 'warning',
-    },
+    rules: buildRules(),
     options: {
       maxDiagnostics: 100_000, // Avoid truncation artifacts
     },
@@ -168,7 +194,7 @@ async function runBenchmark() {
   const results = [];
 
   for (const dataset of DATASETS) {
-    console.log(`Caching and preparing dataset: ${dataset.name}...`);
+    log(`Caching and preparing dataset: ${dataset.name}...`);
     const filepaths = await ensureCached(dataset);
 
     // Find first valid file for warm-up
@@ -193,10 +219,12 @@ async function runBenchmark() {
       global.gc(); // Double GC to ensure all generations are swept
     }
 
-    const startMemory = process.memoryUsage().heapUsed;
+    let peakHeap = 0;
+    let peakRss = 0;
     const startTime = process.hrtime.bigint();
 
     let totalDiagnostics = 0;
+    const ruleDiagnostics = {};
     let processed = 0;
 
     for (const filepath of filepaths) {
@@ -216,6 +244,12 @@ async function runBenchmark() {
 
       processed++;
       totalDiagnostics += result.diagnostics.length;
+      for (const diag of result.diagnostics) {
+        ruleDiagnostics[diag.ruleId] = (ruleDiagnostics[diag.ruleId] ?? 0) + 1;
+      }
+      const mem = process.memoryUsage();
+      peakHeap = Math.max(peakHeap, mem.heapUsed);
+      peakRss = Math.max(peakRss, mem.rss);
     }
 
     const endTime = process.hrtime.bigint();
@@ -226,29 +260,45 @@ async function runBenchmark() {
       global.gc();
     }
 
-    const endMemory = process.memoryUsage().heapUsed;
-
     const timeNs = endTime - startTime;
     const timeMs = Number(timeNs) / 1_000_000;
-    const memoryDiffMb = (endMemory - startMemory) / 1024 / 1024;
-    const throughput = (processed / (timeMs / 1000)).toFixed(2);
+    const throughput = processed / (timeMs / 1000);
 
     results.push({
       dataset: dataset.name,
+      mode,
       tiles: processed,
-      timeMs: timeMs.toFixed(2),
-      avgTimeMs: (timeMs / processed).toFixed(2),
-      memoryMb: memoryDiffMb.toFixed(2),
+      timeMs,
+      avgTimeMs: timeMs / processed,
+      peakHeapMb: peakHeap / 1024 / 1024,
+      peakRssMb: peakRss / 1024 / 1024,
       throughput,
       diagnostics: totalDiagnostics,
+      ruleDiagnostics,
     });
   }
 
   // Verify entire cache directory specs
   const cacheInfo = getDirInfo(CACHE_DIR);
-  console.log(`\n=== CACHE VERIFICATION ===`);
-  console.log(`Total valid cache files: ${cacheInfo.fileCount}`);
-  console.log(`Total cache size: ${(cacheInfo.totalBytes / 1024 / 1024).toFixed(2)} MB`);
+  log(`\n=== CACHE VERIFICATION ===`);
+  log(`Total valid cache files: ${cacheInfo.fileCount}`);
+  log(`Total cache size: ${(cacheInfo.totalBytes / 1024 / 1024).toFixed(2)} MB`);
+
+  if (jsonOutput) {
+    console.log(
+      JSON.stringify({
+        type: 'tileguard-benchmark',
+        mode,
+        timestamp: new Date().toISOString(),
+        cache: {
+          fileCount: cacheInfo.fileCount,
+          totalBytes: cacheInfo.totalBytes,
+        },
+        results,
+      }),
+    );
+    return;
+  }
 
   // Generate Markdown report
   const timestamp = new Date().toISOString();
@@ -261,9 +311,9 @@ This report presents the execution performance, memory overhead, and diagnostic 
 
 ### Performance Results Table
 
-| Dataset | Tiles Processed | Total Time (ms) | Avg Time/Tile (ms) | Heap Memory Diff (MB) | Throughput (tiles/sec) | Diagnostics Found |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-${results.map((r) => `| **${r.dataset}** | ${r.tiles} | ${r.timeMs} | ${r.avgTimeMs} | ${r.memoryMb} | ${r.throughput} | ${r.diagnostics} |`).join('\n')}
+| Dataset | Tiles Processed | Total Time (ms) | Avg Time/Tile (ms) | Peak Heap (MB) | Peak RSS (MB) | Throughput (tiles/sec) | Diagnostics Found |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+${results.map((r) => `| **${r.dataset}** | ${r.tiles} | ${r.timeMs.toFixed(2)} | ${r.avgTimeMs.toFixed(2)} | ${r.peakHeapMb.toFixed(2)} | ${r.peakRssMb.toFixed(2)} | ${r.throughput.toFixed(2)} | ${r.diagnostics} |`).join('\n')}
 
 ---
 

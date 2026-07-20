@@ -1,6 +1,39 @@
 import { createEngine } from '../packages/core/dist/index.js';
 import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
+const args = new Map(
+  process.argv.slice(2).map((arg) => {
+    const [key, value] = arg.split('=');
+    return [key, value ?? true];
+  }),
+);
+const mode = args.get('--mode') ?? 'after';
+const jsonOutput = args.has('--json');
+
+function buildRules() {
+  const rules = {
+    'tile/degenerate-geometry': 'error',
+    'tile/unclosed-ring': 'error',
+    'tile/zero-area-ring': 'error',
+    'tile/self-intersection': 'error',
+    'tile/no-empty': 'warning',
+  };
+
+  if (mode === 'legacy') {
+    rules['tile/coordinate-range'] = ['error', { buffer: 0, excludeLayers: [] }];
+  } else if (mode === 'after') {
+    rules['tile/coordinate-range'] = 'error';
+  } else if (mode !== 'disabled') {
+    throw new Error(`Unknown evaluation mode: ${mode}`);
+  }
+
+  return rules;
+}
+
+function log(...parts) {
+  if (!jsonOutput) console.log(...parts);
+}
+
 // Define the tile list (85 tiles from z0-z3, plus 15 high-zoom urban tiles for Tokyo/Manhattan)
 const baseTiles = [];
 for (let z = 0; z <= 3; z++) {
@@ -51,7 +84,8 @@ const datasets = [
 ];
 
 async function runEvaluation() {
-  console.log(`Starting real-world evaluation of ${allTiles.length} tiles per dataset...\n`);
+  log(`Starting real-world evaluation of ${allTiles.length} tiles per dataset...`);
+  log(`Mode: ${mode}\n`);
 
   // Silence standard logger to clean script output
   const silentReporter = {
@@ -61,20 +95,13 @@ async function runEvaluation() {
   const engine = createEngine({
     plugins: [tilePlugin],
     reporter: silentReporter,
-    rules: {
-      'tile/coordinate-range': ['error', { buffer: 64 }],
-      'tile/degenerate-geometry': 'error',
-      'tile/unclosed-ring': 'error',
-      'tile/zero-area-ring': 'error',
-      'tile/self-intersection': 'error',
-      'tile/no-empty': 'warning',
-    },
+    rules: buildRules(),
   });
 
   const summaryTable = [];
 
   for (const dataset of datasets) {
-    console.log(`Evaluating dataset: ${dataset.name}...`);
+    log(`Evaluating dataset: ${dataset.name}...`);
     let processed = 0;
     let failedFetches = 0;
     let totalDiagnostics = 0;
@@ -92,25 +119,40 @@ async function runEvaluation() {
             ruleDiagnostics[diag.ruleId] = (ruleDiagnostics[diag.ruleId] || 0) + 1;
           }
         }
-      } catch (err) {
+      } catch (_err) {
         // Safe skip for tiles that don't exist at high zoom levels for this dataset
         failedFetches++;
       }
     }
 
-    console.log(`Finished ${dataset.name}:`);
-    console.log(`  - Tiles Processed: ${processed}`);
-    console.log(`  - Failed/Missing Tiles: ${failedFetches}`);
-    console.log(`  - Total Diagnostics: ${totalDiagnostics}`);
-    console.log(`  - Breakdown:`, JSON.stringify(ruleDiagnostics, null, 2));
-    console.log('----------------------------------------\n');
+    log(`Finished ${dataset.name}:`);
+    log(`  - Tiles Processed: ${processed}`);
+    log(`  - Failed/Missing Tiles: ${failedFetches}`);
+    log(`  - Total Diagnostics: ${totalDiagnostics}`);
+    log(`  - Breakdown:`, JSON.stringify(ruleDiagnostics, null, 2));
+    log('----------------------------------------\n');
 
     summaryTable.push({
       Dataset: dataset.name,
+      Mode: mode,
       Tiles: processed,
+      Failed: failedFetches,
       Diagnostics: totalDiagnostics,
       Breakdown: ruleDiagnostics,
     });
+  }
+
+  if (jsonOutput) {
+    console.log(
+      JSON.stringify({
+        type: 'tileguard-real-world-evaluation',
+        mode,
+        timestamp: new Date().toISOString(),
+        tilesPerDataset: allTiles.length,
+        results: summaryTable,
+      }),
+    );
+    return;
   }
 
   console.log('=== FINAL SUMMARY ===');
