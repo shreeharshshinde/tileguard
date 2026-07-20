@@ -101,7 +101,7 @@ No diagnostic produced.
 The default `buffer` of `80` and `excludeLayers` of `["place", "water_name", "centroids"]` were determined empirically during a 294-tile evaluation across three production tile providers (OpenMapTiles, Planetiler/OpenFreeMap, and CARTO Streets). See [ADR-006](../../architecture/adr/006-coordinate-range-defaults.md) for full details.
 
 - **Buffer 80** covers the P95 of observed clipping buffers across all geometry layers (`countries`, `geolines` at 80; `water`, `boundary`, `landcover`, `park`, `waterway` at 64).
-- **Layer exclusion** targets three specific layers confirmed to use label duplication — a technique where tile compilers intentionally place Point features far outside extent to enable cross-tile label rendering. All 63,944 label-duplication entries in the evaluation came exclusively from these three layers.
+- **Layer exclusion** targets three specific layers confirmed to use label duplication — a technique where tile compilers intentionally place Point features far outside extent to enable cross-tile label rendering. Of the 64,458 diagnostics in these layers (60,820 + 3,578 + 60), 63,944 were Point geometries — the label-duplication pattern — and the remaining 514 were non-Point geometries (LineString/Polygon) in the same three layers, also correctly suppressed by the layer-based exclusion.
 
 > **Note:** These defaults are calibrated to OpenMapTiles/Planetiler schema conventions. If your tile compiler uses different layer names for label duplication, supply your own `excludeLayers` in your `tileguard.config.ts`.
 

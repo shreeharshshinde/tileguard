@@ -2,7 +2,8 @@
 
 ## Status
 
-**Accepted** — 2026-07-18
+**Accepted** — 2026-07-18  
+**Verified** — 2026-07-19 in [TileGuard v0.5.1 Evaluation Report](../../engineering/EVALUATION_REPORT_v0.5.1.md)
 
 ## Context
 
@@ -11,8 +12,8 @@ TileGuard's `tile/coordinate-range` rule checks if vector tile coordinate values
 When run against production tiles from popular providers (OpenMapTiles, OpenFreeMap, CARTO Streets), the rule reported **148,268 false positives** across a standard 294-tile sample. 
 
 Step 1 and Step 2 of the Phase 1 evaluation mapped the complete signed-coordinate offset distribution and resolved all anomalies:
-1. **Label Duplication:** 63,944 diagnostics were Points in the `place`, `water_name`, and `centroids` layers. These represent intentional label duplication by tile compilers (Planetiler, OpenMapTiles, CARTO) for rendering across tile boundaries. The coordinates are geographic centroids, extending up to 100% of the tile extent (`[1, 4096]`).
-2. **Geometry Clipping Buffer:** 84,324 diagnostics were Polygons or LineStrings in layers like `countries`, `water`, and `boundary`. These represent intentional clipping buffers applied by tile compilers to prevent rendering gaps/anti-aliasing seams. The offsets cluster at hard configured ceilings of either **64** or **80** units.
+1. **Label Duplication:** 64,458 diagnostics originated in the `place`, `water_name`, and `centroids` layers (60,820 + 3,578 + 60). Of these, 63,944 were Point geometries — the label-duplication pattern described above — and the remaining 514 were non-Point geometries (LineString/Polygon) in the same three layers, also correctly suppressed by the layer-based exclusion.
+2. **Geometry Clipping Buffer:** 83,810 diagnostics were Polygons or LineStrings in layers like `countries`, `water`, and `boundary`. These represent intentional clipping buffers applied by tile compilers to prevent rendering gaps/anti-aliasing seams. The offsets cluster at hard configured ceilings of either **64** or **80** units.
 3. **No other layers or geometry types** contributed to the out-of-range diagnostics.
 
 To eliminate these false positives without compromising the rule's ability to detect actual coordinate corruption (e.g., in other Point layers like `poi` or `address`), the configuration of `tile/coordinate-range` must be updated.
@@ -42,7 +43,7 @@ Targeting the three specific layers proven to use label duplication (`place`, `w
 ## Consequences
 
 ### Benefits
-- **Expected 100% False-Positive Reduction:** Based on classification data, this configuration is projected to eliminate all 148,268 false positives in our 294-tile sample, pending verification in Step 4.
+- **Confirmed 100% False-Positive Reduction:** Step 4 re-evaluated the classified 294-tile production corpus and confirmed that this configuration eliminates all 148,268 `tile/coordinate-range` false-positive entries (148,268 -> 0).
 - **Zero False-Negative Increase:** Validation remains fully active for Point coordinates in other layers and geometry coordinates exceeding the 80-unit buffer.
 - **Configurability:** Users can adjust the buffer or override `excludeLayers` via their `tileguard.config.ts` if their tile compiler uses different schemas or buffers.
 

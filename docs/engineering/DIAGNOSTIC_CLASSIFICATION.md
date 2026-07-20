@@ -22,8 +22,8 @@ Of 148,268 total out-of-range coordinates:
 
 | Category | Count | % | Classification |
 | :--- | ---: | ---: | :--- |
-| Label duplication (Point) | 63,944 | 43.1% | Intentional implementation behavior |
-| Geometry clipping buffer (Polygon/LineString) | 84,324 | 56.9% | Intentional implementation behavior |
+| Label duplication (Layers) | 64,458 | 43.5% | Intentional implementation behavior |
+| Geometry clipping buffer | 83,810 | 56.5% | Intentional implementation behavior |
 | Confirmed spec violations | 0 | 0% | — |
 | Requires investigation | 0 | 0% | — |
 
@@ -36,8 +36,8 @@ Of 148,268 total out-of-range coordinates:
 ### Status: `intentional_implementation_behavior`
 
 **Affected layers:** `place` (60,820), `water_name` (3,578), `centroids` (60)  
-**Affected geometry:** Point only  
-**Diagnostic count:** 63,944 (43.1% of total)
+**Affected geometry:** Point (63,944 entries), plus 514 non-Point entries in the same three layers  
+**Diagnostic count:** 64,458 (63,944 Point + 514 non-Point; 43.5% of total)
 
 ### Offset Profile
 
@@ -143,7 +143,7 @@ Deferred to Step 5. Suspected quantization-induced false positives at tile edges
 | :--- | :--- | :--- | :--- |
 | 1 | **Set default buffer to 80** | Covers P95 of all geometry clipping layers | `tile/coordinate-range` rule config |
 | 2 | **Add `excludeLayers` option** | Allow users to suppress specific label-duplication layers | `tile/coordinate-range` rule config |
-| 3 | **Default `excludeLayers` to `['place', 'water_name', 'centroids']`** | These three layers account for all 63,944 label-duplication entries (verified: 0 Point entries from any other layer). Targeting by layer preserves coordinate-range protection for Point features in other layers (e.g., `poi`, `address`) where a genuinely corrupt coordinate should still be caught. | `tile/coordinate-range` rule config |
+| 3 | **Default `excludeLayers` to `['place', 'water_name', 'centroids']`** | These three layers account for all 64,458 label-duplication diagnostics. Of these, 63,944 were Point geometries — the label-duplication pattern described above — and the remaining 514 were non-Point geometries (LineString/Polygon) in the same three layers, also correctly suppressed by the layer-based exclusion. Targeting by layer preserves coordinate-range protection for Point features in other layers (e.g., `poi`, `address`) where a genuinely corrupt coordinate should still be caught. | `tile/coordinate-range` rule config |
 | 4 | **Document buffer values** | Users should understand why 80 is the default and when to increase it | Rule documentation |
 
 > [!IMPORTANT]
@@ -152,8 +152,8 @@ Deferred to Step 5. Suspected quantization-induced false positives at tile edges
 ### Expected Impact
 
 With buffer=80 and `excludeLayers: ['place', 'water_name', 'centroids']`:
-- **Label duplication (63,944):** 100% suppressed by layer exclusion (verified: all 63,944 Point entries come from exactly these three layers)
-- **Geometry clipping ≤80 (84,324):** 100% suppressed by buffer=80 (verified: no geometry-layer entry exceeds offset=80)
+- **Label duplication:** 64,458 diagnostics originated in the `place`, `water_name`, and `centroids` layers (60,820 + 3,578 + 60). Of these, 63,944 were Point geometries — the label-duplication pattern described above — and the remaining 514 were non-Point geometries (LineString/Polygon) in the same three layers, also correctly suppressed by the layer-based exclusion.
+- **Geometry clipping ≤80:** 83,810 diagnostics suppressed by buffer=80 (verified: no geometry-layer entry exceeds offset=80)
 - **Remaining diagnostics:** 0
 - **Measured false-positive reduction:** 100% (148,268 → 0)
 
