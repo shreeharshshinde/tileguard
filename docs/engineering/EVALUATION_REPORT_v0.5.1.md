@@ -4,7 +4,7 @@
 
 Step 4 confirms a **100.00% reduction of coordinate-range diagnostics previously classified as intentional behavior across the evaluated production datasets**. By applying the empirically derived default configurations (`buffer: 80`, `excludeLayers: ["place", "water_name", "centroids"]`), the number of false-positive diagnostics in the Step 2 classification corpus was reduced from **148,268 to 0**.
 
-The classification corpus contained zero remaining classified false positives after applying the new defaults. Separate engine-level benchmark runs reported zero coordinate-range diagnostics, with all remaining engine diagnostics isolated to intentionally retained validation scenarios (specifically, `tile/self-intersection`).
+The classification corpus contained zero remaining classified false positives after applying the new defaults. Separate engine-level benchmark runs produced no remaining tile/coordinate-range diagnostics on the evaluated benchmark corpus; all remaining diagnostics were from other validation rules (specifically, tile/self-intersection).
 
 ---
 
@@ -68,7 +68,7 @@ Five independent benchmark runs were collected for each configuration using `nod
 | CARTO Streets | 1115.99 | 1015.32 | +100.67 ms | +1.01 ms | +9.92% |
 | **Total / Avg** | **4970.24** | **4551.84** | **+418.40 ms** | **+1.42 ms** | **+9.19%** |
 
-This benchmark did not demonstrate the expected performance improvement when deactivating the rule. The observed delta is small relative to run-to-run variance and the `tile/self-intersection` bottleneck, and after-mode diagnostics are identical to disabled-mode diagnostics. Treat the marginal cost result as noisy, not as evidence of a material regression.
+This benchmark did not demonstrate a statistically meaningful runtime difference attributable to the tile/coordinate-range rule. The observed delta is small relative to run-to-run variance and the `tile/self-intersection` bottleneck, and after-mode diagnostics are identical to disabled-mode diagnostics. Treat the marginal cost result as noisy, not as evidence of a material regression.
 
 ---
 
