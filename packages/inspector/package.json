@@ -1,0 +1,39 @@
+{
+  "name": "@tileguard/inspector",
+  "version": "0.6.0",
+  "description": "Visual debugging environment for TileGuard — renders MVT geometry and diagnostic overlays in the browser",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "tileguard",
+    "inspector",
+    "vector-tiles",
+    "geospatial",
+    "visualization"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*",
+    "@tileguard/tile-rules": "workspace:*",
+    "@tileguard/style-rules": "workspace:*",
+    "@tileguard/reporters": "workspace:*",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.0",
+    "@types/react": "18.3.23",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "4.6.0",
+    "typescript": "5.4.5",
+    "vite": "5.4.21",
+    "vitest": "1.6.1"
+  }
+}

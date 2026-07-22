@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="TileGuard Inspector — visual debugging environment for vector tile diagnostics"
+    />
+    <title>TileGuard Inspector</title>
+    <style>
+      /*
+       * Base reset — Inspector fills the entire viewport.
+       * All layout is handled inside the React application.
+       */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body,
+      #root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #0f172a;
+        color: #f8fafc;
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Prevent text selection on UI chrome elements */
+      body {
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Vite injects the module script during build / dev server -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

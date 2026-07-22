@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    // Vite SPA: ESNext + Bundler moduleResolution (not NodeNext — see ADR-008).
+    // composite/outDir/rootDir are omitted intentionally: tsc is used for type-checking
+    // only. `vite build` handles transpilation and bundling.
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+    // Type checking
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+
+    // React JSX transform (React 17+, no explicit React import needed)
+    "jsx": "react-jsx",
+
+    // Source / output conventions
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    // Path aliases resolved by Vite — must match vite.config.ts `resolve.alias`
+    "paths": {
+      "@tileguard/core": ["../core/src/index.ts"],
+      "@tileguard/shared": ["../shared/src/index.ts"],
+      "@tileguard/tile-rules": ["../tile-rules/src/index.ts"],
+      "@tileguard/style-rules": ["../style-rules/src/index.ts"],
+      "@tileguard/reporters": ["../reporters/src/index.ts"]
+    }
+  },
+  "include": ["src", "tests"]
+}
