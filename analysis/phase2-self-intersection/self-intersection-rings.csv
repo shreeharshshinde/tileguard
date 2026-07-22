@@ -1,0 +1,620 @@
+dataset,tile,tileZ,tileX,tileY,layer,featureIndex,partIndex,geometryType,vertexCount,extent,segFirst,segSecond,seg1_ax,seg1_ay,seg1_bx,seg1_by,seg2_cx,seg2_cy,seg2_dx,seg2_dy,ixX,ixY,distToNearestBoundary,isCollinear,isTouchAtVertex,sharedVertex,segEndpointsOnBoundary,hasDuplicateVertices,duplicateVertexCount
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",0,91,"Polygon",5,4096,0,2,3153,2023,3155,2023,3155,2025,3154,2023,3154,2023,942,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",0,101,"Polygon",5,4096,1,3,3389,2007,3389,2009,3389,2008,3388,2007,3389,2008,707,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",0,157,"Polygon",5,4096,0,2,3574,2069,3575,2069,3575,2068,3575,2070,3575,2069,521,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",2,47,"Polygon",5,4096,1,3,1208,2738,1208,2740,1208,2739,1207,2737,1208,2739,1208,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",34,1,"Polygon",5,4096,0,2,2386,1464,2390,1461,2391,1460,2388,1463,2390,1461,1461,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",44,1,"Polygon",5,4096,0,2,2286,1290,2288,1286,2288,1281,2288,1287,2288,1286,1286,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",48,190,"Polygon",5,4096,1,3,2804,891,2805,900,2804,897,2804,890,2804,891,891,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",48,226,"Polygon",5,4096,0,2,3265,1333,3273,1328,3274,1326,3270,1333,3272.778,1328.139,823.222,false,false,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",54,25,"Polygon",5,4096,0,2,2285,1100,2286,1099,2286,1098,2286,1100,2286,1099,1099,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",54,30,"Polygon",5,4096,1,3,2309,1046,2309,1048,2309,1047,2308,1046,2309,1047,1047,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",71,8,"Polygon",5,4096,1,3,2144,1287,2144,1289,2144,1288,2143,1287,2144,1288,1288,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",80,2,"Polygon",5,4096,1,3,2354,1617,2355,1616,2355,1617,2353,1617,2354,1617,1617,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",106,5,"Polygon",5,4096,1,3,2467,1749,2469,1749,2468,1750,2466,1748,2467,1749,1629,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",113,2,"Polygon",5,4096,0,2,1265,1837,1267,1838,1268,1838,1266,1838,1267,1838,1267,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",126,12,"Polygon",5,4096,0,2,3168,1906,3169,1905,3169,1904,3169,1906,3169,1905,927,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",126,22,"Polygon",5,4096,1,3,3106,1815,3106,1818,3106,1817,3105,1815,3106,1817,990,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,68,"Polygon",5,4096,0,2,403,1194,405,1191,407,1189,403,1193,405,1191,405,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,86,"Polygon",5,4096,1,3,435,923,438,925,439,927,434,922,435,923,435,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,96,"Polygon",5,4096,1,3,1113,1735,1115,1736,1113,1736,1113,1734,1113,1735,1113,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,99,"Polygon",5,4096,1,3,1108,1723,1108,1725,1108,1724,1107,1723,1108,1724,1108,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,114,"Polygon",6,4096,1,4,1037,1690,1038,1691,1037,1693,1037,1689,1037,1690,1037,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,128,"Polygon",5,4096,1,3,1173,1627,1175,1626,1176,1627,1171,1627,1173,1627,1173,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,129,"Polygon",5,4096,0,2,1182,1623,1182,1621,1183,1622,1182,1622,1182,1622,1182,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,151,"Polygon",5,4096,1,3,652,1422,652,1424,652,1423,651,1423,652,1423,652,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,264,"Polygon",5,4096,0,2,150,1037,156,1033,157,1033,154,1034,155,1033.667,155,false,false,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",152,271,"Polygon",5,4096,1,3,1017,1442,1018,1441,1018,1442,1016,1442,1017,1442,1017,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,19,"Polygon",6,4096,0,2,1432,1432,1433,1430,1433,1429,1433,1430,1433,1430,1430,false,true,true,0,true,2
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,47,"Polygon",5,4096,0,2,585,1340,586,1338,586,1337,586,1341,586,1338,586,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,316,"Polygon",5,4096,1,3,1132,1201,1132,1204,1132,1203,1131,1202,1132,1203,1132,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,331,"Polygon",5,4096,0,2,1313,1425,1314,1424,1314,1423,1314,1425,1314,1424,1314,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,336,"Polygon",5,4096,1,3,1142,1298,1149,1297,1147,1297,1140,1300,1146,1297.429,1146,false,false,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,343,"Polygon",5,4096,0,2,1153,1219,1154,1221,1155,1222,1153,1220,1154,1221,1154,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,433,"Polygon",5,4096,0,2,942,1360,943,1358,943,1357,943,1360,943,1358,943,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",153,448,"Polygon",5,4096,1,3,1180,1485,1181,1484,1181,1485,1179,1485,1180,1485,1180,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",154,18,"Polygon",6,4096,0,3,1054,1835,1054,1834,1055,1833,1054,1834,1054,1834,1054,false,true,true,0,true,2
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",155,1,"Polygon",5,4096,1,3,1048,1847,1049,1845,1049,1846,1047,1848,1048,1847,1048,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",160,2,"Polygon",5,4096,0,2,2640,1908,2644,1908,2644,1909,2642,1908,2642,1908,1454,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",171,57,"Polygon",5,4096,0,2,3596,2201,3598,2203,3597,2204,3597,2202,3597,2202,499,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",171,66,"Polygon",5,4096,0,2,3601,2179,3604,2175,3604,2174,3604,2176,3604,2175,492,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",173,2,"Polygon",5,4096,0,2,4095,2244,4096,2243,4096,2242,4096,2244,4096,2243,0,false,true,false,3,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",177,72,"Polygon",5,4096,1,3,3426,1907,3426,1909,3426,1908,3425,1908,3426,1908,670,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",178,1,"Polygon",5,4096,1,3,2979,1961,2979,1963,2979,1962,2978,1960,2979,1962,1117,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",184,15,"Polygon",5,4096,1,3,3515,1717,3515,1720,3515,1719,3514,1718,3515,1719,581,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",184,26,"Polygon",5,4096,0,2,3515,1651,3517,1649,3517,1648,3516,1652,3516.667,1649.333,579.333,false,false,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",184,34,"Polygon",5,4096,0,2,3632,1632,3633,1631,3633,1630,3633,1632,3633,1631,463,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",212,6,"Polygon",5,4096,1,3,1787,1854,1787,1857,1787,1855,1786,1854,1787,1855,1787,false,true,false,0,true,1
+"OpenMapTiles","0-0-0.pbf",0,0,0,"countries",227,4,"Polygon",5,4096,1,3,3891,2159,3891,2161,3891,2160,3890,2159,3891,2160,205,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",33,7,"Polygon",5,4096,1,3,2295,3607,2296,3610,2296,3609,2293,3607,2295.571,3608.714,487.286,false,false,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",34,4,"Polygon",5,4096,1,3,2129,3718,2135,3717,2132,3717,2125,3720,2130.091,3717.818,378.182,false,false,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,10,"Polygon",392,4096,26,28,420,2054,412,2056,412,2062,412,2047,412,2056,412,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,12,"Polygon",5,4096,1,3,2473,3052,2473,3054,2473,3053,2472,3052,2473,3053,1043,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,21,"Polygon",5,4096,1,3,2558,2962,2558,2965,2558,2964,2557,2963,2558,2964,1132,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,108,"Polygon",5,4096,1,3,2215,3447,2217,3449,2215,3448,2215,3446,2215,3447,649,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,125,"Polygon",7,4096,1,5,2074,3379,2075,3380,2074,3386,2074,3378,2074,3379,717,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,144,"Polygon",5,4096,0,2,2363,3245,2365,3243,2366,3243,2364,3244,2364,3244,852,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,152,"Polygon",6,4096,0,2,2380,3164,2385,3157,2387,3151,2385,3157,2385,3157,939,false,true,true,0,true,2
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,156,"Polygon",5,4096,0,2,2428,3083,2434,3081,2440,3078,2432,3082,2434,3081,1015,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,166,"Polygon",5,4096,1,3,1275,2898,1275,2901,1275,2900,1274,2899,1275,2900,1196,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",44,268,"Polygon",5,4096,0,2,2036,3404,2038,3404,2039,3405,2037,3404,2037,3404,692,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",45,83,"Polygon",5,4096,1,3,1128,2617,1129,2621,1129,2620,1127,2618,1128.667,2619.667,1128.667,false,false,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",45,359,"Polygon",5,4096,0,2,2277,2633,2279,2633,2279,2634,2278,2633,2278,2633,1463,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",45,368,"Polygon",5,4096,0,2,2728,2980,2734,2981,2737,2978,2733,2981,2733.182,2980.864,1115.136,false,false,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",46,22,"Polygon",6,4096,1,3,2108,3669,2109,3667,2109,3666,2109,3669,2109,3667,429,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",46,29,"Polygon",5,4096,0,2,1519,3465,1521,3465,1521,3466,1520,3465,1520,3465,631,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",46,32,"Polygon",5,4096,0,2,1544,3501,1545,3499,1545,3496,1545,3500,1545,3499,597,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",47,3,"Polygon",5,4096,1,3,2092,3689,2093,3690,2092,3690,2092,3688,2092,3689,407,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",48,10,"Polygon",5,4096,1,3,2224,3880,2224,3883,2224,3882,2223,3881,2224,3882,214,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",55,7,"Polygon",5,4096,0,2,2374,3547,2376,3547,2377,3548,2375,3547,2375,3547,549,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",55,9,"Polygon",9,4096,1,6,2385,3545,2387,3550,2384,3554,2387,3550,2387,3550,546,false,true,true,0,true,2
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",55,25,"Polygon",12,4096,2,9,2330,3460,2342,3470,2339,3469,2332,3461,2334.154,3463.462,632.538,false,false,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",56,5,"Polygon",5,4096,0,2,2468,3594,2469,3594,2469,3593,2469,3595,2469,3594,502,false,true,false,0,true,1
+"OpenMapTiles","1-0-0.pbf",1,0,0,"countries",74,2,"Polygon",5,4096,0,2,2630,3662,2632,3662,2633,3663,2631,3662,2631,3662,434,false,true,false,0,true,1
+"OpenMapTiles","1-0-1.pbf",1,0,1,"countries",7,35,"Polygon",5,4096,1,3,3358,88,3359,87,3359,88,3357,88,3358,88,88,false,true,false,0,true,1
+"OpenMapTiles","1-0-1.pbf",1,0,1,"countries",18,45,"Polygon",5,4096,0,2,712,342,714,342,714,343,713,342,713,342,342,false,true,false,0,true,1
+"OpenMapTiles","1-0-1.pbf",1,0,1,"countries",22,1,"Polygon",5,4096,1,3,507,459,507,461,507,460,506,460,507,460,460,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",0,84,"Polygon",5,4096,0,2,3061,4151,3062,4150,3062,4148,3062,4152,3062,4150,-54,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",5,18,"Polygon",5,4096,0,2,2788,3122,2791,3123,2792,3123,2790,3123,2791,3123,973,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",24,4,"Polygon",6,4096,0,3,717,2902,719,2906,732,2909,719,2906,719,2906,719,false,true,true,0,true,2
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",32,128,"Polygon",6,4096,0,3,1714,1586,1721,1574,1727,1581,1716,1582,1716.352,1581.968,1581.968,false,false,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",32,241,"Polygon",5,4096,0,2,3168,2607,3169,2607,3169,2606,3169,2608,3169,2607,927,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",32,259,"Polygon",5,4096,1,3,703,2299,703,2302,703,2301,702,2300,703,2301,703,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",34,4,"Polygon",5,4096,1,3,165,2641,167,2641,166,2641,162,2642,166,2641,166,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",63,59,"Polygon",5,4096,0,2,542,3127,545,3123,545,3122,544,3125,544.4,3123.8,544.4,false,false,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",70,15,"Polygon",5,4096,0,2,280,2935,282,2933,283,2933,281,2934,281,2934,281,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",72,7,"Polygon",5,4096,1,3,1145,3399,1145,3401,1145,3400,1144,3399,1145,3400,696,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",80,9,"Polygon",5,4096,1,3,356,2989,358,2991,357,2990,355,2989,357,2990,357,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",83,5,"Polygon",5,4096,1,3,838,3497,841,3498,840,3499,837,3496,838,3497,599,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",94,11,"Polygon",5,4096,0,2,2241,3845,2242,3843,2242,3842,2242,3845,2242,3843,253,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",113,6,"Polygon",5,4096,1,3,750,3349,753,3347,757,3347,749,3349,750.6,3348.6,747.4,false,false,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",121,0,"Polygon",5,4096,0,2,745,3254,751,3254,752,3257,748,3254,748,3254,748,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",124,4,"Polygon",5,4096,0,2,2718,3544,2719,3543,2719,3542,2719,3544,2719,3543,553,false,true,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",125,0,"Polygon",5,4096,0,2,2950,3336,2953,3333,2953,3332,2952,3336,2952.667,3333.333,762.667,false,false,false,0,true,1
+"OpenMapTiles","1-1-0.pbf",1,1,0,"countries",127,4,"Polygon",5,4096,1,3,3896,3935,3900,3934,3897,3935,3892,3933,3896.615,3934.846,161.154,false,false,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",0,26,"Polygon",5,4096,1,3,2817,126,2817,128,2817,127,2815,125,2817,127,127,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",0,159,"Polygon",5,4096,0,2,3061,55,3062,54,3062,52,3062,56,3062,54,54,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",30,49,"Polygon",5,4096,0,2,3410,517,3411,515,3411,514,3411,519,3411,515,515,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",30,78,"Polygon",5,4096,0,2,3105,273,3106,271,3106,270,3106,273,3106,271,271,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",31,20,"Polygon",5,4096,1,3,4094,384,4095,383,4095,384,4093,384,4094,384,2,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",33,0,"Polygon",5,4096,1,3,3731,465,3731,467,3731,466,3730,466,3731,466,365,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",46,1,"Polygon",5,4096,0,2,3636,258,3637,259,3638,259,3636,259,3637,259,259,false,true,false,0,true,1
+"OpenMapTiles","1-1-1.pbf",1,1,1,"countries",46,13,"Polygon",5,4096,0,2,3642,206,3643,205,3643,204,3643,206,3643,205,205,false,true,false,0,true,1
+"OpenMapTiles","2-0-0.pbf",2,0,0,"countries",1,0,"Polygon",225,4096,154,157,1234,3549,1240,3547,1244,3552,1240,3547,1240,3547,549,false,true,true,0,true,2
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,111,"Polygon",9,4096,1,3,3759,2813,3760,2809,3760,2808,3760,2823,3760,2809,336,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,126,"Polygon",5,4096,1,3,4143,2652,4145,2652,4144,2652,4143,2653,4144,2652,-48,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,130,"Polygon",5,4096,1,3,4174,2651,4176,2650,4176,2651,4173,2651,4174,2651,-78,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,218,"Polygon",5,4096,0,2,458,362,461,365,465,372,460,364,460,364,364,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,219,"Polygon",6,4096,0,2,477,337,478,338,481,339,478,338,478,338,338,false,true,true,0,true,2
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",5,232,"Polygon",5,4096,0,2,4137,2689,4139,2687,4139,2686,4138,2688,4138,2688,-42,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",6,30,"Polygon",5,4096,0,2,4175,1559,4176,1558,4176,1557,4176,1559,4176,1558,-80,false,true,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",7,24,"Polygon",10,4096,3,7,3086,2929,3089,2936,3087,2938,3088,2933,3087.909,2933.455,1008.091,false,false,false,0,true,1
+"OpenMapTiles","2-0-1.pbf",2,0,1,"countries",7,46,"Polygon",5,4096,1,3,3129,2880,3129,2882,3129,2881,3128,2880,3129,2881,967,false,true,false,0,true,1
+"OpenMapTiles","2-0-2.pbf",2,0,2,"countries",5,53,"Polygon",5,4096,0,2,1700,811,1704,814,1703,815,1703,813,1703,813.25,813.25,false,false,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",4,0,"Polygon",125,4096,7,10,3378,2980,3374,2979,3371,2982,3418,2935,3374,2979,722,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",13,38,"Polygon",5,4096,1,3,3704,854,3707,854,3705,855,3704,853,3704.5,854,391.5,false,false,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",39,0,"Polygon",5,4096,1,3,3853,2330,3853,2332,3853,2331,3852,2330,3853,2331,243,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,40,"Polygon",5,4096,1,3,445,2899,447,2895,446,2898,444,2900,445,2899,445,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,53,"Polygon",5,4096,1,3,228,2684,242,2676,229,2684,223,2683,228.226,2683.871,228.226,false,false,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,61,"Polygon",5,4096,1,3,47,2652,49,2652,48,2652,47,2653,48,2652,48,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,102,"Polygon",5,4096,0,2,357,2941,359,2941,359,2942,358,2941,358,2941,358,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,113,"Polygon",5,4096,1,3,385,2875,385,2877,385,2876,384,2875,385,2876,385,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",40,122,"Polygon",5,4096,0,2,41,2689,43,2687,43,2686,42,2688,42,2688,42,false,true,false,0,true,1
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",42,2,"Polygon",6,4096,0,3,119,3244,121,3241,122,3236,121,3241,121,3241,121,false,true,true,0,true,2
+"OpenMapTiles","2-1-1.pbf",2,1,1,"countries",51,35,"Polygon",5,4096,0,2,550,2900,553,2899,554,2898,552,2900,553,2899,553,false,true,false,0,true,1
+"OpenMapTiles","2-2-1.pbf",2,2,1,"countries",83,2,"Polygon",5,4096,1,3,4176,3005,4176,3009,4176,3008,4175,3006,4176,3008,-80,false,true,false,0,true,1
+"OpenMapTiles","2-2-1.pbf",2,2,1,"countries",83,13,"Polygon",5,4096,0,2,4123,3047,4126,3051,4125,3054,4125,3049,4125,3049.667,-29,false,false,false,0,true,1
+"OpenMapTiles","2-2-1.pbf",2,2,1,"countries",100,1,"Polygon",5,4096,0,2,2423,3540,2425,3540,2426,3541,2424,3540,2424,3540,556,false,true,false,0,true,1
+"OpenMapTiles","2-2-1.pbf",2,2,1,"countries",111,22,"Polygon",5,4096,0,2,3331,3782,3332,3781,3332,3780,3332,3782,3332,3781,315,false,true,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",8,0,"Polygon",923,4096,124,127,3383,663,3373,667,3370,673,3375,665,3374,666.6,666.6,false,false,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",8,22,"Polygon",5,4096,1,3,2392,1141,2394,1140,2393,1141,2391,1141,2392,1141,1141,false,true,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",8,35,"Polygon",5,4096,0,2,2240,1119,2242,1118,2243,1117,2241,1119,2242,1118,1118,false,true,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",14,33,"Polygon",5,4096,1,3,349,3379,349,3382,349,3381,348,3377,349,3381,349,false,true,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",15,14,"Polygon",5,4096,0,2,27,3047,30,3051,29,3054,29,3049,29,3049.667,29,false,false,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",22,0,"Polygon",6,4096,1,4,3780,4034,3783,4034,3785,4033,3778,4035,3781.5,4034,62,false,false,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",22,8,"Polygon",5,4096,1,3,3815,4075,3819,4079,3816,4076,3814,4076,3816,4076,20,false,true,false,0,true,1
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",22,11,"Polygon",6,4096,0,2,3777,4018,3779,4017,3779,4014,3779,4017,3779,4017,79,false,true,true,0,true,2
+"OpenMapTiles","2-3-1.pbf",2,3,1,"countries",27,6,"Polygon",5,4096,1,3,2898,3854,2900,3854,2899,3854,2898,3855,2899,3854,242,false,true,false,0,true,1
+"OpenMapTiles","2-3-2.pbf",2,3,2,"countries",5,9,"Polygon",5,4096,1,3,1801,684,1802,689,1802,688,1798,681,1801.692,687.462,687.462,false,false,false,0,true,1
+"OpenMapTiles","2-3-2.pbf",2,3,2,"countries",9,0,"Polygon",6,4096,1,4,3780,-62,3783,-62,3785,-63,3778,-61,3781.5,-62,-62,false,false,false,0,true,1
+"OpenMapTiles","2-3-2.pbf",2,3,2,"countries",9,10,"Polygon",5,4096,1,3,3815,-21,3819,-17,3816,-20,3814,-20,3816,-20,-20,false,true,false,0,true,1
+"OpenMapTiles","3-0-2.pbf",3,0,2,"countries",1,155,"Polygon",6,4096,0,3,953,674,955,676,957,677,955,676,955,676,676,false,true,true,0,true,2
+"OpenMapTiles","3-0-3.pbf",3,0,3,"countries",0,13,"Polygon",5,4096,1,3,155,1399,156,1398,156,1399,154,1399,155,1399,155,false,true,false,0,true,1
+"OpenMapTiles","3-0-4.pbf",3,0,4,"countries",2,29,"Polygon",5,4096,0,2,2955,1388,2959,1390,2962,1393,2957,1389,2957,1389,1139,false,true,false,0,true,1
+"OpenMapTiles","3-0-4.pbf",3,0,4,"countries",2,57,"Polygon",8,4096,3,5,3776,1938,3776,1942,3774,1944,3776,1941,3776,1941,320,false,true,false,0,true,1
+"OpenMapTiles","3-0-4.pbf",3,0,4,"countries",2,58,"Polygon",7,4096,1,4,3966,1712,3975,1717,3976,1720,3975,1717,3975,1717,121,false,true,true,0,true,2
+"OpenMapTiles","3-2-3.pbf",3,2,3,"countries",19,33,"Polygon",5,4096,0,2,1796,-76,1796,-80,1798,-80,1796,-77,1796,-77,-77,false,true,false,0,true,1
+"OpenMapTiles","3-2-3.pbf",3,2,3,"countries",23,13,"Polygon",5,4096,0,2,2107,3019,2111,3019,2118,3016,2109,3019,2109,3019,1077,false,true,false,0,true,1
+"OpenMapTiles","3-2-3.pbf",3,2,3,"countries",26,5,"Polygon",16,4096,1,14,1432,2020,1438,2019,1445,2013,1431,2025,1438,2019,1438,false,true,false,0,true,1
+"OpenMapTiles","3-2-3.pbf",3,2,3,"countries",42,5,"Polygon",5,4096,1,3,2318,2383,2318,2386,2318,2385,2317,2384,2318,2385,1711,false,true,false,0,true,1
+"OpenMapTiles","3-3-2.pbf",3,3,2,"countries",3,1,"Polygon",530,4096,186,188,4108,2384,4108,2394,4106,2397,4108,2389,4108,2389,-12,false,true,false,0,true,1
+"OpenMapTiles","3-3-2.pbf",3,3,2,"countries",5,0,"Polygon",689,4096,457,461,219,999,205,989,198,991,205,989,205,989,205,false,true,true,0,true,2
+"OpenMapTiles","3-3-3.pbf",3,3,3,"countries",10,1,"Polygon",5,4096,0,2,4175,3097,4176,3095,4176,3094,4176,3099,4176,3095,-80,false,true,false,0,true,1
+"OpenMapTiles","3-4-2.pbf",3,4,2,"countries",9,0,"Polygon",780,4096,100,107,488,966,496,964,502,960,496,964,496,964,496,false,true,true,0,true,2
+"OpenMapTiles","3-4-2.pbf",3,4,2,"countries",16,0,"Polygon",70,4096,41,45,1765,4151,1765,4148,1766,4144,1765,4148,1765,4148,-52,false,true,true,0,true,2
+"OpenMapTiles","3-4-2.pbf",3,4,2,"countries",19,0,"Polygon",130,4096,1,128,2513,4174,2527,4176,3971,4176,2509,4176,2527,4176,-80,false,true,false,0,true,1
+"OpenMapTiles","3-4-2.pbf",3,4,2,"countries",27,0,"Polygon",82,4096,10,12,12,2384,12,2394,10,2397,12,2389,12,2389,12,false,true,false,0,true,1
+"OpenMapTiles","3-4-2.pbf",3,4,2,"countries",30,10,"Polygon",6,4096,0,3,1121,3550,1126,3541,1131,3542,1126,3541,1126,3541,555,false,true,true,0,true,2
+"OpenMapTiles","3-4-3.pbf",3,4,3,"countries",16,0,"Polygon",66,4096,5,9,1768,59,1765,52,1767,48,1765,52,1765,52,52,false,true,true,0,true,2
+"OpenMapTiles","3-4-3.pbf",3,4,3,"countries",34,10,"Polygon",7,4096,0,2,3326,1668,3328,1660,3331,1658,3327,1664,3327,1664,769,false,true,false,0,true,1
+"OpenMapTiles","3-4-3.pbf",3,4,3,"countries",51,0,"Polygon",8,4096,1,5,2988,725,2995,729,2998,739,2995,729,2995,729,729,false,true,true,0,true,2
+"OpenMapTiles","3-5-3.pbf",3,5,3,"countries",0,0,"Polygon",727,4096,497,500,3397,2540,3401,2538,3401,2534,3401,2543,3401,2538,695,false,true,false,0,true,1
+"OpenMapTiles","3-5-3.pbf",3,5,3,"countries",30,16,"Polygon",5,4096,0,2,2594,3929,2595,3929,2596,3928,2594,3930,2595,3929,167,false,true,false,0,true,1
+"OpenMapTiles","3-5-3.pbf",3,5,3,"countries",30,17,"Polygon",5,4096,0,2,2598,3924,2599,3921,2599,3920,2599,3922,2599,3921,175,false,true,false,0,true,1
+"OpenMapTiles","3-5-3.pbf",3,5,3,"countries",30,19,"Polygon",5,4096,1,3,2600,3904,2602,3904,2601,3904,2600,3905,2601,3904,192,false,true,false,0,true,1
+"OpenMapTiles","3-6-4.pbf",3,6,4,"countries",3,0,"Polygon",721,4096,527,531,4079,3223,4066,3210,4058,3201,4066,3210,4066,3210,30,false,true,true,0,true,2
+"OpenMapTiles","3-6-4.pbf",3,6,4,"countries",3,1,"Polygon",5,4096,1,3,4176,1078,4176,1082,4176,1081,4175,1079,4176,1081,-80,false,true,false,0,true,1
+"OpenMapTiles","3-7-3.pbf",3,7,3,"countries",2,1,"Polygon",5,4096,0,2,3592,4155,3595,4168,3594,4171,3595,4167,3594.88,4167.48,-71.48,false,false,false,0,true,1
+"OpenMapTiles","3-7-3.pbf",3,7,3,"countries",2,3,"Polygon",6,4096,1,3,3517,4077,3517,4080,3515,4084,3517,4079,3517,4079,17,false,true,false,0,true,1
+"OpenMapTiles","3-7-3.pbf",3,7,3,"countries",2,8,"Polygon",6,4096,0,3,3458,3940,3462,3938,3462,3937,3462,3940,3462,3938,158,false,true,false,0,true,1
+"OpenMapTiles","3-7-3.pbf",3,7,3,"countries",3,11,"Polygon",5,4096,0,2,3089,3403,3092,3403,3092,3405,3091,3403,3091,3403,693,false,true,false,0,true,1
+"OpenMapTiles","3-7-4.pbf",3,7,4,"countries",2,0,"Polygon",767,4096,746,750,-17,3223,-30,3210,-38,3201,-30,3210,-30,3210,-30,false,true,true,0,true,2
+"OpenMapTiles","3-7-4.pbf",3,7,4,"countries",6,7,"Polygon",5,4096,0,2,3592,59,3595,72,3594,75,3595,71,3594.88,71.48,71.48,false,false,false,0,true,1
+"OpenMapTiles","3-7-4.pbf",3,7,4,"countries",6,9,"Polygon",6,4096,1,3,3517,-19,3517,-16,3515,-12,3517,-17,3517,-17,-17,false,true,false,0,true,1
+"OpenMapTiles","4-0-3.pbf",4,0,3,"countries",1,11,"Polygon",10,4096,0,6,2672,4129,2774,4081,2719,4111,2708,4112,2708.155,4111.986,-15.986,false,false,false,0,true,1
+"OpenFreeMap","0-0-0.pbf",0,0,0,"boundary",0,35,"LineString",35,4096,11,33,1333,2305,1335,2308,1345,2276,1335,2308,1335,2308,1335,false,true,true,0,true,1
+"OpenFreeMap","0-0-0.pbf",0,0,0,"boundary",0,43,"LineString",9,4096,0,5,2410,2353,2401,2351,2413,2364,2410,2353,2410,2353,1686,false,true,true,0,true,1
+"OpenFreeMap","0-0-0.pbf",0,0,0,"boundary",0,44,"LineString",8,4096,0,6,2378,2392,2382,2396,2373,2388,2378,2392,2378,2392,1704,false,true,true,0,true,1
+"OpenFreeMap","0-0-0.pbf",0,0,0,"boundary",0,69,"LineString",24,4096,0,12,3051,1718,3050,1736,3024,1713,3051,1718,3051,1718,1045,false,true,true,0,true,2
+"OpenFreeMap","0-0-0.pbf",0,0,0,"boundary",0,129,"LineString",15,4096,0,13,2258,1513,2259,1511,2249,1505,2259,1511,2259,1511,1511,false,true,true,0,true,1
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,32,"LineString",37,4096,29,31,1778,3506,1785,3513,1783,3513,1790,3512,1784.75,3512.75,583.25,false,false,false,0,false,0
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,58,"LineString",128,4096,32,34,2639,2475,2647,2482,2649,2478,2645,2485,2646.81,2481.833,1449.19,false,false,false,0,false,0
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,73,"LineString",39,4096,8,36,2091,3175,2092,3165,2095,3166,2092,3165,2092,3165,931,false,true,true,0,true,1
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,114,"LineString",6,4096,0,4,2321,3922,2320,3914,2317,3921,2321,3922,2321,3922,174,false,true,true,0,true,1
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,174,"LineString",4,4096,0,2,3914,3808,3912,3807,3914,3805,3914,3808,3914,3808,182,false,true,true,0,true,1
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,197,"LineString",5,4096,0,3,4039,3020,4037,3017,4031,3018,4039,3020,4039,3020,57,false,true,true,0,true,1
+"OpenFreeMap","1-0-0.pbf",1,0,0,"boundary",0,242,"LineString",4,4096,0,2,4146,3788,4141,3785,4147,3783,4146,3788,4146,3788,-50,false,true,true,0,true,1
+"OpenFreeMap","1-0-1.pbf",1,0,1,"boundary",0,40,"LineString",33,4096,0,17,2580,879,2583,855,2615,879,2580,879,2580,879,879,false,true,true,0,true,1
+"OpenFreeMap","1-0-1.pbf",1,0,1,"boundary",0,67,"LineString",28,4096,0,18,2403,279,2399,284,2400,276,2403,279,2403,279,279,false,true,true,0,true,1
+"OpenFreeMap","1-0-1.pbf",1,0,1,"boundary",0,109,"LineString",28,4096,6,11,3030,365,3020,370,3020,359,3020,370,3020,370,370,false,true,true,0,true,1
+"OpenFreeMap","1-0-1.pbf",1,0,1,"boundary",1,5,"LineString",53,4096,0,41,2670,519,2680,528,2679,491,2670,519,2670,519,519,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,49,"LineString",34,4096,4,32,650,2191,645,2197,651,2202,645,2197,645,2197,645,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,57,"LineString",4,4096,0,2,847,2549,848,2553,849,2550,847,2549,847,2549,847,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,60,"LineString",117,4096,0,63,823,2445,822,2437,816,2449,823,2445,823,2445,823,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,92,"LineString",29,4096,12,14,667,2608,670,2608,670,2606,669,2621,669.867,2608,669.867,false,false,false,0,false,0
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,95,"LineString",7,4096,0,5,630,2638,632,2638,627,2639,630,2638,630,2638,630,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,104,"LineString",14,4096,0,12,693,2769,690,2764,696,2778,693,2769,693,2769,693,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,135,"LineString",29,4096,0,27,908,2982,917,2987,904,2981,908,2982,908,2982,908,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,167,"LineString",19,4096,0,15,278,2991,280,2992,274,2997,278,2991,278,2991,278,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,197,"LineString",11,4096,0,9,310,2692,313,2689,306,2690,310,2692,310,2692,310,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,209,"LineString",5,4096,0,3,202,2667,203,2662,198,2667,202,2667,202,2667,202,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,235,"LineString",4,4096,0,2,111,2969,113,2965,115,2967,111,2969,111,2969,111,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,276,"LineString",4,4096,0,2,50,3788,45,3785,51,3783,50,3788,50,3788,50,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,373,"LineString",5,4096,0,3,821,3894,825,3895,821,3890,821,3894,821,3894,202,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,377,"LineString",4,4096,0,2,884,3893,882,3888,880,3890,884,3893,884,3893,203,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,389,"LineString",5,4096,0,3,960,3885,962,3881,958,3885,960,3885,960,3885,211,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,419,"LineString",17,4096,0,12,686,3112,693,3125,695,3098,686,3112,686,3112,686,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,426,"LineString",15,4096,2,13,684,3154,677,3147,680,3139,677,3147,677,3147,677,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,445,"LineString",18,4096,2,16,860,3152,855,3165,864,3164,855,3165,855,3165,855,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,526,"LineString",4,4096,0,2,1388,3178,1398,3182,1395,3184,1388,3178,1388,3178,918,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,586,"LineString",40,4096,33,38,1669,3627,1665,3629,1664,3631,1665,3629,1665,3629,467,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,594,"LineString",17,4096,10,12,1852,3406,1855,3412,1853,3408,1843,3408,1853,3408,688,false,true,false,0,false,0
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,603,"LineString",56,4096,37,39,1711,3511,1715,3511,1713,3511,1714,3507,1713,3511,585,false,true,false,0,false,0
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,608,"LineString",9,4096,0,6,1664,3278,1660,3280,1668,3281,1664,3278,1664,3278,818,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,631,"LineString",4,4096,0,2,1564,3144,1564,3146,1565,3141,1564,3144,1564,3144,952,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,651,"LineString",5,4096,0,3,1624,2731,1621,2737,1629,2737,1624,2731,1624,2731,1365,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,654,"LineString",4,4096,0,2,1750,3004,1752,2998,1748,3002,1750,3004,1750,3004,1092,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,657,"LineString",4,4096,0,2,1697,3017,1698,3012,1695,3014,1697,3017,1697,3017,1079,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,664,"LineString",5,4096,0,3,1575,3064,1578,3062,1573,3063,1575,3064,1575,3064,1032,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,679,"LineString",62,4096,14,60,1094,2564,1102,2558,1092,2553,1102,2558,1102,2558,1102,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,726,"LineString",10,4096,0,8,2434,2857,2442,2860,2424,2856,2434,2857,2434,2857,1239,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,730,"LineString",13,4096,0,11,2420,2807,2426,2810,2413,2810,2420,2807,2420,2807,1289,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",1,752,"LineString",25,4096,10,12,2181,3509,2185,3507,2185,3509,2184,3494,2184.871,3507.065,588.935,false,false,false,0,false,0
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",2,20,"LineString",4,4096,0,2,283,2979,283,2982,285,2980,283,2979,283,2979,283,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",2,91,"LineString",45,4096,24,43,2020,3444,2023,3449,2036,3430,2023,3449,2023,3449,647,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",2,98,"LineString",4,4096,0,2,1607,3108,1604,3105,1609,3106,1607,3108,1607,3108,988,false,true,true,0,true,1
+"OpenFreeMap","1-1-0.pbf",1,1,0,"boundary",2,99,"LineString",5,4096,0,3,1621,3104,1616,3104,1621,3100,1621,3104,1621,3104,992,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",0,16,"LineString",43,4096,20,41,346,224,344,222,345,214,344,222,344,222,222,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",0,79,"LineString",12,4096,5,10,701,415,703,415,705,410,703,415,703,415,415,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",0,240,"LineString",7,4096,0,5,3388,871,3392,877,3386,861,3388,871,3388,871,708,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",1,9,"LineString",13,4096,0,10,731,634,728,634,730,614,731,634,731,634,634,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",1,11,"LineString",12,4096,0,10,659,716,669,697,646,720,659,716,659,716,659,false,true,true,0,true,1
+"OpenFreeMap","1-1-1.pbf",1,1,1,"boundary",1,13,"LineString",4,4096,0,2,789,275,791,276,789,278,789,275,789,275,275,false,true,true,0,true,1
+"OpenFreeMap","2-0-1.pbf",2,0,1,"boundary",0,13,"LineString",26,4096,0,17,3703,3193,3709,3193,3700,3187,3703,3193,3703,3193,393,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,31,"LineString",8,4096,0,3,586,2169,590,2166,591,2177,586,2169,586,2169,586,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,73,"LineString",12,4096,0,10,545,3748,547,3750,544,3750,545,3748,545,3748,348,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,83,"LineString",49,4096,0,12,703,3924,706,3927,713,3908,706,3927,706,3927,169,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,133,"LineString",5,4096,0,3,3733,3521,3729,3518,3735,3516,3733,3521,3733,3521,363,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,150,"LineString",4,4096,0,2,3900,2065,3899,2067,3902,2067,3900,2065,3900,2065,196,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,151,"LineString",17,4096,0,4,4030,2098,4037,2095,4034,2106,4030,2098,4030,2098,66,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,155,"LineString",7,4096,0,5,3981,1944,3978,1943,3980,1946,3981,1944,3981,1944,115,false,true,true,0,true,1
+"OpenFreeMap","2-1-1.pbf",2,1,1,"boundary",0,156,"LineString",4,4096,0,2,4046,1956,4044,1959,4047,1959,4046,1956,4046,1956,50,false,true,true,0,true,1
+"OpenFreeMap","2-1-2.pbf",2,1,2,"boundary",0,8,"LineString",47,4096,0,31,711,557,706,561,697,549,711,557,711,557,557,false,true,true,0,true,1
+"OpenFreeMap","2-1-2.pbf",2,1,2,"boundary",0,46,"LineString",81,4096,44,52,1951,734,1943,740,1941,737,1943,740,1943,740,740,false,true,true,0,true,1
+"OpenFreeMap","2-1-2.pbf",2,1,2,"boundary",0,94,"LineString",48,4096,0,23,1064,1758,1069,1709,1133,1758,1064,1758,1064,1758,1064,false,true,true,0,true,1
+"OpenFreeMap","2-1-2.pbf",2,1,2,"boundary",1,7,"LineString",129,4096,0,66,1245,1038,1265,1057,1262,981,1245,1038,1245,1038,1038,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,51,"LineString",4,4096,0,2,1731,565,1731,568,1734,568,1731,565,1731,565,565,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,55,"LineString",186,4096,125,184,2203,1014,2203,1020,2184,1010,2203,1020,2203,1020,1020,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,56,"LineString",5,4096,0,3,1693,1001,1692,1007,1697,1003,1693,1001,1693,1001,1001,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,92,"LineString",10,4096,0,8,1260,1179,1263,1180,1254,1181,1260,1179,1260,1179,1179,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,96,"LineString",96,4096,31,94,1343,1505,1352,1515,1352,1521,1352,1515,1352,1515,1352,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,102,"LineString",18,4096,0,16,1388,1446,1379,1431,1392,1460,1388,1446,1388,1446,1388,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,114,"LineString",5,4096,0,3,1688,1027,1683,1030,1691,1030,1688,1027,1688,1027,1027,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,133,"LineString",51,4096,0,49,1816,1868,1833,1877,1813,1869,1816,1868,1816,1868,1816,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,194,"LineString",16,4096,0,14,620,1287,621,1291,612,1285,620,1287,620,1287,620,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,196,"LineString",73,4096,11,71,598,1346,594,1344,600,1338,594,1344,594,1344,594,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,204,"LineString",8,4096,0,6,403,1238,406,1239,397,1237,403,1238,403,1238,403,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,230,"LineString",5,4096,0,3,223,1842,226,1834,227,1842,223,1842,223,1842,223,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,239,"LineString",4,4096,0,2,-50,1956,-52,1959,-49,1959,-50,1956,-50,1956,-50,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,269,"LineString",9,4096,0,7,99,3480,93,3479,100,3482,99,3480,99,3480,99,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,358,"LineString",35,4096,14,30,1303,3809,1303,3789,1312,3793,1303,3789,1303,3789,307,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,364,"LineString",8,4096,0,4,1649,3686,1650,3695,1641,3683,1649,3686,1649,3686,410,false,true,true,0,true,2
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,365,"LineString",7,4096,0,5,1658,3668,1660,3668,1655,3665,1658,3668,1658,3668,428,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,367,"LineString",7,4096,0,5,1768,3691,1768,3687,1759,3685,1768,3691,1768,3691,405,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,379,"LineString",6,4096,0,4,1920,3675,1923,3676,1915,3674,1920,3675,1920,3675,421,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,437,"LineString",30,4096,14,16,1774,2234,1770,2236,1772,2235,1773,2238,1772,2235,1772,false,true,false,0,false,0
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,454,"LineString",5,4096,0,3,1649,2477,1647,2476,1653,2478,1649,2477,1649,2477,1619,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,567,"LineString",4,4096,0,2,3745,3323,3740,3324,3745,3325,3745,3323,3745,3323,351,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,569,"LineString",71,4096,59,69,3335,3157,3330,3161,3329,3165,3330,3161,3330,3161,766,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,577,"LineString",23,4096,18,20,3686,2719,3696,2726,3695,2723,3699,2735,3696,2726,400,false,true,false,0,false,0
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,591,"LineString",11,4096,0,6,3328,2460,3319,2464,3337,2466,3328,2460,3328,2460,768,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,615,"LineString",5,4096,0,3,3127,2192,3129,2197,3130,2186,3127,2192,3127,2192,969,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,636,"LineString",8,4096,0,6,3248,1367,3243,1372,3254,1370,3248,1367,3248,1367,848,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,639,"LineString",7,4096,0,5,3500,1912,3503,1912,3497,1912,3500,1912,3500,1912,596,true,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,642,"LineString",5,4096,0,3,3394,1938,3398,1932,3391,1932,3394,1938,3394,1938,702,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,647,"LineString",8,4096,0,6,3150,2031,3151,2034,3147,2030,3150,2031,3150,2031,946,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",1,664,"LineString",5,4096,0,3,2378,1211,2377,1214,2380,1212,2378,1211,2378,1211,1211,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,20,"LineString",6,4096,0,4,566,1863,564,1866,569,1862,566,1863,566,1863,566,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,34,"LineString",111,4096,0,71,347,1627,334,1638,361,1629,347,1627,347,1627,347,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,75,"LineString",4,4096,0,2,2071,2067,2071,2071,2074,2068,2071,2067,2071,2067,2025,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,81,"LineString",4,4096,0,2,2559,2905,2560,2910,2562,2906,2559,2905,2559,2905,1191,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,93,"LineString",4,4096,0,2,3214,2119,3208,2114,3218,2116,3214,2119,3214,2119,882,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,94,"LineString",9,4096,0,7,3241,2112,3232,2113,3239,2108,3241,2112,3241,2112,855,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,95,"LineString",5,4096,0,3,3265,2108,3262,2110,3267,2107,3265,2108,3265,2108,831,false,true,true,0,true,1
+"OpenFreeMap","2-2-1.pbf",2,2,1,"boundary",2,104,"LineString",4,4096,0,2,2048,2042,2046,2044,2048,2046,2048,2042,2048,2042,2042,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",0,9,"LineString",37,4096,9,35,750,644,752,613,741,613,752,613,752,613,613,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",0,19,"LineString",61,4096,21,59,696,449,688,445,690,441,688,445,688,445,445,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",0,109,"LineString",4,4096,0,2,1194,956,1189,956,1195,958,1194,956,1194,956,956,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",0,111,"LineString",5,4096,0,3,1251,988,1253,988,1249,986,1251,988,1251,988,988,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",1,13,"LineString",4,4096,0,2,1574,549,1572,551,1576,553,1574,549,1574,549,549,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",1,14,"LineString",4,4096,0,2,1578,551,1582,552,1579,556,1578,551,1578,551,551,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",1,17,"LineString",18,4096,0,16,1319,1432,1324,1428,1304,1439,1319,1432,1319,1432,1319,false,true,true,0,true,1
+"OpenFreeMap","2-2-2.pbf",2,2,2,"boundary",1,19,"LineString",16,4096,0,13,1461,1269,1456,1268,1458,1240,1461,1269,1461,1269,1269,false,true,true,0,true,1
+"OpenFreeMap","2-3-1.pbf",2,3,1,"boundary",0,21,"LineString",11,4096,0,9,772,1617,789,1624,758,1619,772,1617,772,1617,772,false,true,true,0,true,1
+"OpenFreeMap","2-3-1.pbf",2,3,1,"boundary",0,25,"LineString",15,4096,0,13,744,1518,756,1525,730,1524,744,1518,744,1518,744,false,true,true,0,true,1
+"OpenFreeMap","2-3-1.pbf",2,3,1,"boundary",0,93,"LineString",6,4096,0,4,533,3958,534,3950,531,3958,533,3958,533,3958,138,false,true,true,0,true,1
+"OpenFreeMap","2-3-1.pbf",2,3,1,"boundary",0,164,"LineString",16,4096,2,14,2297,2293,2286,2285,2286,2309,2286,2285,2286,2285,1810,false,true,true,0,true,1
+"OpenFreeMap","2-3-1.pbf",2,3,1,"boundary",2,3,"LineString",36,4096,4,34,-56,2797,-50,2803,-24,2765,-50,2803,-50,2803,-50,false,true,true,0,true,1
+"OpenFreeMap","2-3-2.pbf",2,3,2,"boundary",0,62,"LineString",12,4096,0,10,2680,1743,2682,1751,2678,1744,2680,1743,2680,1743,1416,false,true,true,0,true,1
+"OpenFreeMap","2-3-2.pbf",2,3,2,"boundary",0,70,"LineString",25,4096,0,16,2505,264,2494,264,2496,253,2505,264,2505,264,264,false,true,true,0,true,1
+"OpenFreeMap","3-1-3.pbf",3,1,3,"boundary",0,11,"LineString",58,4096,0,12,3251,2320,3246,2310,3273,2328,3251,2320,3251,2320,845,false,true,true,0,true,1
+"OpenFreeMap","3-1-3.pbf",3,1,3,"boundary",0,14,"LineString",47,4096,0,32,3309,2289,3318,2292,3309,2284,3309,2289,3309,2289,787,false,true,true,0,true,1
+"OpenFreeMap","3-1-3.pbf",3,1,3,"boundary",0,17,"LineString",39,4096,15,37,3046,2054,3018,2041,3014,2047,3018,2041,3018,2041,1078,false,true,true,0,true,1
+"OpenFreeMap","3-2-3.pbf",3,2,3,"boundary",0,15,"LineString",16,4096,0,4,1172,243,1179,236,1180,252,1172,243,1172,243,243,false,true,true,0,true,1
+"OpenFreeMap","3-2-3.pbf",3,2,3,"boundary",0,54,"LineString",17,4096,0,15,1091,3401,1093,3403,1088,3403,1091,3401,1091,3401,695,false,true,true,0,true,1
+"OpenFreeMap","3-2-4.pbf",3,2,4,"boundary",0,70,"LineString",84,4096,0,45,2128,3516,2129,3497,2267,3517,2128,3516,2128,3516,580,false,true,true,0,true,1
+"OpenFreeMap","3-2-4.pbf",3,2,4,"boundary",0,99,"LineString",114,4096,60,71,3892,1479,3886,1479,3881,1473,3886,1479,3886,1479,210,false,true,true,0,true,1
+"OpenFreeMap","3-2-4.pbf",3,2,4,"boundary",1,5,"LineString",213,4096,0,126,2489,2077,2492,2082,2523,1962,2489,2077,2489,2077,1607,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,2,"LineString",4,4096,0,2,3795,3816,3796,3822,3799,3820,3795,3816,3795,3816,280,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,6,"LineString",11,4096,0,9,3866,3887,3863,3889,3867,3892,3866,3887,3866,3887,209,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,10,"LineString",4,4096,0,2,3995,3913,3993,3917,3998,3919,3995,3913,3995,3913,101,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,11,"LineString",5,4096,0,3,4087,3808,4086,3802,4090,3804,4087,3808,4087,3808,9,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,12,"LineString",5,4096,0,3,4085,3818,4083,3815,4089,3815,4085,3818,4085,3818,11,false,true,true,0,true,1
+"OpenFreeMap","3-3-2.pbf",3,3,2,"boundary",0,44,"LineString",4,4096,0,2,3705,4130,3703,4135,3708,4134,3705,4130,3705,4130,-34,false,true,true,0,true,1
+"OpenFreeMap","3-3-3.pbf",3,3,3,"boundary",0,17,"LineString",8,4096,0,6,3370,2945,3365,2944,3374,2942,3370,2945,3370,2945,726,false,true,true,0,true,1
+"OpenFreeMap","3-3-3.pbf",3,3,3,"boundary",0,36,"LineString",4,4096,0,2,3705,34,3703,39,3708,38,3705,34,3705,34,34,false,true,true,0,true,1
+"OpenFreeMap","3-3-3.pbf",3,3,3,"boundary",0,37,"LineString",33,4096,21,31,3965,94,3964,99,3975,100,3964,99,3964,99,99,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,44,"LineString",17,4096,0,15,807,2475,811,2479,805,2477,807,2475,807,2475,807,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,66,"LineString",5,4096,0,3,-11,3818,-13,3815,-7,3815,-11,3818,-11,3818,-11,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,67,"LineString",5,4096,0,3,-9,3808,-10,3802,-6,3804,-9,3808,-9,3808,-9,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,70,"LineString",6,4096,0,4,446,3683,445,3678,454,3683,446,3683,446,3683,413,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,81,"LineString",5,4096,0,3,1131,3770,1129,3772,1133,3773,1131,3770,1131,3770,326,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,84,"LineString",4,4096,0,2,1108,3746,1110,3751,1114,3747,1108,3746,1108,3746,350,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,109,"LineString",27,4096,0,25,1240,2575,1242,2581,1228,2573,1240,2575,1240,2575,1240,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,126,"LineString",15,4096,0,13,2520,2358,2531,2359,2511,2359,2520,2358,2520,2358,1576,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,135,"LineString",34,4096,0,32,2776,2892,2774,2893,2784,2919,2776,2892,2776,2892,1204,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,136,"LineString",137,4096,8,135,2693,3019,2703,3030,2701,3033,2703,3030,2703,3030,1066,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,171,"LineString",85,4096,0,83,3632,3735,3642,3743,3626,3737,3632,3735,3632,3735,361,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,188,"LineString",7,4096,0,5,3375,2054,3368,2055,3383,2055,3375,2054,3375,2054,721,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,193,"LineString",6,4096,0,4,3865,2202,3863,2203,3869,2206,3865,2202,3865,2202,231,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,197,"LineString",5,4096,0,3,4045,1465,4044,1470,4050,1471,4045,1465,4045,1465,51,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,198,"LineString",5,4096,0,3,3463,1130,3462,1135,3469,1134,3463,1130,3463,1130,633,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,203,"LineString",6,4096,0,4,3386,2002,3384,2013,3395,2007,3386,2002,3386,2002,710,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",0,205,"LineString",320,4096,181,318,3582,1885,3588,1885,3585,1874,3588,1885,3588,1885,508,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",1,7,"LineString",19,4096,0,7,130,3899,137,3893,129,3905,130,3899,130,3899,130,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",1,11,"LineString",130,4096,0,101,693,3254,682,3260,701,3257,693,3254,693,3254,693,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",1,16,"LineString",7,4096,0,5,1132,3725,1128,3731,1138,3724,1132,3725,1132,3725,371,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",1,38,"LineString",6,4096,0,4,4095,4083,4092,4084,4099,4087,4095,4083,4095,4083,1,false,true,true,0,true,1
+"OpenFreeMap","3-4-2.pbf",3,4,2,"boundary",1,46,"LineString",5,4096,0,3,4142,4134,4140,4141,4147,4136,4142,4134,4142,4134,-46,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,26,"LineString",10,4096,0,8,198,2864,186,2862,200,2868,198,2864,198,2864,198,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,66,"LineString",27,4096,0,24,1390,3324,1393,3304,1407,3333,1390,3324,1390,3324,772,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,115,"LineString",51,4096,23,46,2603,3508,2607,3481,2614,3487,2607,3481,2607,3481,615,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,121,"LineString",14,4096,0,8,3298,3277,3296,3284,3292,3274,3298,3277,3298,3277,798,false,true,true,0,true,2
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,122,"LineString",9,4096,0,7,3316,3240,3319,3240,3314,3242,3316,3240,3316,3240,780,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,124,"LineString",13,4096,0,11,3536,3285,3537,3278,3533,3289,3536,3285,3536,3285,560,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,137,"LineString",9,4096,0,7,3840,3253,3846,3256,3830,3253,3840,3253,3840,3253,256,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,140,"LineString",45,4096,0,33,3093,2806,3076,2805,3086,2794,3093,2806,3093,2806,1003,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,170,"LineString",46,4096,0,40,2743,160,2757,175,2752,147,2743,160,2743,160,160,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,178,"LineString",35,4096,6,33,2721,302,2708,299,2713,284,2708,299,2708,299,299,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,192,"LineString",33,4096,0,28,3116,244,3118,259,3126,252,3116,244,3116,244,244,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,222,"LineString",8,4096,0,6,3298,858,3296,859,3306,861,3298,858,3298,858,798,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",1,259,"LineString",18,4096,7,16,4054,910,4051,892,4031,890,4051,892,4051,892,45,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",2,40,"LineString",6,4096,0,4,4095,-13,4092,-12,4099,-9,4095,-13,4095,-13,-13,false,true,true,0,true,1
+"OpenFreeMap","3-4-3.pbf",3,4,3,"boundary",2,41,"LineString",5,4096,0,3,4142,38,4140,45,4147,40,4142,38,4142,38,-46,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,16,"LineString",108,4096,48,106,1384,896,1375,889,1379,883,1375,889,1375,889,889,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,30,"LineString",64,4096,22,62,1505,1245,1504,1227,1476,1226,1504,1227,1504,1227,1227,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,47,"LineString",4,4096,0,2,2340,2373,2338,2369,2336,2375,2340,2373,2340,2373,1723,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,53,"LineString",5,4096,0,3,2533,2052,2538,2050,2531,2053,2533,2052,2533,2052,1563,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,82,"LineString",6,4096,0,4,2502,1975,2509,1976,2498,1976,2502,1975,2502,1975,1594,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,84,"LineString",5,4096,0,3,2388,1912,2378,1911,2390,1917,2388,1912,2388,1912,1708,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",0,113,"LineString",52,4096,0,44,3376,-2,3397,15,3368,9,3376,-2,3376,-2,-2,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",1,6,"LineString",23,4096,0,19,2923,2538,2912,2535,2922,2505,2923,2538,2923,2538,1173,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",1,8,"LineString",26,4096,0,24,2637,2865,2649,2856,2608,2878,2637,2865,2637,2865,1231,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",1,9,"LineString",6,4096,0,4,3149,1098,3145,1099,3153,1102,3149,1098,3149,1098,947,false,true,true,0,true,1
+"OpenFreeMap","3-4-4.pbf",3,4,4,"boundary",1,10,"LineString",5,4096,0,3,3157,1101,3164,1103,3155,1110,3157,1101,3157,1101,939,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,13,"LineString",5,4096,0,3,-51,1465,-52,1470,-46,1471,-51,1465,-51,1465,-51,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,22,"LineString",4,4096,0,2,282,2170,276,2179,283,2172,282,2170,282,2170,282,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,24,"LineString",5,4096,0,3,661,2422,658,2428,665,2424,661,2422,661,2422,661,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,49,"LineString",10,4096,0,8,2401,2734,2395,2736,2412,2740,2401,2734,2401,2734,1362,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,51,"LineString",10,4096,0,8,2203,4063,2207,4067,2199,4059,2203,4063,2203,4063,33,true,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,58,"LineString",7,4096,0,5,2696,3873,2701,3865,2693,3876,2696,3873,2696,3873,223,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,60,"LineString",9,4096,0,7,2904,3823,2909,3825,2895,3821,2904,3823,2904,3823,273,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,68,"LineString",4,4096,0,2,2343,2018,2339,2019,2346,2020,2343,2018,2343,2018,1753,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",0,69,"LineString",5,4096,0,3,2348,2004,2343,2010,2348,2010,2348,2004,2348,2004,1748,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",1,2,"LineString",6,4096,0,4,-1,4083,-4,4084,3,4087,-1,4083,-1,4083,-1,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",1,6,"LineString",6,4096,0,4,2328,4091,2326,4092,2332,4093,2328,4091,2328,4091,5,false,true,true,0,true,1
+"OpenFreeMap","3-5-2.pbf",3,5,2,"boundary",1,15,"LineString",5,4096,0,3,46,4134,44,4141,51,4136,46,4134,46,4134,-38,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",0,98,"LineString",7,4096,0,5,3393,2553,3394,2550,3392,2555,3393,2553,3393,2553,703,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",0,99,"LineString",120,4096,102,118,2570,2225,2564,2226,2562,2235,2564,2226,2564,2226,1532,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",0,122,"LineString",18,4096,0,10,2560,823,2542,832,2578,836,2560,823,2560,823,823,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",0,146,"LineString",11,4096,0,9,2159,288,2162,297,2157,288,2159,288,2159,288,288,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",0,152,"LineString",10,4096,0,8,2203,-33,2207,-29,2199,-37,2203,-33,2203,-33,-33,true,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,0,"LineString",6,4096,0,4,-1,-13,-4,-12,3,-9,-1,-13,-1,-13,-13,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,2,"LineString",5,4096,0,3,46,38,44,45,51,40,46,38,46,38,38,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,18,"LineString",6,4096,0,4,1023,1714,1020,1723,1027,1717,1023,1714,1023,1714,1023,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,27,"LineString",102,4096,2,100,3275,1206,3278,1214,3287,1227,3278,1214,3278,1214,818,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,33,"LineString",6,4096,0,4,2328,-5,2326,-4,2332,-3,2328,-5,2328,-5,-5,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,36,"LineString",5,4096,0,3,2331,143,2326,142,2339,136,2331,143,2331,143,143,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,37,"LineString",11,4096,0,9,2386,128,2381,131,2383,120,2386,128,2386,128,128,false,true,true,0,true,1
+"OpenFreeMap","3-5-3.pbf",3,5,3,"boundary",2,38,"LineString",5,4096,0,3,2434,120,2427,124,2438,118,2434,120,2434,120,120,false,true,true,0,true,1
+"OpenFreeMap","3-5-4.pbf",3,5,4,"boundary",0,13,"LineString",20,4096,0,18,74,1806,106,1805,127,1801,106,1805,106,1805,106,false,true,true,0,true,1
+"OpenFreeMap","3-6-2.pbf",3,6,2,"boundary",0,24,"LineString",16,4096,0,14,1543,3235,1554,3235,1517,3238,1543,3235,1543,3235,861,false,true,true,0,true,1
+"OpenFreeMap","3-6-2.pbf",3,6,2,"boundary",0,25,"LineString",21,4096,0,19,1489,3035,1496,3043,1476,3038,1489,3035,1489,3035,1061,false,true,true,0,true,1
+"OpenFreeMap","3-6-3.pbf",3,6,3,"boundary",0,50,"LineString",8,4096,0,6,1066,3819,1070,3818,1063,3820,1066,3819,1066,3819,277,false,true,true,0,true,1
+"OpenFreeMap","3-6-3.pbf",3,6,3,"boundary",0,51,"LineString",5,4096,0,3,1066,3825,1062,3826,1068,3829,1066,3825,1066,3825,271,false,true,true,0,true,1
+"OpenFreeMap","3-7-4.pbf",3,7,4,"boundary",0,24,"LineString",18,4096,0,16,1263,3486,1268,3503,1260,3488,1263,3486,1263,3486,610,false,true,true,0,true,1
+"OpenFreeMap","4-0-3.pbf",4,0,3,"boundary",0,0,"LineString",23,4096,0,21,805,1745,763,1739,825,1742,805,1745,805,1745,805,false,true,true,0,true,1
+"OpenFreeMap","4-0-3.pbf",4,0,3,"boundary",0,1,"LineString",34,4096,0,32,-64,1433,0,1406,0,1991,0,1406,0,1406,0,false,true,true,3,true,1
+"CARTO Streets","0-0-0.pbf",0,0,0,"boundary",0,34,"LineString",35,4096,0,21,1335,2308,1345,2276,1356,2328,1335,2308,1335,2308,1335,false,true,true,0,true,1
+"CARTO Streets","0-0-0.pbf",0,0,0,"boundary",0,43,"LineString",9,4096,0,5,2410,2353,2413,2364,2401,2351,2410,2353,2410,2353,1686,false,true,true,0,true,1
+"CARTO Streets","0-0-0.pbf",0,0,0,"boundary",0,44,"LineString",8,4096,0,6,2378,2392,2382,2396,2373,2388,2378,2392,2378,2392,1704,false,true,true,0,true,1
+"CARTO Streets","0-0-0.pbf",0,0,0,"boundary",0,70,"LineString",24,4096,0,7,3059,1725,3066,1715,3059,1727,3059,1725,3059,1725,1037,false,true,true,0,true,2
+"CARTO Streets","0-0-0.pbf",0,0,0,"boundary",0,130,"LineString",15,4096,0,13,2258,1513,2259,1511,2249,1505,2259,1511,2259,1511,1511,false,true,true,0,true,1
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,32,"LineString",37,4096,29,31,1778,3506,1785,3513,1783,3513,1790,3512,1784.75,3512.75,583.25,false,false,false,0,false,0
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,58,"LineString",128,4096,32,34,2639,2475,2647,2482,2649,2478,2645,2485,2646.81,2481.833,1449.19,false,false,false,0,false,0
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,73,"LineString",39,4096,8,36,2091,3175,2092,3165,2095,3166,2092,3165,2092,3165,931,false,true,true,0,true,1
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,114,"LineString",6,4096,0,4,2321,3922,2320,3914,2317,3921,2321,3922,2321,3922,174,false,true,true,0,true,1
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,174,"LineString",4,4096,0,2,3914,3808,3912,3807,3914,3805,3914,3808,3914,3808,182,false,true,true,0,true,1
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,197,"LineString",5,4096,0,3,4039,3020,4037,3017,4031,3018,4039,3020,4039,3020,57,false,true,true,0,true,1
+"CARTO Streets","1-0-0.pbf",1,0,0,"boundary",2,242,"LineString",4,4096,0,2,4146,3788,4141,3785,4147,3783,4146,3788,4146,3788,-50,false,true,true,0,true,1
+"CARTO Streets","1-0-1.pbf",1,0,1,"boundary",0,5,"LineString",53,4096,0,41,2670,519,2679,491,2680,528,2670,519,2670,519,519,false,true,true,0,true,1
+"CARTO Streets","1-0-1.pbf",1,0,1,"boundary",2,40,"LineString",33,4096,0,17,2580,879,2583,855,2615,879,2580,879,2580,879,879,false,true,true,0,true,1
+"CARTO Streets","1-0-1.pbf",1,0,1,"boundary",2,67,"LineString",28,4096,0,18,2403,279,2399,284,2400,276,2403,279,2403,279,279,false,true,true,0,true,1
+"CARTO Streets","1-0-1.pbf",1,0,1,"boundary",2,109,"LineString",28,4096,6,11,3030,365,3020,370,3020,359,3020,370,3020,370,370,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",0,20,"LineString",4,4096,0,2,283,2979,283,2982,285,2980,283,2979,283,2979,283,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",0,91,"LineString",45,4096,24,43,2020,3444,2023,3449,2036,3430,2023,3449,2023,3449,647,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",0,97,"LineString",4,4096,0,2,1607,3108,1604,3105,1609,3106,1607,3108,1607,3108,988,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",0,98,"LineString",5,4096,0,3,1621,3104,1616,3104,1621,3100,1621,3104,1621,3104,992,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,49,"LineString",34,4096,4,32,650,2191,645,2197,651,2202,645,2197,645,2197,645,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,57,"LineString",4,4096,0,2,847,2549,848,2553,849,2550,847,2549,847,2549,847,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,60,"LineString",117,4096,0,63,823,2445,822,2437,816,2449,823,2445,823,2445,823,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,92,"LineString",29,4096,12,14,667,2608,670,2608,670,2606,669,2621,669.867,2608,669.867,false,false,false,0,false,0
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,95,"LineString",7,4096,0,5,630,2638,632,2638,627,2639,630,2638,630,2638,630,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,104,"LineString",14,4096,0,12,693,2769,690,2764,696,2778,693,2769,693,2769,693,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,135,"LineString",29,4096,0,27,908,2982,917,2987,904,2981,908,2982,908,2982,908,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,167,"LineString",19,4096,0,15,278,2991,280,2992,274,2997,278,2991,278,2991,278,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,197,"LineString",11,4096,0,9,310,2692,313,2689,306,2690,310,2692,310,2692,310,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,209,"LineString",5,4096,0,3,202,2667,203,2662,198,2667,202,2667,202,2667,202,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,235,"LineString",4,4096,0,2,111,2969,113,2965,115,2967,111,2969,111,2969,111,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,276,"LineString",4,4096,0,2,50,3788,45,3785,51,3783,50,3788,50,3788,50,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,373,"LineString",5,4096,0,3,821,3894,825,3895,821,3890,821,3894,821,3894,202,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,377,"LineString",4,4096,0,2,884,3893,882,3888,880,3890,884,3893,884,3893,203,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,389,"LineString",5,4096,0,3,960,3885,962,3881,958,3885,960,3885,960,3885,211,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,419,"LineString",17,4096,0,12,686,3112,693,3125,695,3098,686,3112,686,3112,686,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,426,"LineString",15,4096,2,13,684,3154,677,3147,680,3139,677,3147,677,3147,677,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,445,"LineString",18,4096,2,16,860,3152,855,3165,864,3164,855,3165,855,3165,855,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,526,"LineString",4,4096,0,2,1388,3178,1398,3182,1395,3184,1388,3178,1388,3178,918,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,586,"LineString",40,4096,33,38,1669,3627,1665,3629,1664,3631,1665,3629,1665,3629,467,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,594,"LineString",17,4096,10,12,1852,3406,1855,3412,1853,3408,1843,3408,1853,3408,688,false,true,false,0,false,0
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,603,"LineString",56,4096,37,39,1711,3511,1715,3511,1713,3511,1714,3507,1713,3511,585,false,true,false,0,false,0
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,608,"LineString",9,4096,0,6,1664,3278,1660,3280,1668,3281,1664,3278,1664,3278,818,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,631,"LineString",4,4096,0,2,1564,3144,1564,3146,1565,3141,1564,3144,1564,3144,952,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,651,"LineString",5,4096,0,3,1624,2731,1621,2737,1629,2737,1624,2731,1624,2731,1365,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,654,"LineString",4,4096,0,2,1750,3004,1752,2998,1748,3002,1750,3004,1750,3004,1092,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,657,"LineString",4,4096,0,2,1697,3017,1698,3012,1695,3014,1697,3017,1697,3017,1079,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,664,"LineString",5,4096,0,3,1575,3064,1578,3062,1573,3063,1575,3064,1575,3064,1032,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,679,"LineString",62,4096,14,60,1094,2564,1102,2558,1092,2553,1102,2558,1102,2558,1102,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,726,"LineString",10,4096,0,8,2434,2857,2442,2860,2424,2856,2434,2857,2434,2857,1239,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,730,"LineString",13,4096,0,11,2420,2807,2426,2810,2413,2810,2420,2807,2420,2807,1289,false,true,true,0,true,1
+"CARTO Streets","1-1-0.pbf",1,1,0,"boundary",2,752,"LineString",25,4096,10,12,2181,3509,2185,3507,2185,3509,2184,3494,2184.871,3507.065,588.935,false,false,false,0,false,0
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",0,8,"LineString",13,4096,0,10,731,634,730,614,728,634,731,634,731,634,634,false,true,true,0,true,1
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",0,10,"LineString",12,4096,0,10,659,716,669,697,646,720,659,716,659,716,659,false,true,true,0,true,1
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",0,12,"LineString",4,4096,0,2,789,275,791,276,789,278,789,275,789,275,275,false,true,true,0,true,1
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",2,16,"LineString",43,4096,20,41,346,224,344,222,345,214,344,222,344,222,222,false,true,true,0,true,1
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",2,79,"LineString",12,4096,5,10,701,415,703,415,705,410,703,415,703,415,415,false,true,true,0,true,1
+"CARTO Streets","1-1-1.pbf",1,1,1,"boundary",2,240,"LineString",7,4096,0,5,3388,871,3392,877,3386,861,3388,871,3388,871,708,false,true,true,0,true,1
+"CARTO Streets","2-0-1.pbf",2,0,1,"boundary",1,13,"LineString",26,4096,0,17,3703,3193,3709,3193,3700,3187,3703,3193,3703,3193,393,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,31,"LineString",8,4096,0,3,586,2169,590,2166,591,2177,586,2169,586,2169,586,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,73,"LineString",12,4096,0,10,545,3748,547,3750,544,3750,545,3748,545,3748,348,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,83,"LineString",49,4096,0,12,703,3924,706,3927,713,3908,706,3927,706,3927,169,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,133,"LineString",5,4096,0,3,3733,3521,3729,3518,3735,3516,3733,3521,3733,3521,363,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,150,"LineString",4,4096,0,2,3900,2065,3899,2067,3902,2067,3900,2065,3900,2065,196,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,151,"LineString",17,4096,0,4,4030,2098,4037,2095,4034,2106,4030,2098,4030,2098,66,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,155,"LineString",7,4096,0,5,3981,1944,3978,1943,3980,1946,3981,1944,3981,1944,115,false,true,true,0,true,1
+"CARTO Streets","2-1-1.pbf",2,1,1,"boundary",2,156,"LineString",4,4096,0,2,4046,1956,4044,1959,4047,1959,4046,1956,4046,1956,50,false,true,true,0,true,1
+"CARTO Streets","2-1-2.pbf",2,1,2,"boundary",0,7,"LineString",129,4096,0,66,1245,1038,1262,981,1265,1057,1245,1038,1245,1038,1038,false,true,true,0,true,1
+"CARTO Streets","2-1-2.pbf",2,1,2,"boundary",2,8,"LineString",47,4096,0,31,711,557,706,561,697,549,711,557,711,557,557,false,true,true,0,true,1
+"CARTO Streets","2-1-2.pbf",2,1,2,"boundary",2,46,"LineString",81,4096,44,52,1951,734,1943,740,1941,737,1943,740,1943,740,740,false,true,true,0,true,1
+"CARTO Streets","2-1-2.pbf",2,1,2,"boundary",2,94,"LineString",48,4096,0,23,1064,1758,1069,1709,1133,1758,1064,1758,1064,1758,1064,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,20,"LineString",6,4096,0,4,566,1863,564,1866,569,1862,566,1863,566,1863,566,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,34,"LineString",111,4096,37,109,343,1621,347,1627,361,1629,347,1627,347,1627,347,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,75,"LineString",4,4096,0,2,2071,2067,2071,2071,2074,2068,2071,2067,2071,2067,2025,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,81,"LineString",4,4096,0,2,2559,2905,2560,2910,2562,2906,2559,2905,2559,2905,1191,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,93,"LineString",4,4096,0,2,3214,2119,3208,2114,3218,2116,3214,2119,3214,2119,882,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,94,"LineString",9,4096,0,7,3241,2112,3232,2113,3239,2108,3241,2112,3241,2112,855,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,95,"LineString",5,4096,0,3,3265,2108,3262,2110,3267,2107,3265,2108,3265,2108,831,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",1,104,"LineString",4,4096,0,2,2048,2042,2046,2044,2048,2046,2048,2042,2048,2042,2042,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,51,"LineString",4,4096,0,2,1731,565,1731,568,1734,568,1731,565,1731,565,565,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,55,"LineString",186,4096,125,184,2203,1014,2203,1020,2184,1010,2203,1020,2203,1020,1020,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,56,"LineString",5,4096,0,3,1693,1001,1692,1007,1697,1003,1693,1001,1693,1001,1001,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,92,"LineString",10,4096,0,8,1260,1179,1263,1180,1254,1181,1260,1179,1260,1179,1179,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,96,"LineString",96,4096,31,94,1343,1505,1352,1515,1352,1521,1352,1515,1352,1515,1352,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,102,"LineString",18,4096,0,16,1388,1446,1379,1431,1392,1460,1388,1446,1388,1446,1388,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,114,"LineString",5,4096,0,3,1688,1027,1683,1030,1691,1030,1688,1027,1688,1027,1027,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,133,"LineString",51,4096,0,49,1816,1868,1833,1877,1813,1869,1816,1868,1816,1868,1816,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,194,"LineString",16,4096,0,14,620,1287,621,1291,612,1285,620,1287,620,1287,620,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,196,"LineString",73,4096,11,71,598,1346,594,1344,600,1338,594,1344,594,1344,594,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,204,"LineString",8,4096,0,6,403,1238,406,1239,397,1237,403,1238,403,1238,403,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,230,"LineString",5,4096,0,3,223,1842,226,1834,227,1842,223,1842,223,1842,223,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,239,"LineString",4,4096,0,2,-50,1956,-52,1959,-49,1959,-50,1956,-50,1956,-50,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,269,"LineString",9,4096,0,7,99,3480,93,3479,100,3482,99,3480,99,3480,99,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,358,"LineString",35,4096,14,30,1303,3809,1303,3789,1312,3793,1303,3789,1303,3789,307,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,364,"LineString",8,4096,0,4,1649,3686,1650,3695,1641,3683,1649,3686,1649,3686,410,false,true,true,0,true,2
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,365,"LineString",7,4096,0,5,1658,3668,1660,3668,1655,3665,1658,3668,1658,3668,428,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,367,"LineString",7,4096,0,5,1768,3691,1768,3687,1759,3685,1768,3691,1768,3691,405,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,379,"LineString",6,4096,0,4,1920,3675,1923,3676,1915,3674,1920,3675,1920,3675,421,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,437,"LineString",30,4096,14,16,1774,2234,1770,2236,1772,2235,1773,2238,1772,2235,1772,false,true,false,0,false,0
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,454,"LineString",5,4096,0,3,1649,2477,1647,2476,1653,2478,1649,2477,1649,2477,1619,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,567,"LineString",4,4096,0,2,3745,3323,3740,3324,3745,3325,3745,3323,3745,3323,351,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,569,"LineString",71,4096,59,69,3335,3157,3330,3161,3329,3165,3330,3161,3330,3161,766,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,577,"LineString",23,4096,18,20,3686,2719,3696,2726,3695,2723,3699,2735,3696,2726,400,false,true,false,0,false,0
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,591,"LineString",11,4096,0,6,3328,2460,3319,2464,3337,2466,3328,2460,3328,2460,768,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,615,"LineString",5,4096,0,3,3127,2192,3129,2197,3130,2186,3127,2192,3127,2192,969,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,636,"LineString",8,4096,0,6,3248,1367,3243,1372,3254,1370,3248,1367,3248,1367,848,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,639,"LineString",7,4096,0,5,3500,1912,3503,1912,3497,1912,3500,1912,3500,1912,596,true,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,642,"LineString",5,4096,0,3,3394,1938,3398,1932,3391,1932,3394,1938,3394,1938,702,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,647,"LineString",8,4096,0,6,3150,2031,3151,2034,3147,2030,3150,2031,3150,2031,946,false,true,true,0,true,1
+"CARTO Streets","2-2-1.pbf",2,2,1,"boundary",2,664,"LineString",5,4096,0,3,2378,1211,2377,1214,2380,1212,2378,1211,2378,1211,1211,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",1,13,"LineString",4,4096,0,2,1574,549,1572,551,1576,553,1574,549,1574,549,549,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",1,14,"LineString",4,4096,0,2,1578,551,1582,552,1579,556,1578,551,1578,551,551,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",1,18,"LineString",18,4096,0,16,1319,1432,1324,1428,1304,1439,1319,1432,1319,1432,1319,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",1,19,"LineString",16,4096,0,13,1461,1269,1458,1240,1456,1268,1461,1269,1461,1269,1269,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",2,9,"LineString",37,4096,9,35,750,644,752,613,741,613,752,613,752,613,613,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",2,19,"LineString",61,4096,21,59,696,449,688,445,690,441,688,445,688,445,445,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",2,109,"LineString",4,4096,0,2,1194,956,1189,956,1195,958,1194,956,1194,956,956,false,true,true,0,true,1
+"CARTO Streets","2-2-2.pbf",2,2,2,"boundary",2,111,"LineString",5,4096,0,3,1251,988,1253,988,1249,986,1251,988,1251,988,988,false,true,true,0,true,1
+"CARTO Streets","2-3-1.pbf",2,3,1,"boundary",0,3,"LineString",36,4096,4,34,-56,2797,-50,2803,-24,2765,-50,2803,-50,2803,-50,false,true,true,0,true,1
+"CARTO Streets","2-3-1.pbf",2,3,1,"boundary",2,21,"LineString",11,4096,0,9,772,1617,789,1624,758,1619,772,1617,772,1617,772,false,true,true,0,true,1
+"CARTO Streets","2-3-1.pbf",2,3,1,"boundary",2,25,"LineString",15,4096,0,13,744,1518,756,1525,730,1524,744,1518,744,1518,744,false,true,true,0,true,1
+"CARTO Streets","2-3-1.pbf",2,3,1,"boundary",2,93,"LineString",6,4096,0,4,533,3958,534,3950,531,3958,533,3958,533,3958,138,false,true,true,0,true,1
+"CARTO Streets","2-3-1.pbf",2,3,1,"boundary",2,164,"LineString",16,4096,2,14,2297,2293,2286,2285,2286,2309,2286,2285,2286,2285,1810,false,true,true,0,true,1
+"CARTO Streets","2-3-2.pbf",2,3,2,"boundary",1,62,"LineString",12,4096,0,10,2680,1743,2682,1751,2678,1744,2680,1743,2680,1743,1416,false,true,true,0,true,1
+"CARTO Streets","2-3-2.pbf",2,3,2,"boundary",1,70,"LineString",25,4096,0,16,2505,264,2494,264,2496,253,2505,264,2505,264,264,false,true,true,0,true,1
+"CARTO Streets","3-1-3.pbf",3,1,3,"boundary",1,11,"LineString",58,4096,0,12,3251,2320,3246,2310,3273,2328,3251,2320,3251,2320,845,false,true,true,0,true,1
+"CARTO Streets","3-1-3.pbf",3,1,3,"boundary",1,14,"LineString",47,4096,0,32,3309,2289,3318,2292,3309,2284,3309,2289,3309,2289,787,false,true,true,0,true,1
+"CARTO Streets","3-1-3.pbf",3,1,3,"boundary",1,17,"LineString",39,4096,15,37,3046,2054,3018,2041,3014,2047,3018,2041,3018,2041,1078,false,true,true,0,true,1
+"CARTO Streets","3-2-3.pbf",3,2,3,"boundary",2,15,"LineString",16,4096,0,4,1172,243,1179,236,1180,252,1172,243,1172,243,243,false,true,true,0,true,1
+"CARTO Streets","3-2-3.pbf",3,2,3,"boundary",2,54,"LineString",17,4096,0,15,1091,3401,1093,3403,1088,3403,1091,3401,1091,3401,695,false,true,true,0,true,1
+"CARTO Streets","3-2-4.pbf",3,2,4,"boundary",0,5,"LineString",213,4096,0,126,2489,2077,2523,1962,2492,2082,2489,2077,2489,2077,1607,false,true,true,0,true,1
+"CARTO Streets","3-2-4.pbf",3,2,4,"boundary",2,70,"LineString",84,4096,0,45,2128,3516,2129,3497,2267,3517,2128,3516,2128,3516,580,false,true,true,0,true,1
+"CARTO Streets","3-2-4.pbf",3,2,4,"boundary",2,99,"LineString",114,4096,60,71,3892,1479,3886,1479,3881,1473,3886,1479,3886,1479,210,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,2,"LineString",4,4096,0,2,3795,3816,3796,3822,3799,3820,3795,3816,3795,3816,280,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,6,"LineString",11,4096,0,9,3866,3887,3863,3889,3867,3892,3866,3887,3866,3887,209,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,10,"LineString",4,4096,0,2,3995,3913,3993,3917,3998,3919,3995,3913,3995,3913,101,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,11,"LineString",5,4096,0,3,4087,3808,4086,3802,4090,3804,4087,3808,4087,3808,9,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,12,"LineString",5,4096,0,3,4085,3818,4083,3815,4089,3815,4085,3818,4085,3818,11,false,true,true,0,true,1
+"CARTO Streets","3-3-2.pbf",3,3,2,"boundary",1,44,"LineString",4,4096,0,2,3705,4130,3703,4135,3708,4134,3705,4130,3705,4130,-34,false,true,true,0,true,1
+"CARTO Streets","3-3-3.pbf",3,3,3,"boundary",1,17,"LineString",8,4096,0,6,3370,2945,3365,2944,3374,2942,3370,2945,3370,2945,726,false,true,true,0,true,1
+"CARTO Streets","3-3-3.pbf",3,3,3,"boundary",1,36,"LineString",4,4096,0,2,3705,34,3703,39,3708,38,3705,34,3705,34,34,false,true,true,0,true,1
+"CARTO Streets","3-3-3.pbf",3,3,3,"boundary",1,37,"LineString",33,4096,21,31,3965,94,3964,99,3975,100,3964,99,3964,99,99,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",0,4,"LineString",130,4096,26,128,689,3252,693,3254,701,3257,693,3254,693,3254,693,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",0,8,"LineString",19,4096,0,7,130,3899,137,3893,129,3905,130,3899,130,3899,130,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",0,16,"LineString",7,4096,0,5,1132,3725,1128,3731,1138,3724,1132,3725,1132,3725,371,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",0,38,"LineString",6,4096,0,4,4095,4083,4092,4084,4099,4087,4095,4083,4095,4083,1,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",0,46,"LineString",5,4096,0,3,4142,4134,4140,4141,4147,4136,4142,4134,4142,4134,-46,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,44,"LineString",17,4096,0,15,807,2475,811,2479,805,2477,807,2475,807,2475,807,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,66,"LineString",5,4096,0,3,-11,3818,-13,3815,-7,3815,-11,3818,-11,3818,-11,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,67,"LineString",5,4096,0,3,-9,3808,-10,3802,-6,3804,-9,3808,-9,3808,-9,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,70,"LineString",6,4096,0,4,446,3683,445,3678,454,3683,446,3683,446,3683,413,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,81,"LineString",5,4096,0,3,1131,3770,1129,3772,1133,3773,1131,3770,1131,3770,326,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,84,"LineString",4,4096,0,2,1108,3746,1110,3751,1114,3747,1108,3746,1108,3746,350,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,109,"LineString",27,4096,0,25,1240,2575,1242,2581,1228,2573,1240,2575,1240,2575,1240,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,126,"LineString",15,4096,0,13,2520,2358,2531,2359,2511,2359,2520,2358,2520,2358,1576,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,135,"LineString",34,4096,0,32,2776,2892,2774,2893,2784,2919,2776,2892,2776,2892,1204,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,136,"LineString",137,4096,8,135,2693,3019,2703,3030,2701,3033,2703,3030,2703,3030,1066,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,171,"LineString",85,4096,0,83,3632,3735,3642,3743,3626,3737,3632,3735,3632,3735,361,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,188,"LineString",7,4096,0,5,3375,2054,3368,2055,3383,2055,3375,2054,3375,2054,721,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,193,"LineString",6,4096,0,4,3865,2202,3863,2203,3869,2206,3865,2202,3865,2202,231,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,197,"LineString",5,4096,0,3,4045,1465,4044,1470,4050,1471,4045,1465,4045,1465,51,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,198,"LineString",5,4096,0,3,3463,1130,3462,1135,3469,1134,3463,1130,3463,1130,633,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,203,"LineString",6,4096,0,4,3386,2002,3384,2013,3395,2007,3386,2002,3386,2002,710,false,true,true,0,true,1
+"CARTO Streets","3-4-2.pbf",3,4,2,"boundary",2,205,"LineString",320,4096,181,318,3582,1885,3588,1885,3585,1874,3588,1885,3588,1885,508,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",1,40,"LineString",6,4096,0,4,4095,-13,4092,-12,4099,-9,4095,-13,4095,-13,-13,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",1,41,"LineString",5,4096,0,3,4142,38,4140,45,4147,40,4142,38,4142,38,-46,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,26,"LineString",10,4096,0,8,198,2864,186,2862,200,2868,198,2864,198,2864,198,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,66,"LineString",27,4096,0,24,1390,3324,1393,3304,1407,3333,1390,3324,1390,3324,772,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,115,"LineString",51,4096,23,46,2603,3508,2607,3481,2614,3487,2607,3481,2607,3481,615,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,121,"LineString",14,4096,0,8,3298,3277,3296,3284,3292,3274,3298,3277,3298,3277,798,false,true,true,0,true,2
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,122,"LineString",9,4096,0,7,3316,3240,3319,3240,3314,3242,3316,3240,3316,3240,780,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,124,"LineString",13,4096,0,11,3536,3285,3537,3278,3533,3289,3536,3285,3536,3285,560,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,137,"LineString",9,4096,0,7,3840,3253,3846,3256,3830,3253,3840,3253,3840,3253,256,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,140,"LineString",45,4096,0,33,3093,2806,3076,2805,3086,2794,3093,2806,3093,2806,1003,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,170,"LineString",46,4096,0,40,2743,160,2757,175,2752,147,2743,160,2743,160,160,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,178,"LineString",35,4096,6,33,2721,302,2708,299,2713,284,2708,299,2708,299,299,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,192,"LineString",33,4096,0,28,3116,244,3118,259,3126,252,3116,244,3116,244,244,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,222,"LineString",8,4096,0,6,3298,858,3296,859,3306,861,3298,858,3298,858,798,false,true,true,0,true,1
+"CARTO Streets","3-4-3.pbf",3,4,3,"boundary",2,259,"LineString",18,4096,7,16,4054,910,4051,892,4031,890,4051,892,4051,892,45,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",1,6,"LineString",23,4096,0,19,2923,2538,2922,2505,2912,2535,2923,2538,2923,2538,1173,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",1,8,"LineString",26,4096,0,24,2637,2865,2649,2856,2608,2878,2637,2865,2637,2865,1231,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",1,9,"LineString",6,4096,0,4,3149,1098,3145,1099,3153,1102,3149,1098,3149,1098,947,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",1,10,"LineString",5,4096,0,3,3157,1101,3164,1103,3155,1110,3157,1101,3157,1101,939,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,16,"LineString",108,4096,48,106,1384,896,1375,889,1379,883,1375,889,1375,889,889,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,30,"LineString",64,4096,22,62,1505,1245,1504,1227,1476,1226,1504,1227,1504,1227,1227,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,47,"LineString",4,4096,0,2,2340,2373,2338,2369,2336,2375,2340,2373,2340,2373,1723,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,53,"LineString",5,4096,0,3,2533,2052,2538,2050,2531,2053,2533,2052,2533,2052,1563,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,82,"LineString",6,4096,0,4,2502,1975,2509,1976,2498,1976,2502,1975,2502,1975,1594,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,84,"LineString",5,4096,0,3,2388,1912,2378,1911,2390,1917,2388,1912,2388,1912,1708,false,true,true,0,true,1
+"CARTO Streets","3-4-4.pbf",3,4,4,"boundary",2,113,"LineString",52,4096,0,44,3376,-2,3397,15,3368,9,3376,-2,3376,-2,-2,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",0,2,"LineString",6,4096,0,4,-1,4083,-4,4084,3,4087,-1,4083,-1,4083,-1,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",0,6,"LineString",6,4096,0,4,2328,4091,2326,4092,2332,4093,2328,4091,2328,4091,5,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",0,15,"LineString",5,4096,0,3,46,4134,44,4141,51,4136,46,4134,46,4134,-38,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,13,"LineString",5,4096,0,3,-51,1465,-52,1470,-46,1471,-51,1465,-51,1465,-51,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,22,"LineString",4,4096,0,2,282,2170,276,2179,283,2172,282,2170,282,2170,282,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,24,"LineString",5,4096,0,3,661,2422,658,2428,665,2424,661,2422,661,2422,661,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,49,"LineString",10,4096,0,8,2401,2734,2395,2736,2412,2740,2401,2734,2401,2734,1362,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,51,"LineString",10,4096,0,8,2203,4063,2207,4067,2199,4059,2203,4063,2203,4063,33,true,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,58,"LineString",7,4096,0,5,2696,3873,2701,3865,2693,3876,2696,3873,2696,3873,223,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,60,"LineString",9,4096,0,7,2904,3823,2909,3825,2895,3821,2904,3823,2904,3823,273,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,68,"LineString",4,4096,0,2,2343,2018,2339,2019,2346,2020,2343,2018,2343,2018,1753,false,true,true,0,true,1
+"CARTO Streets","3-5-2.pbf",3,5,2,"boundary",1,69,"LineString",5,4096,0,3,2348,2004,2343,2010,2348,2010,2348,2004,2348,2004,1748,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,0,"LineString",6,4096,0,4,-1,-13,-4,-12,3,-9,-1,-13,-1,-13,-13,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,2,"LineString",5,4096,0,3,46,38,44,45,51,40,46,38,46,38,38,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,18,"LineString",6,4096,0,4,1023,1714,1020,1723,1027,1717,1023,1714,1023,1714,1023,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,27,"LineString",102,4096,2,100,3275,1206,3278,1214,3287,1227,3278,1214,3278,1214,818,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,33,"LineString",6,4096,0,4,2328,-5,2326,-4,2332,-3,2328,-5,2328,-5,-5,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,36,"LineString",5,4096,0,3,2331,143,2326,142,2339,136,2331,143,2331,143,143,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,37,"LineString",11,4096,0,9,2386,128,2381,131,2383,120,2386,128,2386,128,128,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",1,38,"LineString",5,4096,0,3,2434,120,2427,124,2438,118,2434,120,2434,120,120,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",2,98,"LineString",7,4096,0,5,3393,2553,3394,2550,3392,2555,3393,2553,3393,2553,703,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",2,99,"LineString",120,4096,102,118,2570,2225,2564,2226,2562,2235,2564,2226,2564,2226,1532,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",2,122,"LineString",18,4096,0,10,2560,823,2542,832,2578,836,2560,823,2560,823,823,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",2,146,"LineString",11,4096,0,9,2159,288,2162,297,2157,288,2159,288,2159,288,288,false,true,true,0,true,1
+"CARTO Streets","3-5-3.pbf",3,5,3,"boundary",2,152,"LineString",10,4096,0,8,2203,-33,2207,-29,2199,-37,2203,-33,2203,-33,-33,true,true,true,0,true,1
+"CARTO Streets","3-5-4.pbf",3,5,4,"boundary",0,13,"LineString",20,4096,0,18,74,1806,106,1805,127,1801,106,1805,106,1805,106,false,true,true,0,true,1
+"CARTO Streets","3-6-2.pbf",3,6,2,"boundary",1,24,"LineString",16,4096,0,14,1543,3235,1554,3235,1517,3238,1543,3235,1543,3235,861,false,true,true,0,true,1
+"CARTO Streets","3-6-2.pbf",3,6,2,"boundary",1,25,"LineString",21,4096,0,19,1489,3035,1496,3043,1476,3038,1489,3035,1489,3035,1061,false,true,true,0,true,1
+"CARTO Streets","3-6-3.pbf",3,6,3,"boundary",2,50,"LineString",8,4096,0,6,1066,3819,1070,3818,1063,3820,1066,3819,1066,3819,277,false,true,true,0,true,1
+"CARTO Streets","3-6-3.pbf",3,6,3,"boundary",2,51,"LineString",5,4096,0,3,1066,3825,1062,3826,1068,3829,1066,3825,1066,3825,271,false,true,true,0,true,1
+"CARTO Streets","3-7-4.pbf",3,7,4,"boundary",1,24,"LineString",18,4096,0,16,1263,3486,1268,3503,1260,3488,1263,3486,1263,3486,610,false,true,true,0,true,1
+"CARTO Streets","4-0-3.pbf",4,0,3,"boundary",0,0,"LineString",23,4096,0,21,805,1745,763,1739,825,1742,805,1745,805,1745,805,false,true,true,0,true,1
+"CARTO Streets","4-0-3.pbf",4,0,3,"boundary",0,1,"LineString",34,4096,0,32,-64,1433,0,1406,0,1991,0,1406,0,1406,0,false,true,true,3,true,1
