@@ -35,7 +35,7 @@ Phase 1
 │   │   implementation and eliminate decoder defects as a possible cause of
 │   │   coordinate-range diagnostics.
 │   ├── Primary Artifact:
-│   │   [scripts/decoder-crosscheck.mjs](../../scripts/decoder-crosscheck.mjs)
+│   │   [scripts/decoder-crosscheck.mjs](../../../scripts/decoder-crosscheck.mjs)
 │   └── Outcome:
 │       Decoder parity confirmed; decoder-related hypotheses rejected.
 │
@@ -54,12 +54,12 @@ Phase 1
 │   │   Implement evidence-based default configuration values derived from
 │   │   the classification results.
 │   ├── Primary Artifact:
-│   │   [coordinate-range.ts](../../packages/tile-rules/src/rules/coordinate-range.ts)
+│   │   [coordinate-range.ts](../../../packages/tile-rules/src/rules/coordinate-range.ts)
 │   ├── Supporting Artifacts:
-│   │   • Unit tests: [coordinate-range.test.ts](../../packages/tile-rules/tests/rules/coordinate-range.test.ts)
-│   │   • Synthetic validation fixtures: [fixtures/synthetic/](../../fixtures/synthetic/)
-│   │   • Rule documentation: [coordinate-range.md](../rules/tile/coordinate-range.md)
-│   │   • CLI configuration updates: [tileguard.config.ts](../../packages/cli/tileguard.config.ts)
+│   │   • Unit tests: [coordinate-range.test.ts](../../../packages/tile-rules/tests/rules/coordinate-range.test.ts)
+│   │   • Synthetic validation fixtures: [fixtures/synthetic/](../../../fixtures/synthetic/)
+│   │   • Rule documentation: [coordinate-range.md](../../rules/tile/coordinate-range.md)
+│   │   • CLI configuration updates: [tileguard.config.ts](../../../packages/cli/tileguard.config.ts)
 │   └── Outcome:
 │       Introduced default buffer (80) and default excluded layers
 │       (place, water_name, centroids) while preserving full configurability.
@@ -82,7 +82,7 @@ Phase 1
     └── Outcome:
         Documents the engineering decisions, supporting evidence, trade-offs,
         and final implementation adopted by TileGuard:
-        [006-coordinate-range-defaults.md](../architecture/adr/006-coordinate-range-defaults.md)
+        [006-coordinate-range-defaults.md](../../architecture/adr/006-coordinate-range-defaults.md)
 ```
 
 This repository structure reflects the complete engineering workflow, from problem identification through implementation and empirical validation, and provides the supporting evidence for the finalized `tile/coordinate-range` rule improvements.
