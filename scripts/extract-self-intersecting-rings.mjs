@@ -233,10 +233,14 @@ for (const dataset of DATASETS) {
             // Intersection location
             segFirst: first,
             segSecond: second,
-            seg1_ax: a.x, seg1_ay: a.y,
-            seg1_bx: b.x, seg1_by: b.y,
-            seg2_cx: c.x, seg2_cy: c.y,
-            seg2_dx: d.x, seg2_dy: d.y,
+            seg1_ax: a.x,
+            seg1_ay: a.y,
+            seg1_bx: b.x,
+            seg1_by: b.y,
+            seg2_cx: c.x,
+            seg2_cy: c.y,
+            seg2_dx: d.x,
+            seg2_dy: d.y,
 
             ixX: Math.round(ixPt.x * 1000) / 1000,
             ixY: Math.round(ixPt.y * 1000) / 1000,
@@ -245,10 +249,10 @@ for (const dataset of DATASETS) {
             // Classification hints
             isCollinear,
             isTouchAtVertex,
-            sharedVertex,          // Two segments share an endpoint — classic figure-8 / pinch point
+            sharedVertex, // Two segments share an endpoint — classic figure-8 / pinch point
             segEndpointsOnBoundary, // How many of the 4 endpoints sit exactly on a tile edge
 
-            hasDuplicateVertices,  // Ring has at least one repeated vertex
+            hasDuplicateVertices, // Ring has at least one repeated vertex
             duplicateVertexCount: points.length - vertexSet.size,
 
             // Full ring vertices for shape inspection (array of {x,y})
@@ -273,14 +277,36 @@ console.log(`JSON written: ${jsonPath}`);
 // Write CSV (without vertices — flat for spreadsheet / Python analysis)
 // ---------------------------------------------------------------------------
 const csvHeaders = [
-  'dataset', 'tile', 'tileZ', 'tileX', 'tileY', 'layer', 'featureIndex', 'partIndex',
-  'geometryType', 'vertexCount', 'extent',
-  'segFirst', 'segSecond',
-  'seg1_ax', 'seg1_ay', 'seg1_bx', 'seg1_by',
-  'seg2_cx', 'seg2_cy', 'seg2_dx', 'seg2_dy',
-  'ixX', 'ixY', 'distToNearestBoundary',
-  'isCollinear', 'isTouchAtVertex', 'sharedVertex', 'segEndpointsOnBoundary',
-  'hasDuplicateVertices', 'duplicateVertexCount',
+  'dataset',
+  'tile',
+  'tileZ',
+  'tileX',
+  'tileY',
+  'layer',
+  'featureIndex',
+  'partIndex',
+  'geometryType',
+  'vertexCount',
+  'extent',
+  'segFirst',
+  'segSecond',
+  'seg1_ax',
+  'seg1_ay',
+  'seg1_bx',
+  'seg1_by',
+  'seg2_cx',
+  'seg2_cy',
+  'seg2_dx',
+  'seg2_dy',
+  'ixX',
+  'ixY',
+  'distToNearestBoundary',
+  'isCollinear',
+  'isTouchAtVertex',
+  'sharedVertex',
+  'segEndpointsOnBoundary',
+  'hasDuplicateVertices',
+  'duplicateVertexCount',
 ];
 
 const csvLines = [csvHeaders.join(',')];
@@ -324,5 +350,7 @@ console.log('Shared endpoint between intersecting segments:', sharedVertexCount)
 console.log('Rings with duplicate vertices:', duplicateVertexRings);
 console.log('Near-boundary intersections (dist <= 10):', nearBoundaryCount);
 console.log('\nTop 20 layers:');
-const layersSorted = Object.entries(byLayer).sort((a, b) => b[1] - a[1]).slice(0, 20);
+const layersSorted = Object.entries(byLayer)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 20);
 for (const [l, c] of layersSorted) console.log(`  ${l}: ${c}`);

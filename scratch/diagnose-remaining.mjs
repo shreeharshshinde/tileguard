@@ -1,7 +1,7 @@
 import { createEngine } from '../packages/core/dist/index.js';
 import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
-const allTiles = [];
+const _allTiles = [];
 // Let's use the urbanTiles from evaluate-real-world.mjs or just the same logic to locate one tile with coordinate-range issues.
 const baseTiles = [];
 for (let z = 0; z <= 3; z++) {
@@ -59,7 +59,7 @@ async function main() {
           });
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // ignore
     }
   }

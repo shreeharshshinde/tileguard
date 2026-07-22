@@ -71,7 +71,14 @@ describe('tile/self-intersection — baseline', () => {
         features: [
           {
             type: 3,
-            points: [[{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }, { x: 0, y: 0 }]],
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 10, y: 0 },
+                { x: 10, y: 10 },
+                { x: 0, y: 0 },
+              ],
+            ],
             props: {},
           },
         ],
@@ -116,7 +123,14 @@ describe('tile/self-intersection — baseline', () => {
         features: [
           {
             type: 2,
-            points: [[{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 10, y: 0 }, { x: 0, y: 10 }]],
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 10, y: 10 },
+                { x: 10, y: 0 },
+                { x: 0, y: 10 },
+              ],
+            ],
             props: {},
           },
         ],
@@ -208,7 +222,14 @@ describe('tile/self-intersection — Fix 1: closed-LineString closure skip', () 
         features: [
           {
             type: 2,
-            points: [[{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }, { x: 300, y: 10 }]],
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 0 },
+                { x: 200, y: 0 },
+                { x: 300, y: 10 },
+              ],
+            ],
             props: {},
           },
         ],
@@ -273,9 +294,9 @@ describe('tile/self-intersection — Fix 2: duplicate-vertex spike skip', () => 
             points: [
               [
                 { x: 0, y: 0 },
-                { x: 10, y: 5 },  // B — first occurrence
+                { x: 10, y: 5 }, // B — first occurrence
                 { x: 10, y: 10 },
-                { x: 10, y: 5 },  // B — duplicate (index 3)
+                { x: 10, y: 5 }, // B — duplicate (index 3)
                 { x: 0, y: 10 },
                 { x: 0, y: 0 },
               ],
@@ -301,9 +322,9 @@ describe('tile/self-intersection — Fix 2: duplicate-vertex spike skip', () => 
             points: [
               [
                 { x: 0, y: 0 },
-                { x: 10, y: 0 },  // P — first occurrence
+                { x: 10, y: 0 }, // P — first occurrence
                 { x: 20, y: 10 },
-                { x: 10, y: 0 },  // P — duplicate
+                { x: 10, y: 0 }, // P — duplicate
                 { x: 30, y: 0 },
               ],
             ],
@@ -335,7 +356,7 @@ describe('tile/self-intersection — Fix 2: duplicate-vertex spike skip', () => 
               [
                 { x: 0, y: 0 },
                 { x: 10, y: 10 }, // Q — first occurrence
-                { x: 5, y: 5 },   // collinear point on the diagonal
+                { x: 5, y: 5 }, // collinear point on the diagonal
                 { x: 10, y: 10 }, // Q — duplicate
                 { x: 0, y: 10 },
                 { x: 10, y: 0 },
@@ -409,7 +430,13 @@ describe('tile/self-intersection — Fix 4: minimum-vertex guard', () => {
         features: [
           {
             type: 2,
-            points: [[{ x: 0, y: 0 }, { x: 50, y: 50 }, { x: 100, y: 0 }]],
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 50, y: 50 },
+                { x: 100, y: 0 },
+              ],
+            ],
             props: {},
           },
         ],
@@ -426,7 +453,13 @@ describe('tile/self-intersection — Fix 4: minimum-vertex guard', () => {
         features: [
           {
             type: 3,
-            points: [[{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 10 }]],
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 10, y: 0 },
+                { x: 5, y: 10 },
+              ],
+            ],
             props: {},
           },
         ],
@@ -482,7 +515,12 @@ describe('tile/self-intersection — false-negative guard', () => {
           {
             type: 2,
             points: [
-              [{ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 100, y: 0 }, { x: 0, y: 100 }],
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 100 },
+              ],
             ],
             props: {},
           },

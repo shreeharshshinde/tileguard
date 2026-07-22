@@ -13,12 +13,12 @@
  * must not proceed — it would be measuring a decoder bug, not tile data.
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { gunzipSync } from 'node:zlib';
 import { VectorTile } from '@mapbox/vector-tile';
-import fs from 'fs';
-import path from 'path';
 import { PbfReader as Pbf } from 'pbf';
-import { fileURLToPath } from 'url';
-import { gunzipSync } from 'zlib';
 import { decodeMvt } from '../packages/tile-rules/dist/pbf-decoder.js';
 
 const __filename = fileURLToPath(import.meta.url);

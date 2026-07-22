@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createEngine } from '../packages/core/dist/index.js';
 import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 

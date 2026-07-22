@@ -246,8 +246,7 @@ describe('reporters stress and edge-cases', () => {
     it('routes output to console when process is not defined', () => {
       const originalProcess = globalThis.process;
 
-      // biome-ignore lint/performance/noDelete: simulating browser environment
-      delete (globalThis as any).process;
+      delete (globalThis as Record<string, unknown>).process;
 
       const spyLog = vi.spyOn(console, 'log').mockImplementation(() => {});
       const spyInfo = vi.spyOn(console, 'info').mockImplementation(() => {});

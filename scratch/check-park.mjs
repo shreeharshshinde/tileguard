@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { decodeMvt } from '../packages/tile-rules/dist/index.js';
 import { getFeatureParts } from '../packages/tile-rules/dist/types.js';
 

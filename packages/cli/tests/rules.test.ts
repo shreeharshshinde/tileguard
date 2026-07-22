@@ -14,7 +14,7 @@
  */
 
 import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // ── Module mock — must be declared before any imports that use them ───────
 vi.mock('@tileguard/config', () => ({

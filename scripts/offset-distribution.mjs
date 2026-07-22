@@ -14,10 +14,10 @@
  *   5. Outputs: analysis/offset-distribution.json, .csv, offset-histogram.md
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { gunzipSync } from 'zlib';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { gunzipSync } from 'node:zlib';
 import { decodeMvt } from '../packages/tile-rules/dist/pbf-decoder.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -337,7 +337,7 @@ async function main() {
       const match = k.match(/([+-])(\d+|>?\d+)/);
       if (!match) return 0;
       const sign = match[1] === '-' ? -1 : 1;
-      const val = match[2].startsWith('>') ? 99999 : parseInt(match[2]);
+      const val = match[2].startsWith('>') ? 99999 : parseInt(match[2], 10);
       return sign * val;
     };
     return parseKey(a[0]) - parseKey(b[0]);
