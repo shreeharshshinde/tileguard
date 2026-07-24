@@ -20,54 +20,43 @@
  */
 
 import { describe, expect, it } from 'vitest';
-
 // ---------------------------------------------------------------------------
-// Viewport module (Milestone 2 stubs)
+// HitTester module (Milestone 5 stubs)
 // ---------------------------------------------------------------------------
-import { createViewport } from '../src/viewport/viewport';
-import type { Viewport, ViewportState } from '../src/viewport/viewport';
-
-// ---------------------------------------------------------------------------
-// Renderer module (Milestone 3 stubs)
-// ---------------------------------------------------------------------------
-import { CanvasRenderer } from '../src/renderer/canvas-renderer';
-import type { OverlayDescriptor, Renderer } from '../src/renderer/canvas-renderer';
-import { drawLineString, drawPoint, drawPolygon, drawTileBoundary, drawVertexMarkers } from '../src/renderer/shapes';
-
+import { createHitTester } from '../src/hittest/hit-tester';
 // ---------------------------------------------------------------------------
 // Overlay module (Milestone 4 stubs)
 // ---------------------------------------------------------------------------
-import { OverlayAdapter, createDefaultOverlayAdapter } from '../src/overlay/overlay-adapter';
-import type { OverlayStrategy } from '../src/overlay/overlay-adapter';
+import { createDefaultOverlayAdapter, OverlayAdapter } from '../src/overlay/overlay-adapter';
 import { coordinateRangeStrategy } from '../src/overlay/strategies/coordinate-range';
 import { degenerateGeometryStrategy } from '../src/overlay/strategies/degenerate-geometry';
 import { noEmptyStrategy } from '../src/overlay/strategies/no-empty';
 import { selfIntersectionStrategy } from '../src/overlay/strategies/self-intersection';
 import { unclosedRingStrategy } from '../src/overlay/strategies/unclosed-ring';
 import { zeroAreaRingStrategy } from '../src/overlay/strategies/zero-area-ring';
-
 // ---------------------------------------------------------------------------
-// HitTester module (Milestone 5 stubs)
+// Renderer module (Milestone 3 stubs)
 // ---------------------------------------------------------------------------
-import { createHitTester } from '../src/hittest/hit-tester';
-import type { HitResult, HitTester } from '../src/hittest/hit-tester';
-
-// ---------------------------------------------------------------------------
-// InspectorStore module (Milestone 5 stubs)
-// ---------------------------------------------------------------------------
-import { createInspectorStore } from '../src/store/inspector-store';
-import type {
-  FilterState,
-  InspectorLifecycle,
-  InspectorStore,
-  SelectionState,
-} from '../src/store/inspector-store';
-
+import { CanvasRenderer } from '../src/renderer/canvas-renderer';
+import {
+  drawLineString,
+  drawPoint,
+  drawPolygon,
+  drawTileBoundary,
+  drawVertexMarkers,
+} from '../src/renderer/shapes';
 // ---------------------------------------------------------------------------
 // Server module (Milestone 7 stub)
 // ---------------------------------------------------------------------------
 import { DEFAULT_PORT, MAX_PORT_ATTEMPTS, startInspectorServer } from '../src/server/server';
-import type { InspectorServer, ServerOptions } from '../src/server/server';
+// ---------------------------------------------------------------------------
+// InspectorStore module (Milestone 5 stubs)
+// ---------------------------------------------------------------------------
+import { createInspectorStore } from '../src/store/inspector-store';
+// ---------------------------------------------------------------------------
+// Viewport module (Milestone 2 stubs)
+// ---------------------------------------------------------------------------
+import { createViewport } from '../src/viewport/viewport';
 
 // ---------------------------------------------------------------------------
 // Smoke tests — module import resolution and exported symbol shape checks
@@ -80,8 +69,11 @@ describe('Milestone 1 — package skeleton smoke tests', () => {
       expect(typeof createViewport).toBe('function');
     });
 
-    it('createViewport throws a "Milestone 2" stub error at runtime', () => {
-      expect(() => createViewport(800, 600)).toThrow('Milestone 2');
+    it('createViewport returns a Viewport instance with correct dimensions', () => {
+      const vp = createViewport({ width: 800, height: 600 });
+      const s = vp.getState();
+      expect(s.width).toBe(800);
+      expect(s.height).toBe(600);
     });
   });
 
@@ -122,11 +114,31 @@ describe('Milestone 1 — package skeleton smoke tests', () => {
 
   describe('overlay/strategies', () => {
     const strategies = [
-      { name: 'coordinateRangeStrategy', strategy: coordinateRangeStrategy, ruleId: 'tile/coordinate-range' },
-      { name: 'selfIntersectionStrategy', strategy: selfIntersectionStrategy, ruleId: 'tile/self-intersection' },
-      { name: 'zeroAreaRingStrategy', strategy: zeroAreaRingStrategy, ruleId: 'tile/zero-area-ring' },
-      { name: 'degenerateGeometryStrategy', strategy: degenerateGeometryStrategy, ruleId: 'tile/degenerate-geometry' },
-      { name: 'unclosedRingStrategy', strategy: unclosedRingStrategy, ruleId: 'tile/unclosed-ring' },
+      {
+        name: 'coordinateRangeStrategy',
+        strategy: coordinateRangeStrategy,
+        ruleId: 'tile/coordinate-range',
+      },
+      {
+        name: 'selfIntersectionStrategy',
+        strategy: selfIntersectionStrategy,
+        ruleId: 'tile/self-intersection',
+      },
+      {
+        name: 'zeroAreaRingStrategy',
+        strategy: zeroAreaRingStrategy,
+        ruleId: 'tile/zero-area-ring',
+      },
+      {
+        name: 'degenerateGeometryStrategy',
+        strategy: degenerateGeometryStrategy,
+        ruleId: 'tile/degenerate-geometry',
+      },
+      {
+        name: 'unclosedRingStrategy',
+        strategy: unclosedRingStrategy,
+        ruleId: 'tile/unclosed-ring',
+      },
       { name: 'noEmptyStrategy', strategy: noEmptyStrategy, ruleId: 'tile/no-empty' },
     ];
 
@@ -202,9 +214,9 @@ describe('Milestone 1 — package skeleton smoke tests', () => {
     });
 
     it('startInspectorServer throws a "Milestone 7" stub error at runtime', async () => {
-      await expect(
-        startInspectorServer({ tilePath: '/fake/tile.pbf' }),
-      ).rejects.toThrow('Milestone 7');
+      await expect(startInspectorServer({ tilePath: '/fake/tile.pbf' })).rejects.toThrow(
+        'Milestone 7',
+      );
     });
   });
 });

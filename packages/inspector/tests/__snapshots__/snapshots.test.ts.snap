@@ -1,0 +1,2716 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CanvasRenderer snapshots — Diagnostic Overlay > bbox-fill overlay fixture matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#f59e0b",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.25,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#f59e0b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      2,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — Diagnostic Overlay > point-marker overlay fixture matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      548.16,
+      548.16,
+      4,
+      0,
+      6.283185307179586,
+    ],
+    "method": "arc",
+  },
+  {
+    "args": [
+      "#94a3b8",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#1e293b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      548.16,
+      548.16,
+      6,
+      0,
+      6.283185307179586,
+    ],
+    "method": "arc",
+  },
+  {
+    "args": [
+      "#ef4444",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      2,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — Diagnostic Overlay > ring-highlight overlay fixture matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#f59e0b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      4,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineCap",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — empty tile > artifact with no layers produces only boundary draw calls 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — mixed-layer tile > mixed tile (buildings + roads + places) matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.85,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#f59e0b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1.5,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineCap",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      292.15999999999997,
+      548.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      548.16,
+      36.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      1060.16,
+      1060.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      548.16,
+      548.16,
+      4,
+      0,
+      6.283185307179586,
+    ],
+    "method": "arc",
+  },
+  {
+    "args": [
+      "#94a3b8",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#1e293b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — single geometry types > LineString fixture draw-call sequence matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.85,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#f59e0b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1.5,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineCap",
+  },
+  {
+    "args": [
+      "round",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      292.15999999999997,
+      548.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      548.16,
+      36.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      1060.16,
+      1060.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — single geometry types > MultiPolygon fixture draw-call sequence matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      61.16,
+      61.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      286.15999999999997,
+      61.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      286.15999999999997,
+      286.15999999999997,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      61.16,
+      286.15999999999997,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      61.16,
+      61.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      536.16,
+      536.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      786.16,
+      536.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      786.16,
+      786.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      536.16,
+      786.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      536.16,
+      536.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — single geometry types > Point fixture draw-call sequence matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      0.9,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      548.16,
+      548.16,
+      4,
+      0,
+      6.283185307179586,
+    ],
+    "method": "arc",
+  },
+  {
+    "args": [
+      "#94a3b8",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#1e293b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — single geometry types > Polygon (no holes) fixture draw-call sequence matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — single geometry types > Polygon-with-hole fixture draw-call sequence matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      86.16,
+      86.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      1010.16,
+      86.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      1010.16,
+      1010.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      86.16,
+      1010.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      86.16,
+      86.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      236.16,
+      236.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      860.16,
+      236.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      860.16,
+      860.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      236.16,
+      860.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      236.16,
+      236.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
+
+exports[`CanvasRenderer snapshots — vertex markers enabled > Polygon with showVertices=true matches snapshot 1`] = `
+[
+  {
+    "args": [
+      0,
+      0,
+      400,
+      400,
+    ],
+    "method": "clearRect",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#475569",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        6,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      36.16,
+      36.16,
+      1024,
+      1024,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      "#64748b",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      [
+        2,
+        4,
+      ],
+    ],
+    "method": "setLineDash",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      -27.840000000000003,
+      -27.840000000000003,
+      1152,
+      1152,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "moveTo",
+  },
+  {
+    "args": [
+      932.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      932.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      932.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [
+      164.16,
+      164.16,
+    ],
+    "method": "lineTo",
+  },
+  {
+    "args": [],
+    "method": "closePath",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [
+      0.15,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "evenodd",
+    ],
+    "method": "fill",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [
+      "#3b82f6",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [
+      "miter",
+    ],
+    "method": "set:lineJoin",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+  {
+    "args": [],
+    "method": "save",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:globalAlpha",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      161.16,
+      161.16,
+      6,
+      6,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#334155",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      929.16,
+      161.16,
+      6,
+      6,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#334155",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      929.16,
+      929.16,
+      6,
+      6,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#334155",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      161.16,
+      929.16,
+      6,
+      6,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#334155",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "beginPath",
+  },
+  {
+    "args": [
+      161.16,
+      161.16,
+      6,
+      6,
+    ],
+    "method": "rect",
+  },
+  {
+    "args": [
+      "#ffffff",
+    ],
+    "method": "set:fillStyle",
+  },
+  {
+    "args": [],
+    "method": "fill",
+  },
+  {
+    "args": [
+      "#334155",
+    ],
+    "method": "set:strokeStyle",
+  },
+  {
+    "args": [
+      1,
+    ],
+    "method": "set:lineWidth",
+  },
+  {
+    "args": [],
+    "method": "stroke",
+  },
+  {
+    "args": [],
+    "method": "restore",
+  },
+]
+`;
