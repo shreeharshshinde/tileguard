@@ -21,7 +21,7 @@
  */
 
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import type { TilePoint } from '../viewport/viewport.ts';
+import type { TilePoint } from '../geometry/index.js';
 
 // ---------------------------------------------------------------------------
 // Result Types — implemented in Milestone 5

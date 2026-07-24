@@ -22,7 +22,24 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import type { OverlayDescriptor } from '../renderer/canvas-renderer.ts';
+
+// ---------------------------------------------------------------------------
+// OverlayDescriptor — owned by the Overlay subsystem
+// ---------------------------------------------------------------------------
+
+/** Describes a visual marker for a single diagnostic. */
+export interface OverlayDescriptor {
+  /** Type of marker to render. */
+  readonly type: 'point-marker' | 'segment-highlight' | 'ring-highlight' | 'bbox-fill';
+  /** Layer name to locate the feature. */
+  readonly layerName: string;
+  /** Feature index within that layer. */
+  readonly featureIndex: number;
+  /** Ring index (for polygons), segment indices, or vertex indices (type-dependent). */
+  readonly target: number | [number, number] | number[];
+  /** Visual emphasis level. */
+  readonly severity: 'error' | 'warning' | 'info';
+}
 
 // ---------------------------------------------------------------------------
 // Strategy Interface — implemented in Milestone 4

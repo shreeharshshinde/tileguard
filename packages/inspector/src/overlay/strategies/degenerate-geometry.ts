@@ -9,7 +9,7 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import type { OverlayDescriptor } from '../../renderer/canvas-renderer.ts';
+import type { OverlayDescriptor } from '../overlay-adapter.ts';
 import type { OverlayStrategy } from '../overlay-adapter.ts';
 
 export const degenerateGeometryStrategy: OverlayStrategy = {
