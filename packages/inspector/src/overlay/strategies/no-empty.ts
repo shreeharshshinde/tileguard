@@ -2,10 +2,17 @@
  * @tileguard/inspector — OverlayStrategy: tile/no-empty
  *
  * Converts `tile/no-empty` diagnostics into OverlayDescriptors.
- * Renders a `bbox-highlight` around the entire tile extent to indicate
- * that the tile contained zero features.
+ * Returns an empty array unconditionally — an empty layer has no geometry
+ * to point a canvas overlay at.
  *
- * Implemented in Milestone 4.
+ * The "this tile is empty" information surfaces through the diagnostic list
+ * panel (Milestone 5/6), bypassing the overlay pipeline entirely. This is
+ * a legitimate, intentional exception — not every diagnostic needs a canvas
+ * visual.
+ *
+ * Diagnostic schema (from tile-rules/src/rules/no-empty.ts):
+ *   location: (none)
+ *   data:     { totalFeatures, layers }
  */
 
 import type { Diagnostic } from '@tileguard/core';
@@ -17,7 +24,7 @@ export const noEmptyStrategy: OverlayStrategy = {
   ruleId: 'tile/no-empty',
 
   toDescriptors(_diagnostic: Diagnostic, _artifact: VectorTileArtifact): OverlayDescriptor[] {
-    // Implemented in Milestone 4.
+    // No canvas overlay for empty tiles — there is no geometry to highlight.
     return [];
   },
 };
