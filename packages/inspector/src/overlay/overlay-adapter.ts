@@ -7,11 +7,18 @@
  *
  * Architecture:
  *   - OverlayStrategy — one implementation per rule ID
- *   - OverlayAdapter  — registry + dispatcher
+ *   - OverlayAdapter  — encapsulated registry + dispatcher
  *
- * Implemented in Milestone 4.
+ * The strategy Map is encapsulated within the Adapter — no separate Registry
+ * module exists, since no other subsystem needs independent access.
  *
- * Default strategies (Milestone 4):
+ * Failure handling:
+ *   - Unregistered ruleId → zero descriptors, no throw
+ *   - Strategy throws → zero descriptors for that diagnostic, continue
+ *   - Strategy returns non-array → treated as empty
+ *   - Duplicate registration → throws (matches @tileguard/core convention)
+ *
+ * Default strategies (registered by createDefaultOverlayAdapter):
  *   tile/coordinate-range    → coordinate-range.ts
  *   tile/self-intersection   → self-intersection.ts
  *   tile/zero-area-ring      → zero-area-ring.ts
@@ -22,6 +29,13 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
+
+import { coordinateRangeStrategy } from './strategies/coordinate-range.js';
+import { selfIntersectionStrategy } from './strategies/self-intersection.js';
+import { zeroAreaRingStrategy } from './strategies/zero-area-ring.js';
+import { degenerateGeometryStrategy } from './strategies/degenerate-geometry.js';
+import { unclosedRingStrategy } from './strategies/unclosed-ring.js';
+import { noEmptyStrategy } from './strategies/no-empty.js';
 
 // ---------------------------------------------------------------------------
 // OverlayDescriptor — owned by the Overlay subsystem
@@ -42,7 +56,7 @@ export interface OverlayDescriptor {
 }
 
 // ---------------------------------------------------------------------------
-// Strategy Interface — implemented in Milestone 4
+// Strategy Interface
 // ---------------------------------------------------------------------------
 
 /**
@@ -51,10 +65,9 @@ export interface OverlayDescriptor {
  * Each strategy is responsible for exactly one rule ID. A strategy must not
  * call the Renderer — it only produces descriptors.
  *
- * The `artifact` parameter gives direct access to the decoded geometry, which
- * is required by most strategies (e.g. to locate intersection coordinates,
- * compute bounding boxes, or resolve ring indices). It is always the same
- * immutable VectorTileArtifact that produced the diagnostic.
+ * Strategies may inspect the immutable VectorTileArtifact through the supplied
+ * parameter, but must not perform independent geometry traversal or coordinate
+ * transformation.
  */
 export interface OverlayStrategy {
   /** Rule ID this strategy handles, e.g. "tile/self-intersection". */
@@ -73,53 +86,106 @@ export interface OverlayStrategy {
 }
 
 // ---------------------------------------------------------------------------
-// Registry & Adapter — implemented in Milestone 4
+// Overlay Adapter
 // ---------------------------------------------------------------------------
 
 /**
- * OverlayAdapter — registry of OverlayStrategy implementations.
+ * OverlayAdapter — encapsulated strategy registry and diagnostic dispatcher.
  *
  * Dispatches each Diagnostic to the appropriate strategy, collecting all
  * OverlayDescriptors for a full diagnostic list in a single pass.
  *
- * Full implementation delivered in Milestone 4.
+ * The internal Map<string, OverlayStrategy> serves as the registry. No
+ * separate OverlayRegistry module exists — the Adapter is the sole owner
+ * of the strategy map.
  */
 export class OverlayAdapter {
   private readonly strategies = new Map<string, OverlayStrategy>();
 
   /**
    * Register a strategy for a rule ID.
-   * A second registration for the same ruleId replaces the first.
+   *
+   * Throws if a strategy is already registered for the given ruleId.
+   * This matches @tileguard/core's resolveConfig() convention for duplicate
+   * rule IDs — each rule may have exactly one overlay strategy.
+   *
+   * @param strategy  The strategy to register.
    */
   register(strategy: OverlayStrategy): void {
+    if (this.strategies.has(strategy.ruleId)) {
+      throw new Error(
+        `OverlayStrategy for rule "${strategy.ruleId}" is already registered. ` +
+        'Each rule may have exactly one overlay strategy.',
+      );
+    }
     this.strategies.set(strategy.ruleId, strategy);
   }
 
   /**
    * Convert all diagnostics in the list to OverlayDescriptors.
-   * Diagnostics for unregistered rules produce no descriptors (graceful degradation).
+   *
+   * For each diagnostic:
+   *   1. Look up the strategy by diagnostic.ruleId
+   *   2. If found: call strategy.toDescriptors(), collect results
+   *   3. If not found: skip silently, zero descriptors
+   *   4. If strategy throws: catch, zero descriptors for that diagnostic, continue
+   *   5. If strategy returns non-array: treat as empty
    *
    * @param diagnostics  The full list of diagnostics from the engine run.
    * @param artifact     The immutable decoded tile that was validated.
-   *
-   * Implemented in Milestone 4.
    */
-  toDescriptors(_diagnostics: Diagnostic[], _artifact: VectorTileArtifact): OverlayDescriptor[] {
-    throw new Error('OverlayAdapter.toDescriptors() — implemented in Milestone 4');
+  toDescriptors(diagnostics: readonly Diagnostic[], artifact: VectorTileArtifact): OverlayDescriptor[] {
+    const result: OverlayDescriptor[] = [];
+
+    for (const diagnostic of diagnostics) {
+      const strategy = this.strategies.get(diagnostic.ruleId);
+      if (strategy === undefined) continue;
+
+      try {
+        const descriptors = strategy.toDescriptors(diagnostic, artifact);
+        if (!Array.isArray(descriptors)) continue;
+        for (const descriptor of descriptors) {
+          result.push(descriptor);
+        }
+      } catch {
+        // A single malformed diagnostic must never prevent the rest of the
+        // tile's diagnostics from being visualized. Swallow and continue.
+        continue;
+      }
+    }
+
+    return result;
   }
 
   /** Return the strategy registered for a rule ID, or undefined. */
   getStrategy(ruleId: string): OverlayStrategy | undefined {
     return this.strategies.get(ruleId);
   }
+
+  /** Return all registered rule IDs. */
+  getAllRuleIds(): readonly string[] {
+    return [...this.strategies.keys()];
+  }
 }
 
+// ---------------------------------------------------------------------------
+// Factory
+// ---------------------------------------------------------------------------
+
 /**
- * Create an OverlayAdapter pre-loaded with all default Phase-3 strategies.
+ * Create an OverlayAdapter pre-loaded with all default built-in strategies.
  *
- * Strategies for individual rules are registered in Milestone 4.
- * Returns an empty adapter at Milestone 1 — no strategies are registered yet.
+ * Each of the six Phase-1/2 validation rules is mapped to its corresponding
+ * overlay strategy. Adding support for a 7th rule requires only writing a new
+ * OverlayStrategy and calling adapter.register() — no Adapter source change.
  */
 export function createDefaultOverlayAdapter(): OverlayAdapter {
-  return new OverlayAdapter();
+  const adapter = new OverlayAdapter();
+  adapter.register(coordinateRangeStrategy);
+  adapter.register(selfIntersectionStrategy);
+  adapter.register(zeroAreaRingStrategy);
+  adapter.register(degenerateGeometryStrategy);
+  adapter.register(unclosedRingStrategy);
+  adapter.register(noEmptyStrategy);
+  return adapter;
 }
