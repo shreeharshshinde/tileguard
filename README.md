@@ -291,7 +291,7 @@ Full interface specifications, design rationale, and decision records live in [`
 | [Execution Roadmap](docs/engineering/ROADMAP.md) | Phase-by-phase delivery plan |
 | [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) | Legacy-to-framework migration map |
 
-Key design decisions are documented as ADRs in [`docs/architecture/adr/`](docs/architecture/adr/): rule-based architecture over procedural validators, structured diagnostics as the universal interface, direct artifact access over a visitor pattern, flat configuration over cascading config.
+Key design decisions are documented as ADRs in [`docs/architecture/adr/`](docs/architecture/adr/): rule-based architecture over procedural validators, structured diagnostics as the universal interface, direct artifact access over a visitor pattern, flat configuration over cascading config, Inspector subsystem architecture (ADR-008), and the Canvas Renderer contract ([ADR-009](docs/architecture/adr/009-canvas-renderer-contract.md)).
 
 ---
 
