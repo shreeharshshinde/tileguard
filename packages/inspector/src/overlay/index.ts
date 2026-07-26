@@ -9,14 +9,12 @@ export type {
   OverlayStrategy,
 } from './overlay-adapter.js';
 export {
-  OverlayAdapter,
   createDefaultOverlayAdapter,
+  OverlayAdapter,
 } from './overlay-adapter.js';
 
 export type {
   FeatureRef,
   SelectionProducer,
 } from './selection-producer.js';
-export {
-  createSelectionProducer,
-} from './selection-producer.js';
+export { createSelectionProducer } from './selection-producer.js';
