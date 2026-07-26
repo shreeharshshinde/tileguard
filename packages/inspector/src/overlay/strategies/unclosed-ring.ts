@@ -25,7 +25,8 @@ export const unclosedRingStrategy: OverlayStrategy = {
       return [];
     }
 
-    const ringIndex = diagnostic.location?.partIndex ?? (diagnostic.data?.partIndex as number | undefined) ?? 0;
+    const ringIndex =
+      diagnostic.location?.partIndex ?? (diagnostic.data?.partIndex as number | undefined) ?? 0;
 
     return [
       {
