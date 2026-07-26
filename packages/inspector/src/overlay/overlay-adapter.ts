@@ -148,8 +148,8 @@ export class OverlayAdapter {
           result.push(descriptor);
         }
       } catch {
-        // A single malformed diagnostic must never prevent the rest of the
-        // tile's diagnostics from being visualized. Swallow and continue.
+        // Isolate strategy failures. A single broken strategy must not
+        // prevent overlays from other diagnostics from rendering.
         continue;
       }
     }
