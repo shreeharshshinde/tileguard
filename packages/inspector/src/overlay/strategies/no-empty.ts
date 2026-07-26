@@ -17,8 +17,7 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import type { OverlayDescriptor } from '../overlay-adapter.ts';
-import type { OverlayStrategy } from '../overlay-adapter.ts';
+import type { OverlayDescriptor, OverlayStrategy } from '../overlay-adapter.ts';
 
 export const noEmptyStrategy: OverlayStrategy = {
   ruleId: 'tile/no-empty',
