@@ -2,9 +2,9 @@
  * @tileguard/inspector — OverlayAdapter Unit Tests
  */
 
-import { describe, expect, it, vi } from 'vitest';
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
+import { describe, expect, it, vi } from 'vitest';
 import {
   createDefaultOverlayAdapter,
   OverlayAdapter,

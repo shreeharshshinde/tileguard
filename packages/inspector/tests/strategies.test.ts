@@ -2,15 +2,15 @@
  * @tileguard/inspector — Overlay Strategies Unit Tests
  */
 
-import { describe, expect, it } from 'vitest';
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
+import { describe, expect, it } from 'vitest';
 import { coordinateRangeStrategy } from '../src/overlay/strategies/coordinate-range.js';
-import { selfIntersectionStrategy } from '../src/overlay/strategies/self-intersection.js';
-import { zeroAreaRingStrategy } from '../src/overlay/strategies/zero-area-ring.js';
 import { degenerateGeometryStrategy } from '../src/overlay/strategies/degenerate-geometry.js';
-import { unclosedRingStrategy } from '../src/overlay/strategies/unclosed-ring.js';
 import { noEmptyStrategy } from '../src/overlay/strategies/no-empty.js';
+import { selfIntersectionStrategy } from '../src/overlay/strategies/self-intersection.js';
+import { unclosedRingStrategy } from '../src/overlay/strategies/unclosed-ring.js';
+import { zeroAreaRingStrategy } from '../src/overlay/strategies/zero-area-ring.js';
 
 const mockArtifact = {} as VectorTileArtifact;
 
