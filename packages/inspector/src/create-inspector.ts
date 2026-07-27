@@ -150,6 +150,11 @@ export interface InspectorOptions {
   readonly viewport: Viewport;
   /** The renderer that draws the tile and overlays to the canvas. */
   readonly renderer: Renderer;
+  /**
+   * Optional externally-owned store. This lets presentation hosts observe the
+   * same state instance used by the inspection pipeline.
+   */
+  readonly store?: InspectorStore;
 }
 
 // ---------------------------------------------------------------------------
@@ -162,10 +167,10 @@ class InspectorImpl implements Inspector {
   private readonly _renderCoordinator: RenderCoordinator;
   private readonly _unsubscribe: () => void;
 
-  constructor({ viewport, renderer }: InspectorOptions) {
+  constructor({ viewport, renderer, store }: InspectorOptions) {
     // ── Step 1: Construct the component graph (once) ──────────────────────
 
-    this._store = createInspectorStore();
+    this._store = store ?? createInspectorStore();
 
     const hitTester = createHitTester();
 

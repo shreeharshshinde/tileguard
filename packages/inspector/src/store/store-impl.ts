@@ -162,11 +162,19 @@ export class InspectorStoreImpl implements InspectorStore {
 
     // ── Async path: load from file system / provider ─────────────────────
     try {
-      const { tileProvider } = await import('@tileguard/tile-rules');
+      // The browser Inspector supplies decoded artifacts through File APIs.
+      // Keep the Node-only path loader runtime-resolved so Vite does not bundle
+      // its fs/zlib provider into the browser application.
+      const nodeTileRulesModule = '@tileguard/tile-rules';
+      const { tileProvider } = await import(
+        /* @vite-ignore */ nodeTileRulesModule
+      );
       const loaded = (await tileProvider.load(filePath)) as VectorTileArtifact;
 
       const { createEngine } = await import('@tileguard/core');
-      const { tilePlugin } = await import('@tileguard/tile-rules');
+      const { tilePlugin } = await import(
+        /* @vite-ignore */ nodeTileRulesModule
+      );
       const engine = createEngine({ plugins: [tilePlugin] });
       const result = await engine.run([filePath]);
 
