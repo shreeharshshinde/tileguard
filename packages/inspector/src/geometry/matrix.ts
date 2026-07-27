@@ -14,7 +14,7 @@
  * rather than with raw matrices.
  */
 
-import type { TilePoint, ScreenPoint } from './point.js';
+import type { ScreenPoint, TilePoint } from './point.js';
 
 // ---------------------------------------------------------------------------
 // Type

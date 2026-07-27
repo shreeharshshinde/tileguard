@@ -66,26 +66,26 @@
 
 import type { VectorTileArtifact, VectorTileFeature } from '@tileguard/tile-rules';
 import type { ScreenPoint } from '../geometry/index.js';
-import type { Viewport } from '../viewport/viewport.js';
-import type { OverlayDescriptor } from '../overlay/overlay-adapter.js';
 import { walkArtifact } from '../geometry/traversal.js';
+import type { OverlayDescriptor } from '../overlay/overlay-adapter.js';
+import type { Viewport } from '../viewport/viewport.js';
 import {
-  LAYER_COLORS,
-  OVERLAY_COLORS,
-  TILE_BOUNDARY_STYLE,
   BUFFER_BOUNDARY_STYLE,
-  POINT_STYLE,
+  LAYER_COLORS,
   LINE_STYLE,
-  POLYGON_STYLE,
-  VERTEX_STYLE,
+  OVERLAY_COLORS,
   OVERLAY_STYLE,
+  POINT_STYLE,
+  POLYGON_STYLE,
+  TILE_BOUNDARY_STYLE,
+  VERTEX_STYLE,
 } from './palette.js';
 import {
-  drawPoint,
   drawLineString,
+  drawPoint,
   drawPolygon,
-  drawVertexMarkers,
   drawTileBoundary,
+  drawVertexMarkers,
 } from './shapes.js';
 
 // ---------------------------------------------------------------------------
@@ -302,10 +302,7 @@ export class CanvasRenderer implements Renderer {
    * temporary buffer. This is the ONLY place where geometry types are
    * dispatched to typed buckets (onPolygon / onLineString / onPoint).
    */
-  private _collectGeometry(
-    artifact: VectorTileArtifact,
-    vp: Viewport,
-  ): AccumulatedGeometry {
+  private _collectGeometry(artifact: VectorTileArtifact, vp: Viewport): AccumulatedGeometry {
     const accumulated: AccumulatedGeometry = {
       polygons: [],
       lines: [],
@@ -315,9 +312,7 @@ export class CanvasRenderer implements Renderer {
 
     walkArtifact(artifact, {
       onPolygon: (rings, ctx) => {
-        const screenRings = rings.map((ring) =>
-          ring.map((p): ScreenPoint => vp.tileToScreen(p)),
-        );
+        const screenRings = rings.map((ring) => ring.map((p): ScreenPoint => vp.tileToScreen(p)));
         accumulated.polygons.push({ rings: screenRings, layerName: ctx.layerName });
         if (screenRings[0] !== undefined) {
           for (const v of screenRings[0]) accumulated.vertices.push(v);
@@ -342,40 +337,28 @@ export class CanvasRenderer implements Renderer {
     return accumulated;
   }
 
-  private _drawPolygons(
-    ctx: CanvasRenderingContext2D,
-    accumulated: AccumulatedGeometry,
-  ): void {
+  private _drawPolygons(ctx: CanvasRenderingContext2D, accumulated: AccumulatedGeometry): void {
     for (const { rings, layerName } of accumulated.polygons) {
       const color = resolveLayerColor(layerName);
       drawPolygon(ctx, rings, { ...POLYGON_STYLE, fillColor: color, strokeColor: color });
     }
   }
 
-  private _drawLines(
-    ctx: CanvasRenderingContext2D,
-    accumulated: AccumulatedGeometry,
-  ): void {
+  private _drawLines(ctx: CanvasRenderingContext2D, accumulated: AccumulatedGeometry): void {
     for (const { points, layerName } of accumulated.lines) {
       const color = resolveLayerColor(layerName);
       drawLineString(ctx, points, { ...LINE_STYLE, strokeColor: color });
     }
   }
 
-  private _drawPoints(
-    ctx: CanvasRenderingContext2D,
-    accumulated: AccumulatedGeometry,
-  ): void {
+  private _drawPoints(ctx: CanvasRenderingContext2D, accumulated: AccumulatedGeometry): void {
     for (const { point, layerName } of accumulated.points) {
       const color = resolveLayerColor(layerName);
       drawPoint(ctx, point, { ...POINT_STYLE, fillColor: color });
     }
   }
 
-  private _drawVertices(
-    ctx: CanvasRenderingContext2D,
-    accumulated: AccumulatedGeometry,
-  ): void {
+  private _drawVertices(ctx: CanvasRenderingContext2D, accumulated: AccumulatedGeometry): void {
     drawVertexMarkers(ctx, accumulated.vertices, VERTEX_STYLE);
   }
 
@@ -403,7 +386,6 @@ export class CanvasRenderer implements Renderer {
             globalAlpha: OVERLAY_STYLE.globalAlpha,
           });
         }
-
       } else if (overlay.type === 'segment-highlight') {
         const target = overlay.target as [number, number];
         const ring = firstRing(feature);
@@ -418,7 +400,6 @@ export class CanvasRenderer implements Renderer {
             globalAlpha: OVERLAY_STYLE.globalAlpha,
           });
         }
-
       } else if (overlay.type === 'ring-highlight') {
         const ringIndex = typeof overlay.target === 'number' ? overlay.target : 0;
         const rings = feature.geometry as readonly (readonly { x: number; y: number }[])[];
@@ -433,7 +414,6 @@ export class CanvasRenderer implements Renderer {
             globalAlpha: OVERLAY_STYLE.globalAlpha,
           });
         }
-
       } else if (overlay.type === 'bbox-fill') {
         const allPts = flattenVertices(feature);
         if (allPts.length > 0) {
@@ -458,18 +438,14 @@ export class CanvasRenderer implements Renderer {
 
   private _requireCtx(): CanvasRenderingContext2D {
     if (this._ctx === null) {
-      throw new Error(
-        'CanvasRenderer: no canvas attached. Call attachCanvas() before render().',
-      );
+      throw new Error('CanvasRenderer: no canvas attached. Call attachCanvas() before render().');
     }
     return this._ctx;
   }
 
   private _requireCanvas(): HTMLCanvasElement {
     if (this._canvas === null) {
-      throw new Error(
-        'CanvasRenderer: no canvas attached. Call attachCanvas() before resize().',
-      );
+      throw new Error('CanvasRenderer: no canvas attached. Call attachCanvas() before resize().');
     }
     return this._canvas;
   }
@@ -486,9 +462,7 @@ export class CanvasRenderer implements Renderer {
  * re-entering the traversal system. This is a coordinate accessor, not a
  * geometry dispatcher — it does not route to drawing helpers.
  */
-function firstVertex(
-  feature: VectorTileFeature,
-): { x: number; y: number } | undefined {
+function firstVertex(feature: VectorTileFeature): { x: number; y: number } | undefined {
   if (feature.type === 1) {
     const flat = feature.geometry as readonly { x: number; y: number }[];
     return flat[0];
@@ -505,9 +479,7 @@ function firstVertex(
  *
  * Used by the overlay pass for segment-highlight positioning.
  */
-function firstRing(
-  feature: VectorTileFeature,
-): readonly { x: number; y: number }[] {
+function firstRing(feature: VectorTileFeature): readonly { x: number; y: number }[] {
   if (feature.type === 1) {
     return feature.geometry as readonly { x: number; y: number }[];
   }
@@ -521,9 +493,7 @@ function firstRing(
  * Used by the overlay pass to compute a feature's bounding box for
  * bbox-fill overlays.
  */
-function flattenVertices(
-  feature: VectorTileFeature,
-): Array<{ x: number; y: number }> {
+function flattenVertices(feature: VectorTileFeature): Array<{ x: number; y: number }> {
   if (feature.type === 1) {
     return [...(feature.geometry as readonly { x: number; y: number }[])];
   }

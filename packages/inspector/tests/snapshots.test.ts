@@ -28,10 +28,10 @@
  *   npx vitest run --update-snapshots packages/inspector/tests/snapshots.test.ts
  */
 
-import { describe, expect, it, beforeEach } from 'vitest';
-import { CanvasRenderer } from '../src/renderer/canvas-renderer';
-import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
 import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import { describe, expect, it } from 'vitest';
+import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
+import { CanvasRenderer } from '../src/renderer/canvas-renderer';
 import { createViewport } from '../src/viewport/viewport';
 
 // ---------------------------------------------------------------------------
@@ -97,18 +97,18 @@ function makeRecordingCanvas(
 // Fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(
-  name: string,
-  features: VectorTileFeature[],
-  extent = 4096,
-): VectorTileLayer {
+function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
 function makeArtifact(layers: VectorTileLayer[]): VectorTileArtifact {
   const map: Record<string, VectorTileLayer> = {};
   for (const l of layers) map[l.name] = l;
-  return { type: 'VectorTile', ref: { type: 'VectorTile', source: 'test.pbf' }, content: { layers: map } };
+  return {
+    type: 'VectorTile',
+    ref: { type: 'VectorTile', source: 'test.pbf' },
+    content: { layers: map },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -118,8 +118,8 @@ function makeArtifact(layers: VectorTileLayer[]): VectorTileArtifact {
 const SNAPSHOT_VP_OPTS = {
   width: 400,
   height: 400,
-  zoom: 0.08,   // tile extent 4096 * 0.08 = 327.68px — fits in 400px canvas
-  panX: 36.16,  // centres the tile: (400 - 4096*0.08) / 2
+  zoom: 0.08, // tile extent 4096 * 0.08 = 327.68px — fits in 400px canvas
+  panX: 36.16, // centres the tile: (400 - 4096*0.08) / 2
   panY: 36.16,
 } as const;
 
@@ -145,33 +145,49 @@ function renderAndCapture(
 // ---------------------------------------------------------------------------
 
 const POINT_FEATURE: VectorTileFeature = {
-  id: 1, type: 1, geometryType: 'Point', properties: {},
+  id: 1,
+  type: 1,
+  geometryType: 'Point',
+  properties: {},
   geometry: [{ x: 2048, y: 2048 }], // tile centre
 };
 
 const LINE_FEATURE: VectorTileFeature = {
-  id: 2, type: 2, geometryType: 'LineString', properties: {},
-  geometry: [[
-    { x: 0, y: 0 },
-    { x: 1024, y: 2048 },
-    { x: 2048, y: 0 },
-    { x: 4096, y: 4096 },
-  ]],
+  id: 2,
+  type: 2,
+  geometryType: 'LineString',
+  properties: {},
+  geometry: [
+    [
+      { x: 0, y: 0 },
+      { x: 1024, y: 2048 },
+      { x: 2048, y: 0 },
+      { x: 4096, y: 4096 },
+    ],
+  ],
 };
 
 const POLYGON_FEATURE: VectorTileFeature = {
-  id: 3, type: 3, geometryType: 'Polygon', properties: {},
-  geometry: [[
-    { x: 512, y: 512 },
-    { x: 3584, y: 512 },
-    { x: 3584, y: 3584 },
-    { x: 512, y: 3584 },
-    { x: 512, y: 512 },
-  ]],
+  id: 3,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
+  geometry: [
+    [
+      { x: 512, y: 512 },
+      { x: 3584, y: 512 },
+      { x: 3584, y: 3584 },
+      { x: 512, y: 3584 },
+      { x: 512, y: 512 },
+    ],
+  ],
 };
 
 const POLYGON_WITH_HOLE: VectorTileFeature = {
-  id: 4, type: 3, geometryType: 'Polygon', properties: {},
+  id: 4,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
   geometry: [
     // exterior
     [
@@ -193,15 +209,24 @@ const POLYGON_WITH_HOLE: VectorTileFeature = {
 };
 
 const MULTIPOLYGON_FEATURE: VectorTileFeature = {
-  id: 5, type: 3, geometryType: 'Polygon', properties: {},
+  id: 5,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
   geometry: [
     [
-      { x: 100, y: 100 }, { x: 1000, y: 100 },
-      { x: 1000, y: 1000 }, { x: 100, y: 1000 }, { x: 100, y: 100 },
+      { x: 100, y: 100 },
+      { x: 1000, y: 100 },
+      { x: 1000, y: 1000 },
+      { x: 100, y: 1000 },
+      { x: 100, y: 100 },
     ],
     [
-      { x: 2000, y: 2000 }, { x: 3000, y: 2000 },
-      { x: 3000, y: 3000 }, { x: 2000, y: 3000 }, { x: 2000, y: 2000 },
+      { x: 2000, y: 2000 },
+      { x: 3000, y: 2000 },
+      { x: 3000, y: 3000 },
+      { x: 2000, y: 3000 },
+      { x: 2000, y: 2000 },
     ],
   ],
 };
@@ -246,10 +271,7 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'error',
     };
-    const calls = renderAndCapture(
-      makeArtifact([makeLayer('places', [POINT_FEATURE])]),
-      [overlay],
-    );
+    const calls = renderAndCapture(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]);
     expect(calls).toMatchSnapshot();
   });
 
@@ -261,10 +283,9 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'warning',
     };
-    const calls = renderAndCapture(
-      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
-      [overlay],
-    );
+    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [
+      overlay,
+    ]);
     expect(calls).toMatchSnapshot();
   });
 
@@ -276,10 +297,9 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'warning',
     };
-    const calls = renderAndCapture(
-      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
-      [overlay],
-    );
+    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [
+      overlay,
+    ]);
     expect(calls).toMatchSnapshot();
   });
 });

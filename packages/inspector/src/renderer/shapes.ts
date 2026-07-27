@@ -295,21 +295,12 @@ export function drawTileBoundary(
   ctx.setLineDash(tileStyle.lineDash.slice());
 
   ctx.beginPath();
-  ctx.rect(
-    origin.x,
-    origin.y,
-    maxCorner.x - origin.x,
-    maxCorner.y - origin.y,
-  );
+  ctx.rect(origin.x, origin.y, maxCorner.x - origin.x, maxCorner.y - origin.y);
   ctx.stroke();
   ctx.restore();
 
   // --- Draw buffer zone box (optional) ---
-  if (
-    bufferOrigin !== null &&
-    bufferMaxCorner !== null &&
-    bufferStyle !== undefined
-  ) {
+  if (bufferOrigin !== null && bufferMaxCorner !== null && bufferStyle !== undefined) {
     ctx.save();
     ctx.strokeStyle = bufferStyle.strokeColor;
     ctx.lineWidth = bufferStyle.lineWidth;

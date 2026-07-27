@@ -95,12 +95,7 @@ export function center(box: BoundingBox): TilePoint {
  * both axes, which matches MVT pixel snapping semantics.
  */
 export function containsPoint(box: BoundingBox, point: TilePoint): boolean {
-  return (
-    point.x >= box.minX &&
-    point.x <= box.maxX &&
-    point.y >= box.minY &&
-    point.y <= box.maxY
-  );
+  return point.x >= box.minX && point.x <= box.maxX && point.y >= box.minY && point.y <= box.maxY;
 }
 
 /**
@@ -110,12 +105,7 @@ export function containsPoint(box: BoundingBox, point: TilePoint): boolean {
  * intersecting under the closed-interval convention.
  */
 export function intersects(a: BoundingBox, b: BoundingBox): boolean {
-  return (
-    a.minX <= b.maxX &&
-    a.maxX >= b.minX &&
-    a.minY <= b.maxY &&
-    a.maxY >= b.minY
-  );
+  return a.minX <= b.maxX && a.maxX >= b.minX && a.minY <= b.maxY && a.maxY >= b.minY;
 }
 
 // ---------------------------------------------------------------------------

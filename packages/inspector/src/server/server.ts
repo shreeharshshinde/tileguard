@@ -100,8 +100,6 @@ export interface InspectorServer {
  *
  * @throws Error if no free port is found within MAX_PORT_ATTEMPTS attempts.
  */
-export async function startInspectorServer(
-  _options: ServerOptions,
-): Promise<InspectorServer> {
+export async function startInspectorServer(_options: ServerOptions): Promise<InspectorServer> {
   throw new Error('startInspectorServer() — implemented in Milestone 7');
 }

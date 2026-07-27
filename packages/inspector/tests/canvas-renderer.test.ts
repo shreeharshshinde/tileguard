@@ -9,10 +9,10 @@
  * Pure TypeScript, Vitest node environment.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { CanvasRenderer } from '../src/renderer/canvas-renderer';
-import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
 import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import { describe, expect, it, vi } from 'vitest';
+import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
+import { CanvasRenderer } from '../src/renderer/canvas-renderer';
 import { createViewport } from '../src/viewport/viewport';
 
 // ---------------------------------------------------------------------------
@@ -56,34 +56,55 @@ function makeCanvas(width = 800, height = 600): HTMLCanvasElement {
 // Tile artifact fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(
-  name: string,
-  features: VectorTileFeature[],
-  extent = 4096,
-): VectorTileLayer {
+function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
 function makeArtifact(layers: VectorTileLayer[]): VectorTileArtifact {
   const map: Record<string, VectorTileLayer> = {};
   for (const l of layers) map[l.name] = l;
-  return { type: 'VectorTile', ref: { type: 'VectorTile', source: 'test.pbf' }, content: { layers: map } };
+  return {
+    type: 'VectorTile',
+    ref: { type: 'VectorTile', source: 'test.pbf' },
+    content: { layers: map },
+  };
 }
 
 const POINT_FEATURE: VectorTileFeature = {
-  id: 1, type: 1, geometryType: 'Point', properties: {},
+  id: 1,
+  type: 1,
+  geometryType: 'Point',
+  properties: {},
   geometry: [{ x: 1000, y: 2000 }],
 };
 
 const LINE_FEATURE: VectorTileFeature = {
-  id: 2, type: 2, geometryType: 'LineString', properties: {},
-  geometry: [[{ x: 0, y: 0 }, { x: 500, y: 500 }, { x: 1000, y: 0 }]],
+  id: 2,
+  type: 2,
+  geometryType: 'LineString',
+  properties: {},
+  geometry: [
+    [
+      { x: 0, y: 0 },
+      { x: 500, y: 500 },
+      { x: 1000, y: 0 },
+    ],
+  ],
 };
 
 const POLYGON_FEATURE: VectorTileFeature = {
-  id: 3, type: 3, geometryType: 'Polygon', properties: {},
+  id: 3,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
   geometry: [
-    [{ x: 100, y: 100 }, { x: 900, y: 100 }, { x: 900, y: 900 }, { x: 100, y: 900 }, { x: 100, y: 100 }],
+    [
+      { x: 100, y: 100 },
+      { x: 900, y: 100 },
+      { x: 900, y: 900 },
+      { x: 100, y: 900 },
+      { x: 100, y: 100 },
+    ],
   ],
 };
 
@@ -223,9 +244,7 @@ describe('CanvasRenderer.render', () => {
 
   it('does not throw for an artifact with empty layers', () => {
     const { renderer } = makeRenderer();
-    expect(() =>
-      renderer.render(makeArtifact([makeLayer('empty', [])]), []),
-    ).not.toThrow();
+    expect(() => renderer.render(makeArtifact([makeLayer('empty', [])]), [])).not.toThrow();
   });
 
   it('renders mixed geometry types without throwing', () => {
@@ -312,10 +331,7 @@ describe('CanvasRenderer.render — overlays', () => {
       target: 0,
       severity: 'error',
     };
-    renderer.render(
-      makeArtifact([makeLayer('places', [POINT_FEATURE])]),
-      [overlay],
-    );
+    renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]);
     // arc should be called: once for the feature + once for the overlay marker
     expect(ctx.arc).toHaveBeenCalledTimes(2);
   });
@@ -359,10 +375,7 @@ describe('CanvasRenderer.render — overlays', () => {
       target: 0,
       severity: 'warning',
     };
-    renderer.render(
-      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
-      [overlay],
-    );
+    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [overlay]);
     // fill("evenodd") called at least once: once for the polygon + once for the bbox overlay
     expect(ctx.fill).toHaveBeenCalledWith('evenodd');
   });

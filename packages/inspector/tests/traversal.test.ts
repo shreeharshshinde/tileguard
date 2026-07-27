@@ -8,78 +8,135 @@
  * No DOM, no Canvas, no React. Pure TypeScript, Vitest node environment.
  */
 
+import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
 import { describe, expect, it, vi } from 'vitest';
 import type { FeatureContext } from '../src/geometry/traversal';
 import { walkArtifact, walkFeatureGeometry, walkLayer } from '../src/geometry/traversal';
-import type {
-  VectorTileArtifact,
-  VectorTileFeature,
-  VectorTileLayer,
-} from '@tileguard/tile-rules';
 
 // ---------------------------------------------------------------------------
 // Fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(
-  name: string,
-  features: VectorTileFeature[],
-  extent = 4096,
-): VectorTileLayer {
+function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
 function makeArtifact(layers: VectorTileLayer[]): VectorTileArtifact {
   const layerMap: Record<string, VectorTileLayer> = {};
   for (const l of layers) layerMap[l.name] = l;
-  return { type: 'VectorTile', ref: { type: 'VectorTile', source: 'test.pbf' }, content: { layers: layerMap } };
+  return {
+    type: 'VectorTile',
+    ref: { type: 'VectorTile', source: 'test.pbf' },
+    content: { layers: layerMap },
+  };
 }
 
 // Geometry fixtures
 const POINT_FEATURE: VectorTileFeature = {
-  id: 1, type: 1, geometryType: 'Point', properties: {},
+  id: 1,
+  type: 1,
+  geometryType: 'Point',
+  properties: {},
   geometry: [{ x: 100, y: 200 }],
 };
 
 const MULTIPOINT_FEATURE: VectorTileFeature = {
-  id: 2, type: 1, geometryType: 'Point', properties: {},
+  id: 2,
+  type: 1,
+  geometryType: 'Point',
+  properties: {},
   // Two vertices in a flat array → dispatched as two separate onPoint calls
-  geometry: [{ x: 10, y: 20 }, { x: 30, y: 40 }],
+  geometry: [
+    { x: 10, y: 20 },
+    { x: 30, y: 40 },
+  ],
 };
 
 const LINESTRING_FEATURE: VectorTileFeature = {
-  id: 3, type: 2, geometryType: 'LineString', properties: {},
-  geometry: [[{ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 50 }]],
+  id: 3,
+  type: 2,
+  geometryType: 'LineString',
+  properties: {},
+  geometry: [
+    [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+      { x: 200, y: 50 },
+    ],
+  ],
 };
 
 const MULTILINESTRING_FEATURE: VectorTileFeature = {
-  id: 4, type: 2, geometryType: 'LineString', properties: {},
+  id: 4,
+  type: 2,
+  geometryType: 'LineString',
+  properties: {},
   geometry: [
-    [{ x: 0, y: 0 }, { x: 10, y: 10 }],
-    [{ x: 20, y: 20 }, { x: 30, y: 30 }],
+    [
+      { x: 0, y: 0 },
+      { x: 10, y: 10 },
+    ],
+    [
+      { x: 20, y: 20 },
+      { x: 30, y: 30 },
+    ],
   ],
 };
 
 const POLYGON_FEATURE: VectorTileFeature = {
-  id: 5, type: 3, geometryType: 'Polygon', properties: {},
+  id: 5,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
   geometry: [
     // exterior ring
-    [{ x: 0, y: 0 }, { x: 500, y: 0 }, { x: 500, y: 500 }, { x: 0, y: 500 }, { x: 0, y: 0 }],
+    [
+      { x: 0, y: 0 },
+      { x: 500, y: 0 },
+      { x: 500, y: 500 },
+      { x: 0, y: 500 },
+      { x: 0, y: 0 },
+    ],
     // interior ring (hole)
-    [{ x: 100, y: 100 }, { x: 400, y: 100 }, { x: 400, y: 400 }, { x: 100, y: 400 }, { x: 100, y: 100 }],
+    [
+      { x: 100, y: 100 },
+      { x: 400, y: 100 },
+      { x: 400, y: 400 },
+      { x: 100, y: 400 },
+      { x: 100, y: 100 },
+    ],
   ],
 };
 
 const MULTIPOLYGON_FEATURE: VectorTileFeature = {
-  id: 6, type: 3, geometryType: 'Polygon', properties: {},
+  id: 6,
+  type: 3,
+  geometryType: 'Polygon',
+  properties: {},
   geometry: [
-    [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }, { x: 0, y: 0 }],
-    [{ x: 200, y: 200 }, { x: 300, y: 200 }, { x: 300, y: 300 }, { x: 200, y: 300 }, { x: 200, y: 200 }],
+    [
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 100, y: 100 },
+      { x: 0, y: 100 },
+      { x: 0, y: 0 },
+    ],
+    [
+      { x: 200, y: 200 },
+      { x: 300, y: 200 },
+      { x: 300, y: 300 },
+      { x: 200, y: 300 },
+      { x: 200, y: 200 },
+    ],
   ],
 };
 
 const UNKNOWN_FEATURE: VectorTileFeature = {
-  id: 7, type: 0, geometryType: 'Unknown', properties: {}, geometry: [],
+  id: 7,
+  type: 0,
+  geometryType: 'Unknown',
+  properties: {},
+  geometry: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -154,7 +211,9 @@ describe('walkFeatureGeometry', () => {
     const layer = layer1(LINESTRING_FEATURE);
     let capturedLayer: VectorTileLayer | undefined;
     walkFeatureGeometry(LINESTRING_FEATURE, 'test', layer, 0, {
-      onLineString: (_, ctx) => { capturedLayer = ctx.layer; },
+      onLineString: (_, ctx) => {
+        capturedLayer = ctx.layer;
+      },
     });
     expect(capturedLayer).toBe(layer);
   });
@@ -232,7 +291,12 @@ describe('walkLayer', () => {
   it('skips Unknown features among valid ones', () => {
     const onPoint = vi.fn();
     const onPolygon = vi.fn();
-    const layer = makeLayer('mixed', [UNKNOWN_FEATURE, POINT_FEATURE, UNKNOWN_FEATURE, POLYGON_FEATURE]);
+    const layer = makeLayer('mixed', [
+      UNKNOWN_FEATURE,
+      POINT_FEATURE,
+      UNKNOWN_FEATURE,
+      POLYGON_FEATURE,
+    ]);
     walkLayer(layer, { onPoint, onPolygon });
     expect(onPoint).toHaveBeenCalledOnce();
     expect(onPolygon).toHaveBeenCalledOnce();
@@ -294,11 +358,13 @@ describe('walkArtifact', () => {
   it('accumulates geometry across multiple layers with the same visitor', () => {
     const allPts: Array<{ x: number; y: number }> = [];
     const artifact = makeArtifact([
-      makeLayer('a', [POINT_FEATURE]),      // 1 call → 1 vertex in array
+      makeLayer('a', [POINT_FEATURE]), // 1 call → 1 vertex in array
       makeLayer('b', [MULTIPOINT_FEATURE]), // 1 call → 2 vertices in array
     ]);
     walkArtifact(artifact, {
-      onPoint: (pts) => { for (const p of pts) allPts.push(p); },
+      onPoint: (pts) => {
+        for (const p of pts) allPts.push(p);
+      },
     });
     // POINT_FEATURE: [{ x:100, y:200 }] → 1 vertex
     // MULTIPOINT_FEATURE: [{ x:10, y:20 }, { x:30, y:40 }] → 2 vertices (one call)
@@ -316,7 +382,9 @@ describe('GeometryVisitor optional callbacks', () => {
   ]);
 
   it('does not throw when onPoint is absent', () => {
-    expect(() => walkArtifact(artifact, { onLineString: vi.fn(), onPolygon: vi.fn() })).not.toThrow();
+    expect(() =>
+      walkArtifact(artifact, { onLineString: vi.fn(), onPolygon: vi.fn() }),
+    ).not.toThrow();
   });
 
   it('does not throw when onLineString is absent', () => {

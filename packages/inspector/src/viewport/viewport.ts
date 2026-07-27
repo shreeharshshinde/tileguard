@@ -57,11 +57,11 @@
 // Geometry primitives — owned by geometry/, consumed here
 // ---------------------------------------------------------------------------
 
-import type { TilePoint, ScreenPoint, BoundingBox, Matrix2D } from '../geometry/index.js';
-import { buildMatrix, invertMatrix, applyMatrix } from '../geometry/index.js';
+import type { BoundingBox, Matrix2D, ScreenPoint, TilePoint } from '../geometry/index.js';
+import { applyMatrix, buildMatrix, invertMatrix } from '../geometry/index.js';
 
 // Re-export so existing consumers that import from viewport.ts still compile.
-export type { TilePoint, ScreenPoint, BoundingBox } from '../geometry/index.js';
+export type { BoundingBox, ScreenPoint, TilePoint } from '../geometry/index.js';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -245,7 +245,7 @@ class ViewportImpl implements Viewport {
     if (bounds.minX > bounds.maxX || bounds.minY > bounds.maxY) {
       throw new Error(
         `Invalid BoundingBox: minX (${bounds.minX}) must be ≤ maxX (${bounds.maxX}) ` +
-        `and minY (${bounds.minY}) must be ≤ maxY (${bounds.maxY}).`,
+          `and minY (${bounds.minY}) must be ≤ maxY (${bounds.maxY}).`,
       );
     }
     const s = this.state;
@@ -332,9 +332,7 @@ export interface CreateViewportOptions {
 export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Width / Height ---
   if (!Number.isFinite(opts.width) || opts.width <= 0) {
-    throw new Error(
-      `createViewport: width must be a finite positive number (got ${opts.width}).`,
-    );
+    throw new Error(`createViewport: width must be a finite positive number (got ${opts.width}).`);
   }
   if (!Number.isFinite(opts.height) || opts.height <= 0) {
     throw new Error(
@@ -345,9 +343,7 @@ export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Extent ---
   const extent = opts.extent ?? DEFAULT_EXTENT;
   if (!Number.isFinite(extent) || extent <= 0) {
-    throw new Error(
-      `createViewport: extent must be a finite positive number (got ${extent}).`,
-    );
+    throw new Error(`createViewport: extent must be a finite positive number (got ${extent}).`);
   }
 
   // --- Zoom range ---
@@ -368,9 +364,7 @@ export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Explicit zoom ---
   if (opts.zoom !== undefined) {
     if (!Number.isFinite(opts.zoom)) {
-      throw new Error(
-        `createViewport: zoom must be a finite number (got ${opts.zoom}).`,
-      );
+      throw new Error(`createViewport: zoom must be a finite number (got ${opts.zoom}).`);
     }
   }
 

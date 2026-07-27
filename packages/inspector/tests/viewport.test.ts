@@ -500,87 +500,63 @@ describe('edge cases', () => {
 
 describe('createViewport — invalid construction guards', () => {
   it('throws when width is 0', () => {
-    expect(() => createViewport({ width: 0, height: 600 })).toThrow(
-      'width',
-    );
+    expect(() => createViewport({ width: 0, height: 600 })).toThrow('width');
   });
 
   it('throws when height is 0', () => {
-    expect(() => createViewport({ width: 800, height: 0 })).toThrow(
-      'height',
-    );
+    expect(() => createViewport({ width: 800, height: 0 })).toThrow('height');
   });
 
   it('throws when width is negative', () => {
-    expect(() => createViewport({ width: -1, height: 600 })).toThrow(
-      'width',
-    );
+    expect(() => createViewport({ width: -1, height: 600 })).toThrow('width');
   });
 
   it('throws when height is negative', () => {
-    expect(() => createViewport({ width: 800, height: -1 })).toThrow(
-      'height',
-    );
+    expect(() => createViewport({ width: 800, height: -1 })).toThrow('height');
   });
 
   it('throws when zoom is NaN', () => {
-    expect(() => createViewport({ width: 800, height: 600, zoom: NaN })).toThrow(
-      'zoom',
-    );
+    expect(() => createViewport({ width: 800, height: 600, zoom: NaN })).toThrow('zoom');
   });
 
   it('throws when zoom is Infinity', () => {
-    expect(() => createViewport({ width: 800, height: 600, zoom: Infinity })).toThrow(
-      'zoom',
-    );
+    expect(() => createViewport({ width: 800, height: 600, zoom: Infinity })).toThrow('zoom');
   });
 
   it('throws when zoom is -Infinity', () => {
-    expect(() => createViewport({ width: 800, height: 600, zoom: -Infinity })).toThrow(
-      'zoom',
-    );
+    expect(() => createViewport({ width: 800, height: 600, zoom: -Infinity })).toThrow('zoom');
   });
 
   it('throws when minZoom > maxZoom', () => {
-    expect(() =>
-      createViewport({ width: 800, height: 600, minZoom: 10, maxZoom: 5 }),
-    ).toThrow('minZoom');
+    expect(() => createViewport({ width: 800, height: 600, minZoom: 10, maxZoom: 5 })).toThrow(
+      'minZoom',
+    );
   });
 
   it('throws when minZoom === maxZoom (degenerate range)', () => {
     // Equal bounds produce a fixed zoom with no range — treat as invalid.
-    expect(() =>
-      createViewport({ width: 800, height: 600, minZoom: 4, maxZoom: 4 }),
-    ).toThrow('minZoom');
+    expect(() => createViewport({ width: 800, height: 600, minZoom: 4, maxZoom: 4 })).toThrow(
+      'minZoom',
+    );
   });
 
   it('throws when panX is NaN', () => {
-    expect(() => createViewport({ width: 800, height: 600, panX: NaN })).toThrow(
-      'panX',
-    );
+    expect(() => createViewport({ width: 800, height: 600, panX: NaN })).toThrow('panX');
   });
 
   it('throws when panY is NaN', () => {
-    expect(() => createViewport({ width: 800, height: 600, panY: NaN })).toThrow(
-      'panY',
-    );
+    expect(() => createViewport({ width: 800, height: 600, panY: NaN })).toThrow('panY');
   });
 
   it('throws when extent is 0', () => {
-    expect(() => createViewport({ width: 800, height: 600, extent: 0 })).toThrow(
-      'extent',
-    );
+    expect(() => createViewport({ width: 800, height: 600, extent: 0 })).toThrow('extent');
   });
 
   it('throws when extent is negative', () => {
-    expect(() => createViewport({ width: 800, height: 600, extent: -1 })).toThrow(
-      'extent',
-    );
+    expect(() => createViewport({ width: 800, height: 600, extent: -1 })).toThrow('extent');
   });
 
   it('accepts a valid minimal viewport without throwing', () => {
-    expect(() =>
-      createViewport({ width: 1, height: 1, zoom: DEFAULT_MIN_ZOOM }),
-    ).not.toThrow();
+    expect(() => createViewport({ width: 1, height: 1, zoom: DEFAULT_MIN_ZOOM })).not.toThrow();
   });
 });

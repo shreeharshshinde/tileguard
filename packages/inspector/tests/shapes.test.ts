@@ -11,9 +11,15 @@
  * No DOM, no real canvas. Pure TypeScript, Vitest node environment.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ScreenPoint } from '../src/geometry/index';
-import type { BoundaryStyle, LineStyle, PointStyle, PolygonStyle, VertexStyle } from '../src/renderer/shapes';
+import type {
+  BoundaryStyle,
+  LineStyle,
+  PointStyle,
+  PolygonStyle,
+  VertexStyle,
+} from '../src/renderer/shapes';
 import {
   drawLineString,
   drawPoint,
@@ -106,7 +112,9 @@ const BUFFER_STYLE: BoundaryStyle = {
 describe('drawPoint', () => {
   let ctx: CanvasRenderingContext2D;
 
-  beforeEach(() => { ctx = makeCtx(); });
+  beforeEach(() => {
+    ctx = makeCtx();
+  });
 
   it('calls save() and restore() exactly once', () => {
     drawPoint(ctx, { x: 50, y: 100 }, POINT_STYLE);
@@ -135,7 +143,7 @@ describe('drawPoint', () => {
 
   it('sets globalAlpha from style', () => {
     drawPoint(ctx, { x: 0, y: 0 }, POINT_STYLE);
-    expect((ctx as unknown as Record<string, unknown>)['globalAlpha']).toBe(POINT_STYLE.globalAlpha);
+    expect((ctx as unknown as Record<string, unknown>).globalAlpha).toBe(POINT_STYLE.globalAlpha);
   });
 
   it('does not throw for origin coordinates (0, 0)', () => {
@@ -154,16 +162,29 @@ describe('drawPoint', () => {
 describe('drawLineString', () => {
   let ctx: CanvasRenderingContext2D;
 
-  beforeEach(() => { ctx = makeCtx(); });
+  beforeEach(() => {
+    ctx = makeCtx();
+  });
 
   it('calls save() and restore() exactly once for a valid line', () => {
-    drawLineString(ctx, [{ x: 0, y: 0 }, { x: 100, y: 100 }], LINE_STYLE);
+    drawLineString(
+      ctx,
+      [
+        { x: 0, y: 0 },
+        { x: 100, y: 100 },
+      ],
+      LINE_STYLE,
+    );
     expect(ctx.save).toHaveBeenCalledOnce();
     expect(ctx.restore).toHaveBeenCalledOnce();
   });
 
   it('calls moveTo for the first point and lineTo for subsequent points', () => {
-    const pts: ScreenPoint[] = [{ x: 0, y: 0 }, { x: 50, y: 50 }, { x: 100, y: 0 }];
+    const pts: ScreenPoint[] = [
+      { x: 0, y: 0 },
+      { x: 50, y: 50 },
+      { x: 100, y: 0 },
+    ];
     drawLineString(ctx, pts, LINE_STYLE);
     expect(ctx.moveTo).toHaveBeenCalledWith(0, 0);
     expect(ctx.lineTo).toHaveBeenCalledWith(50, 50);
@@ -171,7 +192,14 @@ describe('drawLineString', () => {
   });
 
   it('calls stroke() once', () => {
-    drawLineString(ctx, [{ x: 0, y: 0 }, { x: 100, y: 0 }], LINE_STYLE);
+    drawLineString(
+      ctx,
+      [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+      ],
+      LINE_STYLE,
+    );
     expect(ctx.stroke).toHaveBeenCalledOnce();
   });
 
@@ -187,7 +215,14 @@ describe('drawLineString', () => {
   });
 
   it('does NOT call fill()', () => {
-    drawLineString(ctx, [{ x: 0, y: 0 }, { x: 100, y: 0 }], LINE_STYLE);
+    drawLineString(
+      ctx,
+      [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+      ],
+      LINE_STYLE,
+    );
     expect(ctx.fill).not.toHaveBeenCalled();
   });
 
@@ -195,7 +230,14 @@ describe('drawLineString', () => {
     const order: string[] = [];
     (ctx.beginPath as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('beginPath'));
     (ctx.moveTo as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('moveTo'));
-    drawLineString(ctx, [{ x: 0, y: 0 }, { x: 10, y: 10 }], LINE_STYLE);
+    drawLineString(
+      ctx,
+      [
+        { x: 0, y: 0 },
+        { x: 10, y: 10 },
+      ],
+      LINE_STYLE,
+    );
     expect(order.indexOf('beginPath')).toBeLessThan(order.indexOf('moveTo'));
   });
 });
@@ -207,13 +249,21 @@ describe('drawLineString', () => {
 describe('drawPolygon', () => {
   let ctx: CanvasRenderingContext2D;
 
-  beforeEach(() => { ctx = makeCtx(); });
+  beforeEach(() => {
+    ctx = makeCtx();
+  });
 
   const exterior: ScreenPoint[] = [
-    { x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 },
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
   ];
   const hole: ScreenPoint[] = [
-    { x: 20, y: 20 }, { x: 80, y: 20 }, { x: 80, y: 80 }, { x: 20, y: 80 },
+    { x: 20, y: 20 },
+    { x: 80, y: 20 },
+    { x: 80, y: 80 },
+    { x: 20, y: 80 },
   ];
 
   it('calls save() and restore() exactly once', () => {
@@ -270,9 +320,15 @@ describe('drawPolygon', () => {
 describe('drawVertexMarkers', () => {
   let ctx: CanvasRenderingContext2D;
 
-  beforeEach(() => { ctx = makeCtx(); });
+  beforeEach(() => {
+    ctx = makeCtx();
+  });
 
-  const pts: ScreenPoint[] = [{ x: 10, y: 20 }, { x: 30, y: 40 }, { x: 50, y: 60 }];
+  const pts: ScreenPoint[] = [
+    { x: 10, y: 20 },
+    { x: 30, y: 40 },
+    { x: 50, y: 60 },
+  ];
 
   it('calls save() and restore() exactly once', () => {
     drawVertexMarkers(ctx, pts, VERTEX_STYLE);
@@ -321,7 +377,9 @@ describe('drawVertexMarkers', () => {
 describe('drawTileBoundary', () => {
   let ctx: CanvasRenderingContext2D;
 
-  beforeEach(() => { ctx = makeCtx(); });
+  beforeEach(() => {
+    ctx = makeCtx();
+  });
 
   const origin: ScreenPoint = { x: 10, y: 10 };
   const maxCorner: ScreenPoint = { x: 210, y: 210 };
@@ -331,7 +389,8 @@ describe('drawTileBoundary', () => {
   it('draws the tile boundary rect with the correct dimensions', () => {
     drawTileBoundary(ctx, origin, maxCorner, null, null, TILE_STYLE);
     expect(ctx.rect).toHaveBeenCalledWith(
-      origin.x, origin.y,
+      origin.x,
+      origin.y,
       maxCorner.x - origin.x,
       maxCorner.y - origin.y,
     );

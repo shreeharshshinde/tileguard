@@ -13,35 +13,33 @@
  */
 
 // Renderer interface and CanvasRenderer implementation
-export type { Renderer, CanvasRendererOptions } from './canvas-renderer.js';
+export type { CanvasRendererOptions, Renderer } from './canvas-renderer.js';
 export { CanvasRenderer } from './canvas-renderer.js';
-
+export type { LayerColorKey, OverlaySeverity } from './palette.js';
 // Design token palette — all as const, no rendering logic
 export {
-  LAYER_COLORS,
-  OVERLAY_COLORS,
-  TILE_BOUNDARY_STYLE,
   BUFFER_BOUNDARY_STYLE,
-  POINT_STYLE,
+  LAYER_COLORS,
   LINE_STYLE,
-  POLYGON_STYLE,
-  VERTEX_STYLE,
+  OVERLAY_COLORS,
   OVERLAY_STYLE,
+  POINT_STYLE,
+  POLYGON_STYLE,
+  TILE_BOUNDARY_STYLE,
+  VERTEX_STYLE,
 } from './palette.js';
-export type { LayerColorKey, OverlaySeverity } from './palette.js';
-
-// Pure drawing helpers and their style token interfaces
-export {
-  drawPoint,
-  drawLineString,
-  drawPolygon,
-  drawVertexMarkers,
-  drawTileBoundary,
-} from './shapes.js';
 export type {
-  PointStyle,
+  BoundaryStyle,
   LineStyle,
+  PointStyle,
   PolygonStyle,
   VertexStyle,
-  BoundaryStyle,
+} from './shapes.js';
+// Pure drawing helpers and their style token interfaces
+export {
+  drawLineString,
+  drawPoint,
+  drawPolygon,
+  drawTileBoundary,
+  drawVertexMarkers,
 } from './shapes.js';

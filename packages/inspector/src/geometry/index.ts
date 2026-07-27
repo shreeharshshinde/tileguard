@@ -3,25 +3,25 @@
  * Public barrel for all reusable geometric primitives.
  */
 
-export type { TilePoint, ScreenPoint } from './point.js';
 export type { BoundingBox } from './bounds.js';
 export {
-  createBoundsFromPoints,
-  width,
-  height,
   center,
   containsPoint,
-  intersects,
+  createBoundsFromPoints,
   expand,
+  height,
+  intersects,
+  width,
 } from './bounds.js';
-export type { Matrix2D } from './matrix.js';
-export { buildMatrix, invertMatrix, applyMatrix } from './matrix.js';
 export {
   distanceSquared,
-  midpoint,
-  lerp,
   equalsWithinTolerance,
+  lerp,
+  midpoint,
   signedArea,
 } from './helpers.js';
-export type { GeometryVisitor, FeatureContext, Point } from './traversal.js';
-export { walkFeatureGeometry, walkLayer, walkArtifact } from './traversal.js';
+export type { Matrix2D } from './matrix.js';
+export { applyMatrix, buildMatrix, invertMatrix } from './matrix.js';
+export type { ScreenPoint, TilePoint } from './point.js';
+export type { FeatureContext, GeometryVisitor, Point } from './traversal.js';
+export { walkArtifact, walkFeatureGeometry, walkLayer } from './traversal.js';

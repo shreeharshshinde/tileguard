@@ -24,15 +24,14 @@
 // ---------------------------------------------------------------------------
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import type { Diagnostic } from '@tileguard/core';
 // ---------------------------------------------------------------------------
 // Core engine (used by Milestone 4 integration tests)
 // ---------------------------------------------------------------------------
 import { createEngine } from '@tileguard/core';
-import type { Diagnostic } from '@tileguard/core';
-import { tilePlugin, tileProvider } from '@tileguard/tile-rules';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
+import { tilePlugin, tileProvider } from '@tileguard/tile-rules';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 // ---------------------------------------------------------------------------
 // HitTester module (Milestone 5 stubs)
 // ---------------------------------------------------------------------------
@@ -560,10 +559,7 @@ describe('Milestone 4 — Inspector Integration', () => {
 // ---------------------------------------------------------------------------
 
 /** Build a synthetic Diagnostic array for the given count and ruleIds pool. */
-function makeSyntheticDiagnostics(
-  count: number,
-  ruleIds: readonly string[],
-): Diagnostic[] {
+function makeSyntheticDiagnostics(count: number, ruleIds: readonly string[]): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   for (let i = 0; i < count; i++) {
     const ruleId = ruleIds[i % ruleIds.length] ?? ruleIds[0]!;
@@ -586,12 +582,14 @@ function makeBenchArtifact(): VectorTileArtifact {
     type: 2 as const,
     geometryType: 'LineString' as const,
     properties: {},
-    geometry: [[
-      { x: 0, y: 0 },
-      { x: 100, y: 100 },
-      { x: 200, y: 0 },
-      { x: 300, y: 100 },
-    ]],
+    geometry: [
+      [
+        { x: 0, y: 0 },
+        { x: 100, y: 100 },
+        { x: 200, y: 0 },
+        { x: 300, y: 100 },
+      ],
+    ],
   }));
 
   return {
@@ -650,7 +648,9 @@ describe('Milestone 4 — Benchmarking: adapter.toDescriptors() latency', () => 
 
     expect(Array.isArray(overlays)).toBe(true);
 
-    console.log(`[bench] 1000 diagnostics → ${overlays.length} overlays in ${elapsed.toFixed(2)}ms`);
+    console.log(
+      `[bench] 1000 diagnostics → ${overlays.length} overlays in ${elapsed.toFixed(2)}ms`,
+    );
   });
 
   it('latency grows sub-linearly from 200 to 1000 diagnostics', () => {
@@ -671,7 +671,7 @@ describe('Milestone 4 — Benchmarking: adapter.toDescriptors() latency', () => 
 
     console.log(
       `[bench] 200→${elapsed200.toFixed(2)}ms, 1000→${elapsed1000.toFixed(2)}ms, ` +
-      `ratio: ${(elapsed1000 / elapsed200).toFixed(2)}x (expected ≤ 5x for O(n))`,
+        `ratio: ${(elapsed1000 / elapsed200).toFixed(2)}x (expected ≤ 5x for O(n))`,
     );
 
     // Both calls must complete — no hard sub-linear assertion since the
