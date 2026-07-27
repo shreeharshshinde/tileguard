@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --tg-bg-primary: #0f172a;
+  --tg-bg-secondary: #1e293b;
+  --tg-bg-surface: #273548;
+  --tg-bg-hover: #334155;
+  --tg-border: #334155;
+  --tg-accent: #3b82f6;
+  --tg-accent-hover: #2563eb;
+  --tg-text-primary: #f8fafc;
+  --tg-text-secondary: #94a3b8;
+  --tg-text-muted: #64748b;
+  --tg-error: #ef4444;
+  --tg-warning: #f59e0b;
+  --tg-info: #3b82f6;
+  --tg-success: #22c55e;
+  --tg-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --tg-font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  --tg-font-size-xs: 11px;
+  --tg-font-size-sm: 12px;
+  --tg-font-size-base: 14px;
+  --tg-font-size-lg: 16px;
+  --tg-font-weight-normal: 400;
+  --tg-font-weight-medium: 500;
+  --tg-font-weight-bold: 600;
+  --tg-space-xs: 4px;
+  --tg-space-sm: 8px;
+  --tg-space-md: 12px;
+  --tg-space-lg: 16px;
+  --tg-space-xl: 24px;
+  --tg-space-2xl: 32px;
+  --tg-toolbar-height: 48px;
+  --tg-sidebar-width: 320px;
+  --tg-footer-height: 32px;
+  --tg-panel-radius: 8px;
+  --tg-border-radius: 6px;
+  --tg-transition-fast: 150ms ease;
+  --tg-transition-normal: 250ms ease;
+  --tg-transition-slow: 400ms ease;
+  --tg-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --tg-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --tg-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

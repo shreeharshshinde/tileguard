@@ -52,7 +52,8 @@
       "suspicious": {
         "noExplicitAny": "warn",
         "noImplicitAnyLet": "error",
-        "noConsole": "warn"
+        "noConsole": "warn",
+        "noUnknownAtRules": "off"
       }
     }
   },
