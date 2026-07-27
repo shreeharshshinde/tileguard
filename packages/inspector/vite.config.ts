@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
@@ -14,13 +15,17 @@ import { defineConfig } from 'vitest/config';
  * step. These aliases must mirror the `paths` entries in tsconfig.json.
  */
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
 
   resolve: {
     alias: {
       // Resolve workspace packages directly to source — no dist/ build required
       '@tileguard/core': resolve(__dirname, '../core/src/index.ts'),
       '@tileguard/shared': resolve(__dirname, '../shared/src/index.ts'),
+      '@tileguard/tile-rules/browser': resolve(
+        __dirname,
+        '../tile-rules/src/browser.ts',
+      ),
       '@tileguard/tile-rules': resolve(__dirname, '../tile-rules/src/index.ts'),
       '@tileguard/style-rules': resolve(
         __dirname,
