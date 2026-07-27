@@ -4,7 +4,9 @@ import { styleProvider, uniqueLayerIdRule } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [uniqueLayerIdRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [uniqueLayerIdRule] },
+    ],
   });
 }
 

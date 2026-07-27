@@ -5,7 +5,8 @@ import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 export const selfIntersectionRule: Rule = {
   id: 'tile/self-intersection',
   meta: {
-    description: 'Vector tile line and polygon geometries must not self-intersect.',
+    description:
+      'Vector tile line and polygon geometries must not self-intersect.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/tile/self-intersection',
     recommended: true,
@@ -17,7 +18,11 @@ export const selfIntersectionRule: Rule = {
     const tile = getVectorTile(context.artifact);
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findSelfIntersectionIssues(feature)) {
           const segments = issue.segments ?? ['?', '?'];
@@ -26,9 +31,12 @@ export const selfIntersectionRule: Rule = {
             location: {
               layer: layerName,
               featureIndex,
-              ...(issue.partIndex !== undefined && { partIndex: issue.partIndex }),
+              ...(issue.partIndex !== undefined && {
+                partIndex: issue.partIndex,
+              }),
             },
-            suggestion: 'Simplify or repair this geometry so non-adjacent segments do not cross.',
+            suggestion:
+              'Simplify or repair this geometry so non-adjacent segments do not cross.',
             data: {
               layer: layerName,
               featureIndex,

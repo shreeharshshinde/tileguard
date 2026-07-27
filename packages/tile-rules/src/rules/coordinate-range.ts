@@ -32,9 +32,17 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
     for (const [layerName, layer] of Object.entries(tile.layers)) {
       if (excludeLayers.has(layerName)) continue;
 
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
-        for (const issue of findCoordinateRangeIssues(feature, layer.extent, buffer)) {
+        for (const issue of findCoordinateRangeIssues(
+          feature,
+          layer.extent,
+          buffer,
+        )) {
           if (issue.code !== 'OUT_OF_RANGE') continue;
 
           const minAllowed = -buffer;
@@ -49,7 +57,9 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
             location: {
               layer: layerName,
               featureIndex,
-              ...(issue.partIndex !== undefined && { partIndex: issue.partIndex }),
+              ...(issue.partIndex !== undefined && {
+                partIndex: issue.partIndex,
+              }),
             },
             suggestion:
               'Clamp, simplify, or reproject geometries so all coordinates fit within the allowed range.',

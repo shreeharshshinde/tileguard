@@ -85,7 +85,11 @@ class RenderCoordinatorImpl implements RenderCoordinator {
   private readonly _selectionProducer: SelectionProducer;
   private readonly _renderer: Renderer;
 
-  constructor({ store, selectionProducer, renderer }: RenderCoordinatorOptions) {
+  constructor({
+    store,
+    selectionProducer,
+    renderer,
+  }: RenderCoordinatorOptions) {
     this._store = store;
     this._selectionProducer = selectionProducer;
     this._renderer = renderer;
@@ -103,7 +107,10 @@ class RenderCoordinatorImpl implements RenderCoordinator {
     const hover = this._store.hover;
 
     // Step 2 — produce interaction overlays
-    const overlays: OverlayDescriptor[] = this._selectionProducer.toOverlays(selection, hover);
+    const overlays: OverlayDescriptor[] = this._selectionProducer.toOverlays(
+      selection,
+      hover,
+    );
 
     // Step 3 — invoke renderer (errors propagate to caller)
     this._renderer.render(artifact, overlays);
@@ -122,6 +129,8 @@ class RenderCoordinatorImpl implements RenderCoordinator {
  *   const coordinator = createRenderCoordinator({ store, selectionProducer, renderer });
  *   store.subscribe(() => coordinator.render());
  */
-export function createRenderCoordinator(options: RenderCoordinatorOptions): RenderCoordinator {
+export function createRenderCoordinator(
+  options: RenderCoordinatorOptions,
+): RenderCoordinator {
   return new RenderCoordinatorImpl(options);
 }

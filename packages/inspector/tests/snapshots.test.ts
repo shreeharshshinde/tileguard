@@ -28,7 +28,11 @@
  *   npx vitest run --update-snapshots packages/inspector/tests/snapshots.test.ts
  */
 
-import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import type {
+  VectorTileArtifact,
+  VectorTileFeature,
+  VectorTileLayer,
+} from '@tileguard/tile-rules';
 import { describe, expect, it } from 'vitest';
 import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
 import { CanvasRenderer } from '../src/renderer/canvas-renderer';
@@ -45,7 +49,10 @@ interface DrawCall {
 }
 
 /** Creates a CanvasRenderingContext2D mock that records all draw calls. */
-function makeRecordingCtx(): { ctx: CanvasRenderingContext2D; calls: DrawCall[] } {
+function makeRecordingCtx(): {
+  ctx: CanvasRenderingContext2D;
+  calls: DrawCall[];
+} {
   const calls: DrawCall[] = [];
 
   const record =
@@ -97,7 +104,11 @@ function makeRecordingCanvas(
 // Fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
+function makeLayer(
+  name: string,
+  features: VectorTileFeature[],
+  extent = 4096,
+): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
@@ -134,7 +145,10 @@ function renderAndCapture(
 ): DrawCall[] {
   const vp = createViewport(SNAPSHOT_VP_OPTS);
   const renderer = new CanvasRenderer({ viewport: vp, showVertices });
-  const { canvas, calls } = makeRecordingCanvas(SNAPSHOT_VP_OPTS.width, SNAPSHOT_VP_OPTS.height);
+  const { canvas, calls } = makeRecordingCanvas(
+    SNAPSHOT_VP_OPTS.width,
+    SNAPSHOT_VP_OPTS.height,
+  );
   renderer.attachCanvas(canvas);
   renderer.render(artifact, overlays);
   return calls;
@@ -237,27 +251,37 @@ const MULTIPOLYGON_FEATURE: VectorTileFeature = {
 
 describe('CanvasRenderer snapshots — single geometry types', () => {
   it('Point fixture draw-call sequence matches snapshot', () => {
-    const calls = renderAndCapture(makeArtifact([makeLayer('places', [POINT_FEATURE])]));
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('places', [POINT_FEATURE])]),
+    );
     expect(calls).toMatchSnapshot();
   });
 
   it('LineString fixture draw-call sequence matches snapshot', () => {
-    const calls = renderAndCapture(makeArtifact([makeLayer('roads', [LINE_FEATURE])]));
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('roads', [LINE_FEATURE])]),
+    );
     expect(calls).toMatchSnapshot();
   });
 
   it('Polygon (no holes) fixture draw-call sequence matches snapshot', () => {
-    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]));
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+    );
     expect(calls).toMatchSnapshot();
   });
 
   it('Polygon-with-hole fixture draw-call sequence matches snapshot', () => {
-    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_WITH_HOLE])]));
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('buildings', [POLYGON_WITH_HOLE])]),
+    );
     expect(calls).toMatchSnapshot();
   });
 
   it('MultiPolygon fixture draw-call sequence matches snapshot', () => {
-    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [MULTIPOLYGON_FEATURE])]));
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('buildings', [MULTIPOLYGON_FEATURE])]),
+    );
     expect(calls).toMatchSnapshot();
   });
 });
@@ -271,7 +295,10 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'error',
     };
-    const calls = renderAndCapture(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]);
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('places', [POINT_FEATURE])]),
+      [overlay],
+    );
     expect(calls).toMatchSnapshot();
   });
 
@@ -283,9 +310,10 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'warning',
     };
-    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [
-      overlay,
-    ]);
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [overlay],
+    );
     expect(calls).toMatchSnapshot();
   });
 
@@ -297,9 +325,10 @@ describe('CanvasRenderer snapshots — Diagnostic Overlay', () => {
       target: 0,
       severity: 'warning',
     };
-    const calls = renderAndCapture(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [
-      overlay,
-    ]);
+    const calls = renderAndCapture(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [overlay],
+    );
     expect(calls).toMatchSnapshot();
   });
 });

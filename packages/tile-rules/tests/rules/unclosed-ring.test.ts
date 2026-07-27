@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { tileProvider, unclosedRingRule } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [unclosedRingRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [unclosedRingRule],
+};
 
 describe('tile/unclosed-ring', () => {
   it('pass — polygon ring where first point equals last point', async () => {

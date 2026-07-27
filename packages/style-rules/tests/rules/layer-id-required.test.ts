@@ -4,7 +4,9 @@ import { layerIdRequiredRule, styleProvider } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [layerIdRequiredRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [layerIdRequiredRule] },
+    ],
   });
 }
 

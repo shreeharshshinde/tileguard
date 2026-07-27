@@ -75,7 +75,10 @@ describe('@tileguard/tile-rules', () => {
       plugins: [tilePlugin],
       rules: {
         'tile/required-layers': ['error', { layers: ['roads', 'water'] }],
-        'tile/required-properties': ['error', { layers: { roads: ['class', 'name'] } }],
+        'tile/required-properties': [
+          'error',
+          { layers: { roads: ['class', 'name'] } },
+        ],
         'tile/feature-count': ['error', { min: 2 }],
       },
     });
@@ -107,14 +110,19 @@ describe('@tileguard/tile-rules', () => {
       rules: {
         'tile/required-layers': ['error', { layers: ['buildings'] }],
         'tile/feature-count': ['error', { min: 2 }],
-        'tile/layer-feature-count': ['error', { layers: { roads: { min: 2 } } }],
+        'tile/layer-feature-count': [
+          'error',
+          { layers: { roads: { min: 2 } } },
+        ],
         'tile/required-properties': ['error', { layers: { roads: ['name'] } }],
       },
     });
 
     const result = await engine.run([path]);
 
-    expect(new Set(result.diagnostics.map((diagnostic) => diagnostic.ruleId))).toEqual(
+    expect(
+      new Set(result.diagnostics.map((diagnostic) => diagnostic.ruleId)),
+    ).toEqual(
       new Set([
         'tile/required-layers',
         'tile/feature-count',
@@ -214,14 +222,20 @@ function tileBuffer(layers: readonly Uint8Array[]): Uint8Array {
 }
 
 function layer(name: string, features: readonly EncodedFeature[]): Uint8Array {
-  const keys = [...new Set(features.flatMap((item) => Object.keys(item.properties)))];
-  const values = [...new Set(features.flatMap((item) => Object.values(item.properties)))];
+  const keys = [
+    ...new Set(features.flatMap((item) => Object.keys(item.properties))),
+  ];
+  const values = [
+    ...new Set(features.flatMap((item) => Object.values(item.properties))),
+  ];
   return message([
     field(15, 0, 2),
     field(1, 2, Buffer.from(name)),
     ...features.map((item) => field(2, 2, encodeFeature(item, keys, values))),
     ...keys.map((key) => field(3, 2, Buffer.from(key))),
-    ...values.map((value) => field(4, 2, message([field(1, 2, Buffer.from(String(value)))]))),
+    ...values.map((value) =>
+      field(4, 2, message([field(1, 2, Buffer.from(String(value)))])),
+    ),
     field(5, 0, 4096),
   ]);
 }
@@ -272,7 +286,8 @@ function encodeGeometry(parts: readonly (readonly Point[])[]): number[] {
 
     const body = points.slice(1);
     const last = body[body.length - 1];
-    const closes = last !== undefined && last.x === first.x && last.y === first.y;
+    const closes =
+      last !== undefined && last.x === first.x && last.y === first.y;
     const linePoints = closes ? body.slice(0, -1) : body;
 
     if (linePoints.length > 0) {
@@ -294,7 +309,11 @@ function message(fields: readonly Uint8Array[]): Uint8Array {
   return Buffer.concat(fields);
 }
 
-function field(number: number, wire: number, value: number | Uint8Array): Uint8Array {
+function field(
+  number: number,
+  wire: number,
+  value: number | Uint8Array,
+): Uint8Array {
   const tag = varint((number << 3) | wire);
   if (wire === 0 && typeof value === 'number') {
     return Buffer.concat([tag, varint(value)]);

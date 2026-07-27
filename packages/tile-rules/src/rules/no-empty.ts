@@ -1,5 +1,9 @@
 import type { Rule } from '@tileguard/core';
-import { getVectorTile, totalFeatureCount, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getVectorTile,
+  totalFeatureCount,
+  VECTOR_TILE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export interface NoEmptyOptions {
   readonly allowEmpty?: boolean;
@@ -26,7 +30,8 @@ export const noEmptyRule: Rule<NoEmptyOptions> = {
 
     context.report({
       message: `Tile contains 0 features.`,
-      suggestion: 'Confirm this is an intentional empty tile, or fix the tile generation filters.',
+      suggestion:
+        'Confirm this is an intentional empty tile, or fix the tile generation filters.',
       data: { totalFeatures: count, layers: Object.keys(tile.layers) },
     });
   },

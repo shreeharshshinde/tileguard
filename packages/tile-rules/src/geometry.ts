@@ -108,7 +108,10 @@ export function findCoordinateRangeIssues(
   const parts = getFeatureParts(feature);
 
   if (parts.length === 0 || parts.every((part) => part.length === 0)) {
-    issues.push({ code: 'EMPTY_GEOMETRY', message: 'Feature has no geometry commands.' });
+    issues.push({
+      code: 'EMPTY_GEOMETRY',
+      message: 'Feature has no geometry commands.',
+    });
     return issues;
   }
 
@@ -145,12 +148,17 @@ export function findCoordinateRangeIssues(
  *
  * @param feature - The decoded MVT feature to inspect.
  */
-export function findDegenerateGeometryIssues(feature: VectorTileFeature): readonly GeometryIssue[] {
+export function findDegenerateGeometryIssues(
+  feature: VectorTileFeature,
+): readonly GeometryIssue[] {
   const issues: GeometryIssue[] = [];
   const parts = getFeatureParts(feature);
 
   if (parts.length === 0 || parts.every((part) => part.length === 0)) {
-    issues.push({ code: 'EMPTY_GEOMETRY', message: 'Feature has no geometry commands.' });
+    issues.push({
+      code: 'EMPTY_GEOMETRY',
+      message: 'Feature has no geometry commands.',
+    });
     return issues;
   }
 
@@ -165,7 +173,10 @@ export function findDegenerateGeometryIssues(feature: VectorTileFeature): readon
       });
     }
 
-    if (feature.type === 3 && (points.length < 4 || uniquePointCount(points) < 3)) {
+    if (
+      feature.type === 3 &&
+      (points.length < 4 || uniquePointCount(points) < 3)
+    ) {
       issues.push({
         code: 'DEGENERATE_POLYGON',
         message: 'Polygon ring has fewer than 3 unique vertices.',
@@ -188,7 +199,9 @@ export function findDegenerateGeometryIssues(feature: VectorTileFeature): readon
  *
  * @param feature - The decoded MVT feature to inspect.
  */
-export function findUnclosedRingIssues(feature: VectorTileFeature): readonly GeometryIssue[] {
+export function findUnclosedRingIssues(
+  feature: VectorTileFeature,
+): readonly GeometryIssue[] {
   if (feature.type !== 3) return [];
 
   const issues: GeometryIssue[] = [];
@@ -199,7 +212,12 @@ export function findUnclosedRingIssues(feature: VectorTileFeature): readonly Geo
     const first = points[0];
     const last = points[points.length - 1];
 
-    if (first === undefined || last === undefined || first.x !== last.x || first.y !== last.y) {
+    if (
+      first === undefined ||
+      last === undefined ||
+      first.x !== last.x ||
+      first.y !== last.y
+    ) {
       issues.push({
         code: 'UNCLOSED_RING',
         message: 'Polygon ring is not closed.',
@@ -222,7 +240,9 @@ export function findUnclosedRingIssues(feature: VectorTileFeature): readonly Geo
  *
  * @param feature - The decoded MVT feature to inspect.
  */
-export function findZeroAreaRingIssues(feature: VectorTileFeature): readonly GeometryIssue[] {
+export function findZeroAreaRingIssues(
+  feature: VectorTileFeature,
+): readonly GeometryIssue[] {
   if (feature.type !== 3) return [];
 
   const issues: GeometryIssue[] = [];
@@ -295,7 +315,9 @@ export function findZeroAreaRingIssues(feature: VectorTileFeature): readonly Geo
  * @param feature - The decoded MVT feature to inspect.
  * @returns A list of `SELF_INTERSECTION` issues, at most one per ring.
  */
-export function findSelfIntersectionIssues(feature: VectorTileFeature): readonly GeometryIssue[] {
+export function findSelfIntersectionIssues(
+  feature: VectorTileFeature,
+): readonly GeometryIssue[] {
   if (feature.type !== 2 && feature.type !== 3) return [];
 
   const issues: GeometryIssue[] = [];
@@ -327,7 +349,12 @@ export function findSelfIntersectionIssues(feature: VectorTileFeature): readonly
     // these duplicated grid points (see findFirstSelfIntersection below).
     const duplicateVertices = collectDuplicateVertices(points, closed);
 
-    const issue = findFirstSelfIntersection(points, closed, partIndex, duplicateVertices);
+    const issue = findFirstSelfIntersection(
+      points,
+      closed,
+      partIndex,
+      duplicateVertices,
+    );
     if (issue !== undefined) issues.push(issue);
   }
 
@@ -380,7 +407,12 @@ export function signedArea(points: readonly Point[]): number {
  * intersection.  Callers are responsible for filtering cases where this behaviour
  * produces false positives (see `collectDuplicateVertices` and Guard 3 above).
  */
-export function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boolean {
+export function segmentsIntersect(
+  a: Point,
+  b: Point,
+  c: Point,
+  d: Point,
+): boolean {
   const o1 = orientation(a, b, c);
   const o2 = orientation(a, b, d);
   const o3 = orientation(c, d, a);
@@ -415,7 +447,10 @@ export function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boole
  *                 When `true`, the coincidence of index 0 and the last index is
  *                 excluded from the duplicate set.
  */
-function collectDuplicateVertices(points: readonly Point[], closed: boolean): Set<string> {
+function collectDuplicateVertices(
+  points: readonly Point[],
+  closed: boolean,
+): Set<string> {
   const seen = new Map<string, number>(); // vertex key → first occurrence index
   const duplicates = new Set<string>();
   const lastIndex = points.length - 1;

@@ -24,7 +24,11 @@
 import { Command } from 'commander';
 import { runCheck } from './commands/check.js';
 import { runInit } from './commands/init.js';
-import { runRulesDocs, runRulesExplain, runRulesList } from './commands/rules.js';
+import {
+  runRulesDocs,
+  runRulesExplain,
+  runRulesList,
+} from './commands/rules.js';
 
 /**
  * Presents the result of any command to the terminal, then exits the process.
@@ -58,10 +62,15 @@ program
   .command('check')
   .description('Validate geospatial artifacts against configured rules')
   .argument('<sources...>', 'Files, directories, globs, or "." to validate')
-  .option('-c, --config <path>', 'Path to config file (auto-discovered if omitted)')
+  .option(
+    '-c, --config <path>',
+    'Path to config file (auto-discovered if omitted)',
+  )
   .option('-r, --reporter <id>', 'Reporter to use: text | json')
-  .option('--max-diagnostics <n>', 'Maximum total diagnostics to collect', (v: string) =>
-    parseInt(v, 10),
+  .option(
+    '--max-diagnostics <n>',
+    'Maximum total diagnostics to collect',
+    (v: string) => parseInt(v, 10),
   )
   .action(async (sources: string[], flags) => {
     const result = await runCheck(sources, flags);
@@ -87,7 +96,10 @@ rules
     'List all rules from configured plugins ' +
       "(shows default severities as declared by plugins, not your config's overrides)",
   )
-  .option('-c, --config <path>', 'Path to config file (auto-discovered if omitted)')
+  .option(
+    '-c, --config <path>',
+    'Path to config file (auto-discovered if omitted)',
+  )
   .option('-f, --format <format>', 'Output format: text | json', 'text')
   .action(async (flags) => {
     const result = await runRulesList(flags);

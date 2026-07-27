@@ -56,7 +56,10 @@
  *   - createHitTester()       — factory
  */
 
-import type { VectorTileArtifact, VectorTileFeature } from '@tileguard/tile-rules';
+import type {
+  VectorTileArtifact,
+  VectorTileFeature,
+} from '@tileguard/tile-rules';
 import type { TilePoint } from '../geometry/index.js';
 import {
   distanceSquared,
@@ -110,7 +113,11 @@ export interface HitTester {
    *                  Defaults to DEFAULT_HIT_RADIUS (10).
    * @returns The closest matching HitResult, or undefined if nothing is in range.
    */
-  hitTest(point: TilePoint, artifact: VectorTileArtifact, radius?: number): HitResult | undefined;
+  hitTest(
+    point: TilePoint,
+    artifact: VectorTileArtifact,
+    radius?: number,
+  ): HitResult | undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -167,7 +174,10 @@ class HitTesterImpl implements HitTester {
    * Returns the squared distance from `point` to the given feature.
    * Returns undefined for unknown / zero-geometry features (skip silently).
    */
-  private _featureDistanceSq(point: TilePoint, feature: VectorTileFeature): number | undefined {
+  private _featureDistanceSq(
+    point: TilePoint,
+    feature: VectorTileFeature,
+  ): number | undefined {
     switch (feature.type) {
       case 1:
         return this._pointFeatureDistanceSq(point, feature);
@@ -208,7 +218,10 @@ class HitTesterImpl implements HitTester {
    * LineString feature: minimum pointToSegmentDistanceSquared() over all
    * segments across all parts.
    */
-  private _lineFeatureDistanceSq(point: TilePoint, feature: VectorTileFeature): number | undefined {
+  private _lineFeatureDistanceSq(
+    point: TilePoint,
+    feature: VectorTileFeature,
+  ): number | undefined {
     const parts = feature.geometry as readonly (readonly TilePoint[])[];
     let best = Infinity;
     let hasPart = false;

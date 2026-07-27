@@ -66,7 +66,10 @@ describe('CLI Integration: check', () => {
   it('stdout is purely valid JSON with --reporter json; banner stays on stderr — D9', () => {
     writeFileSync(join(FIXTURE_DIR, 'tile.pbf'), 'fake data');
     // Empty config: no plugins → no provider → artifact/no-provider (error)
-    writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
+    writeFileSync(
+      join(FIXTURE_DIR, 'tileguard.config.json'),
+      JSON.stringify({}),
+    );
 
     const result = runCheck(['tile.pbf', '--reporter', 'json']);
 
@@ -86,7 +89,10 @@ describe('CLI Integration: check', () => {
     writeFileSync(join(FIXTURE_DIR, 'tile1.pbf'), 'data');
     writeFileSync(join(FIXTURE_DIR, 'tile2.json'), '{}');
     // tileguard.config.json also has .json extension — picked up as a 3rd source.
-    writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
+    writeFileSync(
+      join(FIXTURE_DIR, 'tileguard.config.json'),
+      JSON.stringify({}),
+    );
 
     const result = runCheck(['.']);
 
@@ -97,7 +103,10 @@ describe('CLI Integration: check', () => {
 
   it('exits 1 when the engine reports validation failures', () => {
     writeFileSync(join(FIXTURE_DIR, 'tile.pbf'), 'bad data');
-    writeFileSync(join(FIXTURE_DIR, 'tileguard.config.json'), JSON.stringify({}));
+    writeFileSync(
+      join(FIXTURE_DIR, 'tileguard.config.json'),
+      JSON.stringify({}),
+    );
 
     const result = runCheck(['tile.pbf']);
 

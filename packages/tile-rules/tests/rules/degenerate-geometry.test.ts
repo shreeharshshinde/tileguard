@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { degenerateGeometryRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [degenerateGeometryRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [degenerateGeometryRule],
+};
 
 describe('tile/degenerate-geometry', () => {
   it('pass — valid LineString with 2 unique points', async () => {

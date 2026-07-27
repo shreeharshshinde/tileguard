@@ -57,7 +57,12 @@
 // Geometry primitives — owned by geometry/, consumed here
 // ---------------------------------------------------------------------------
 
-import type { BoundingBox, Matrix2D, ScreenPoint, TilePoint } from '../geometry/index.js';
+import type {
+  BoundingBox,
+  Matrix2D,
+  ScreenPoint,
+  TilePoint,
+} from '../geometry/index.js';
 import { applyMatrix, buildMatrix, invertMatrix } from '../geometry/index.js';
 
 // Re-export so existing consumers that import from viewport.ts still compile.
@@ -238,7 +243,12 @@ class ViewportImpl implements Viewport {
     const focalTile = this.screenToTile(focalScreen);
     const newPanX = focalScreen.x - focalTile.x * newZoom;
     const newPanY = focalScreen.y - focalTile.y * newZoom;
-    return new ViewportImpl({ ...s, zoom: newZoom, panX: newPanX, panY: newPanY });
+    return new ViewportImpl({
+      ...s,
+      zoom: newZoom,
+      panX: newPanX,
+      panY: newPanY,
+    });
   }
 
   fitBounds(bounds: BoundingBox, padding = 20): Viewport {
@@ -273,7 +283,12 @@ class ViewportImpl implements Viewport {
     const newPanX = s.width / 2 - centerTileX * newZoom;
     const newPanY = s.height / 2 - centerTileY * newZoom;
 
-    return new ViewportImpl({ ...s, zoom: newZoom, panX: newPanX, panY: newPanY });
+    return new ViewportImpl({
+      ...s,
+      zoom: newZoom,
+      panX: newPanX,
+      panY: newPanY,
+    });
   }
 
   resize(width: number, height: number): Viewport {
@@ -332,7 +347,9 @@ export interface CreateViewportOptions {
 export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Width / Height ---
   if (!Number.isFinite(opts.width) || opts.width <= 0) {
-    throw new Error(`createViewport: width must be a finite positive number (got ${opts.width}).`);
+    throw new Error(
+      `createViewport: width must be a finite positive number (got ${opts.width}).`,
+    );
   }
   if (!Number.isFinite(opts.height) || opts.height <= 0) {
     throw new Error(
@@ -343,17 +360,23 @@ export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Extent ---
   const extent = opts.extent ?? DEFAULT_EXTENT;
   if (!Number.isFinite(extent) || extent <= 0) {
-    throw new Error(`createViewport: extent must be a finite positive number (got ${extent}).`);
+    throw new Error(
+      `createViewport: extent must be a finite positive number (got ${extent}).`,
+    );
   }
 
   // --- Zoom range ---
   const minZoom = opts.minZoom ?? DEFAULT_MIN_ZOOM;
   const maxZoom = opts.maxZoom ?? DEFAULT_MAX_ZOOM;
   if (!Number.isFinite(minZoom)) {
-    throw new Error(`createViewport: minZoom must be a finite number (got ${minZoom}).`);
+    throw new Error(
+      `createViewport: minZoom must be a finite number (got ${minZoom}).`,
+    );
   }
   if (!Number.isFinite(maxZoom)) {
-    throw new Error(`createViewport: maxZoom must be a finite number (got ${maxZoom}).`);
+    throw new Error(
+      `createViewport: maxZoom must be a finite number (got ${maxZoom}).`,
+    );
   }
   if (minZoom >= maxZoom) {
     throw new Error(
@@ -364,16 +387,22 @@ export function createViewport(opts: CreateViewportOptions): Viewport {
   // --- Explicit zoom ---
   if (opts.zoom !== undefined) {
     if (!Number.isFinite(opts.zoom)) {
-      throw new Error(`createViewport: zoom must be a finite number (got ${opts.zoom}).`);
+      throw new Error(
+        `createViewport: zoom must be a finite number (got ${opts.zoom}).`,
+      );
     }
   }
 
   // --- Explicit pan ---
   if (opts.panX !== undefined && !Number.isFinite(opts.panX)) {
-    throw new Error(`createViewport: panX must be a finite number (got ${opts.panX}).`);
+    throw new Error(
+      `createViewport: panX must be a finite number (got ${opts.panX}).`,
+    );
   }
   if (opts.panY !== undefined && !Number.isFinite(opts.panY)) {
-    throw new Error(`createViewport: panY must be a finite number (got ${opts.panY}).`);
+    throw new Error(
+      `createViewport: panY must be a finite number (got ${opts.panY}).`,
+    );
   }
 
   // --- Derive defaults ---

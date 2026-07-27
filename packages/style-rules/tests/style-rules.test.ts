@@ -45,13 +45,17 @@ describe('@tileguard/style-rules', () => {
     expect(result.summary.pass).toBe(false);
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.ruleId).toBe('style/valid-json');
-    expect(result.diagnostics[0]?.artifact.type).toBe('InvalidStyleSpecification');
+    expect(result.diagnostics[0]?.artifact.type).toBe(
+      'InvalidStyleSpecification',
+    );
   });
 
   it('treats empty placeholder style fixtures as loaded but skipped artifacts', async () => {
     const engine = createEngine({ plugins: [stylePlugin] });
 
-    const result = await engine.run([join(repoRoot, 'fixtures/fill-color/style.json')]);
+    const result = await engine.run([
+      join(repoRoot, 'fixtures/fill-color/style.json'),
+    ]);
 
     expect(result.summary.pass).toBe(true);
     expect(result.summary.artifactCount).toBe(1);

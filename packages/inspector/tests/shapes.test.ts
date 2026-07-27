@@ -124,15 +124,25 @@ describe('drawPoint', () => {
 
   it('calls beginPath() before arc()', () => {
     const order: string[] = [];
-    (ctx.beginPath as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('beginPath'));
-    (ctx.arc as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('arc'));
+    (ctx.beginPath as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('beginPath'),
+    );
+    (ctx.arc as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('arc'),
+    );
     drawPoint(ctx, { x: 50, y: 100 }, POINT_STYLE);
     expect(order.indexOf('beginPath')).toBeLessThan(order.indexOf('arc'));
   });
 
   it('calls ctx.arc with the correct coordinates and radius', () => {
     drawPoint(ctx, { x: 50, y: 100 }, POINT_STYLE);
-    expect(ctx.arc).toHaveBeenCalledWith(50, 100, POINT_STYLE.radius, 0, Math.PI * 2);
+    expect(ctx.arc).toHaveBeenCalledWith(
+      50,
+      100,
+      POINT_STYLE.radius,
+      0,
+      Math.PI * 2,
+    );
   });
 
   it('calls both fill() and stroke()', () => {
@@ -143,7 +153,9 @@ describe('drawPoint', () => {
 
   it('sets globalAlpha from style', () => {
     drawPoint(ctx, { x: 0, y: 0 }, POINT_STYLE);
-    expect((ctx as unknown as Record<string, unknown>).globalAlpha).toBe(POINT_STYLE.globalAlpha);
+    expect((ctx as unknown as Record<string, unknown>).globalAlpha).toBe(
+      POINT_STYLE.globalAlpha,
+    );
   });
 
   it('does not throw for origin coordinates (0, 0)', () => {
@@ -151,7 +163,9 @@ describe('drawPoint', () => {
   });
 
   it('does not throw for large coordinates', () => {
-    expect(() => drawPoint(ctx, { x: 99999, y: 99999 }, POINT_STYLE)).not.toThrow();
+    expect(() =>
+      drawPoint(ctx, { x: 99999, y: 99999 }, POINT_STYLE),
+    ).not.toThrow();
   });
 });
 
@@ -228,8 +242,12 @@ describe('drawLineString', () => {
 
   it('calls beginPath() before moveTo()', () => {
     const order: string[] = [];
-    (ctx.beginPath as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('beginPath'));
-    (ctx.moveTo as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('moveTo'));
+    (ctx.beginPath as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('beginPath'),
+    );
+    (ctx.moveTo as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('moveTo'),
+    );
     drawLineString(
       ctx,
       [
@@ -309,7 +327,9 @@ describe('drawPolygon', () => {
   });
 
   it('does not throw for a polygon with multiple interior rings', () => {
-    expect(() => drawPolygon(ctx, [exterior, hole, hole], POLYGON_STYLE)).not.toThrow();
+    expect(() =>
+      drawPolygon(ctx, [exterior, hole, hole], POLYGON_STYLE),
+    ).not.toThrow();
   });
 });
 
@@ -407,13 +427,29 @@ describe('drawTileBoundary', () => {
   });
 
   it('draws both tile and buffer boxes when buffer corners are provided', () => {
-    drawTileBoundary(ctx, origin, maxCorner, bufOrigin, bufMax, TILE_STYLE, BUFFER_STYLE);
+    drawTileBoundary(
+      ctx,
+      origin,
+      maxCorner,
+      bufOrigin,
+      bufMax,
+      TILE_STYLE,
+      BUFFER_STYLE,
+    );
     expect(ctx.rect).toHaveBeenCalledTimes(2);
     expect(ctx.stroke).toHaveBeenCalledTimes(2);
   });
 
   it('calls setLineDash twice with different patterns for tile and buffer', () => {
-    drawTileBoundary(ctx, origin, maxCorner, bufOrigin, bufMax, TILE_STYLE, BUFFER_STYLE);
+    drawTileBoundary(
+      ctx,
+      origin,
+      maxCorner,
+      bufOrigin,
+      bufMax,
+      TILE_STYLE,
+      BUFFER_STYLE,
+    );
     expect(ctx.setLineDash).toHaveBeenCalledWith([6, 4]);
     expect(ctx.setLineDash).toHaveBeenCalledWith([2, 4]);
   });
@@ -430,7 +466,15 @@ describe('drawTileBoundary', () => {
   });
 
   it('does NOT draw buffer box when buffer corners are null', () => {
-    drawTileBoundary(ctx, origin, maxCorner, null, null, TILE_STYLE, BUFFER_STYLE);
+    drawTileBoundary(
+      ctx,
+      origin,
+      maxCorner,
+      null,
+      null,
+      TILE_STYLE,
+      BUFFER_STYLE,
+    );
     expect(ctx.rect).toHaveBeenCalledOnce();
   });
 });

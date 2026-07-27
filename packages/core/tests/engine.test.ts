@@ -36,7 +36,11 @@ import type { Rule } from '../src/rule.js';
 // ---------------------------------------------------------------------------
 
 /** Creates a minimal in-memory artifact for a given type and content. */
-function makeArtifact<C>(type: string, source: string, content: C): Artifact<string, C> {
+function makeArtifact<C>(
+  type: string,
+  source: string,
+  content: C,
+): Artifact<string, C> {
   return {
     type,
     ref: { type, source },
@@ -76,7 +80,11 @@ function makeFailingProvider(
 }
 
 /** A rule that always reports one diagnostic with the given message. */
-function makeAlwaysFailRule(id: string, artifactType: string, message: string): Rule {
+function makeAlwaysFailRule(
+  id: string,
+  artifactType: string,
+  message: string,
+): Rule {
   return {
     id,
     meta: {
@@ -124,7 +132,11 @@ function makeCrashingRule(id: string, artifactType: string): Rule {
 }
 
 /** A rule that is async and resolves after a microtask. */
-function makeAsyncRule(id: string, artifactType: string, message: string): Rule {
+function makeAsyncRule(
+  id: string,
+  artifactType: string,
+  message: string,
+): Rule {
   return {
     id,
     meta: {
@@ -141,7 +153,10 @@ function makeAsyncRule(id: string, artifactType: string, message: string): Rule 
 }
 
 /** A rule that reads its options and reports them in the message. */
-function makeOptionsRule(id: string, artifactType: string): Rule<{ label: string }> {
+function makeOptionsRule(
+  id: string,
+  artifactType: string,
+): Rule<{ label: string }> {
   return {
     id,
     meta: {
@@ -181,7 +196,11 @@ function makeMockReporter(): {
 }
 
 /** Builds a minimal plugin with one provider and one rule. */
-function makePlugin(id: string, provider: ArtifactProvider, rules: Rule[]): Plugin {
+function makePlugin(
+  id: string,
+  provider: ArtifactProvider,
+  rules: Rule[],
+): Plugin {
   return { id, providers: [provider], rules };
 }
 
@@ -191,8 +210,16 @@ function makePlugin(id: string, provider: ArtifactProvider, rules: Rule[]): Plug
 
 describe('createEngine', () => {
   it('throws synchronously if two plugins register the same rule ID', () => {
-    const ruleA = makeAlwaysFailRule('mock/duplicate', 'MockArtifact', 'from A');
-    const ruleB = makeAlwaysFailRule('mock/duplicate', 'MockArtifact', 'from B');
+    const ruleA = makeAlwaysFailRule(
+      'mock/duplicate',
+      'MockArtifact',
+      'from A',
+    );
+    const ruleB = makeAlwaysFailRule(
+      'mock/duplicate',
+      'MockArtifact',
+      'from B',
+    );
     const provider = makeProvider('p', 'MockArtifact');
 
     expect(() =>
@@ -228,7 +255,11 @@ describe('engine.run', () => {
 
   it('collects diagnostics and sets pass=false when a rule reports an error', async () => {
     const provider = makeProvider('p', 'MockArtifact');
-    const rule = makeAlwaysFailRule('mock/fail', 'MockArtifact', 'Something is wrong');
+    const rule = makeAlwaysFailRule(
+      'mock/fail',
+      'MockArtifact',
+      'Something is wrong',
+    );
     const engine = createEngine({
       plugins: [makePlugin('mock', provider, [rule])],
     });
@@ -260,8 +291,17 @@ describe('engine.run', () => {
   // ── Load failure ──────────────────────────────────────────────────────────
 
   it('emits artifact/load-failed and continues when provider.load() throws', async () => {
-    const failingProvider = makeFailingProvider('fail-p', 'MockArtifact', 'bad://');
-    const passingProvider = makeProvider('pass-p', 'MockArtifact', {}, 'good://');
+    const failingProvider = makeFailingProvider(
+      'fail-p',
+      'MockArtifact',
+      'bad://',
+    );
+    const passingProvider = makeProvider(
+      'pass-p',
+      'MockArtifact',
+      {},
+      'good://',
+    );
     const rule = makePassRule('mock/pass', 'MockArtifact');
 
     const engine = createEngine({
@@ -274,7 +314,9 @@ describe('engine.run', () => {
     const result = await engine.run(['bad://will-fail', 'good://will-pass']);
 
     // One load-failed diagnostic for the bad source
-    const loadFailed = result.diagnostics.filter((d) => d.ruleId === 'artifact/load-failed');
+    const loadFailed = result.diagnostics.filter(
+      (d) => d.ruleId === 'artifact/load-failed',
+    );
     expect(loadFailed).toHaveLength(1);
     expect(loadFailed[0]?.message).toContain('Simulated load failure');
 
@@ -296,7 +338,9 @@ describe('engine.run', () => {
 
     const result = await engine.run(['mock://tile.pbf']);
 
-    const ruleErrors = result.diagnostics.filter((d) => d.ruleId === 'engine/rule-error');
+    const ruleErrors = result.diagnostics.filter(
+      (d) => d.ruleId === 'engine/rule-error',
+    );
     expect(ruleErrors).toHaveLength(1);
     expect(ruleErrors[0]?.message).toContain('mock/crash');
     expect(ruleErrors[0]?.message).toContain('Simulated rule crash');
@@ -311,7 +355,11 @@ describe('engine.run', () => {
 
   it('skips a rule configured as "off"', async () => {
     const provider = makeProvider('p', 'MockArtifact');
-    const rule = makeAlwaysFailRule('mock/fail', 'MockArtifact', 'Should not appear');
+    const rule = makeAlwaysFailRule(
+      'mock/fail',
+      'MockArtifact',
+      'Should not appear',
+    );
 
     const engine = createEngine({
       plugins: [makePlugin('mock', provider, [rule])],
@@ -428,7 +476,9 @@ describe('engine.run', () => {
     ]);
 
     expect(result.diagnostics).toHaveLength(1);
-    expect(result.diagnostics[0]?.artifact.source).toBe('mock://production/checked.pbf');
+    expect(result.diagnostics[0]?.artifact.source).toBe(
+      'mock://production/checked.pbf',
+    );
     expect(result.summary.ruleExecutions).toBe(1);
   });
 
@@ -479,11 +529,16 @@ describe('engine.run', () => {
       ],
     });
 
-    const result = await engine.run(['mock://stable/tile.pbf', 'mock://experimental/tile.pbf']);
+    const result = await engine.run([
+      'mock://stable/tile.pbf',
+      'mock://experimental/tile.pbf',
+    ]);
 
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.severity).toBe('error');
-    expect(result.diagnostics[0]?.artifact.source).toBe('mock://experimental/tile.pbf');
+    expect(result.diagnostics[0]?.artifact.source).toBe(
+      'mock://experimental/tile.pbf',
+    );
   });
 
   // ── Async rules ───────────────────────────────────────────────────────────
@@ -506,7 +561,11 @@ describe('engine.run', () => {
 
   it('runs rules against each artifact independently', async () => {
     const provider = makeProvider('p', 'MockArtifact');
-    const rule = makeAlwaysFailRule('mock/fail', 'MockArtifact', 'Found an issue');
+    const rule = makeAlwaysFailRule(
+      'mock/fail',
+      'MockArtifact',
+      'Found an issue',
+    );
 
     const engine = createEngine({
       plugins: [makePlugin('mock', provider, [rule])],
@@ -532,7 +591,11 @@ describe('engine.run', () => {
 
     const errorRule: Rule = {
       id: 'check/error-rule',
-      meta: { description: 'Error rule', defaultSeverity: 'error', recommended: true },
+      meta: {
+        description: 'Error rule',
+        defaultSeverity: 'error',
+        recommended: true,
+      },
       artifactTypes: ['TypeA'],
       create(ctx) {
         ctx.report({ message: 'Error finding' });
@@ -541,7 +604,11 @@ describe('engine.run', () => {
 
     const warnRule: Rule = {
       id: 'check/warn-rule',
-      meta: { description: 'Warn rule', defaultSeverity: 'warning', recommended: true },
+      meta: {
+        description: 'Warn rule',
+        defaultSeverity: 'warning',
+        recommended: true,
+      },
       artifactTypes: ['TypeA'],
       create(ctx) {
         ctx.report({ message: 'Warning finding' });
@@ -550,7 +617,11 @@ describe('engine.run', () => {
 
     const bRule: Rule = {
       id: 'check/b-rule',
-      meta: { description: 'B rule', defaultSeverity: 'error', recommended: true },
+      meta: {
+        description: 'B rule',
+        defaultSeverity: 'error',
+        recommended: true,
+      },
       artifactTypes: ['TypeB'],
       create(ctx) {
         ctx.report({ message: 'B finding' });
@@ -632,7 +703,11 @@ describe('engine.run', () => {
 
     const errorRule: Rule = {
       id: 'mock/err',
-      meta: { description: 'Error', defaultSeverity: 'error', recommended: true },
+      meta: {
+        description: 'Error',
+        defaultSeverity: 'error',
+        recommended: true,
+      },
       artifactTypes: ['MockArtifact'],
       create(ctx) {
         ctx.report({ message: 'E' });
@@ -640,7 +715,11 @@ describe('engine.run', () => {
     };
     const warnRule: Rule = {
       id: 'mock/warn',
-      meta: { description: 'Warning', defaultSeverity: 'warning', recommended: true },
+      meta: {
+        description: 'Warning',
+        defaultSeverity: 'warning',
+        recommended: true,
+      },
       artifactTypes: ['MockArtifact'],
       create(ctx) {
         ctx.report({ message: 'W' });
@@ -674,7 +753,11 @@ describe('engine.run', () => {
     // A rule that emits 5 diagnostics
     const spammyRule: Rule = {
       id: 'mock/spammy',
-      meta: { description: 'Spammy', defaultSeverity: 'error', recommended: true },
+      meta: {
+        description: 'Spammy',
+        defaultSeverity: 'error',
+        recommended: true,
+      },
       artifactTypes: ['MockArtifact'],
       create(ctx) {
         for (let i = 0; i < 5; i++) {
@@ -692,13 +775,21 @@ describe('engine.run', () => {
 
     // The notice is included in the hard cap: 2 findings + 1 notice.
     expect(result.diagnostics).toHaveLength(3);
-    expect(result.diagnostics.filter((d) => d.ruleId === 'mock/spammy')).toHaveLength(2);
-    const truncation = result.diagnostics.find((d) => d.ruleId === 'engine/max-diagnostics');
+    expect(
+      result.diagnostics.filter((d) => d.ruleId === 'mock/spammy'),
+    ).toHaveLength(2);
+    const truncation = result.diagnostics.find(
+      (d) => d.ruleId === 'engine/max-diagnostics',
+    );
     expect(truncation).toBeDefined();
   });
 
   it('applies maxDiagnostics to infrastructure diagnostics', async () => {
-    const failingProvider = makeFailingProvider('fail-p', 'MockArtifact', 'bad://');
+    const failingProvider = makeFailingProvider(
+      'fail-p',
+      'MockArtifact',
+      'bad://',
+    );
     const engine = createEngine({
       plugins: [{ id: 'p', providers: [failingProvider], rules: [] }],
       options: { maxDiagnostics: 3 },
@@ -712,9 +803,15 @@ describe('engine.run', () => {
     ]);
 
     expect(result.diagnostics).toHaveLength(3);
-    expect(result.diagnostics.some((d) => d.ruleId === 'artifact/no-provider')).toBe(true);
-    expect(result.diagnostics.some((d) => d.ruleId === 'artifact/load-failed')).toBe(true);
-    expect(result.diagnostics.some((d) => d.ruleId === 'engine/max-diagnostics')).toBe(true);
+    expect(
+      result.diagnostics.some((d) => d.ruleId === 'artifact/no-provider'),
+    ).toBe(true);
+    expect(
+      result.diagnostics.some((d) => d.ruleId === 'artifact/load-failed'),
+    ).toBe(true);
+    expect(
+      result.diagnostics.some((d) => d.ruleId === 'engine/max-diagnostics'),
+    ).toBe(true);
   });
 
   // ── Empty run ─────────────────────────────────────────────────────────────
@@ -736,8 +833,16 @@ describe('engine.run', () => {
     const tileProvider = makeProvider('tp', 'VectorTile', {}, 'tile://');
     const styleProvider = makeProvider('sp', 'StyleSpec', {}, 'style://');
 
-    const tileRule = makeAlwaysFailRule('tile/check', 'VectorTile', 'Tile issue');
-    const styleRule = makeAlwaysFailRule('style/check', 'StyleSpec', 'Style issue');
+    const tileRule = makeAlwaysFailRule(
+      'tile/check',
+      'VectorTile',
+      'Tile issue',
+    );
+    const styleRule = makeAlwaysFailRule(
+      'style/check',
+      'StyleSpec',
+      'Style issue',
+    );
 
     const engine = createEngine({
       plugins: [
@@ -784,7 +889,9 @@ describe('engine.run', () => {
     });
 
     const result = await engine.run(['mock://tile.pbf']);
-    expect(result.diagnostics[0]?.docsUrl).toBe('https://tileguard.dev/rules/mock/docs-rule');
+    expect(result.diagnostics[0]?.docsUrl).toBe(
+      'https://tileguard.dev/rules/mock/docs-rule',
+    );
   });
 
   // ── Location and suggestion forwarding ───────────────────────────────────

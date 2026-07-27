@@ -4,7 +4,9 @@ import { styleProvider, zoomRangeRule } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [zoomRangeRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [zoomRangeRule] },
+    ],
   });
 }
 

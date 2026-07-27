@@ -4,7 +4,9 @@ import { styleProvider, validJsonRule } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [validJsonRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [validJsonRule] },
+    ],
   });
 }
 
@@ -15,7 +17,9 @@ function json(obj: unknown): string {
 describe('style/valid-json', () => {
   it('pass — valid JSON does not trigger the rule', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 8, sources: {}, layers: [] })]);
+    const result = await engine.run([
+      json({ version: 8, sources: {}, layers: [] }),
+    ]);
     const d = result.diagnostics.filter((x) => x.ruleId === 'style/valid-json');
     expect(d).toHaveLength(0);
   });
@@ -31,8 +35,12 @@ describe('style/valid-json', () => {
 
   it('edge — inline object JSON does not trigger valid-json even when other rules would fire', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 8, sources: {}, layers: [] })]);
-    expect(result.diagnostics.filter((d) => d.ruleId === 'style/valid-json')).toHaveLength(0);
+    const result = await engine.run([
+      json({ version: 8, sources: {}, layers: [] }),
+    ]);
+    expect(
+      result.diagnostics.filter((d) => d.ruleId === 'style/valid-json'),
+    ).toHaveLength(0);
     expect(result.summary.artifactCount).toBe(1);
   });
 });

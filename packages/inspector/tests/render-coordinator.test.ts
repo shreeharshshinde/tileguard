@@ -11,7 +11,10 @@ import {
   type RenderCoordinator,
 } from '../src/render/render-coordinator.js';
 import type { Renderer } from '../src/renderer/canvas-renderer.js';
-import { createInspectorStore, type InspectorStore } from '../src/store/inspector-store.js';
+import {
+  createInspectorStore,
+  type InspectorStore,
+} from '../src/store/inspector-store.js';
 
 const mockArtifact = {
   type: 'VectorTile',
@@ -22,7 +25,15 @@ const mockArtifact = {
         name: 'roads',
         extent: 4096,
         version: 2,
-        features: [{ type: 2, geometryType: 'LineString', id: 1, properties: {}, geometry: [] }],
+        features: [
+          {
+            type: 2,
+            geometryType: 'LineString',
+            id: 1,
+            properties: {},
+            geometry: [],
+          },
+        ],
       },
     },
   },
@@ -79,7 +90,10 @@ describe('RenderCoordinator', () => {
         { layerName: 'roads', featureIndex: 0 },
       );
       expect(renderer.render).toHaveBeenCalledTimes(1);
-      expect(renderer.render).toHaveBeenCalledWith(mockArtifact, producedOverlays);
+      expect(renderer.render).toHaveBeenCalledWith(
+        mockArtifact,
+        producedOverlays,
+      );
     });
 
     it('passes fresh store state to selectionProducer on each call', async () => {
@@ -154,7 +168,9 @@ describe('RenderCoordinator', () => {
         throw error;
       });
 
-      expect(() => coordinator.render()).toThrow('Canvas Context Context2D Lost');
+      expect(() => coordinator.render()).toThrow(
+        'Canvas Context Context2D Lost',
+      );
     });
   });
 });

@@ -49,13 +49,20 @@ function captureRaw(
 }
 
 /** Build a minimal ReporterContext. */
-function makeContext(overrides: Partial<ReporterContext> = {}): ReporterContext {
+function makeContext(
+  overrides: Partial<ReporterContext> = {},
+): ReporterContext {
   return {
     duration: overrides.duration ?? 47,
     sources: overrides.sources ?? ['test.pbf', 'style.json'],
     ruleCount: overrides.ruleCount ?? 12,
     artifactCount: overrides.artifactCount ?? 2,
-    summary: overrides.summary ?? { errors: 2, warnings: 1, infos: 0, pass: false },
+    summary: overrides.summary ?? {
+      errors: 2,
+      warnings: 1,
+      infos: 0,
+      pass: false,
+    },
     config: overrides.config ?? {},
   };
 }
@@ -65,10 +72,14 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
   return {
     ruleId: overrides.ruleId ?? 'tile/required-layers',
     severity: overrides.severity ?? 'error',
-    message: overrides.message ?? 'Required layer "buildings" is not present in the tile.',
+    message:
+      overrides.message ??
+      'Required layer "buildings" is not present in the tile.',
     artifact: overrides.artifact ?? { type: 'VectorTile', source: 'test.pbf' },
     ...(overrides.location !== undefined && { location: overrides.location }),
-    ...(overrides.suggestion !== undefined && { suggestion: overrides.suggestion }),
+    ...(overrides.suggestion !== undefined && {
+      suggestion: overrides.suggestion,
+    }),
     ...(overrides.docsUrl !== undefined && { docsUrl: overrides.docsUrl }),
     ...(overrides.data !== undefined && { data: overrides.data }),
   };
@@ -96,7 +107,9 @@ describe('jsonReporter', () => {
     it('produces an empty diagnostics array', () => {
       const output = captureJson(
         [],
-        makeContext({ summary: { errors: 0, warnings: 0, infos: 0, pass: true } }),
+        makeContext({
+          summary: { errors: 0, warnings: 0, infos: 0, pass: true },
+        }),
       );
       expect(output.diagnostics).toHaveLength(0);
       expect(output.summary.pass).toBe(true);
@@ -110,7 +123,9 @@ describe('jsonReporter', () => {
       const serialized = output.diagnostics[0]!;
       expect(serialized.ruleId).toBe('tile/required-layers');
       expect(serialized.severity).toBe('error');
-      expect(serialized.message).toBe('Required layer "buildings" is not present in the tile.');
+      expect(serialized.message).toBe(
+        'Required layer "buildings" is not present in the tile.',
+      );
       expect(serialized.artifact.type).toBe('VectorTile');
       expect(serialized.artifact.source).toBe('test.pbf');
     });
@@ -136,7 +151,9 @@ describe('jsonReporter', () => {
         suggestion: 'Add the buildings layer.',
       });
       const output = captureJson([diag], makeContext());
-      expect(output.diagnostics[0]!.suggestion).toBe('Add the buildings layer.');
+      expect(output.diagnostics[0]!.suggestion).toBe(
+        'Add the buildings layer.',
+      );
     });
 
     it('includes docsUrl when present', () => {
@@ -151,7 +168,10 @@ describe('jsonReporter', () => {
 
     it('includes data when present', () => {
       const diag = makeDiagnostic({
-        data: { requiredLayer: 'buildings', availableLayers: ['water', 'roads'] },
+        data: {
+          requiredLayer: 'buildings',
+          availableLayers: ['water', 'roads'],
+        },
       });
       const output = captureJson([diag], makeContext());
       const data = output.diagnostics[0]!.data!;
@@ -161,7 +181,10 @@ describe('jsonReporter', () => {
 
     it('serializes multiple diagnostics in order', () => {
       const d1 = makeDiagnostic({ ruleId: 'tile/required-layers' });
-      const d2 = makeDiagnostic({ ruleId: 'tile/unclosed-ring', severity: 'warning' });
+      const d2 = makeDiagnostic({
+        ruleId: 'tile/unclosed-ring',
+        severity: 'warning',
+      });
       const output = captureJson([d1, d2], makeContext());
       expect(output.diagnostics).toHaveLength(2);
       expect(output.diagnostics[0]!.ruleId).toBe('tile/required-layers');

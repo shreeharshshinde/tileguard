@@ -19,7 +19,13 @@
  *     2 errors, 1 warning in 2 files (47ms)
  */
 
-import type { Diagnostic, Location, Reporter, ReporterContext, Severity } from '@tileguard/core';
+import type {
+  Diagnostic,
+  Location,
+  Reporter,
+  ReporterContext,
+  Severity,
+} from '@tileguard/core';
 
 // ---------------------------------------------------------------------------
 // ANSI color codes
@@ -131,21 +137,28 @@ export interface TextReporterOptions {
  * @param options - Optional configuration for output destination and color.
  * @returns A Reporter that produces human-readable terminal output.
  */
-export function createTextReporter(options: TextReporterOptions = {}): Reporter {
+export function createTextReporter(
+  options: TextReporterOptions = {},
+): Reporter {
   const write =
     options.write ??
     ((text: string) => {
-      if (typeof process !== 'undefined' && process.stdout?.write !== undefined) {
+      if (
+        typeof process !== 'undefined' &&
+        process.stdout?.write !== undefined
+      ) {
         process.stdout.write(text);
       } else {
         console.log(text.endsWith('\n') ? text.slice(0, -1) : text);
       }
     });
   const useColor =
-    options.color ?? (typeof process !== 'undefined' && process.stdout?.isTTY === true);
+    options.color ??
+    (typeof process !== 'undefined' && process.stdout?.isTTY === true);
 
   // Strip ANSI codes when color is disabled
-  const c = (code: string, text: string): string => (useColor ? `${code}${text}${RESET}` : text);
+  const c = (code: string, text: string): string =>
+    useColor ? `${code}${text}${RESET}` : text;
   const icon = (severity: Severity): string =>
     useColor
       ? SEVERITY_ICON[severity]
@@ -236,7 +249,9 @@ export function createTextReporter(options: TextReporterOptions = {}): Reporter 
         parts.push(c(RED, `${errors} error${errors === 1 ? '' : 's'}`));
       }
       if (warnings > 0) {
-        parts.push(c(YELLOW, `${warnings} warning${warnings === 1 ? '' : 's'}`));
+        parts.push(
+          c(YELLOW, `${warnings} warning${warnings === 1 ? '' : 's'}`),
+        );
       }
       if (infos > 0) {
         parts.push(c(CYAN, `${infos} info${infos === 1 ? '' : 's'}`));
@@ -244,7 +259,9 @@ export function createTextReporter(options: TextReporterOptions = {}): Reporter 
 
       const sourceCount = context.sources.length;
       const sourceLabel = `${sourceCount} source${sourceCount === 1 ? '' : 's'}`;
-      write(`  ${parts.join(', ')} in ${sourceLabel} ${c(DIM, `(${context.duration}ms)`)}\n`);
+      write(
+        `  ${parts.join(', ')} in ${sourceLabel} ${c(DIM, `(${context.duration}ms)`)}\n`,
+      );
     },
   };
 }

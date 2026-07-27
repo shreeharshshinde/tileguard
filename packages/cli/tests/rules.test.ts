@@ -90,7 +90,9 @@ describe('runRulesList', () => {
     const result = await runRulesList({});
 
     expect(result.exitCode).toBe(0);
-    expect(result.message).toContain(`Found ${tilePlugin.rules.length} rule(s)`);
+    expect(result.message).toContain(
+      `Found ${tilePlugin.rules.length} rule(s)`,
+    );
     expect(result.output).toBeDefined();
 
     // Known rule IDs that must appear in the output

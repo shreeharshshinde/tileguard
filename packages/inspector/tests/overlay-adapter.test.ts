@@ -27,7 +27,11 @@ const mockArtifact = {
   },
 } as unknown as VectorTileArtifact;
 
-function makeDiagnostic(ruleId: string, layer = 'roads', featureIndex = 0): Diagnostic {
+function makeDiagnostic(
+  ruleId: string,
+  layer = 'roads',
+  featureIndex = 0,
+): Diagnostic {
   return {
     ruleId,
     severity: 'error',
@@ -45,7 +49,10 @@ describe('OverlayAdapter', () => {
 
   it('ignores diagnostics for unregistered rule IDs without throwing', () => {
     const adapter = new OverlayAdapter();
-    const result = adapter.toDescriptors([makeDiagnostic('unknown/rule')], mockArtifact);
+    const result = adapter.toDescriptors(
+      [makeDiagnostic('unknown/rule')],
+      mockArtifact,
+    );
     expect(result).toEqual([]);
   });
 
@@ -69,13 +76,19 @@ describe('OverlayAdapter', () => {
     const diagnostic = makeDiagnostic('test/rule');
     const result = adapter.toDescriptors([diagnostic], mockArtifact);
 
-    expect(strategy.toDescriptors).toHaveBeenCalledWith(diagnostic, mockArtifact);
+    expect(strategy.toDescriptors).toHaveBeenCalledWith(
+      diagnostic,
+      mockArtifact,
+    );
     expect(result).toEqual([expectedOverlay]);
   });
 
   it('throws on duplicate ruleId registration', () => {
     const adapter = new OverlayAdapter();
-    const strategy: OverlayStrategy = { ruleId: 'test/rule', toDescriptors: () => [] };
+    const strategy: OverlayStrategy = {
+      ruleId: 'test/rule',
+      toDescriptors: () => [],
+    };
 
     adapter.register(strategy);
     expect(() => adapter.register(strategy)).toThrow(
@@ -125,7 +138,10 @@ describe('OverlayAdapter', () => {
     };
 
     adapter.register(malformedStrategy);
-    const result = adapter.toDescriptors([makeDiagnostic('malformed/rule')], mockArtifact);
+    const result = adapter.toDescriptors(
+      [makeDiagnostic('malformed/rule')],
+      mockArtifact,
+    );
     expect(result).toEqual([]);
   });
 

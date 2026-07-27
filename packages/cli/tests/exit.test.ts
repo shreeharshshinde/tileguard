@@ -46,8 +46,12 @@ describe('exit decision functions', () => {
 
   it('never writes to stderr or stdout — Proposal 1 I/O purity enforcement', () => {
     // Any stream write from these functions is a bug — bin.ts owns all I/O.
-    const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
-    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const stderrSpy = vi
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+    const stdoutSpy = vi
+      .spyOn(process.stdout, 'write')
+      .mockImplementation(() => true);
 
     toRunResult(true, [], summaryFixture);
     toUsageResult(new Error('boom'));
@@ -66,7 +70,11 @@ describe('exit decision functions', () => {
     });
 
     it('returns exitCode 1 when pass is false', () => {
-      const failSummary: RunSummary = { ...summaryFixture, pass: false, errors: 1 };
+      const failSummary: RunSummary = {
+        ...summaryFixture,
+        pass: false,
+        errors: 1,
+      };
       const result = toRunResult(false, [], failSummary);
       expect(result.exitCode).toBe(1);
     });

@@ -16,19 +16,30 @@ const STYLE_EXTENSIONS = ['.json', '.style', '.style.json'];
 
 export const styleProvider: ArtifactProvider = {
   id: 'style-specification',
-  artifactTypes: [STYLE_ARTIFACT_TYPE, INVALID_STYLE_ARTIFACT_TYPE, EMPTY_STYLE_ARTIFACT_TYPE],
+  artifactTypes: [
+    STYLE_ARTIFACT_TYPE,
+    INVALID_STYLE_ARTIFACT_TYPE,
+    EMPTY_STYLE_ARTIFACT_TYPE,
+  ],
 
   canHandle(source) {
     const normalized = source.trim().toLowerCase();
     if (looksLikeJson(source)) return true;
     if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
-      return STYLE_EXTENSIONS.some((extension) => normalized.endsWith(extension));
+      return STYLE_EXTENSIONS.some((extension) =>
+        normalized.endsWith(extension),
+      );
     }
     return STYLE_EXTENSIONS.some((extension) => normalized.endsWith(extension));
   },
 
-  async load(source: string, options?: ProviderOptions): Promise<AnyStyleArtifact> {
-    const raw = looksLikeJson(source) ? source : await readTextSource(source, options);
+  async load(
+    source: string,
+    options?: ProviderOptions,
+  ): Promise<AnyStyleArtifact> {
+    const raw = looksLikeJson(source)
+      ? source
+      : await readTextSource(source, options);
 
     if (raw.trim() === '') {
       return makeEmptyArtifact(source, raw);
@@ -36,7 +47,9 @@ export const styleProvider: ArtifactProvider = {
 
     try {
       const parsed = JSON.parse(raw) as unknown;
-      const content: StyleSpecificationContent = isRecord(parsed) ? parsed : { value: parsed };
+      const content: StyleSpecificationContent = isRecord(parsed)
+        ? parsed
+        : { value: parsed };
       return makeStyleArtifact(source, content, raw);
     } catch (err) {
       const error = err instanceof Error ? err.message : String(err);
@@ -45,7 +58,10 @@ export const styleProvider: ArtifactProvider = {
   },
 };
 
-async function readTextSource(source: string, options?: ProviderOptions): Promise<string> {
+async function readTextSource(
+  source: string,
+  options?: ProviderOptions,
+): Promise<string> {
   if (source.startsWith('http://') || source.startsWith('https://')) {
     const timeout = options?.timeout ?? 30_000;
     const controller = new AbortController();
@@ -85,7 +101,11 @@ function makeStyleArtifact(
   };
 }
 
-function makeInvalidArtifact(source: string, raw: string, error: string): InvalidStyleArtifact {
+function makeInvalidArtifact(
+  source: string,
+  raw: string,
+  error: string,
+): InvalidStyleArtifact {
   return {
     type: INVALID_STYLE_ARTIFACT_TYPE,
     ref: { type: INVALID_STYLE_ARTIFACT_TYPE, source },

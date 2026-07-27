@@ -63,11 +63,15 @@ describe('integration — happy paths', () => {
 describe('integration — negative paths', () => {
   it('throws ConfigNotFoundError when explicit configPath does not exist', async () => {
     await expect(
-      loadConfig({ configPath: '/absolutely/does/not/exist/tileguard.config.ts' }),
+      loadConfig({
+        configPath: '/absolutely/does/not/exist/tileguard.config.ts',
+      }),
     ).rejects.toThrow(ConfigNotFoundError);
 
     try {
-      await loadConfig({ configPath: '/absolutely/does/not/exist/tileguard.config.ts' });
+      await loadConfig({
+        configPath: '/absolutely/does/not/exist/tileguard.config.ts',
+      });
     } catch (err) {
       expect(err).toBeInstanceOf(ConfigNotFoundError);
       expect((err as ConfigNotFoundError).message).toContain(
@@ -77,7 +81,9 @@ describe('integration — negative paths', () => {
   });
 
   it('throws ConfigLoadError when config file throws during execution', async () => {
-    await expect(loadConfig({ cwd: join(fixturesDir, 'throws') })).rejects.toThrow(ConfigLoadError);
+    await expect(
+      loadConfig({ cwd: join(fixturesDir, 'throws') }),
+    ).rejects.toThrow(ConfigLoadError);
 
     try {
       await loadConfig({ cwd: join(fixturesDir, 'throws') });
@@ -91,9 +97,9 @@ describe('integration — negative paths', () => {
   });
 
   it('throws ConfigValidationError with all issues collected for multi-error config', async () => {
-    await expect(loadConfig({ cwd: join(fixturesDir, 'multi-error') })).rejects.toThrow(
-      ConfigValidationError,
-    );
+    await expect(
+      loadConfig({ cwd: join(fixturesDir, 'multi-error') }),
+    ).rejects.toThrow(ConfigValidationError);
 
     try {
       await loadConfig({ cwd: join(fixturesDir, 'multi-error') });

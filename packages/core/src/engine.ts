@@ -31,7 +31,11 @@ import type {
   ResolvedRuleOverride,
   TileGuardConfig,
 } from './config.js';
-import type { Diagnostic, DiagnosticDescriptor, Severity } from './diagnostic.js';
+import type {
+  Diagnostic,
+  DiagnosticDescriptor,
+  Severity,
+} from './diagnostic.js';
 import type { Reporter, ReporterContext } from './reporter.js';
 import type { Rule } from './rule.js';
 
@@ -211,12 +215,17 @@ function resolveOverrides(
         const [severity, options] = entry as readonly [Severity, unknown];
         rules.set(id, { rule, severity, options });
       } else {
-        rules.set(id, { rule, severity: entry as Severity, options: undefined });
+        rules.set(id, {
+          rule,
+          severity: entry as Severity,
+          options: undefined,
+        });
       }
     }
 
     return {
-      matches: (source: string): boolean => matchers.some((matcher) => matcher(source)),
+      matches: (source: string): boolean =>
+        matchers.some((matcher) => matcher(source)),
       rules,
     };
   });
@@ -240,7 +249,8 @@ function resolveOverrides(
 function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
   // Step 1: Collect all rules from plugins
   const allRules = new Map<string, Rule>();
-  const allProviders = userConfig.plugins?.flatMap((p) => p.providers ?? []) ?? [];
+  const allProviders =
+    userConfig.plugins?.flatMap((p) => p.providers ?? []) ?? [];
 
   for (const plugin of userConfig.plugins ?? []) {
     for (const rule of plugin.rules ?? []) {
@@ -260,7 +270,9 @@ function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
   for (const [id, rule] of allRules) {
     // Default severity: recommended rules use meta.defaultSeverity, others are 'off'
     const recommended = rule.meta.recommended ?? false;
-    let severity: Severity | 'off' = recommended ? rule.meta.defaultSeverity : 'off';
+    let severity: Severity | 'off' = recommended
+      ? rule.meta.defaultSeverity
+      : 'off';
     let options: unknown;
 
     // Apply user overrides
@@ -312,7 +324,9 @@ function resolveConfig(userConfig: TileGuardConfig): ResolvedConfig {
  * Reporter object may also be passed through the programmatic API by placing
  * it in a wrapper that accepts `Reporter` directly.
  */
-function resolveReporter(reporterConfig: TileGuardConfig['reporter']): Reporter {
+function resolveReporter(
+  reporterConfig: TileGuardConfig['reporter'],
+): Reporter {
   if (reporterConfig === undefined || typeof reporterConfig === 'string') {
     // Phase 2 note: actual reporter resolution (text, json, sarif) is
     // implemented in @tileguard/reporters and wired up in the CLI package.
@@ -365,7 +379,9 @@ function resolveRulesForSource(
   overrides: readonly ResolvedOverride[],
   source: string,
 ): ReadonlyMap<string, ResolvedRuleConfig> {
-  const matchingOverrides = overrides.filter((override) => override.matches(source));
+  const matchingOverrides = overrides.filter((override) =>
+    override.matches(source),
+  );
   if (matchingOverrides.length === 0) return baseRules;
 
   const rules = new Map(baseRules);
@@ -431,7 +447,10 @@ function compareDiagnostics(a: Diagnostic, b: Diagnostic): number {
 // Summary counting
 // ---------------------------------------------------------------------------
 
-function countSeverity(diagnostics: readonly Diagnostic[], severity: Severity): number {
+function countSeverity(
+  diagnostics: readonly Diagnostic[],
+  severity: Severity,
+): number {
   return diagnostics.filter((d) => d.severity === severity).length;
 }
 
@@ -513,7 +532,10 @@ export function createEngine(config: EngineOptions = {}): Engine {
   if (typeof config.reporter === 'string') {
     userConfig.reporter = config.reporter;
   } else if (Array.isArray(config.reporter)) {
-    userConfig.reporter = config.reporter as readonly [string, Record<string, unknown>];
+    userConfig.reporter = config.reporter as readonly [
+      string,
+      Record<string, unknown>,
+    ];
   }
 
   // Resolve the configuration (throws on invalid config)
@@ -547,7 +569,10 @@ export function createEngine(config: EngineOptions = {}): Engine {
       const emitDiagnostic = (diagnostic: Diagnostic): boolean => {
         if (diagnosticsTruncated) return false;
 
-        const limit = Math.max(0, Math.floor(resolvedConfig.options.maxDiagnostics));
+        const limit = Math.max(
+          0,
+          Math.floor(resolvedConfig.options.maxDiagnostics),
+        );
         if (limit === 0) {
           diagnosticsTruncated = true;
           return false;
@@ -574,7 +599,9 @@ export function createEngine(config: EngineOptions = {}): Engine {
       // ── For each source ─────────────────────────────────────────────────
       for (const source of sources) {
         // Find the first provider that can handle this source
-        const provider = resolvedConfig.providers.find((p) => p.canHandle(source));
+        const provider = resolvedConfig.providers.find((p) =>
+          p.canHandle(source),
+        );
 
         if (provider === undefined) {
           emitDiagnostic({
@@ -614,7 +641,8 @@ export function createEngine(config: EngineOptions = {}): Engine {
           resolvedConfig.overrides,
           source,
         );
-        const matchingRules = buildRuleIndex(sourceRules).get(artifact.type) ?? [];
+        const matchingRules =
+          buildRuleIndex(sourceRules).get(artifact.type) ?? [];
 
         // ── For each matching rule ────────────────────────────────────────
         for (const ruleConfig of matchingRules) {
@@ -637,8 +665,12 @@ export function createEngine(config: EngineOptions = {}): Engine {
                 severity: ruleConfig.severity,
                 message: descriptor.message,
                 artifact: artifact.ref,
-                ...(descriptor.location !== undefined && { location: descriptor.location }),
-                ...(descriptor.suggestion !== undefined && { suggestion: descriptor.suggestion }),
+                ...(descriptor.location !== undefined && {
+                  location: descriptor.location,
+                }),
+                ...(descriptor.suggestion !== undefined && {
+                  suggestion: descriptor.suggestion,
+                }),
                 ...(descriptor.data !== undefined && { data: descriptor.data }),
                 ...(ruleConfig.rule.meta.docsUrl !== undefined && {
                   docsUrl: ruleConfig.rule.meta.docsUrl,

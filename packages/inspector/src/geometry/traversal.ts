@@ -110,7 +110,10 @@ export interface GeometryVisitor {
    *
    * `rings[0]` is the exterior ring; `rings[1..n]` are interior rings (holes).
    */
-  onPolygon?(rings: readonly (readonly Point[])[], context: FeatureContext): void;
+  onPolygon?(
+    rings: readonly (readonly Point[])[],
+    context: FeatureContext,
+  ): void;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,7 +129,9 @@ export interface GeometryVisitor {
  *
  * We wrap the Point case so the downstream walk loop is uniform.
  */
-function normaliseToParts(feature: VectorTileFeature): readonly (readonly Point[])[] {
+function normaliseToParts(
+  feature: VectorTileFeature,
+): readonly (readonly Point[])[] {
   if (feature.type === 1) {
     return [feature.geometry as readonly Point[]];
   }
@@ -166,7 +171,13 @@ export function walkFeatureGeometry(
     for (let partIndex = 0; partIndex < parts.length; partIndex++) {
       const part = parts[partIndex];
       if (part === undefined) continue;
-      const context: FeatureContext = { layerName, layer, featureIndex, feature, partIndex };
+      const context: FeatureContext = {
+        layerName,
+        layer,
+        featureIndex,
+        feature,
+        partIndex,
+      };
       visitor.onPoint?.(part, context);
     }
   } else if (type === 2) {
@@ -174,12 +185,24 @@ export function walkFeatureGeometry(
     for (let partIndex = 0; partIndex < parts.length; partIndex++) {
       const part = parts[partIndex];
       if (part === undefined) continue;
-      const context: FeatureContext = { layerName, layer, featureIndex, feature, partIndex };
+      const context: FeatureContext = {
+        layerName,
+        layer,
+        featureIndex,
+        feature,
+        partIndex,
+      };
       visitor.onLineString?.(part, context);
     }
   } else if (type === 3) {
     // Polygon / MultiPolygon — rings array passed to onPolygon
-    const context: FeatureContext = { layerName, layer, featureIndex, feature, partIndex: 0 };
+    const context: FeatureContext = {
+      layerName,
+      layer,
+      featureIndex,
+      feature,
+      partIndex: 0,
+    };
     visitor.onPolygon?.(parts, context);
   }
 }
@@ -190,7 +213,10 @@ export function walkFeatureGeometry(
  * @param layer   The VectorTileLayer to traverse.
  * @param visitor Visitor to receive dispatched geometry.
  */
-export function walkLayer(layer: VectorTileLayer, visitor: GeometryVisitor): void {
+export function walkLayer(
+  layer: VectorTileLayer,
+  visitor: GeometryVisitor,
+): void {
   const { features, name } = layer;
   for (let i = 0; i < features.length; i++) {
     const feature = features[i];
@@ -205,7 +231,10 @@ export function walkLayer(layer: VectorTileLayer, visitor: GeometryVisitor): voi
  * @param artifact The decoded tile to traverse.
  * @param visitor  Visitor to receive dispatched geometry.
  */
-export function walkArtifact(artifact: VectorTileArtifact, visitor: GeometryVisitor): void {
+export function walkArtifact(
+  artifact: VectorTileArtifact,
+  visitor: GeometryVisitor,
+): void {
   for (const layer of Object.values(artifact.content.layers)) {
     if (layer === undefined) continue;
     walkLayer(layer, visitor);

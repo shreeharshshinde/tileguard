@@ -22,7 +22,10 @@ import type { OverlayDescriptor, OverlayStrategy } from '../overlay-adapter.ts';
 export const noEmptyStrategy: OverlayStrategy = {
   ruleId: 'tile/no-empty',
 
-  toDescriptors(_diagnostic: Diagnostic, _artifact: VectorTileArtifact): OverlayDescriptor[] {
+  toDescriptors(
+    _diagnostic: Diagnostic,
+    _artifact: VectorTileArtifact,
+  ): OverlayDescriptor[] {
     // No canvas overlay for empty tiles — there is no geometry to highlight.
     return [];
   },

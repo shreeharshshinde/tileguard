@@ -4,7 +4,9 @@ import { knownSourceRule, styleProvider } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [knownSourceRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [knownSourceRule] },
+    ],
   });
 }
 

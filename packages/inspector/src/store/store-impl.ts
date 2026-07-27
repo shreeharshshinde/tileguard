@@ -98,10 +98,10 @@ export class InspectorStoreImpl implements InspectorStore {
     this._listeners = new Set();
     this._disposed = false;
     this._state = {
-      lifecycle: { status: 'uninitialized' },
-      selection: { layerName: null, featureIndex: null },
-      hover: { layerName: null, featureIndex: null },
-      filters: defaultFilters(),
+      lifecycle: Object.freeze({ status: 'uninitialized' }),
+      selection: Object.freeze({ layerName: null, featureIndex: null }),
+      hover: Object.freeze({ layerName: null, featureIndex: null }),
+      filters: Object.freeze(defaultFilters()),
     };
   }
 
@@ -191,7 +191,7 @@ export class InspectorStoreImpl implements InspectorStore {
     if (this._disposed) return;
     const s = this._state.selection;
     if (s.layerName === layerName && s.featureIndex === featureIndex) return;
-    this._commit({ selection: { layerName, featureIndex } });
+    this._commit({ selection: Object.freeze({ layerName, featureIndex }) });
   }
 
   /**
@@ -203,7 +203,7 @@ export class InspectorStoreImpl implements InspectorStore {
     if (this._disposed) return;
     const h = this._state.hover;
     if (h.layerName === layerName && h.featureIndex === featureIndex) return;
-    this._commit({ hover: { layerName, featureIndex } });
+    this._commit({ hover: Object.freeze({ layerName, featureIndex }) });
   }
 
   /**
@@ -223,8 +223,11 @@ export class InspectorStoreImpl implements InspectorStore {
         ? frozenSet(partial.visibleLayers)
         : current.visibleLayers;
     const nextSeverity =
-      'minSeverity' in partial ? (partial.minSeverity ?? null) : current.minSeverity;
-    const nextRuleId = 'ruleId' in partial ? (partial.ruleId ?? null) : current.ruleId;
+      'minSeverity' in partial
+        ? (partial.minSeverity ?? null)
+        : current.minSeverity;
+    const nextRuleId =
+      'ruleId' in partial ? (partial.ruleId ?? null) : current.ruleId;
 
     // Shallow equality check — avoid spurious notifications.
     // visibleLayers uses reference equality (frozenSet returns the same
@@ -238,11 +241,11 @@ export class InspectorStoreImpl implements InspectorStore {
     }
 
     this._commit({
-      filters: {
+      filters: Object.freeze({
         visibleLayers: nextLayers,
         minSeverity: nextSeverity,
         ruleId: nextRuleId,
-      },
+      }),
     });
   }
 
@@ -275,7 +278,9 @@ export class InspectorStoreImpl implements InspectorStore {
    */
   subscribe(listener: () => void): () => void {
     if (this._disposed) {
-      throw new Error('InspectorStore.subscribe(): cannot subscribe to a disposed store.');
+      throw new Error(
+        'InspectorStore.subscribe(): cannot subscribe to a disposed store.',
+      );
     }
     this._listeners.add(listener);
     return () => {
@@ -323,19 +328,21 @@ export class InspectorStoreImpl implements InspectorStore {
   ): void {
     if (this._disposed) return;
 
-    const hasFeatures = Object.values(artifact.content.layers).some((l) => l.features.length > 0);
+    const hasFeatures = Object.values(artifact.content.layers).some(
+      (l) => l.features.length > 0,
+    );
 
     if (hasFeatures) {
       this._commit({
         lifecycle: { status: 'loaded', artifact, diagnostics, filePath },
-        selection: { layerName: null, featureIndex: null },
-        hover: { layerName: null, featureIndex: null },
+        selection: Object.freeze({ layerName: null, featureIndex: null }),
+        hover: Object.freeze({ layerName: null, featureIndex: null }),
       });
     } else {
       this._commit({
         lifecycle: { status: 'empty', filePath },
-        selection: { layerName: null, featureIndex: null },
-        hover: { layerName: null, featureIndex: null },
+        selection: Object.freeze({ layerName: null, featureIndex: null }),
+        hover: Object.freeze({ layerName: null, featureIndex: null }),
       });
     }
   }

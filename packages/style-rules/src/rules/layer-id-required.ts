@@ -18,7 +18,11 @@ export const layerIdRequiredRule: Rule = {
 
     for (let index = 0; index < style.layers.length; index += 1) {
       const layer = style.layers[index];
-      if (isRecord(layer) && typeof layer.id === 'string' && layer.id.length > 0) {
+      if (
+        isRecord(layer) &&
+        typeof layer.id === 'string' &&
+        layer.id.length > 0
+      ) {
         continue;
       }
 

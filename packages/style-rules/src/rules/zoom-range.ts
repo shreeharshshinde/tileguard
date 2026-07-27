@@ -1,5 +1,10 @@
 import type { Rule } from '@tileguard/core';
-import { getLayerId, getStyleLayers, getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getLayerId,
+  getStyleLayers,
+  getStyleObject,
+  STYLE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export const zoomRangeRule: Rule = {
   id: 'style/zoom-range',
@@ -18,7 +23,10 @@ export const zoomRangeRule: Rule = {
 
     for (let index = 0; index < layers.length; index += 1) {
       const layer = layers[index]!;
-      if (typeof layer.minzoom !== 'number' || typeof layer.maxzoom !== 'number') {
+      if (
+        typeof layer.minzoom !== 'number' ||
+        typeof layer.maxzoom !== 'number'
+      ) {
         continue;
       }
       if (layer.minzoom <= layer.maxzoom) continue;
@@ -27,7 +35,8 @@ export const zoomRangeRule: Rule = {
       context.report({
         message: `Layer "${layerId}" has minzoom "${layer.minzoom}" greater than maxzoom "${layer.maxzoom}".`,
         location: { jsonPath: `layers[${index}].minzoom` },
-        suggestion: 'Swap the minzoom and maxzoom values, or remove one of them.',
+        suggestion:
+          'Swap the minzoom and maxzoom values, or remove one of them.',
         data: {
           layerId,
           minzoom: layer.minzoom,

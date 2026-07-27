@@ -36,7 +36,10 @@ export const CONFIG_FILENAMES = [
  * @returns Absolute path to the first config file found, or `undefined`
  *          if no config file exists in any ancestor directory (up to stopAt).
  */
-export function findConfigFile(cwd: string = process.cwd(), stopAt?: string): string | undefined {
+export function findConfigFile(
+  cwd: string = process.cwd(),
+  stopAt?: string,
+): string | undefined {
   let dir = resolve(cwd);
   const boundary = stopAt !== undefined ? resolve(stopAt) : undefined;
 

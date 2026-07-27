@@ -4,7 +4,9 @@ import { noDeprecatedRefRule, styleProvider } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [noDeprecatedRefRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [noDeprecatedRefRule] },
+    ],
   });
 }
 

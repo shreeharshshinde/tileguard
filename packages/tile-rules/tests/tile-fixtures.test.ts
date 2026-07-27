@@ -39,7 +39,10 @@ describe('Tile Fixtures Integration Tests', () => {
       await ensureAndWrite(goodTilePath, goodTile);
     }
 
-    const coordsTilePath = join(repoRoot, 'fixtures/bad/invalid-tile-coords.pbf');
+    const coordsTilePath = join(
+      repoRoot,
+      'fixtures/bad/invalid-tile-coords.pbf',
+    );
     if (!existsSync(coordsTilePath)) {
       const coordsTile = tileBuffer([
         layer('roads', [
@@ -58,7 +61,10 @@ describe('Tile Fixtures Integration Tests', () => {
       await ensureAndWrite(coordsTilePath, coordsTile);
     }
 
-    const intersectTilePath = join(repoRoot, 'fixtures/bad/invalid-tile-self-intersection.pbf');
+    const intersectTilePath = join(
+      repoRoot,
+      'fixtures/bad/invalid-tile-self-intersection.pbf',
+    );
     if (!existsSync(intersectTilePath)) {
       const intersectTile = tileBuffer([
         layer('buildings', [
@@ -80,7 +86,10 @@ describe('Tile Fixtures Integration Tests', () => {
       await ensureAndWrite(intersectTilePath, intersectTile);
     }
 
-    const degenerateTilePath = join(repoRoot, 'fixtures/bad/invalid-tile-degenerate.pbf');
+    const degenerateTilePath = join(
+      repoRoot,
+      'fixtures/bad/invalid-tile-degenerate.pbf',
+    );
     if (!existsSync(degenerateTilePath)) {
       const degenerateTile = tileBuffer([
         layer('roads', [
@@ -101,15 +110,21 @@ describe('Tile Fixtures Integration Tests', () => {
   });
 
   it('passes on valid-tile.pbf', async () => {
-    const result = await engine.run([join(repoRoot, 'fixtures/good/valid-tile.pbf')]);
+    const result = await engine.run([
+      join(repoRoot, 'fixtures/good/valid-tile.pbf'),
+    ]);
     expect(result.summary.pass).toBe(true);
     expect(result.diagnostics).toHaveLength(0);
   });
 
   it('flags coordinate range errors on invalid-tile-coords.pbf', async () => {
-    const result = await engine.run([join(repoRoot, 'fixtures/bad/invalid-tile-coords.pbf')]);
+    const result = await engine.run([
+      join(repoRoot, 'fixtures/bad/invalid-tile-coords.pbf'),
+    ]);
     expect(result.summary.pass).toBe(false);
-    expect(result.diagnostics.map((d) => d.ruleId)).toContain('tile/coordinate-range');
+    expect(result.diagnostics.map((d) => d.ruleId)).toContain(
+      'tile/coordinate-range',
+    );
   });
 
   it('flags self-intersection errors on invalid-tile-self-intersection.pbf', async () => {
@@ -117,13 +132,19 @@ describe('Tile Fixtures Integration Tests', () => {
       join(repoRoot, 'fixtures/bad/invalid-tile-self-intersection.pbf'),
     ]);
     expect(result.summary.pass).toBe(false);
-    expect(result.diagnostics.map((d) => d.ruleId)).toContain('tile/self-intersection');
+    expect(result.diagnostics.map((d) => d.ruleId)).toContain(
+      'tile/self-intersection',
+    );
   });
 
   it('flags degenerate geometry errors on invalid-tile-degenerate.pbf', async () => {
-    const result = await engine.run([join(repoRoot, 'fixtures/bad/invalid-tile-degenerate.pbf')]);
+    const result = await engine.run([
+      join(repoRoot, 'fixtures/bad/invalid-tile-degenerate.pbf'),
+    ]);
     expect(result.summary.pass).toBe(false);
-    expect(result.diagnostics.map((d) => d.ruleId)).toContain('tile/degenerate-geometry');
+    expect(result.diagnostics.map((d) => d.ruleId)).toContain(
+      'tile/degenerate-geometry',
+    );
   });
 });
 
@@ -133,14 +154,20 @@ function tileBuffer(layers: readonly Uint8Array[]): Uint8Array {
 }
 
 function layer(name: string, features: readonly EncodedFeature[]): Uint8Array {
-  const keys = [...new Set(features.flatMap((item) => Object.keys(item.properties)))];
-  const values = [...new Set(features.flatMap((item) => Object.values(item.properties)))];
+  const keys = [
+    ...new Set(features.flatMap((item) => Object.keys(item.properties))),
+  ];
+  const values = [
+    ...new Set(features.flatMap((item) => Object.values(item.properties))),
+  ];
   return message([
     field(15, 0, 2),
     field(1, 2, Buffer.from(name)),
     ...features.map((item) => field(2, 2, encodeFeature(item, keys, values))),
     ...keys.map((key) => field(3, 2, Buffer.from(key))),
-    ...values.map((value) => field(4, 2, message([field(1, 2, Buffer.from(String(value)))]))),
+    ...values.map((value) =>
+      field(4, 2, message([field(1, 2, Buffer.from(String(value)))])),
+    ),
     field(5, 0, 4096),
   ]);
 }
@@ -196,7 +223,8 @@ function encodeGeometry(parts: readonly (readonly Point[])[]): number[] {
 
     const body = points.slice(1);
     const last = body[body.length - 1];
-    const closes = last !== undefined && last.x === first.x && last.y === first.y;
+    const closes =
+      last !== undefined && last.x === first.x && last.y === first.y;
     const linePoints = closes ? body.slice(0, -1) : body;
 
     if (linePoints.length > 0) {
@@ -218,7 +246,11 @@ function message(fields: readonly Uint8Array[]): Uint8Array {
   return Buffer.concat(fields);
 }
 
-function field(number: number, wire: number, value: number | Uint8Array): Uint8Array {
+function field(
+  number: number,
+  wire: number,
+  value: number | Uint8Array,
+): Uint8Array {
   const tag = varint((number << 3) | wire);
   if (wire === 0 && typeof value === 'number') {
     return Buffer.concat([tag, varint(value)]);

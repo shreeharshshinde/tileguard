@@ -1,5 +1,9 @@
 import type { Rule } from '@tileguard/core';
-import { getVectorTile, type LayerFeatureBounds, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getVectorTile,
+  type LayerFeatureBounds,
+  VECTOR_TILE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export interface LayerFeatureCountOptions {
   readonly layers?: Readonly<Record<string, LayerFeatureBounds>>;
@@ -9,7 +13,8 @@ export interface LayerFeatureCountOptions {
 export const layerFeatureCountRule: Rule<LayerFeatureCountOptions> = {
   id: 'tile/layer-feature-count',
   meta: {
-    description: 'Vector tile layers must satisfy configured per-layer feature count bounds.',
+    description:
+      'Vector tile layers must satisfy configured per-layer feature count bounds.',
     defaultSeverity: 'warning',
     docsUrl: 'https://tileguard.dev/rules/tile/layer-feature-count',
     recommended: true,
@@ -18,7 +23,8 @@ export const layerFeatureCountRule: Rule<LayerFeatureCountOptions> = {
   artifactTypes: [VECTOR_TILE_ARTIFACT_TYPE],
 
   create(context) {
-    const layerConfig = context.options?.layers ?? context.options?.layerConfig ?? {};
+    const layerConfig =
+      context.options?.layers ?? context.options?.layerConfig ?? {};
     const tile = getVectorTile(context.artifact);
 
     for (const [layerName, bounds] of Object.entries(layerConfig)) {

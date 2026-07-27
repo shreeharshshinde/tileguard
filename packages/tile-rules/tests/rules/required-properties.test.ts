@@ -3,13 +3,22 @@ import { describe, expect, it } from 'vitest';
 import { requiredPropertiesRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [requiredPropertiesRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [requiredPropertiesRule],
+};
 
 describe('tile/required-properties', () => {
   it('pass — all features have required properties', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/required-properties': ['error', { layers: { roads: ['class', 'name'] } }] },
+      rules: {
+        'tile/required-properties': [
+          'error',
+          { layers: { roads: ['class', 'name'] } },
+        ],
+      },
     });
     const source = await makeTile([
       {
@@ -35,7 +44,12 @@ describe('tile/required-properties', () => {
   it('fail — feature missing required property produces diagnostic per missing property', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/required-properties': ['error', { layers: { roads: ['class', 'name'] } }] },
+      rules: {
+        'tile/required-properties': [
+          'error',
+          { layers: { roads: ['class', 'name'] } },
+        ],
+      },
     });
     const source = await makeTile([
       {
@@ -65,7 +79,12 @@ describe('tile/required-properties', () => {
   it('edge — layer not in tile is silently skipped', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/required-properties': ['error', { layers: { buildings: ['height'] } }] },
+      rules: {
+        'tile/required-properties': [
+          'error',
+          { layers: { buildings: ['height'] } },
+        ],
+      },
     });
     const source = await makeTile([
       {

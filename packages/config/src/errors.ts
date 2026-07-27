@@ -57,7 +57,9 @@ export class ConfigLoadError extends Error {
 
   constructor(configPath: string, cause: unknown) {
     const reason = cause instanceof Error ? cause.message : String(cause);
-    super(`Failed to load configuration from ${configPath}: ${reason}`, { cause });
+    super(`Failed to load configuration from ${configPath}: ${reason}`, {
+      cause,
+    });
     this.configPath = configPath;
   }
 }
@@ -76,7 +78,10 @@ export class ConfigValidationError extends Error {
 
   constructor(issues: readonly ValidationIssue[]) {
     const summary = issues
-      .map((i) => `  ${i.severity === 'error' ? '✗' : '⚠'} ${i.path}: ${i.message}`)
+      .map(
+        (i) =>
+          `  ${i.severity === 'error' ? '✗' : '⚠'} ${i.path}: ${i.message}`,
+      )
       .join('\n');
     super(`Invalid TileGuard configuration:\n${summary}`);
     this.issues = issues;

@@ -29,9 +29,12 @@ const ANALYSIS_DIR = path.join(__dirname, '..', 'analysis');
 // ─── Tile list (same 100 tiles as benchmark.mjs) ───────────────────────────
 const TILES = [];
 TILES.push({ z: 0, x: 0, y: 0 });
-for (let x = 0; x < 2; x++) for (let y = 0; y < 2; y++) TILES.push({ z: 1, x, y });
-for (let x = 0; x < 4; x++) for (let y = 0; y < 4; y++) TILES.push({ z: 2, x, y });
-for (let x = 0; x < 8; x++) for (let y = 0; y < 8; y++) TILES.push({ z: 3, x, y });
+for (let x = 0; x < 2; x++)
+  for (let y = 0; y < 2; y++) TILES.push({ z: 1, x, y });
+for (let x = 0; x < 4; x++)
+  for (let y = 0; y < 4; y++) TILES.push({ z: 2, x, y });
+for (let x = 0; x < 8; x++)
+  for (let y = 0; y < 8; y++) TILES.push({ z: 3, x, y });
 let z4count = 0;
 for (let x = 0; x < 4; x++)
   for (let y = 0; y < 4; y++) {
@@ -44,7 +47,8 @@ for (let x = 0; x < 4; x++)
 const DATASETS = [
   {
     name: 'OpenMapTiles',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
+    urlPattern: (z, x, y) =>
+      `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'OpenFreeMap',
@@ -58,7 +62,12 @@ const DATASETS = [
   },
 ];
 
-const GEOMETRY_TYPE_NAMES = { 0: 'Unknown', 1: 'Point', 2: 'LineString', 3: 'Polygon' };
+const GEOMETRY_TYPE_NAMES = {
+  0: 'Unknown',
+  1: 'Point',
+  2: 'LineString',
+  3: 'Polygon',
+};
 
 // ─── Caching ────────────────────────────────────────────────────────────────
 function isGzipped(bytes) {
@@ -95,7 +104,9 @@ async function ensureCached(dataset) {
   }
   console.log(`  Cache: ${success}/${TILES.length} tiles, ${fail} failed`);
   if (success / TILES.length < 0.9) {
-    throw new Error(`Cache rate ${((success / TILES.length) * 100).toFixed(1)}% < 90% threshold`);
+    throw new Error(
+      `Cache rate ${((success / TILES.length) * 100).toFixed(1)}% < 90% threshold`,
+    );
   }
   return { success, fail };
 }
@@ -103,7 +114,8 @@ async function ensureCached(dataset) {
 // ─── Signed offset computation ──────────────────────────────────────────────
 function classifyAxis(value, extent) {
   if (value < 0) return { offset: value, direction: 'below-zero' };
-  if (value > extent) return { offset: value - extent, direction: 'above-extent' };
+  if (value > extent)
+    return { offset: value - extent, direction: 'above-extent' };
   return { offset: 0, direction: 'in-range' };
 }
 
@@ -123,7 +135,8 @@ function getSignedBucket(offset) {
 // ─── Main analysis ──────────────────────────────────────────────────────────
 async function main() {
   console.log('=== STEP 1.2: SIGNED OFFSET DISTRIBUTION ANALYSIS ===\n');
-  if (!fs.existsSync(ANALYSIS_DIR)) fs.mkdirSync(ANALYSIS_DIR, { recursive: true });
+  if (!fs.existsSync(ANALYSIS_DIR))
+    fs.mkdirSync(ANALYSIS_DIR, { recursive: true });
 
   const allEntries = []; // Every out-of-range coordinate
   const crossProviderMap = {}; // tile → layer → featureIndex → { providers, properties }
@@ -138,7 +151,8 @@ async function main() {
     for (const t of TILES) {
       const filename = `${t.z}-${t.x}-${t.y}.pbf`;
       const filepath = path.join(dir, filename);
-      if (!fs.existsSync(filepath) || fs.statSync(filepath).size === 0) continue;
+      if (!fs.existsSync(filepath) || fs.statSync(filepath).size === 0)
+        continue;
 
       let rawBytes = fs.readFileSync(filepath);
       if (isGzipped(rawBytes)) rawBytes = gunzipSync(rawBytes);
@@ -175,7 +189,10 @@ async function main() {
               const xClass = classifyAxis(point.x, layer.extent);
               const yClass = classifyAxis(point.y, layer.extent);
 
-              if (xClass.direction !== 'in-range' || yClass.direction !== 'in-range') {
+              if (
+                xClass.direction !== 'in-range' ||
+                yClass.direction !== 'in-range'
+              ) {
                 const entry = {
                   dataset: dataset.name,
                   tile: filename.replace('.pbf', ''),
@@ -200,17 +217,22 @@ async function main() {
                 const featureKey = `${layerName}:${fi}`;
                 if (!crossProviderMap[tileKey]) crossProviderMap[tileKey] = {};
                 if (!crossProviderMap[tileKey][featureKey]) {
-                  crossProviderMap[tileKey][featureKey] = { providers: {}, properties: {} };
+                  crossProviderMap[tileKey][featureKey] = {
+                    providers: {},
+                    properties: {},
+                  };
                 }
-                crossProviderMap[tileKey][featureKey].providers[dataset.name] = {
-                  x: point.x,
-                  y: point.y,
-                  xOffset: xClass.offset,
-                  yOffset: yClass.offset,
-                  xDirection: xClass.direction,
-                  yDirection: yClass.direction,
-                };
-                crossProviderMap[tileKey][featureKey].properties[dataset.name] = identityProps;
+                crossProviderMap[tileKey][featureKey].providers[dataset.name] =
+                  {
+                    x: point.x,
+                    y: point.y,
+                    xOffset: xClass.offset,
+                    yOffset: yClass.offset,
+                    xDirection: xClass.direction,
+                    yDirection: yClass.direction,
+                  };
+                crossProviderMap[tileKey][featureKey].properties[dataset.name] =
+                  identityProps;
               }
             }
           }
@@ -273,7 +295,9 @@ async function main() {
         identityMethod = identityConfirmed ? 'name-match' : 'name-mismatch';
       } else {
         // No name property — check class+subclass
-        const classes = propSets.map(([, p]) => `${p.class || ''}:${p.subclass || ''}`);
+        const classes = propSets.map(
+          ([, p]) => `${p.class || ''}:${p.subclass || ''}`,
+        );
         identityConfirmed = classes.every((c) => c === classes[0]);
         identityMethod = identityConfirmed ? 'class-match' : 'class-mismatch';
       }
@@ -289,8 +313,12 @@ async function main() {
     }
   }
 
-  const confirmedSameFeature = crossProviderMatches.filter((m) => m.identityConfirmed);
-  const unconfirmedSameFeature = crossProviderMatches.filter((m) => !m.identityConfirmed);
+  const confirmedSameFeature = crossProviderMatches.filter(
+    (m) => m.identityConfirmed,
+  );
+  const unconfirmedSameFeature = crossProviderMatches.filter(
+    (m) => !m.identityConfirmed,
+  );
 
   // ─── Build report ───────────────────────────────────────────────────────
   const report = {
@@ -327,7 +355,10 @@ async function main() {
         `${e.dataset},${e.tile},${e.layer},${e.featureIndex},${e.geometryType},${e.extent},${e.x},${e.y},${e.xOffset},${e.yOffset},${e.xDirection},${e.yDirection},"${e.xBucket}","${e.yBucket}","${e.properties.name || ''}","${e.properties.class || ''}"`,
     )
     .join('\n');
-  fs.writeFileSync(path.join(ANALYSIS_DIR, 'offset-distribution.csv'), csvHeader + csvRows);
+  fs.writeFileSync(
+    path.join(ANALYSIS_DIR, 'offset-distribution.csv'),
+    csvHeader + csvRows,
+  );
 
   // ─── Write Markdown histogram ───────────────────────────────────────────
   const sortedBuckets = Object.entries(histogram).sort((a, b) => {
@@ -363,7 +394,9 @@ async function main() {
 
   md += `\n---\n\n## Layer Breakdown\n\n`;
   md += `| Layer | Count |\n| :--- | ---: |\n`;
-  const sortedLayers = Object.entries(layerBreakdown).sort((a, b) => b[1] - a[1]);
+  const sortedLayers = Object.entries(layerBreakdown).sort(
+    (a, b) => b[1] - a[1],
+  );
   for (const [layer, count] of sortedLayers) {
     md += `| ${layer} | ${count} |\n`;
   }
@@ -403,8 +436,12 @@ async function main() {
   console.log(`Direction breakdown:`, directionBreakdown);
   console.log(`\nLayer breakdown:`, layerBreakdown);
   console.log(`Geometry type breakdown:`, geomBreakdown);
-  console.log(`\nCross-provider identity matches: ${crossProviderMatches.length}`);
-  console.log(`  Confirmed (property-verified): ${confirmedSameFeature.length}`);
+  console.log(
+    `\nCross-provider identity matches: ${crossProviderMatches.length}`,
+  );
+  console.log(
+    `  Confirmed (property-verified): ${confirmedSameFeature.length}`,
+  );
   console.log(`  Unconfirmed: ${unconfirmedSameFeature.length}`);
   console.log(`\nTop histogram buckets:`);
   for (const [bucket, count] of sortedBuckets.slice(0, 10)) {

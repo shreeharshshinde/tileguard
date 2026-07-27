@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { featureCountRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [featureCountRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [featureCountRule],
+};
 
 const line = {
   type: 2 as const,
@@ -22,7 +26,9 @@ describe('tile/feature-count', () => {
       plugins: [plugin],
       rules: { 'tile/feature-count': ['warning', { min: 1, max: 5 }] },
     });
-    const source = await makeTile([{ name: 'roads', features: [line, line, line] }]);
+    const source = await makeTile([
+      { name: 'roads', features: [line, line, line] },
+    ]);
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(0);
   });
@@ -45,7 +51,9 @@ describe('tile/feature-count', () => {
       plugins: [plugin],
       rules: { 'tile/feature-count': ['warning', { max: 1 }] },
     });
-    const source = await makeTile([{ name: 'roads', features: [line, line, line] }]);
+    const source = await makeTile([
+      { name: 'roads', features: [line, line, line] },
+    ]);
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.data?.count).toBe(3);

@@ -9,7 +9,11 @@
  * Pure TypeScript, Vitest node environment.
  */
 
-import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import type {
+  VectorTileArtifact,
+  VectorTileFeature,
+  VectorTileLayer,
+} from '@tileguard/tile-rules';
 import { describe, expect, it, vi } from 'vitest';
 import type { OverlayDescriptor } from '../src/overlay/overlay-adapter';
 import { CanvasRenderer } from '../src/renderer/canvas-renderer';
@@ -56,7 +60,11 @@ function makeCanvas(width = 800, height = 600): HTMLCanvasElement {
 // Tile artifact fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
+function makeLayer(
+  name: string,
+  features: VectorTileFeature[],
+  extent = 4096,
+): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
@@ -189,7 +197,12 @@ describe('CanvasRenderer.clear', () => {
   it('calls clearRect covering the full canvas', () => {
     const { renderer, ctx, canvas } = makeRenderer(800, 600);
     renderer.clear();
-    expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, canvas.width, canvas.height);
+    expect(ctx.clearRect).toHaveBeenCalledWith(
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
   });
 
   it('throws when no canvas is attached', () => {
@@ -220,7 +233,10 @@ describe('CanvasRenderer.render', () => {
 
   it('calls arc() for each Point feature', () => {
     const { renderer, ctx } = makeRenderer();
-    renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE, POINT_FEATURE])]), []);
+    renderer.render(
+      makeArtifact([makeLayer('places', [POINT_FEATURE, POINT_FEATURE])]),
+      [],
+    );
     expect(ctx.arc).toHaveBeenCalledTimes(2);
   });
 
@@ -233,7 +249,10 @@ describe('CanvasRenderer.render', () => {
 
   it('calls fill("evenodd") for Polygon features', () => {
     const { renderer, ctx } = makeRenderer();
-    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), []);
+    renderer.render(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [],
+    );
     expect(ctx.fill).toHaveBeenCalledWith('evenodd');
   });
 
@@ -244,7 +263,9 @@ describe('CanvasRenderer.render', () => {
 
   it('does not throw for an artifact with empty layers', () => {
     const { renderer } = makeRenderer();
-    expect(() => renderer.render(makeArtifact([makeLayer('empty', [])]), [])).not.toThrow();
+    expect(() =>
+      renderer.render(makeArtifact([makeLayer('empty', [])]), []),
+    ).not.toThrow();
   });
 
   it('renders mixed geometry types without throwing', () => {
@@ -260,7 +281,9 @@ describe('CanvasRenderer.render', () => {
   it('throws when no canvas is attached', () => {
     const vp = createViewport({ width: 800, height: 600 });
     const renderer = new CanvasRenderer({ viewport: vp });
-    expect(() => renderer.render(makeArtifact([]), [])).toThrow(/no canvas attached/i);
+    expect(() => renderer.render(makeArtifact([]), [])).toThrow(
+      /no canvas attached/i,
+    );
   });
 });
 
@@ -272,8 +295,12 @@ describe('CanvasRenderer.render — pipeline order', () => {
   it('calls clearRect before arc() (clear before points)', () => {
     const { renderer, ctx } = makeRenderer();
     const order: string[] = [];
-    (ctx.clearRect as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('clearRect'));
-    (ctx.arc as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('arc'));
+    (ctx.clearRect as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('clearRect'),
+    );
+    (ctx.arc as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('arc'),
+    );
 
     renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), []);
     expect(order.indexOf('clearRect')).toBeLessThan(order.indexOf('arc'));
@@ -282,10 +309,17 @@ describe('CanvasRenderer.render — pipeline order', () => {
   it('calls clearRect before fill("evenodd") (clear before polygons)', () => {
     const { renderer, ctx } = makeRenderer();
     const order: string[] = [];
-    (ctx.clearRect as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('clearRect'));
-    (ctx.fill as ReturnType<typeof vi.fn>).mockImplementation(() => order.push('fill'));
+    (ctx.clearRect as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('clearRect'),
+    );
+    (ctx.fill as ReturnType<typeof vi.fn>).mockImplementation(() =>
+      order.push('fill'),
+    );
 
-    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), []);
+    renderer.render(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [],
+    );
     const clearIdx = order.indexOf('clearRect');
     const fillIdx = order.indexOf('fill');
     expect(clearIdx).toBeLessThan(fillIdx);
@@ -302,7 +336,13 @@ describe('CanvasRenderer.render — coordinate transform', () => {
     // DEFAULT_MIN_ZOOM is 0.25, so we use 0.5 (well above the minimum).
     // POINT_FEATURE geometry: tile { x: 1000, y: 2000 }
     // screenX = 1000 * 0.5 + 0 = 500, screenY = 2000 * 0.5 + 0 = 1000
-    const vp = createViewport({ width: 800, height: 600, zoom: 0.5, panX: 0, panY: 0 });
+    const vp = createViewport({
+      width: 800,
+      height: 600,
+      zoom: 0.5,
+      panX: 0,
+      panY: 0,
+    });
     const renderer = new CanvasRenderer({ viewport: vp });
     const canvas = makeCanvas(800, 600);
     renderer.attachCanvas(canvas);
@@ -310,7 +350,13 @@ describe('CanvasRenderer.render — coordinate transform', () => {
 
     renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), []);
 
-    expect(ctx.arc).toHaveBeenCalledWith(500, 1000, expect.any(Number), 0, Math.PI * 2);
+    expect(ctx.arc).toHaveBeenCalledWith(
+      500,
+      1000,
+      expect.any(Number),
+      0,
+      Math.PI * 2,
+    );
   });
 });
 
@@ -331,7 +377,9 @@ describe('CanvasRenderer.render — overlays', () => {
       target: 0,
       severity: 'error',
     };
-    renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]);
+    renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [
+      overlay,
+    ]);
     // arc should be called: once for the feature + once for the overlay marker
     expect(ctx.arc).toHaveBeenCalledTimes(2);
   });
@@ -346,7 +394,9 @@ describe('CanvasRenderer.render — overlays', () => {
       severity: 'warning',
     };
     expect(() =>
-      renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]),
+      renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [
+        overlay,
+      ]),
     ).not.toThrow();
   });
 
@@ -360,7 +410,9 @@ describe('CanvasRenderer.render — overlays', () => {
       severity: 'info',
     };
     expect(() =>
-      renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [overlay]),
+      renderer.render(makeArtifact([makeLayer('places', [POINT_FEATURE])]), [
+        overlay,
+      ]),
     ).not.toThrow();
   });
 
@@ -375,7 +427,9 @@ describe('CanvasRenderer.render — overlays', () => {
       target: 0,
       severity: 'warning',
     };
-    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [overlay]);
+    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), [
+      overlay,
+    ]);
     // fill("evenodd") called at least once: once for the polygon + once for the bbox overlay
     expect(ctx.fill).toHaveBeenCalledWith('evenodd');
   });
@@ -417,20 +471,32 @@ describe('CanvasRenderer.setViewport / getViewport', () => {
 describe('CanvasRenderer — showVertices option', () => {
   it('does not draw vertex markers by default', () => {
     const { renderer, ctx } = makeRenderer();
-    renderer.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), []);
+    renderer.render(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [],
+    );
     // rect() is only used by drawVertexMarkers and drawTileBoundary.
     // drawTileBoundary uses rect() too — so we check if rect is called MORE
     // times than expected when vertices are enabled.
-    const baseRectCalls = (ctx.rect as ReturnType<typeof vi.fn>).mock.calls.length;
+    const baseRectCalls = (ctx.rect as ReturnType<typeof vi.fn>).mock.calls
+      .length;
     expect(baseRectCalls).toBeGreaterThanOrEqual(0); // boundary rects always present
     // No vertex squares added on top (we verify by enabling and comparing)
     const vp = createViewport({ width: 800, height: 600 });
-    const rendererWithVertices = new CanvasRenderer({ viewport: vp, showVertices: true });
+    const rendererWithVertices = new CanvasRenderer({
+      viewport: vp,
+      showVertices: true,
+    });
     const canvas2 = makeCanvas();
     rendererWithVertices.attachCanvas(canvas2);
-    const ctx2 = (canvas2 as unknown as { _ctx: CanvasRenderingContext2D })._ctx;
-    rendererWithVertices.render(makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]), []);
-    const vertexRectCalls = (ctx2.rect as ReturnType<typeof vi.fn>).mock.calls.length;
+    const ctx2 = (canvas2 as unknown as { _ctx: CanvasRenderingContext2D })
+      ._ctx;
+    rendererWithVertices.render(
+      makeArtifact([makeLayer('buildings', [POLYGON_FEATURE])]),
+      [],
+    );
+    const vertexRectCalls = (ctx2.rect as ReturnType<typeof vi.fn>).mock.calls
+      .length;
     // With showVertices=true there should be MORE rect calls than without
     expect(vertexRectCalls).toBeGreaterThan(baseRectCalls);
   });

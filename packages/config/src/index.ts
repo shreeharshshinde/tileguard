@@ -43,7 +43,10 @@ export {
   ConfigValidationError,
 } from './errors.js';
 export { CONFIG_FILENAMES, findConfigFile } from './finder.js';
-export type { ValidateConfigOptions, ValidateConfigResult } from './validator.js';
+export type {
+  ValidateConfigOptions,
+  ValidateConfigResult,
+} from './validator.js';
 export { isValidRuleConfig, validateConfig } from './validator.js';
 
 /**
@@ -109,7 +112,9 @@ export interface LoadConfigResult {
  * @throws {ConfigValidationError} When the loaded object has at least
  *         one error-severity schema violation.
  */
-export async function loadConfig(options: LoadConfigOptions = {}): Promise<LoadConfigResult> {
+export async function loadConfig(
+  options: LoadConfigOptions = {},
+): Promise<LoadConfigResult> {
   const { cwd = process.cwd(), configPath: explicitPath } = options;
 
   let configPath: string | undefined;

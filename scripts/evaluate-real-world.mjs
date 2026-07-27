@@ -20,7 +20,10 @@ function buildRules() {
   };
 
   if (mode === 'legacy') {
-    rules['tile/coordinate-range'] = ['error', { buffer: 0, excludeLayers: [] }];
+    rules['tile/coordinate-range'] = [
+      'error',
+      { buffer: 0, excludeLayers: [] },
+    ];
   } else if (mode === 'after') {
     rules['tile/coordinate-range'] = 'error';
   } else if (mode !== 'disabled') {
@@ -69,7 +72,8 @@ const allTiles = [...baseTiles, ...urbanTiles];
 const datasets = [
   {
     name: 'OpenMapTiles (MapLibre Demo)',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
+    urlPattern: (z, x, y) =>
+      `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'OpenFreeMap',
@@ -84,7 +88,9 @@ const datasets = [
 ];
 
 async function runEvaluation() {
-  log(`Starting real-world evaluation of ${allTiles.length} tiles per dataset...`);
+  log(
+    `Starting real-world evaluation of ${allTiles.length} tiles per dataset...`,
+  );
   log(`Mode: ${mode}\n`);
 
   // Silence standard logger to clean script output
@@ -116,7 +122,8 @@ async function runEvaluation() {
         if (result.diagnostics.length > 0) {
           totalDiagnostics += result.diagnostics.length;
           for (const diag of result.diagnostics) {
-            ruleDiagnostics[diag.ruleId] = (ruleDiagnostics[diag.ruleId] || 0) + 1;
+            ruleDiagnostics[diag.ruleId] =
+              (ruleDiagnostics[diag.ruleId] || 0) + 1;
           }
         }
       } catch (_err) {

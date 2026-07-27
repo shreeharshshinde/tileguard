@@ -1,5 +1,10 @@
 import type { Rule } from '@tileguard/core';
-import { getLayerId, getStyleLayers, getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getLayerId,
+  getStyleLayers,
+  getStyleObject,
+  STYLE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export const uniqueLayerIdRule: Rule = {
   id: 'style/unique-layer-id',

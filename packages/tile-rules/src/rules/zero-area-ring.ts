@@ -17,7 +17,11 @@ export const zeroAreaRingRule: Rule = {
     const tile = getVectorTile(context.artifact);
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findZeroAreaRingIssues(feature)) {
           context.report({
@@ -25,10 +29,17 @@ export const zeroAreaRingRule: Rule = {
             location: {
               layer: layerName,
               featureIndex,
-              ...(issue.partIndex !== undefined && { partIndex: issue.partIndex }),
+              ...(issue.partIndex !== undefined && {
+                partIndex: issue.partIndex,
+              }),
             },
-            suggestion: 'Remove zero-area rings or emit a polygon with measurable area.',
-            data: { layer: layerName, featureIndex, partIndex: issue.partIndex },
+            suggestion:
+              'Remove zero-area rings or emit a polygon with measurable area.',
+            data: {
+              layer: layerName,
+              featureIndex,
+              partIndex: issue.partIndex,
+            },
           });
         }
       }

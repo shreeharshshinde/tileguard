@@ -32,7 +32,11 @@
  */
 
 // Artifact model — artifact loading and decoding contracts
-export type { Artifact, ArtifactProvider, ProviderOptions } from './artifact.js';
+export type {
+  Artifact,
+  ArtifactProvider,
+  ProviderOptions,
+} from './artifact.js';
 // Configuration system — user config shape and resolved internals
 export type {
   GlobalOptions,

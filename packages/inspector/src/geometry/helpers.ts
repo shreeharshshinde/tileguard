@@ -79,7 +79,11 @@ export function lerp(a: TilePoint, b: TilePoint, t: number): TilePoint {
  * @param b          Second point.
  * @param tolerance  Maximum allowed per-axis difference (default: 1e-9).
  */
-export function equalsWithinTolerance(a: TilePoint, b: TilePoint, tolerance = 1e-9): boolean {
+export function equalsWithinTolerance(
+  a: TilePoint,
+  b: TilePoint,
+  tolerance = 1e-9,
+): boolean {
   return Math.abs(a.x - b.x) <= tolerance && Math.abs(a.y - b.y) <= tolerance;
 }
 

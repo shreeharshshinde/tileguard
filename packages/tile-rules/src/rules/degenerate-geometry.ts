@@ -5,7 +5,8 @@ import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 export const degenerateGeometryRule: Rule = {
   id: 'tile/degenerate-geometry',
   meta: {
-    description: 'Vector tile geometries must have enough unique vertices for their type.',
+    description:
+      'Vector tile geometries must have enough unique vertices for their type.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/tile/degenerate-geometry',
     recommended: true,
@@ -17,7 +18,11 @@ export const degenerateGeometryRule: Rule = {
     const tile = getVectorTile(context.artifact);
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findDegenerateGeometryIssues(feature)) {
           context.report({
@@ -25,7 +30,9 @@ export const degenerateGeometryRule: Rule = {
             location: {
               layer: layerName,
               featureIndex,
-              ...(issue.partIndex !== undefined && { partIndex: issue.partIndex }),
+              ...(issue.partIndex !== undefined && {
+                partIndex: issue.partIndex,
+              }),
             },
             suggestion:
               'Remove degenerate geometry or emit enough distinct coordinates for the feature type.',

@@ -111,7 +111,9 @@ function decodeWithTileGuard(bytes) {
         coords = feature.geometry.map((p) => [{ x: p.x, y: p.y }]);
       } else {
         // LineString/Polygon: geometry is array of arrays of {x,y}
-        coords = feature.geometry.map((ring) => ring.map((p) => ({ x: p.x, y: p.y })));
+        coords = feature.geometry.map((ring) =>
+          ring.map((p) => ({ x: p.x, y: p.y })),
+        );
       }
 
       features.push({
@@ -193,7 +195,11 @@ function compareDecoders(tgLayers, refLayers, tileId) {
       if (refCoordStr !== tgCoordStr) {
         // Find first differing point for a useful error message
         let diffDetail = '';
-        for (let ri = 0; ri < Math.max(refFeature.coords.length, tgFeature.coords.length); ri++) {
+        for (
+          let ri = 0;
+          ri < Math.max(refFeature.coords.length, tgFeature.coords.length);
+          ri++
+        ) {
           const refRing = refFeature.coords[ri] || [];
           const tgRing = tgFeature.coords[ri] || [];
           if (refRing.length !== tgRing.length) {
@@ -201,7 +207,10 @@ function compareDecoders(tgLayers, refLayers, tileId) {
             break;
           }
           for (let pi = 0; pi < refRing.length; pi++) {
-            if (refRing[pi].x !== tgRing[pi].x || refRing[pi].y !== tgRing[pi].y) {
+            if (
+              refRing[pi].x !== tgRing[pi].x ||
+              refRing[pi].y !== tgRing[pi].y
+            ) {
               diffDetail = `ring ${ri} point ${pi}: ref=(${refRing[pi].x},${refRing[pi].y}), tg=(${tgRing[pi].x},${tgRing[pi].y})`;
               break;
             }
@@ -290,7 +299,10 @@ async function main() {
     const tgLayers = decodeWithTileGuard(rawBytes);
 
     const layerCount = Object.keys(refLayers).length;
-    const featureCount = Object.values(refLayers).reduce((sum, l) => sum + l.featureCount, 0);
+    const featureCount = Object.values(refLayers).reduce(
+      (sum, l) => sum + l.featureCount,
+      0,
+    );
     totalLayers += layerCount;
     totalFeatures += featureCount;
 
@@ -333,7 +345,9 @@ async function main() {
     console.log('   Offset distribution analysis (Step 1.2) may proceed.');
   } else {
     console.log(`❌ FAIL — ${allDivergences.length} divergence(s) found.`);
-    console.log('   HARD STOP: Fix the decoder before proceeding with any downstream analysis.');
+    console.log(
+      '   HARD STOP: Fix the decoder before proceeding with any downstream analysis.',
+    );
     process.exit(1);
   }
 }

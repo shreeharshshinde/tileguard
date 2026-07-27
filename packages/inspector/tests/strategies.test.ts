@@ -26,7 +26,10 @@ describe('Overlay Strategies', () => {
         data: { pointIndex: 5 },
       };
 
-      const result = coordinateRangeStrategy.toDescriptors(diagnostic, mockArtifact);
+      const result = coordinateRangeStrategy.toDescriptors(
+        diagnostic,
+        mockArtifact,
+      );
       expect(result).toEqual([
         {
           type: 'point-marker',
@@ -46,7 +49,9 @@ describe('Overlay Strategies', () => {
         artifact: { type: 'VectorTile', source: 'tile.pbf' },
       };
 
-      expect(coordinateRangeStrategy.toDescriptors(diagnostic, mockArtifact)).toEqual([]);
+      expect(
+        coordinateRangeStrategy.toDescriptors(diagnostic, mockArtifact),
+      ).toEqual([]);
     });
 
     it('returns empty array if pointIndex is missing', () => {
@@ -58,7 +63,9 @@ describe('Overlay Strategies', () => {
         location: { layer: 'roads', featureIndex: 0 },
       };
 
-      expect(coordinateRangeStrategy.toDescriptors(diagnostic, mockArtifact)).toEqual([]);
+      expect(
+        coordinateRangeStrategy.toDescriptors(diagnostic, mockArtifact),
+      ).toEqual([]);
     });
   });
 
@@ -73,7 +80,10 @@ describe('Overlay Strategies', () => {
         data: { segments: [2, 5] },
       };
 
-      const result = selfIntersectionStrategy.toDescriptors(diagnostic, mockArtifact);
+      const result = selfIntersectionStrategy.toDescriptors(
+        diagnostic,
+        mockArtifact,
+      );
       expect(result).toEqual([
         {
           type: 'segment-highlight',
@@ -94,7 +104,9 @@ describe('Overlay Strategies', () => {
         location: { layer: 'landuse', featureIndex: 1 },
       };
 
-      expect(selfIntersectionStrategy.toDescriptors(diagnostic, mockArtifact)).toEqual([]);
+      expect(
+        selfIntersectionStrategy.toDescriptors(diagnostic, mockArtifact),
+      ).toEqual([]);
     });
   });
 
@@ -108,7 +120,10 @@ describe('Overlay Strategies', () => {
         location: { layer: 'water', featureIndex: 0, partIndex: 1 },
       };
 
-      const result = zeroAreaRingStrategy.toDescriptors(diagnostic, mockArtifact);
+      const result = zeroAreaRingStrategy.toDescriptors(
+        diagnostic,
+        mockArtifact,
+      );
       expect(result).toEqual([
         {
           type: 'ring-highlight',
@@ -132,7 +147,10 @@ describe('Overlay Strategies', () => {
         data: { code: 'TOO_FEW_POINTS' },
       };
 
-      const result = degenerateGeometryStrategy.toDescriptors(diagnostic, mockArtifact);
+      const result = degenerateGeometryStrategy.toDescriptors(
+        diagnostic,
+        mockArtifact,
+      );
       expect(result).toEqual([
         {
           type: 'bbox-fill',
@@ -155,7 +173,10 @@ describe('Overlay Strategies', () => {
         location: { layer: 'buildings', featureIndex: 2, partIndex: 0 },
       };
 
-      const result = unclosedRingStrategy.toDescriptors(diagnostic, mockArtifact);
+      const result = unclosedRingStrategy.toDescriptors(
+        diagnostic,
+        mockArtifact,
+      );
       expect(result).toEqual([
         {
           type: 'ring-highlight',

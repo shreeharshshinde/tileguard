@@ -47,7 +47,9 @@ describe('loadConfigFile — TypeScript', () => {
 
 describe('loadConfigFile — error paths', () => {
   it('throws ConfigLoadError when the file throws during execution', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'throws.mjs'))).rejects.toThrow(ConfigLoadError);
+    await expect(
+      loadConfigFile(join(fixturesDir, 'throws.mjs')),
+    ).rejects.toThrow(ConfigLoadError);
 
     try {
       await loadConfigFile(join(fixturesDir, 'throws.mjs'));
@@ -60,33 +62,33 @@ describe('loadConfigFile — error paths', () => {
   });
 
   it('throws ConfigLoadError when the module has no default export (ESM .mjs)', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'no-default.mjs'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'no-default.mjs')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('throws ConfigLoadError when the module has no default export (TS .ts)', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'no-default.ts'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'no-default.ts')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('throws ConfigLoadError when the module has no default export (JS .js)', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'no-default.js'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'no-default.js')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('throws ConfigLoadError when the default export is a string (ESM .mjs)', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'non-object-default.mjs'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'non-object-default.mjs')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('throws ConfigLoadError when JSON is malformed (invalid.json)', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'invalid.json'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'invalid.json')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('throws ConfigLoadError for unsupported file extensions', async () => {
@@ -103,9 +105,9 @@ describe('loadConfigFile — error paths', () => {
   });
 
   it('throws ConfigLoadError for a nonexistent JSON file', async () => {
-    await expect(loadConfigFile(join(fixturesDir, 'does-not-exist.json'))).rejects.toThrow(
-      ConfigLoadError,
-    );
+    await expect(
+      loadConfigFile(join(fixturesDir, 'does-not-exist.json')),
+    ).rejects.toThrow(ConfigLoadError);
   });
 
   it('preserves the configPath on the error', async () => {

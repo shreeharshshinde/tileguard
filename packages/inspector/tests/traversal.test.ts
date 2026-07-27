@@ -8,16 +8,28 @@
  * No DOM, no Canvas, no React. Pure TypeScript, Vitest node environment.
  */
 
-import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import type {
+  VectorTileArtifact,
+  VectorTileFeature,
+  VectorTileLayer,
+} from '@tileguard/tile-rules';
 import { describe, expect, it, vi } from 'vitest';
 import type { FeatureContext } from '../src/geometry/traversal';
-import { walkArtifact, walkFeatureGeometry, walkLayer } from '../src/geometry/traversal';
+import {
+  walkArtifact,
+  walkFeatureGeometry,
+  walkLayer,
+} from '../src/geometry/traversal';
 
 // ---------------------------------------------------------------------------
 // Fixture builders
 // ---------------------------------------------------------------------------
 
-function makeLayer(name: string, features: VectorTileFeature[], extent = 4096): VectorTileLayer {
+function makeLayer(
+  name: string,
+  features: VectorTileFeature[],
+  extent = 4096,
+): VectorTileLayer {
   return { name, version: 2, extent, keys: [], values: [], features };
 }
 
@@ -165,7 +177,10 @@ describe('walkFeatureGeometry', () => {
     const onLineString = vi.fn();
     const onPolygon = vi.fn();
     const layer = layer1(POINT_FEATURE);
-    walkFeatureGeometry(POINT_FEATURE, 'test', layer, 0, { onLineString, onPolygon });
+    walkFeatureGeometry(POINT_FEATURE, 'test', layer, 0, {
+      onLineString,
+      onPolygon,
+    });
     expect(onLineString).not.toHaveBeenCalled();
     expect(onPolygon).not.toHaveBeenCalled();
   });
@@ -187,7 +202,9 @@ describe('walkFeatureGeometry', () => {
     walkFeatureGeometry(POLYGON_FEATURE, 'test', layer, 0, { onPolygon });
 
     expect(onPolygon).toHaveBeenCalledOnce();
-    const [rings] = onPolygon.mock.calls[0] as [readonly (readonly unknown[])[]];
+    const [rings] = onPolygon.mock.calls[0] as [
+      readonly (readonly unknown[])[],
+    ];
     expect(rings).toHaveLength(2); // exterior + hole
   });
 
@@ -196,7 +213,11 @@ describe('walkFeatureGeometry', () => {
     const onLineString = vi.fn();
     const onPolygon = vi.fn();
     const layer = layer1(UNKNOWN_FEATURE);
-    walkFeatureGeometry(UNKNOWN_FEATURE, 'test', layer, 0, { onPoint, onLineString, onPolygon });
+    walkFeatureGeometry(UNKNOWN_FEATURE, 'test', layer, 0, {
+      onPoint,
+      onLineString,
+      onPolygon,
+    });
     expect(onPoint).not.toHaveBeenCalled();
     expect(onLineString).not.toHaveBeenCalled();
     expect(onPolygon).not.toHaveBeenCalled();
@@ -204,7 +225,9 @@ describe('walkFeatureGeometry', () => {
 
   it('does not throw with an empty visitor {}', () => {
     const layer = layer1(POINT_FEATURE);
-    expect(() => walkFeatureGeometry(POINT_FEATURE, 'test', layer, 0, {})).not.toThrow();
+    expect(() =>
+      walkFeatureGeometry(POINT_FEATURE, 'test', layer, 0, {}),
+    ).not.toThrow();
   });
 
   it('provides the correct layer reference in context', () => {
@@ -235,7 +258,10 @@ describe('walkFeatureGeometry — MultiPoint', () => {
 
     // One call, not two — the entire flat array is one part
     expect(onPoint).toHaveBeenCalledOnce();
-    const [pts, ctx] = onPoint.mock.calls[0] as [Array<{ x: number; y: number }>, FeatureContext];
+    const [pts, ctx] = onPoint.mock.calls[0] as [
+      Array<{ x: number; y: number }>,
+      FeatureContext,
+    ];
     expect(ctx.partIndex).toBe(0);
     // Both vertices are present in the array
     expect(pts).toContainEqual({ x: 10, y: 20 });
@@ -251,7 +277,9 @@ describe('walkFeatureGeometry — MultiLineString', () => {
   it('dispatches each line as a separate onLineString call with incrementing partIndex', () => {
     const onLineString = vi.fn();
     const layer = makeLayer('roads', [MULTILINESTRING_FEATURE]);
-    walkFeatureGeometry(MULTILINESTRING_FEATURE, 'roads', layer, 0, { onLineString });
+    walkFeatureGeometry(MULTILINESTRING_FEATURE, 'roads', layer, 0, {
+      onLineString,
+    });
 
     expect(onLineString).toHaveBeenCalledTimes(2);
     const [, ctx0] = onLineString.mock.calls[0] as [unknown, FeatureContext];
@@ -268,7 +296,11 @@ describe('walkFeatureGeometry — MultiLineString', () => {
 describe('walkLayer', () => {
   it('walks all features in order', () => {
     const visited: number[] = [];
-    const layer = makeLayer('mixed', [POINT_FEATURE, LINESTRING_FEATURE, POLYGON_FEATURE]);
+    const layer = makeLayer('mixed', [
+      POINT_FEATURE,
+      LINESTRING_FEATURE,
+      POLYGON_FEATURE,
+    ]);
     walkLayer(layer, {
       onPoint: (_, ctx) => visited.push(ctx.featureIndex),
       onLineString: (_, ctx) => visited.push(ctx.featureIndex),
@@ -331,13 +363,20 @@ describe('walkArtifact', () => {
   });
 
   it('handles an artifact with a single empty layer', () => {
-    expect(() => walkArtifact(makeArtifact([makeLayer('empty', [])]), {})).not.toThrow();
+    expect(() =>
+      walkArtifact(makeArtifact([makeLayer('empty', [])]), {}),
+    ).not.toThrow();
   });
 
   it('counts geometry calls correctly across mixed-type features', () => {
     const counts = { point: 0, line: 0, polygon: 0 };
     const artifact = makeArtifact([
-      makeLayer('mixed', [POINT_FEATURE, LINESTRING_FEATURE, POLYGON_FEATURE, POINT_FEATURE]),
+      makeLayer('mixed', [
+        POINT_FEATURE,
+        LINESTRING_FEATURE,
+        POLYGON_FEATURE,
+        POINT_FEATURE,
+      ]),
     ]);
     walkArtifact(artifact, {
       onPoint: () => counts.point++,
@@ -349,9 +388,14 @@ describe('walkArtifact', () => {
 
   it('MultiPolygon dispatches as a single onPolygon call containing all rings', () => {
     const onPolygon = vi.fn();
-    walkArtifact(makeArtifact([makeLayer('buildings', [MULTIPOLYGON_FEATURE])]), { onPolygon });
+    walkArtifact(
+      makeArtifact([makeLayer('buildings', [MULTIPOLYGON_FEATURE])]),
+      { onPolygon },
+    );
     expect(onPolygon).toHaveBeenCalledOnce();
-    const [rings] = onPolygon.mock.calls[0] as [readonly (readonly unknown[])[]];
+    const [rings] = onPolygon.mock.calls[0] as [
+      readonly (readonly unknown[])[],
+    ];
     expect(rings).toHaveLength(2);
   });
 
@@ -388,11 +432,15 @@ describe('GeometryVisitor optional callbacks', () => {
   });
 
   it('does not throw when onLineString is absent', () => {
-    expect(() => walkArtifact(artifact, { onPoint: vi.fn(), onPolygon: vi.fn() })).not.toThrow();
+    expect(() =>
+      walkArtifact(artifact, { onPoint: vi.fn(), onPolygon: vi.fn() }),
+    ).not.toThrow();
   });
 
   it('does not throw when onPolygon is absent', () => {
-    expect(() => walkArtifact(artifact, { onPoint: vi.fn(), onLineString: vi.fn() })).not.toThrow();
+    expect(() =>
+      walkArtifact(artifact, { onPoint: vi.fn(), onLineString: vi.fn() }),
+    ).not.toThrow();
   });
 
   it('does not throw with an entirely empty visitor', () => {

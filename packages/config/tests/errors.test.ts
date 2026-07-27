@@ -7,7 +7,11 @@
 
 import { describe, expect, it } from 'vitest';
 import type { ValidationIssue } from '../src/errors.js';
-import { ConfigLoadError, ConfigNotFoundError, ConfigValidationError } from '../src/errors.js';
+import {
+  ConfigLoadError,
+  ConfigNotFoundError,
+  ConfigValidationError,
+} from '../src/errors.js';
 
 describe('ConfigNotFoundError', () => {
   it('includes the config path in the message', () => {
@@ -33,7 +37,10 @@ describe('ConfigNotFoundError', () => {
 
 describe('ConfigLoadError', () => {
   it('includes the config path in the message', () => {
-    const err = new ConfigLoadError('/project/tileguard.config.ts', new Error('boom'));
+    const err = new ConfigLoadError(
+      '/project/tileguard.config.ts',
+      new Error('boom'),
+    );
     expect(err.message).toContain('/project/tileguard.config.ts');
   });
 
@@ -58,7 +65,10 @@ describe('ConfigLoadError', () => {
   });
 
   it('preserves the configPath property', () => {
-    const err = new ConfigLoadError('/project/tileguard.config.ts', new Error('x'));
+    const err = new ConfigLoadError(
+      '/project/tileguard.config.ts',
+      new Error('x'),
+    );
     expect(err.configPath).toBe('/project/tileguard.config.ts');
   });
 
@@ -87,7 +97,8 @@ describe('ConfigLoadError', () => {
 describe('ConfigValidationError', () => {
   const errorIssue: ValidationIssue = {
     path: "rules['tile/required-layers']",
-    message: 'must be "error" | "warning" | "info" | "off" | [severity, options]',
+    message:
+      'must be "error" | "warning" | "info" | "off" | [severity, options]',
     received: 42,
     severity: 'error',
   };

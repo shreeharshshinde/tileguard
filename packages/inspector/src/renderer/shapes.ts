@@ -300,7 +300,11 @@ export function drawTileBoundary(
   ctx.restore();
 
   // --- Draw buffer zone box (optional) ---
-  if (bufferOrigin !== null && bufferMaxCorner !== null && bufferStyle !== undefined) {
+  if (
+    bufferOrigin !== null &&
+    bufferMaxCorner !== null &&
+    bufferStyle !== undefined
+  ) {
     ctx.save();
     ctx.strokeStyle = bufferStyle.strokeColor;
     ctx.lineWidth = bufferStyle.lineWidth;

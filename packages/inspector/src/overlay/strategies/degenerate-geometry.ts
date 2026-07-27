@@ -19,10 +19,16 @@ import type { OverlayDescriptor, OverlayStrategy } from '../overlay-adapter.ts';
 export const degenerateGeometryStrategy: OverlayStrategy = {
   ruleId: 'tile/degenerate-geometry',
 
-  toDescriptors(diagnostic: Diagnostic, _artifact: VectorTileArtifact): OverlayDescriptor[] {
-    const layerName = diagnostic.location?.layer ?? (diagnostic.data?.layer as string | undefined);
+  toDescriptors(
+    diagnostic: Diagnostic,
+    _artifact: VectorTileArtifact,
+  ): OverlayDescriptor[] {
+    const layerName =
+      diagnostic.location?.layer ??
+      (diagnostic.data?.layer as string | undefined);
     const featureIndex =
-      diagnostic.location?.featureIndex ?? (diagnostic.data?.featureIndex as number | undefined);
+      diagnostic.location?.featureIndex ??
+      (diagnostic.data?.featureIndex as number | undefined);
 
     if (layerName === undefined || featureIndex === undefined) {
       return [];

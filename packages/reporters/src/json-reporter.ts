@@ -23,7 +23,13 @@
  * as they appear in the engine output (sorted deterministically).
  */
 
-import type { Diagnostic, Location, Reporter, ReporterContext, Severity } from '@tileguard/core';
+import type {
+  Diagnostic,
+  Location,
+  Reporter,
+  ReporterContext,
+  Severity,
+} from '@tileguard/core';
 
 // ---------------------------------------------------------------------------
 // WriteFn — injectable output destination for testability
@@ -103,11 +109,16 @@ export interface SerializedDiagnostic {
  * @param options - Optional configuration for output destination and formatting.
  * @returns A Reporter that produces structured JSON output.
  */
-export function createJsonReporter(options: JsonReporterOptions = {}): Reporter {
+export function createJsonReporter(
+  options: JsonReporterOptions = {},
+): Reporter {
   const write =
     options.write ??
     ((text: string) => {
-      if (typeof process !== 'undefined' && process.stdout?.write !== undefined) {
+      if (
+        typeof process !== 'undefined' &&
+        process.stdout?.write !== undefined
+      ) {
         process.stdout.write(text);
       } else {
         console.info(text.endsWith('\n') ? text.slice(0, -1) : text);

@@ -4,10 +4,13 @@
  * Comprehensive tests for the reactive state container (Step 1).
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import { createInspectorStore, type InspectorStore } from '../src/store/inspector-store.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  createInspectorStore,
+  type InspectorStore,
+} from '../src/store/inspector-store.js';
 
 // ---------------------------------------------------------------------------
 // Test Helpers & Fixtures
@@ -22,13 +25,41 @@ const fakeArtifact = {
         name: 'roads',
         extent: 4096,
         version: 2,
-        features: [{ type: 2, geometryType: 'LineString', id: 1, properties: {}, geometry: [[{ x: 0, y: 0 }, { x: 10, y: 10 }]] }],
+        features: [
+          {
+            type: 2,
+            geometryType: 'LineString',
+            id: 1,
+            properties: {},
+            geometry: [
+              [
+                { x: 0, y: 0 },
+                { x: 10, y: 10 },
+              ],
+            ],
+          },
+        ],
       },
       water: {
         name: 'water',
         extent: 4096,
         version: 2,
-        features: [{ type: 3, geometryType: 'Polygon', id: 2, properties: {}, geometry: [[{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 5, y: 5 }, { x: 0, y: 0 }]] }],
+        features: [
+          {
+            type: 3,
+            geometryType: 'Polygon',
+            id: 2,
+            properties: {},
+            geometry: [
+              [
+                { x: 0, y: 0 },
+                { x: 5, y: 0 },
+                { x: 5, y: 5 },
+                { x: 0, y: 0 },
+              ],
+            ],
+          },
+        ],
       },
     },
   },
@@ -166,7 +197,9 @@ describe('InspectorStore — lifecycle transitions', () => {
 
 describe('InspectorStore — selection', () => {
   let store: InspectorStore;
-  beforeEach(() => { store = createInspectorStore(); });
+  beforeEach(() => {
+    store = createInspectorStore();
+  });
 
   it('select() updates selection state', () => {
     store.select('roads', 0);
@@ -203,7 +236,9 @@ describe('InspectorStore — selection', () => {
 
 describe('InspectorStore — hover', () => {
   let store: InspectorStore;
-  beforeEach(() => { store = createInspectorStore(); });
+  beforeEach(() => {
+    store = createInspectorStore();
+  });
 
   it('setHover() updates hover state', () => {
     store.setHover('water', 5);
@@ -247,12 +282,16 @@ describe('InspectorStore — hover', () => {
 
 describe('InspectorStore — filters', () => {
   let store: InspectorStore;
-  beforeEach(() => { store = createInspectorStore(); });
+  beforeEach(() => {
+    store = createInspectorStore();
+  });
 
   it('setFilters() merges visibleLayers', () => {
     const layers = new Set(['roads', 'buildings']);
     store.setFilters({ visibleLayers: layers });
-    expect(store.filters.visibleLayers).toEqual(new Set(['roads', 'buildings']));
+    expect(store.filters.visibleLayers).toEqual(
+      new Set(['roads', 'buildings']),
+    );
   });
 
   it('setFilters() merges minSeverity', () => {
@@ -280,7 +319,9 @@ describe('InspectorStore — filters', () => {
 
 describe('InspectorStore — subscriptions & ordering', () => {
   let store: InspectorStore;
-  beforeEach(() => { store = createInspectorStore(); });
+  beforeEach(() => {
+    store = createInspectorStore();
+  });
 
   it('notifies listeners synchronously in registration order', () => {
     const order: number[] = [];
@@ -353,7 +394,9 @@ describe('InspectorStore — disposal', () => {
   it('subscribe() throws when called on disposed store', () => {
     const store = createInspectorStore();
     store.dispose();
-    expect(() => store.subscribe(() => {})).toThrow('cannot subscribe to a disposed store');
+    expect(() => store.subscribe(() => {})).toThrow(
+      'cannot subscribe to a disposed store',
+    );
   });
 
   it('multiple dispose() calls are safe (idempotent)', () => {

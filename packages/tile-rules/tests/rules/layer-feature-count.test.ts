@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { layerFeatureCountRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [layerFeatureCountRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [layerFeatureCountRule],
+};
 
 const line = {
   type: 2 as const,
@@ -40,7 +44,12 @@ describe('tile/layer-feature-count', () => {
   it('fail — layer below min produces diagnostic with layer name and counts in data', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/layer-feature-count': ['warning', { layers: { roads: { min: 5 } } }] },
+      rules: {
+        'tile/layer-feature-count': [
+          'warning',
+          { layers: { roads: { min: 5 } } },
+        ],
+      },
     });
     const source = await makeTile([{ name: 'roads', features: [line] }]);
     const result = await engine.run([source]);
@@ -55,9 +64,16 @@ describe('tile/layer-feature-count', () => {
   it('fail — layer above max produces diagnostic', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/layer-feature-count': ['warning', { layers: { roads: { max: 1 } } }] },
+      rules: {
+        'tile/layer-feature-count': [
+          'warning',
+          { layers: { roads: { max: 1 } } },
+        ],
+      },
     });
-    const source = await makeTile([{ name: 'roads', features: [line, line, line] }]);
+    const source = await makeTile([
+      { name: 'roads', features: [line, line, line] },
+    ]);
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.data?.count).toBe(3);
@@ -67,7 +83,12 @@ describe('tile/layer-feature-count', () => {
   it('edge — unconfigured layer is skipped silently', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/layer-feature-count': ['warning', { layers: { water: { min: 1 } } }] },
+      rules: {
+        'tile/layer-feature-count': [
+          'warning',
+          { layers: { water: { min: 1 } } },
+        ],
+      },
     });
     // Only 'roads' present, but config only checks 'water' — 'water' is absent, skipped
     const source = await makeTile([{ name: 'roads', features: [line] }]);
@@ -79,7 +100,10 @@ describe('tile/layer-feature-count', () => {
     const engine = createEngine({
       plugins: [plugin],
       rules: {
-        'tile/layer-feature-count': ['warning', { layerConfig: { roads: { minFeatures: 5 } } }],
+        'tile/layer-feature-count': [
+          'warning',
+          { layerConfig: { roads: { minFeatures: 5 } } },
+        ],
       },
     });
     const source = await makeTile([{ name: 'roads', features: [line] }]);

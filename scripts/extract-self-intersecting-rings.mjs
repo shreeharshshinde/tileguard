@@ -59,10 +59,14 @@ function segmentsIntersect(a, b, c, d) {
   const o3 = orientation(c, d, a);
   const o4 = orientation(c, d, b);
   if (o1 !== o2 && o3 !== o4) return { type: 'proper' };
-  if (o1 === 0 && onSegment(a, c, b)) return { type: 'collinear', touchPoint: c };
-  if (o2 === 0 && onSegment(a, d, b)) return { type: 'collinear', touchPoint: d };
-  if (o3 === 0 && onSegment(c, a, d)) return { type: 'collinear', touchPoint: a };
-  if (o4 === 0 && onSegment(c, b, d)) return { type: 'collinear', touchPoint: b };
+  if (o1 === 0 && onSegment(a, c, b))
+    return { type: 'collinear', touchPoint: c };
+  if (o2 === 0 && onSegment(a, d, b))
+    return { type: 'collinear', touchPoint: d };
+  if (o3 === 0 && onSegment(c, a, d))
+    return { type: 'collinear', touchPoint: a };
+  if (o4 === 0 && onSegment(c, b, d))
+    return { type: 'collinear', touchPoint: b };
   return null;
 }
 
@@ -207,7 +211,9 @@ for (const dataset of DATASETS) {
           const distBoundary = distToNearestBoundary(ixPt, extent);
 
           // Additional checks on segment endpoints
-          const segEndpointsOnBoundary = [a, b, c, d].filter((p) => isOnBoundary(p, extent)).length;
+          const segEndpointsOnBoundary = [a, b, c, d].filter((p) =>
+            isOnBoundary(p, extent),
+          ).length;
 
           // Check for duplicate vertices in the ring (a common clipping artifact)
           const vertexSet = new Set(points.map((p) => `${p.x},${p.y}`));
@@ -215,7 +221,10 @@ for (const dataset of DATASETS) {
 
           // Check if the two intersecting segments share an endpoint (touch-at-shared-vertex)
           const sharedVertex =
-            pointEquals(b, c) || pointEquals(b, d) || pointEquals(a, c) || pointEquals(a, d);
+            pointEquals(b, c) ||
+            pointEquals(b, d) ||
+            pointEquals(a, c) ||
+            pointEquals(a, d);
 
           records.push({
             dataset,
@@ -345,8 +354,14 @@ console.log('\n=== SUMMARY ===');
 console.log('By dataset:', JSON.stringify(byDataset));
 console.log('By geometry type:', JSON.stringify(byGeomType));
 console.log('Collinear intersections:', collinearCount);
-console.log('Touch-at-vertex (collinear or exact endpoint):', touchAtVertexCount);
-console.log('Shared endpoint between intersecting segments:', sharedVertexCount);
+console.log(
+  'Touch-at-vertex (collinear or exact endpoint):',
+  touchAtVertexCount,
+);
+console.log(
+  'Shared endpoint between intersecting segments:',
+  sharedVertexCount,
+);
 console.log('Rings with duplicate vertices:', duplicateVertexRings);
 console.log('Near-boundary intersections (dist <= 10):', nearBoundaryCount);
 console.log('\nTop 20 layers:');

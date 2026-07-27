@@ -23,6 +23,9 @@ export type {
 } from './json-reporter.js';
 // JSON reporter — structured output for CI and tools
 export { createJsonReporter, jsonReporter } from './json-reporter.js';
-export type { TextReporterOptions, WriteFn as TextWriteFn } from './text-reporter.js';
+export type {
+  TextReporterOptions,
+  WriteFn as TextWriteFn,
+} from './text-reporter.js';
 // Text reporter — the default, human-readable terminal output
 export { createTextReporter, textReporter } from './text-reporter.js';

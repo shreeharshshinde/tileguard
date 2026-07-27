@@ -39,7 +39,10 @@ import { createHitTester } from '../src/hittest/hit-tester';
 // ---------------------------------------------------------------------------
 // Overlay module (Milestone 4)
 // ---------------------------------------------------------------------------
-import { createDefaultOverlayAdapter, OverlayAdapter } from '../src/overlay/overlay-adapter';
+import {
+  createDefaultOverlayAdapter,
+  OverlayAdapter,
+} from '../src/overlay/overlay-adapter';
 import { createSelectionProducer } from '../src/overlay/selection-producer';
 import { coordinateRangeStrategy } from '../src/overlay/strategies/coordinate-range';
 import { degenerateGeometryStrategy } from '../src/overlay/strategies/degenerate-geometry';
@@ -61,7 +64,11 @@ import {
 // ---------------------------------------------------------------------------
 // Server module (Milestone 7 stub)
 // ---------------------------------------------------------------------------
-import { DEFAULT_PORT, MAX_PORT_ATTEMPTS, startInspectorServer } from '../src/server/server';
+import {
+  DEFAULT_PORT,
+  MAX_PORT_ATTEMPTS,
+  startInspectorServer,
+} from '../src/server/server';
 // ---------------------------------------------------------------------------
 // InspectorStore module (Milestone 5 stubs)
 // ---------------------------------------------------------------------------
@@ -152,7 +159,11 @@ describe('Milestone 1 — package skeleton smoke tests', () => {
         strategy: unclosedRingStrategy,
         ruleId: 'tile/unclosed-ring',
       },
-      { name: 'noEmptyStrategy', strategy: noEmptyStrategy, ruleId: 'tile/no-empty' },
+      {
+        name: 'noEmptyStrategy',
+        strategy: noEmptyStrategy,
+        ruleId: 'tile/no-empty',
+      },
     ];
 
     for (const { name, strategy, ruleId } of strategies) {
@@ -237,9 +248,9 @@ describe('Milestone 1 — package skeleton smoke tests', () => {
     });
 
     it('startInspectorServer throws a "Milestone 7" stub error at runtime', async () => {
-      await expect(startInspectorServer({ tilePath: '/fake/tile.pbf' })).rejects.toThrow(
-        'Milestone 7',
-      );
+      await expect(
+        startInspectorServer({ tilePath: '/fake/tile.pbf' }),
+      ).rejects.toThrow('Milestone 7');
     });
   });
 });
@@ -266,7 +277,10 @@ const REPO_ROOT = join(__dirname_m4, '../../..');
 const FIXTURES = {
   validTile: join(REPO_ROOT, 'fixtures/good/valid-tile.pbf'),
   coordsTile: join(REPO_ROOT, 'fixtures/bad/invalid-tile-coords.pbf'),
-  intersectTile: join(REPO_ROOT, 'fixtures/bad/invalid-tile-self-intersection.pbf'),
+  intersectTile: join(
+    REPO_ROOT,
+    'fixtures/bad/invalid-tile-self-intersection.pbf',
+  ),
   degenerateTile: join(REPO_ROOT, 'fixtures/bad/invalid-tile-degenerate.pbf'),
 } as const;
 
@@ -321,7 +335,9 @@ describe('Milestone 4 — Inspector Integration', () => {
     let artifact: VectorTileArtifact;
 
     beforeAll(async () => {
-      artifact = (await tileProvider.load(FIXTURES.validTile)) as VectorTileArtifact;
+      artifact = (await tileProvider.load(
+        FIXTURES.validTile,
+      )) as VectorTileArtifact;
     });
 
     it('loads valid-tile.pbf without error', () => {
@@ -364,7 +380,10 @@ describe('Milestone 4 — Inspector Integration', () => {
 
     it('full chain with selection/hover overlays appended', async () => {
       const result = await engine.run([FIXTURES.validTile]);
-      const diagnosticOverlays = adapter.toDescriptors(result.diagnostics, artifact);
+      const diagnosticOverlays = adapter.toDescriptors(
+        result.diagnostics,
+        artifact,
+      );
       const interactionOverlays = selectionProducer.toOverlays(
         { layerName: 'roads', featureIndex: 0 },
         { layerName: null, featureIndex: null },
@@ -390,20 +409,26 @@ describe('Milestone 4 — Inspector Integration', () => {
     let artifact: VectorTileArtifact;
 
     beforeAll(async () => {
-      artifact = (await tileProvider.load(FIXTURES.intersectTile)) as VectorTileArtifact;
+      artifact = (await tileProvider.load(
+        FIXTURES.intersectTile,
+      )) as VectorTileArtifact;
     });
 
     it('engine flags tile/self-intersection', async () => {
       const result = await engine.run([FIXTURES.intersectTile]);
       expect(result.summary.pass).toBe(false);
-      expect(result.diagnostics.some((d) => d.ruleId === 'tile/self-intersection')).toBe(true);
+      expect(
+        result.diagnostics.some((d) => d.ruleId === 'tile/self-intersection'),
+      ).toBe(true);
     });
 
     it('adapter produces at least one segment-highlight overlay', async () => {
       const result = await engine.run([FIXTURES.intersectTile]);
       const overlays = adapter.toDescriptors(result.diagnostics, artifact);
 
-      const segmentOverlays = overlays.filter((o) => o.type === 'segment-highlight');
+      const segmentOverlays = overlays.filter(
+        (o) => o.type === 'segment-highlight',
+      );
       expect(segmentOverlays.length).toBeGreaterThan(0);
     });
 
@@ -450,12 +475,16 @@ describe('Milestone 4 — Inspector Integration', () => {
     let artifact: VectorTileArtifact;
 
     beforeAll(async () => {
-      artifact = (await tileProvider.load(FIXTURES.coordsTile)) as VectorTileArtifact;
+      artifact = (await tileProvider.load(
+        FIXTURES.coordsTile,
+      )) as VectorTileArtifact;
     });
 
     it('engine flags tile/coordinate-range', async () => {
       const result = await engine.run([FIXTURES.coordsTile]);
-      expect(result.diagnostics.some((d) => d.ruleId === 'tile/coordinate-range')).toBe(true);
+      expect(
+        result.diagnostics.some((d) => d.ruleId === 'tile/coordinate-range'),
+      ).toBe(true);
     });
 
     it('adapter produces point-marker overlays for coordinate-range diagnostics', async () => {
@@ -485,12 +514,16 @@ describe('Milestone 4 — Inspector Integration', () => {
     let artifact: VectorTileArtifact;
 
     beforeAll(async () => {
-      artifact = (await tileProvider.load(FIXTURES.degenerateTile)) as VectorTileArtifact;
+      artifact = (await tileProvider.load(
+        FIXTURES.degenerateTile,
+      )) as VectorTileArtifact;
     });
 
     it('engine flags tile/degenerate-geometry', async () => {
       const result = await engine.run([FIXTURES.degenerateTile]);
-      expect(result.diagnostics.some((d) => d.ruleId === 'tile/degenerate-geometry')).toBe(true);
+      expect(
+        result.diagnostics.some((d) => d.ruleId === 'tile/degenerate-geometry'),
+      ).toBe(true);
     });
 
     it('full chain — engine → adapter → renderer — executes without error', async () => {
@@ -510,10 +543,15 @@ describe('Milestone 4 — Inspector Integration', () => {
 
   describe('overlay concatenation contract', () => {
     it('diagnostic overlays and interaction overlays are independent arrays', async () => {
-      const artifact = (await tileProvider.load(FIXTURES.intersectTile)) as VectorTileArtifact;
+      const artifact = (await tileProvider.load(
+        FIXTURES.intersectTile,
+      )) as VectorTileArtifact;
       const result = await engine.run([FIXTURES.intersectTile]);
 
-      const diagnosticOverlays = adapter.toDescriptors(result.diagnostics, artifact);
+      const diagnosticOverlays = adapter.toDescriptors(
+        result.diagnostics,
+        artifact,
+      );
       const interactionOverlays = selectionProducer.toOverlays(
         { layerName: 'buildings', featureIndex: 0 },
         { layerName: 'buildings', featureIndex: 0 },
@@ -521,7 +559,9 @@ describe('Milestone 4 — Inspector Integration', () => {
       const combined = [...diagnosticOverlays, ...interactionOverlays];
 
       // Combined is the sum of both
-      expect(combined.length).toBe(diagnosticOverlays.length + interactionOverlays.length);
+      expect(combined.length).toBe(
+        diagnosticOverlays.length + interactionOverlays.length,
+      );
 
       // Selection + hover → 2 bbox-fill descriptors
       expect(interactionOverlays).toHaveLength(2);
@@ -532,10 +572,15 @@ describe('Milestone 4 — Inspector Integration', () => {
     it('neither producer is coupled to the other (toDescriptors does not call toOverlays)', async () => {
       // Verifies structural independence by checking both can be called
       // independently and return disjoint descriptor sets.
-      const artifact = (await tileProvider.load(FIXTURES.intersectTile)) as VectorTileArtifact;
+      const artifact = (await tileProvider.load(
+        FIXTURES.intersectTile,
+      )) as VectorTileArtifact;
       const result = await engine.run([FIXTURES.intersectTile]);
 
-      const diagnosticOverlays = adapter.toDescriptors(result.diagnostics, artifact);
+      const diagnosticOverlays = adapter.toDescriptors(
+        result.diagnostics,
+        artifact,
+      );
       const noInteraction = selectionProducer.toOverlays(
         { layerName: null, featureIndex: null },
         { layerName: null, featureIndex: null },
@@ -559,7 +604,10 @@ describe('Milestone 4 — Inspector Integration', () => {
 // ---------------------------------------------------------------------------
 
 /** Build a synthetic Diagnostic array for the given count and ruleIds pool. */
-function makeSyntheticDiagnostics(count: number, ruleIds: readonly string[]): Diagnostic[] {
+function makeSyntheticDiagnostics(
+  count: number,
+  ruleIds: readonly string[],
+): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   for (let i = 0; i < count; i++) {
     const ruleId = ruleIds[i % ruleIds.length] ?? ruleIds[0]!;
@@ -569,7 +617,11 @@ function makeSyntheticDiagnostics(count: number, ruleIds: readonly string[]): Di
       message: `Synthetic diagnostic ${i}`,
       artifact: { type: 'VectorTile', source: 'bench.pbf' },
       location: { layer: 'roads', featureIndex: i % 10 },
-      data: { segments: [i % 8, (i % 8) + 1], pointIndex: i % 4, code: 'TOO_FEW_POINTS' },
+      data: {
+        segments: [i % 8, (i % 8) + 1],
+        pointIndex: i % 4,
+        code: 'TOO_FEW_POINTS',
+      },
     });
   }
   return diagnostics;
@@ -636,7 +688,9 @@ describe('Milestone 4 — Benchmarking: adapter.toDescriptors() latency', () => 
     expect(Array.isArray(overlays)).toBe(true);
     expect(elapsed).toBeLessThan(100);
 
-    console.log(`[bench] 200 diagnostics → ${overlays.length} overlays in ${elapsed.toFixed(2)}ms`);
+    console.log(
+      `[bench] 200 diagnostics → ${overlays.length} overlays in ${elapsed.toFixed(2)}ms`,
+    );
   });
 
   it('processes 1000 diagnostics without error (scaling curve)', () => {

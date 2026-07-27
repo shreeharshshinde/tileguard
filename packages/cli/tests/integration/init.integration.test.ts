@@ -14,7 +14,13 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -53,7 +59,9 @@ describe('CLI Integration: init', () => {
     expect(existsSync(configPath)).toBe(true);
 
     const content = readFileSync(configPath, 'utf8');
-    expect(content).toContain("import type { TileGuardConfig } from '@tileguard/core'");
+    expect(content).toContain(
+      "import type { TileGuardConfig } from '@tileguard/core'",
+    );
     expect(content).toContain('export default config');
   });
 
@@ -90,6 +98,8 @@ describe('CLI Integration: init', () => {
 
     const content = readFileSync(configPath, 'utf8');
     expect(content).not.toBe('existing content');
-    expect(content).toContain("import type { TileGuardConfig } from '@tileguard/core'");
+    expect(content).toContain(
+      "import type { TileGuardConfig } from '@tileguard/core'",
+    );
   });
 });

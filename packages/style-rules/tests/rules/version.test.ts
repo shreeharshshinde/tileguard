@@ -15,13 +15,17 @@ function json(obj: unknown): string {
 describe('style/version', () => {
   it('pass — version 8 produces no diagnostic', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 8, sources: {}, layers: [] })]);
+    const result = await engine.run([
+      json({ version: 8, sources: {}, layers: [] }),
+    ]);
     expect(result.diagnostics).toHaveLength(0);
   });
 
   it('fail — version 7 reports diagnostic with actual value in data', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 7, sources: {}, layers: [] })]);
+    const result = await engine.run([
+      json({ version: 7, sources: {}, layers: [] }),
+    ]);
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.ruleId).toBe('style/version');
     expect(result.diagnostics[0]?.data?.actual).toBe(7);

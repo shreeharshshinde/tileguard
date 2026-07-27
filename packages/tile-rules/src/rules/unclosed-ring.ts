@@ -17,7 +17,11 @@ export const unclosedRingRule: Rule = {
     const tile = getVectorTile(context.artifact);
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findUnclosedRingIssues(feature)) {
           context.report({
@@ -25,10 +29,17 @@ export const unclosedRingRule: Rule = {
             location: {
               layer: layerName,
               featureIndex,
-              ...(issue.partIndex !== undefined && { partIndex: issue.partIndex }),
+              ...(issue.partIndex !== undefined && {
+                partIndex: issue.partIndex,
+              }),
             },
-            suggestion: 'Ensure every polygon ring ends with the same coordinate it starts with.',
-            data: { layer: layerName, featureIndex, partIndex: issue.partIndex },
+            suggestion:
+              'Ensure every polygon ring ends with the same coordinate it starts with.',
+            data: {
+              layer: layerName,
+              featureIndex,
+              partIndex: issue.partIndex,
+            },
           });
         }
       }

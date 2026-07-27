@@ -10,7 +10,8 @@ import {
 export const knownSourceRule: Rule = {
   id: 'style/known-source',
   meta: {
-    description: 'Style layer source references must point to declared sources.',
+    description:
+      'Style layer source references must point to declared sources.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/style/known-source',
     recommended: true,
@@ -27,7 +28,8 @@ export const knownSourceRule: Rule = {
 
     for (let index = 0; index < layers.length; index += 1) {
       const layer = layers[index]!;
-      if (typeof layer.source !== 'string' || sourceIds.has(layer.source)) continue;
+      if (typeof layer.source !== 'string' || sourceIds.has(layer.source))
+        continue;
 
       const layerId = getLayerId(layer) ?? `<layer ${index}>`;
       context.report({

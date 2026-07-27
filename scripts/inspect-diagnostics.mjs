@@ -12,7 +12,8 @@ const CACHE_DIR = path.join(__dirname, '..', 'fixtures', 'benchmark-cache');
 const DATASETS = [
   {
     name: 'OpenMapTiles',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
+    urlPattern: (z, x, y) =>
+      `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
     tile: { z: 1, x: 0, y: 0 },
   },
   {
@@ -67,7 +68,9 @@ async function inspect() {
       fs.writeFileSync(filepath, Buffer.from(buf));
     }
 
-    console.log(`\n=== Diagnostics for ${ds.name} (File: ${path.basename(filepath)}) ===`);
+    console.log(
+      `\n=== Diagnostics for ${ds.name} (File: ${path.basename(filepath)}) ===`,
+    );
     const result = await engine.run([filepath]);
     console.log(`Total diagnostics found: ${result.diagnostics.length}`);
 

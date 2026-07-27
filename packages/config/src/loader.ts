@@ -56,7 +56,9 @@ const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.mjs', '.json'];
  * @returns The raw config object and format metadata.
  * @throws {ConfigLoadError} When the file cannot produce a config object.
  */
-export async function loadConfigFile(configPath: string): Promise<LoadedConfig> {
+export async function loadConfigFile(
+  configPath: string,
+): Promise<LoadedConfig> {
   const ext = extname(configPath);
   if (!SUPPORTED_EXTENSIONS.includes(ext)) {
     throw new ConfigLoadError(
@@ -118,7 +120,9 @@ async function loadModuleConfig(configPath: string): Promise<LoadedConfig> {
   if (!isPlainObject(moduleNamespace) || !('default' in moduleNamespace)) {
     throw new ConfigLoadError(
       configPath,
-      new Error('Configuration file has no default export. Add: export default { ... }'),
+      new Error(
+        'Configuration file has no default export. Add: export default { ... }',
+      ),
     );
   }
 

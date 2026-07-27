@@ -15,7 +15,11 @@ export const validJsonRule: Rule = {
     recommended: true,
     since: '0.3.0',
   },
-  artifactTypes: [STYLE_ARTIFACT_TYPE, INVALID_STYLE_ARTIFACT_TYPE, EMPTY_STYLE_ARTIFACT_TYPE],
+  artifactTypes: [
+    STYLE_ARTIFACT_TYPE,
+    INVALID_STYLE_ARTIFACT_TYPE,
+    EMPTY_STYLE_ARTIFACT_TYPE,
+  ],
 
   create(context) {
     if (context.artifact.type === EMPTY_STYLE_ARTIFACT_TYPE) {
@@ -25,7 +29,8 @@ export const validJsonRule: Rule = {
       return;
     }
 
-    const content = context.artifact.content as InvalidStyleSpecificationContent;
+    const content = context.artifact
+      .content as InvalidStyleSpecificationContent;
     context.report({
       message: `Style JSON is invalid: "${content.error}".`,
       suggestion: 'Fix the JSON syntax before running style validation rules.',

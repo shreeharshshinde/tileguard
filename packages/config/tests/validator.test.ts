@@ -12,11 +12,13 @@ import { isValidRuleConfig, validateConfig } from '../src/validator.js';
 describe('isValidRuleConfig', () => {
   it('accepts "off"', () => expect(isValidRuleConfig('off')).toBe(true));
   it('accepts "error"', () => expect(isValidRuleConfig('error')).toBe(true));
-  it('accepts "warning"', () => expect(isValidRuleConfig('warning')).toBe(true));
+  it('accepts "warning"', () =>
+    expect(isValidRuleConfig('warning')).toBe(true));
   it('accepts "info"', () => expect(isValidRuleConfig('info')).toBe(true));
   it('accepts ["error", options]', () =>
     expect(isValidRuleConfig(['error', { layers: ['water'] }])).toBe(true));
-  it('accepts ["warning", options]', () => expect(isValidRuleConfig(['warning', {}])).toBe(true));
+  it('accepts ["warning", options]', () =>
+    expect(isValidRuleConfig(['warning', {}])).toBe(true));
   it('rejects a number', () => expect(isValidRuleConfig(42)).toBe(false));
   it('rejects "fatal"', () => expect(isValidRuleConfig('fatal')).toBe(false));
   it('rejects a boolean', () => expect(isValidRuleConfig(true)).toBe(false));
@@ -74,17 +76,21 @@ describe('validateConfig — plugins', () => {
   });
 
   it('rejects non-array plugins', () => {
-    expect(() => validateConfig({ plugins: 'style-rules' })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ plugins: 'style-rules' })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects plugin without string id', () => {
-    expect(() => validateConfig({ plugins: [{ name: 'bad' }] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ plugins: [{ name: 'bad' }] })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects plugins in JSON configs', () => {
-    expect(() => validateConfig({ plugins: [{ id: 'style-rules' }] }, { isJson: true })).toThrow(
-      ConfigValidationError,
-    );
+    expect(() =>
+      validateConfig({ plugins: [{ id: 'style-rules' }] }, { isJson: true }),
+    ).toThrow(ConfigValidationError);
     try {
       validateConfig({ plugins: [{ id: 'style-rules' }] }, { isJson: true });
     } catch (err) {
@@ -112,11 +118,15 @@ describe('validateConfig — rules', () => {
   });
 
   it('rejects non-object rules', () => {
-    expect(() => validateConfig({ rules: 'all' })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ rules: 'all' })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects an array as rules', () => {
-    expect(() => validateConfig({ rules: ['error'] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ rules: ['error'] })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects invalid rule config value (number)', () => {
@@ -130,7 +140,9 @@ describe('validateConfig — rules', () => {
   });
 
   it('rejects invalid severity string', () => {
-    expect(() => validateConfig({ rules: { 'tile/bar': 'fatal' } })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ rules: { 'tile/bar': 'fatal' } })).toThrow(
+      ConfigValidationError,
+    );
   });
 });
 
@@ -141,37 +153,51 @@ describe('validateConfig — reporter', () => {
   });
 
   it('accepts a [string, object] tuple reporter', () => {
-    const result = validateConfig({ reporter: ['sarif', { output: './out.sarif' }] });
+    const result = validateConfig({
+      reporter: ['sarif', { output: './out.sarif' }],
+    });
     expect(result.warnings).toHaveLength(0);
   });
 
   it('rejects a number reporter', () => {
-    expect(() => validateConfig({ reporter: 42 })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ reporter: 42 })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects a tuple with non-object second element', () => {
-    expect(() => validateConfig({ reporter: ['json', 'invalid'] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ reporter: ['json', 'invalid'] })).toThrow(
+      ConfigValidationError,
+    );
   });
 });
 
 describe('validateConfig — overrides', () => {
   it('accepts valid overrides', () => {
     const result = validateConfig({
-      overrides: [{ files: ['fixtures/**'], rules: { 'tile/no-empty': 'off' } }],
+      overrides: [
+        { files: ['fixtures/**'], rules: { 'tile/no-empty': 'off' } },
+      ],
     });
     expect(result.warnings).toHaveLength(0);
   });
 
   it('rejects non-array overrides', () => {
-    expect(() => validateConfig({ overrides: 'bad' })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ overrides: 'bad' })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects override without files array', () => {
-    expect(() => validateConfig({ overrides: [{ rules: {} }] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ overrides: [{ rules: {} }] })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects override with non-string files', () => {
-    expect(() => validateConfig({ overrides: [{ files: [42] }] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ overrides: [{ files: [42] }] })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('rejects invalid rule config inside override rules', () => {
@@ -186,7 +212,9 @@ describe('validateConfig — overrides', () => {
   });
 
   it('rejects non-object override entry', () => {
-    expect(() => validateConfig({ overrides: ['bad'] })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ overrides: ['bad'] })).toThrow(
+      ConfigValidationError,
+    );
   });
 });
 
@@ -204,7 +232,9 @@ describe('validateConfig — options', () => {
   });
 
   it('rejects non-object options', () => {
-    expect(() => validateConfig({ options: 'fast' })).toThrow(ConfigValidationError);
+    expect(() => validateConfig({ options: 'fast' })).toThrow(
+      ConfigValidationError,
+    );
   });
 
   it('reports specific path for invalid timeout type', () => {
@@ -296,7 +326,9 @@ describe('validateConfig — multi-issue collection', () => {
         'tile/no-empty': 'off',
       },
       reporter: 'text',
-      overrides: [{ files: ['fixtures/**'], rules: { 'tile/no-empty': 'warning' } }],
+      overrides: [
+        { files: ['fixtures/**'], rules: { 'tile/no-empty': 'warning' } },
+      ],
       options: { timeout: 5000 },
     });
     expect(result.warnings).toHaveLength(0);

@@ -4,7 +4,8 @@ import { getStyleObject, isRecord, STYLE_ARTIFACT_TYPE } from '../types.js';
 export const sourcesPresentRule: Rule = {
   id: 'style/sources-present',
   meta: {
-    description: 'Style specifications must include a top-level sources object.',
+    description:
+      'Style specifications must include a top-level sources object.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/style/sources-present',
     recommended: true,

@@ -2,7 +2,8 @@ import { decodeMvt } from '../packages/tile-rules/dist/index.js';
 import { getFeatureParts } from '../packages/tile-rules/dist/types.js';
 
 async function main() {
-  const url = 'https://tiles.openfreemap.org/planet/20260621_080001_pt/5/28/14.pbf';
+  const url =
+    'https://tiles.openfreemap.org/planet/20260621_080001_pt/5/28/14.pbf';
   const res = await fetch(url);
   const buf = await res.arrayBuffer();
   const tile = decodeMvt(Buffer.from(buf));

@@ -31,11 +31,11 @@ import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
 
 import { coordinateRangeStrategy } from './strategies/coordinate-range.js';
-import { selfIntersectionStrategy } from './strategies/self-intersection.js';
-import { zeroAreaRingStrategy } from './strategies/zero-area-ring.js';
 import { degenerateGeometryStrategy } from './strategies/degenerate-geometry.js';
-import { unclosedRingStrategy } from './strategies/unclosed-ring.js';
 import { noEmptyStrategy } from './strategies/no-empty.js';
+import { selfIntersectionStrategy } from './strategies/self-intersection.js';
+import { unclosedRingStrategy } from './strategies/unclosed-ring.js';
+import { zeroAreaRingStrategy } from './strategies/zero-area-ring.js';
 
 // ---------------------------------------------------------------------------
 // OverlayDescriptor — owned by the Overlay subsystem
@@ -44,7 +44,11 @@ import { noEmptyStrategy } from './strategies/no-empty.js';
 /** Describes a visual marker for a single diagnostic. */
 export interface OverlayDescriptor {
   /** Type of marker to render. */
-  readonly type: 'point-marker' | 'segment-highlight' | 'ring-highlight' | 'bbox-fill';
+  readonly type:
+    | 'point-marker'
+    | 'segment-highlight'
+    | 'ring-highlight'
+    | 'bbox-fill';
   /** Layer name to locate the feature. */
   readonly layerName: string;
   /** Feature index within that layer. */
@@ -82,7 +86,10 @@ export interface OverlayStrategy {
    *
    * Returns an empty array if the diagnostic does not produce a visible overlay.
    */
-  toDescriptors(diagnostic: Diagnostic, artifact: VectorTileArtifact): OverlayDescriptor[];
+  toDescriptors(
+    diagnostic: Diagnostic,
+    artifact: VectorTileArtifact,
+  ): OverlayDescriptor[];
 }
 
 // ---------------------------------------------------------------------------
@@ -115,7 +122,7 @@ export class OverlayAdapter {
     if (this.strategies.has(strategy.ruleId)) {
       throw new Error(
         `OverlayStrategy for rule "${strategy.ruleId}" is already registered. ` +
-        'Each rule may have exactly one overlay strategy.',
+          'Each rule may have exactly one overlay strategy.',
       );
     }
     this.strategies.set(strategy.ruleId, strategy);
@@ -134,7 +141,10 @@ export class OverlayAdapter {
    * @param diagnostics  The full list of diagnostics from the engine run.
    * @param artifact     The immutable decoded tile that was validated.
    */
-  toDescriptors(diagnostics: readonly Diagnostic[], artifact: VectorTileArtifact): OverlayDescriptor[] {
+  toDescriptors(
+    diagnostics: readonly Diagnostic[],
+    artifact: VectorTileArtifact,
+  ): OverlayDescriptor[] {
     const result: OverlayDescriptor[] = [];
 
     for (const diagnostic of diagnostics) {
@@ -147,11 +157,7 @@ export class OverlayAdapter {
         for (const descriptor of descriptors) {
           result.push(descriptor);
         }
-      } catch {
-        // Isolate strategy failures. A single broken strategy must not
-        // prevent overlays from other diagnostics from rendering.
-        continue;
-      }
+      } catch {}
     }
 
     return result;

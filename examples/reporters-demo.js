@@ -14,11 +14,17 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createEngine } from '../packages/core/dist/index.js';
-import { createJsonReporter, createTextReporter } from '../packages/reporters/dist/index.js';
+import {
+  createJsonReporter,
+  createTextReporter,
+} from '../packages/reporters/dist/index.js';
 import { stylePlugin } from '../packages/style-rules/dist/index.js';
 import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
-const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const rootDir = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
 
 const sources = [
   path.join(rootDir, 'fixtures/bad/deprecated-ref.json'),

@@ -4,7 +4,9 @@ import { layersPresentRule, styleProvider } from '../../src/index.js';
 
 function makeEngine() {
   return createEngine({
-    plugins: [{ id: 'test', providers: [styleProvider], rules: [layersPresentRule] }],
+    plugins: [
+      { id: 'test', providers: [styleProvider], rules: [layersPresentRule] },
+    ],
   });
 }
 
@@ -15,7 +17,9 @@ function json(obj: unknown): string {
 describe('style/layers-present', () => {
   it('pass — layers is an array', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 8, sources: {}, layers: [] })]);
+    const result = await engine.run([
+      json({ version: 8, sources: {}, layers: [] }),
+    ]);
     expect(result.diagnostics).toHaveLength(0);
   });
 
@@ -29,7 +33,9 @@ describe('style/layers-present', () => {
 
   it('edge — layers as an object (not an array) reports diagnostic', async () => {
     const engine = makeEngine();
-    const result = await engine.run([json({ version: 8, sources: {}, layers: {} })]);
+    const result = await engine.run([
+      json({ version: 8, sources: {}, layers: {} }),
+    ]);
     expect(result.diagnostics).toHaveLength(1);
   });
 });

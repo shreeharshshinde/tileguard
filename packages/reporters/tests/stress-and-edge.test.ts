@@ -21,13 +21,20 @@ import { createTextReporter } from '../src/text-reporter.js';
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeContext(overrides: Partial<ReporterContext> = {}): ReporterContext {
+function makeContext(
+  overrides: Partial<ReporterContext> = {},
+): ReporterContext {
   return {
     duration: overrides.duration ?? 47,
     sources: overrides.sources ?? ['test.pbf'],
     ruleCount: overrides.ruleCount ?? 12,
     artifactCount: overrides.artifactCount ?? 2,
-    summary: overrides.summary ?? { errors: 2, warnings: 1, infos: 0, pass: false },
+    summary: overrides.summary ?? {
+      errors: 2,
+      warnings: 1,
+      infos: 0,
+      pass: false,
+    },
     config: overrides.config ?? {},
   };
 }
@@ -39,15 +46,24 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
     message: overrides.message ?? 'Required layer is missing.',
     artifact: overrides.artifact ?? { type: 'VectorTile', source: 'test.pbf' },
     ...(overrides.location !== undefined && { location: overrides.location }),
-    ...(overrides.suggestion !== undefined && { suggestion: overrides.suggestion }),
+    ...(overrides.suggestion !== undefined && {
+      suggestion: overrides.suggestion,
+    }),
     ...(overrides.docsUrl !== undefined && { docsUrl: overrides.docsUrl }),
     ...(overrides.data !== undefined && { data: overrides.data }),
   };
 }
 
-function captureText(diags: readonly Diagnostic[], ctx: ReporterContext, color = false): string {
+function captureText(
+  diags: readonly Diagnostic[],
+  ctx: ReporterContext,
+  color = false,
+): string {
   const chunks: string[] = [];
-  createTextReporter({ write: (t) => chunks.push(t), color }).report(diags, ctx);
+  createTextReporter({ write: (t) => chunks.push(t), color }).report(
+    diags,
+    ctx,
+  );
   return chunks.join('');
 }
 
@@ -57,7 +73,10 @@ function captureJson(
   indent = 2,
 ): JsonReporterOutput {
   const chunks: string[] = [];
-  createJsonReporter({ write: (t) => chunks.push(t), indent }).report(diags, ctx);
+  createJsonReporter({ write: (t) => chunks.push(t), indent }).report(
+    diags,
+    ctx,
+  );
   return JSON.parse(chunks.join('')) as JsonReporterOutput;
 }
 
@@ -83,7 +102,13 @@ describe('reporters stress and edge-cases', () => {
       }
 
       const ctx = makeContext({
-        sources: ['file-0.pbf', 'file-1.pbf', 'file-2.pbf', 'file-3.pbf', 'file-4.pbf'],
+        sources: [
+          'file-0.pbf',
+          'file-1.pbf',
+          'file-2.pbf',
+          'file-3.pbf',
+          'file-4.pbf',
+        ],
         summary: { errors: 2000, warnings: 0, infos: 0, pass: false },
       });
 
@@ -108,7 +133,8 @@ describe('reporters stress and edge-cases', () => {
     it('preserves emojis, RTL text, and multi-byte characters verbatim', () => {
       const diag = makeDiagnostic({
         ruleId: '🌐/🗺-required-layers',
-        message: 'Missing layer name: "建筑物" / "buildings" 🏢. RTL: السلام عليكم.',
+        message:
+          'Missing layer name: "建筑物" / "buildings" 🏢. RTL: السلام عليكم.',
         suggestion: 'Please add 📐 / format layout.',
       });
 
@@ -131,7 +157,9 @@ describe('reporters stress and edge-cases', () => {
   describe('extremely long inputs', () => {
     it('renders extremely long file paths and messages without truncation', () => {
       const longPath = `${'tiles/region/'.repeat(50)}test.pbf`;
-      const longMessage = 'Layer "roads" is missing required property "name". '.repeat(100).trim();
+      const longMessage = 'Layer "roads" is missing required property "name". '
+        .repeat(100)
+        .trim();
       const diag = makeDiagnostic({
         message: longMessage,
         artifact: { type: 'VectorTile', source: longPath },
@@ -185,7 +213,9 @@ describe('reporters stress and edge-cases', () => {
         makeDiagnostic({ severity: 'info', ruleId: 'tile/feature-count' }),
       ];
       const original = structuredClone(diags);
-      const ctx = makeContext({ summary: { errors: 1, warnings: 1, infos: 1, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 1, infos: 1, pass: false },
+      });
 
       captureText(diags, ctx);
 
@@ -198,7 +228,9 @@ describe('reporters stress and edge-cases', () => {
         makeDiagnostic({ severity: 'warning', ruleId: 'tile/no-empty' }),
       ];
       const original = structuredClone(diags);
-      const ctx = makeContext({ summary: { errors: 1, warnings: 1, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 1, infos: 0, pass: false },
+      });
 
       captureJson(diags, ctx);
 
@@ -215,7 +247,9 @@ describe('reporters stress and edge-cases', () => {
         makeDiagnostic({ severity: 'error', ruleId: 'tile/required-layers' }),
         makeDiagnostic({ severity: 'warning', ruleId: 'tile/no-empty' }),
       ];
-      const ctx = makeContext({ summary: { errors: 1, warnings: 1, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 1, infos: 0, pass: false },
+      });
 
       const first = captureText(diags, ctx);
       const second = captureText(diags, ctx);
@@ -228,7 +262,9 @@ describe('reporters stress and edge-cases', () => {
         makeDiagnostic({ severity: 'error', ruleId: 'tile/required-layers' }),
         makeDiagnostic({ severity: 'warning', ruleId: 'tile/no-empty' }),
       ];
-      const ctx = makeContext({ summary: { errors: 1, warnings: 1, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 1, infos: 0, pass: false },
+      });
 
       const chunks1: string[] = [];
       const chunks2: string[] = [];

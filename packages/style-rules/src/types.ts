@@ -5,7 +5,10 @@ export const INVALID_STYLE_ARTIFACT_TYPE = 'InvalidStyleSpecification';
 export const EMPTY_STYLE_ARTIFACT_TYPE = 'EmptyStyleSpecification';
 
 export type JsonPrimitive = string | number | boolean | null;
-export type JsonValue = JsonPrimitive | JsonValue[] | { readonly [key: string]: JsonValue };
+export type JsonValue =
+  | JsonPrimitive
+  | JsonValue[]
+  | { readonly [key: string]: JsonValue };
 
 export interface StyleLayer {
   readonly id?: unknown;
@@ -33,7 +36,10 @@ export interface EmptyStyleSpecificationContent {
   readonly raw: string;
 }
 
-export type StyleArtifact = Artifact<typeof STYLE_ARTIFACT_TYPE, StyleSpecificationContent>;
+export type StyleArtifact = Artifact<
+  typeof STYLE_ARTIFACT_TYPE,
+  StyleSpecificationContent
+>;
 
 export type InvalidStyleArtifact = Artifact<
   typeof INVALID_STYLE_ARTIFACT_TYPE,
@@ -45,7 +51,10 @@ export type EmptyStyleArtifact = Artifact<
   EmptyStyleSpecificationContent
 >;
 
-export type AnyStyleArtifact = StyleArtifact | InvalidStyleArtifact | EmptyStyleArtifact;
+export type AnyStyleArtifact =
+  | StyleArtifact
+  | InvalidStyleArtifact
+  | EmptyStyleArtifact;
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -55,11 +64,15 @@ export function getStyleObject(artifact: Artifact): StyleSpecificationContent {
   return artifact.content as StyleSpecificationContent;
 }
 
-export function getStyleLayers(style: StyleSpecificationContent): readonly StyleLayer[] {
+export function getStyleLayers(
+  style: StyleSpecificationContent,
+): readonly StyleLayer[] {
   if (!Array.isArray(style.layers)) return [];
   return style.layers.filter(isRecord) as readonly StyleLayer[];
 }
 
 export function getLayerId(layer: StyleLayer): string | undefined {
-  return typeof layer.id === 'string' && layer.id.length > 0 ? layer.id : undefined;
+  return typeof layer.id === 'string' && layer.id.length > 0
+    ? layer.id
+    : undefined;
 }

@@ -8,7 +8,10 @@
 
 import { describe, expect, it } from 'vitest';
 import { CliUsageError } from '../src/errors.js';
-import { DEFAULT_REPORTER_ID, resolveReporterById } from '../src/resolve-reporter.js';
+import {
+  DEFAULT_REPORTER_ID,
+  resolveReporterById,
+} from '../src/resolve-reporter.js';
 
 describe('resolveReporterById', () => {
   it('resolves "text" to the text reporter', () => {

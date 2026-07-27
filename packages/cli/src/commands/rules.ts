@@ -43,11 +43,14 @@ import type { CommandResult, RulesListFlags } from '../types.js';
  * @param flags - Parsed CLI flags.
  * @returns A `CommandResult` with exit code 0 (always) or 2 (config error).
  */
-export async function runRulesList(flags: RulesListFlags): Promise<CommandResult> {
+export async function runRulesList(
+  flags: RulesListFlags,
+): Promise<CommandResult> {
   // Load config to discover which plugins are active.
   let config: TileGuardConfig;
   try {
-    const loadOptions = flags.config !== undefined ? { configPath: flags.config } : {};
+    const loadOptions =
+      flags.config !== undefined ? { configPath: flags.config } : {};
     ({ config } = await loadConfig(loadOptions));
   } catch (err) {
     return toUsageResult(err);
@@ -88,7 +91,8 @@ export async function runRulesList(flags: RulesListFlags): Promise<CommandResult
   if (rules.length === 0) {
     return {
       exitCode: 0,
-      message: 'No rules found. Ensure plugins are configured in your config file.',
+      message:
+        'No rules found. Ensure plugins are configured in your config file.',
     };
   }
 

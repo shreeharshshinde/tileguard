@@ -50,7 +50,11 @@ export interface Matrix2D {
  * @param panX  Horizontal translation from tile origin to screen origin, in px.
  * @param panY  Vertical translation from tile origin to screen origin, in px.
  */
-export function buildMatrix(zoom: number, panX: number, panY: number): Matrix2D {
+export function buildMatrix(
+  zoom: number,
+  panX: number,
+  panY: number,
+): Matrix2D {
   return { sx: zoom, sy: zoom, tx: panX, ty: panY };
 }
 

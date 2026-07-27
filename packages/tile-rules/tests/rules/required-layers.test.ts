@@ -3,13 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { requiredLayersRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [requiredLayersRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [requiredLayersRule],
+};
 
 describe('tile/required-layers', () => {
   it('pass — all required layers present produces no diagnostic', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/required-layers': ['error', { layers: ['roads', 'water'] }] },
+      rules: {
+        'tile/required-layers': ['error', { layers: ['roads', 'water'] }],
+      },
     });
     const source = await makeTile([
       {
@@ -53,7 +59,9 @@ describe('tile/required-layers', () => {
   it('fail — missing layer produces one diagnostic per missing layer', async () => {
     const engine = createEngine({
       plugins: [plugin],
-      rules: { 'tile/required-layers': ['error', { layers: ['buildings', 'water'] }] },
+      rules: {
+        'tile/required-layers': ['error', { layers: ['buildings', 'water'] }],
+      },
     });
     const source = await makeTile([
       {

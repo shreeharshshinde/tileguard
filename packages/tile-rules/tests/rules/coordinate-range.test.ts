@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { coordinateRangeRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [coordinateRangeRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [coordinateRangeRule],
+};
 
 describe('tile/coordinate-range', () => {
   // ── Existing tests (updated for default buffer=80) ──────────────────────

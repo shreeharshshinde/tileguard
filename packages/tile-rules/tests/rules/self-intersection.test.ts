@@ -42,7 +42,11 @@ import { makeTile } from '../helpers.js';
 
 // ─── Shared engine plugin ─────────────────────────────────────────────────────
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [selfIntersectionRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [selfIntersectionRule],
+};
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
@@ -54,7 +58,9 @@ async function run(layers: Parameters<typeof makeTile>[0]) {
   const engine = createEngine({ plugins: [plugin] });
   const source = await makeTile(layers);
   const result = await engine.run([source]);
-  return result.diagnostics.filter((d) => d.ruleId === 'tile/self-intersection');
+  return result.diagnostics.filter(
+    (d) => d.ruleId === 'tile/self-intersection',
+  );
 }
 
 // ─── 1. Baseline ──────────────────────────────────────────────────────────────

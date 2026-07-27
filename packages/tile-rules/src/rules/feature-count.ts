@@ -1,5 +1,9 @@
 import type { Rule } from '@tileguard/core';
-import { getVectorTile, totalFeatureCount, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getVectorTile,
+  totalFeatureCount,
+  VECTOR_TILE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export interface FeatureCountOptions {
   readonly min?: number;
@@ -11,7 +15,8 @@ export interface FeatureCountOptions {
 export const featureCountRule: Rule<FeatureCountOptions> = {
   id: 'tile/feature-count',
   meta: {
-    description: 'Vector tiles must satisfy configured total feature count bounds.',
+    description:
+      'Vector tiles must satisfy configured total feature count bounds.',
     defaultSeverity: 'warning',
     docsUrl: 'https://tileguard.dev/rules/tile/feature-count',
     recommended: true,

@@ -36,7 +36,13 @@ export interface ValidateConfigOptions {
 }
 
 const VALID_SEVERITIES = new Set(['error', 'warning', 'info']);
-const KNOWN_TOP_LEVEL_KEYS = new Set(['plugins', 'rules', 'reporter', 'overrides', 'options']);
+const KNOWN_TOP_LEVEL_KEYS = new Set([
+  'plugins',
+  'rules',
+  'reporter',
+  'overrides',
+  'options',
+]);
 
 /** Check if a value is a plain object (not null, not an array). */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -60,7 +66,11 @@ export function isValidRuleConfig(value: unknown): boolean {
   return false;
 }
 
-function validatePlugins(value: unknown, issues: ValidationIssue[], isJson: boolean): void {
+function validatePlugins(
+  value: unknown,
+  issues: ValidationIssue[],
+  isJson: boolean,
+): void {
   if (value === undefined) return;
 
   if (isJson) {
@@ -115,7 +125,8 @@ function validateRules(value: unknown, issues: ValidationIssue[]): void {
     if (!isValidRuleConfig(entry)) {
       issues.push({
         path: `rules['${key}']`,
-        message: 'must be "error" | "warning" | "info" | "off" | [severity, options]',
+        message:
+          'must be "error" | "warning" | "info" | "off" | [severity, options]',
         received: entry,
         severity: 'error',
       });
@@ -172,7 +183,10 @@ function validateOverrides(value: unknown, issues: ValidationIssue[]): void {
     }
 
     const files = override.files;
-    if (!Array.isArray(files) || !files.every((f): f is string => typeof f === 'string')) {
+    if (
+      !Array.isArray(files) ||
+      !files.every((f): f is string => typeof f === 'string')
+    ) {
       issues.push({
         path: `overrides[${i}].files`,
         message: 'must be an array of glob pattern strings',
@@ -195,7 +209,8 @@ function validateOverrides(value: unknown, issues: ValidationIssue[]): void {
           if (!isValidRuleConfig(entry)) {
             issues.push({
               path: `overrides[${i}].rules['${key}']`,
-              message: 'must be "error" | "warning" | "info" | "off" | [severity, options]',
+              message:
+                'must be "error" | "warning" | "info" | "off" | [severity, options]',
               received: entry,
               severity: 'error',
             });
@@ -233,7 +248,10 @@ function validateOptions(value: unknown, issues: ValidationIssue[]): void {
   }
 }
 
-function checkUnknownKeys(value: Record<string, unknown>, issues: ValidationIssue[]): void {
+function checkUnknownKeys(
+  value: Record<string, unknown>,
+  issues: ValidationIssue[],
+): void {
   for (const key of Object.keys(value)) {
     if (!KNOWN_TOP_LEVEL_KEYS.has(key)) {
       issues.push({

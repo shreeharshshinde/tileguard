@@ -77,8 +77,12 @@ describe('runCheck', () => {
 
   beforeEach(() => {
     // Suppress real I/O in unit tests. Integration tests verify actual output.
-    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
-    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    stderrSpy = vi
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+    stdoutSpy = vi
+      .spyOn(process.stdout, 'write')
+      .mockImplementation(() => true);
   });
 
   afterEach(() => {
@@ -119,7 +123,9 @@ describe('runCheck', () => {
     mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' } });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
-    const result = await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
+    const result = await runCheck(['/nonexistent/tile.pbf'], {
+      reporter: 'text',
+    });
 
     expect(result.exitCode).toBe(0);
     expect(result.summary?.pass).toBe(true);
@@ -131,7 +137,9 @@ describe('runCheck', () => {
     mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' } });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(false, 1));
 
-    const result = await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
+    const result = await runCheck(['/nonexistent/tile.pbf'], {
+      reporter: 'text',
+    });
 
     expect(result.exitCode).toBe(1);
     expect(result.summary?.pass).toBe(false);
@@ -146,7 +154,9 @@ describe('runCheck', () => {
     const fakeEngine = makeFakeEngine(true);
     mockCreateEngine.mockReturnValueOnce(fakeEngine);
 
-    const result = await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
+    const result = await runCheck(['/nonexistent/tile.pbf'], {
+      reporter: 'text',
+    });
 
     // Run should succeed — 'text' is a valid reporter, 'json' was overridden
     expect(result.exitCode).toBe(0);
@@ -163,7 +173,9 @@ describe('runCheck', () => {
     await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
 
     // Banner must appear on stderr
-    expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('TileGuard'));
+    expect(stderrSpy).toHaveBeenCalledWith(
+      expect.stringContaining('TileGuard'),
+    );
     // stdout must not contain the banner
     const stdoutCalls = stdoutSpy.mock.calls.map((c) => String(c[0])).join('');
     expect(stdoutCalls).not.toContain('TileGuard');

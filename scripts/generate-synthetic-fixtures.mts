@@ -88,7 +88,11 @@ function encodeGeometry(rings: Pt[][]): number[] {
   return cmds;
 }
 
-function buildFeature(f: FeatureDesc, keys: string[], vals: string[]): Uint8Array {
+function buildFeature(
+  f: FeatureDesc,
+  keys: string[],
+  vals: string[],
+): Uint8Array {
   const tags: number[] = [];
   for (const [k, v] of Object.entries(f.props)) {
     tags.push(keys.indexOf(k), vals.indexOf(String(v)));
@@ -112,7 +116,8 @@ function buildLayer(desc: LayerDesc): Uint8Array {
     fieldLd(1, str(desc.name)),
     fieldVarint(5, extent),
   ];
-  for (const f of desc.features) parts.push(fieldLd(2, buildFeature(f, keys, vals)));
+  for (const f of desc.features)
+    parts.push(fieldLd(2, buildFeature(f, keys, vals)));
   for (const k of keys) parts.push(fieldLd(3, str(k)));
   for (const v of vals) parts.push(fieldLd(4, concat([fieldLd(1, str(v))])));
   return concat(parts);

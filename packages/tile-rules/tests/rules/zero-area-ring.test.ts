@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { tileProvider, zeroAreaRingRule } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
-const plugin = { id: 'test', providers: [tileProvider], rules: [zeroAreaRingRule] };
+const plugin = {
+  id: 'test',
+  providers: [tileProvider],
+  rules: [zeroAreaRingRule],
+};
 
 describe('tile/zero-area-ring', () => {
   it('pass — polygon ring with non-zero signed area', async () => {

@@ -161,7 +161,9 @@ describe('Inspector (integration)', () => {
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
       expect(overlays.length).toBeGreaterThan(0);
-      expect(overlays.some((o: { severity: string }) => o.severity === 'warning')).toBe(true);
+      expect(
+        overlays.some((o: { severity: string }) => o.severity === 'warning'),
+      ).toBe(true);
     });
 
     it('clears hover state when pointer moves to empty space', async () => {
@@ -179,7 +181,9 @@ describe('Inspector (integration)', () => {
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
       // No hover overlay should be present
-      expect(overlays.every((o: { severity: string }) => o.severity !== 'warning')).toBe(true);
+      expect(
+        overlays.every((o: { severity: string }) => o.severity !== 'warning'),
+      ).toBe(true);
     });
   });
 
@@ -199,7 +203,9 @@ describe('Inspector (integration)', () => {
       const lastCall = vi.mocked(renderer.render).mock.lastCall;
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
-      expect(overlays.every((o: { severity: string }) => o.severity !== 'warning')).toBe(true);
+      expect(
+        overlays.every((o: { severity: string }) => o.severity !== 'warning'),
+      ).toBe(true);
     });
   });
 
@@ -219,7 +225,9 @@ describe('Inspector (integration)', () => {
       const overlays = lastCall![1];
       expect(overlays.length).toBeGreaterThan(0);
       // Should have a selection overlay (bbox-fill with severity 'info')
-      expect(overlays.some((o: { severity: string }) => o.severity === 'info')).toBe(true);
+      expect(
+        overlays.some((o: { severity: string }) => o.severity === 'info'),
+      ).toBe(true);
     });
 
     it('clears selection when clicking empty space', async () => {
@@ -236,7 +244,9 @@ describe('Inspector (integration)', () => {
       const lastCall = vi.mocked(renderer.render).mock.lastCall;
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
-      expect(overlays.every((o: { severity: string }) => o.severity !== 'info')).toBe(true);
+      expect(
+        overlays.every((o: { severity: string }) => o.severity !== 'info'),
+      ).toBe(true);
     });
   });
 
@@ -256,8 +266,12 @@ describe('Inspector (integration)', () => {
       const lastCall = vi.mocked(renderer.render).mock.lastCall;
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
-      expect(overlays.some((o: { severity: string }) => o.severity === 'info')).toBe(true);
-      expect(overlays.some((o: { severity: string }) => o.severity === 'warning')).toBe(true);
+      expect(
+        overlays.some((o: { severity: string }) => o.severity === 'info'),
+      ).toBe(true);
+      expect(
+        overlays.some((o: { severity: string }) => o.severity === 'warning'),
+      ).toBe(true);
     });
 
     it('each render pass is independent (no stale state)', async () => {
@@ -272,8 +286,12 @@ describe('Inspector (integration)', () => {
       const lastCall = vi.mocked(renderer.render).mock.lastCall;
       expect(lastCall).toBeDefined();
       const overlays = lastCall![1];
-      expect(overlays.some((o: { severity: string }) => o.severity === 'info')).toBe(true);
-      expect(overlays.every((o: { severity: string }) => o.severity !== 'warning')).toBe(true);
+      expect(
+        overlays.some((o: { severity: string }) => o.severity === 'info'),
+      ).toBe(true);
+      expect(
+        overlays.every((o: { severity: string }) => o.severity !== 'warning'),
+      ).toBe(true);
     });
   });
 

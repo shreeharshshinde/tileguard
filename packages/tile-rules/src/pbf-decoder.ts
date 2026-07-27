@@ -81,7 +81,11 @@ export class PbfReader {
 
   readFloat(): number {
     this.ensure(4);
-    const view = new DataView(this.data.buffer, this.data.byteOffset + this.pos, 4);
+    const view = new DataView(
+      this.data.buffer,
+      this.data.byteOffset + this.pos,
+      4,
+    );
     const value = view.getFloat32(0, true);
     this.pos += 4;
     return value;
@@ -89,7 +93,11 @@ export class PbfReader {
 
   readDouble(): number {
     this.ensure(8);
-    const view = new DataView(this.data.buffer, this.data.byteOffset + this.pos, 8);
+    const view = new DataView(
+      this.data.buffer,
+      this.data.byteOffset + this.pos,
+      8,
+    );
     const value = view.getFloat64(0, true);
     this.pos += 8;
     return value;
@@ -297,7 +305,10 @@ function readPackedVarints(data: Uint8Array): number[] {
   return values;
 }
 
-function decodeGeometry(commands: readonly number[], type: GeometryType): VectorTileGeometry {
+function decodeGeometry(
+  commands: readonly number[],
+  type: GeometryType,
+): VectorTileGeometry {
   let x = 0;
   let y = 0;
   let index = 0;

@@ -13,12 +13,17 @@ export const tileProvider: ArtifactProvider = {
   canHandle(source) {
     const normalized = source.trim().toLowerCase();
     if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
-      return TILE_EXTENSIONS.some((extension) => normalized.endsWith(extension));
+      return TILE_EXTENSIONS.some((extension) =>
+        normalized.endsWith(extension),
+      );
     }
     return TILE_EXTENSIONS.some((extension) => normalized.endsWith(extension));
   },
 
-  async load(source: string, options?: ProviderOptions): Promise<VectorTileArtifact> {
+  async load(
+    source: string,
+    options?: ProviderOptions,
+  ): Promise<VectorTileArtifact> {
     if (source.toLowerCase().endsWith('.mbtiles')) {
       throw new Error(
         'MBTiles sources require an archive provider; pass a .pbf or .mvt tile for now',
@@ -47,7 +52,10 @@ export const tileProvider: ArtifactProvider = {
   },
 };
 
-async function readTileBytes(source: string, options?: ProviderOptions): Promise<Uint8Array> {
+async function readTileBytes(
+  source: string,
+  options?: ProviderOptions,
+): Promise<Uint8Array> {
   if (source.startsWith('http://') || source.startsWith('https://')) {
     const timeout = options?.timeout ?? 30_000;
     const controller = new AbortController();

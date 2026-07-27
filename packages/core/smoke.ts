@@ -56,7 +56,8 @@ process.on('unhandledRejection', (reason: unknown) => {
 //   - the NO_COLOR env variable is set (https://no-color.org)
 // ---------------------------------------------------------------------------
 
-const USE_COLOR = process.stdout.isTTY === true && process.env.NO_COLOR === undefined;
+const USE_COLOR =
+  process.stdout.isTTY === true && process.env.NO_COLOR === undefined;
 
 const c = {
   red: (s: string) => (USE_COLOR ? `\x1b[31m${s}\x1b[0m` : s),
@@ -186,12 +187,16 @@ const fileProvider: ArtifactProvider = {
       // or platform-level I/O errors that stat() didn't catch.
       const code = (err as NodeJS.ErrnoException).code ?? 'UNKNOWN';
       const detail = err instanceof Error ? err.message : String(err);
-      throw new Error(`Could not read "${basename(source)}" [${code}]: ${detail}`);
+      throw new Error(
+        `Could not read "${basename(source)}" [${code}]: ${detail}`,
+      );
     }
 
     // Empty file — parseable but not a valid style
     if (raw.trim() === '') {
-      throw new Error(`"${basename(source)}" is empty. A MapLibre style must be a JSON object.`);
+      throw new Error(
+        `"${basename(source)}" is empty. A MapLibre style must be a JSON object.`,
+      );
     }
 
     // Parse JSON — re-throw on syntax errors
@@ -205,7 +210,11 @@ const fileProvider: ArtifactProvider = {
     }
 
     // Ensure it parsed to an object, not an array, number, string, etc.
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    if (
+      parsed === null ||
+      typeof parsed !== 'object' ||
+      Array.isArray(parsed)
+    ) {
       throw new Error(
         `"${basename(source)}" parsed successfully but is not a JSON object ` +
           `(got ${Array.isArray(parsed) ? 'array' : typeof parsed}).`,
@@ -479,7 +488,9 @@ const terminalReporter: Reporter = {
 
     for (const [source, fileDiags] of bySource) {
       const fileErrors = fileDiags.filter((d) => d.severity === 'error').length;
-      const fileWarnings = fileDiags.filter((d) => d.severity === 'warning').length;
+      const fileWarnings = fileDiags.filter(
+        (d) => d.severity === 'warning',
+      ).length;
 
       // File header
       out(`\n${c.bold(basename(source))}\n`);
@@ -487,9 +498,12 @@ const terminalReporter: Reporter = {
 
       // Per-file counts
       const parts: string[] = [];
-      if (fileErrors > 0) parts.push(c.red(`${fileErrors} error${fileErrors > 1 ? 's' : ''}`));
+      if (fileErrors > 0)
+        parts.push(c.red(`${fileErrors} error${fileErrors > 1 ? 's' : ''}`));
       if (fileWarnings > 0)
-        parts.push(c.yellow(`${fileWarnings} warning${fileWarnings > 1 ? 's' : ''}`));
+        parts.push(
+          c.yellow(`${fileWarnings} warning${fileWarnings > 1 ? 's' : ''}`),
+        );
       out(`${parts.join(', ')}\n`);
 
       // Individual diagnostics
@@ -506,8 +520,10 @@ const terminalReporter: Reporter = {
             out(`     ${c.grey(`at: ${loc.jsonPath}`)}\n`);
           } else if (loc.layer !== undefined) {
             const parts: string[] = [`layer: ${loc.layer}`];
-            if (loc.featureIndex !== undefined) parts.push(`feature: ${loc.featureIndex}`);
-            if (loc.partIndex !== undefined) parts.push(`part: ${loc.partIndex}`);
+            if (loc.featureIndex !== undefined)
+              parts.push(`feature: ${loc.featureIndex}`);
+            if (loc.partIndex !== undefined)
+              parts.push(`part: ${loc.partIndex}`);
             out(`     ${c.grey(`at: ${parts.join(', ')}`)}\n`);
           }
         }
@@ -533,14 +549,21 @@ const terminalReporter: Reporter = {
     out(`\n${DIVIDER}\n`);
 
     const { errors: totalErrors, warnings: totalWarnings } = ctx.summary;
-    const statusLine = ctx.summary.pass ? c.green(c.bold('PASS')) : c.red(c.bold('FAIL'));
+    const statusLine = ctx.summary.pass
+      ? c.green(c.bold('PASS'))
+      : c.red(c.bold('FAIL'));
 
     const countParts: string[] = [];
     if (totalErrors > 0)
-      countParts.push(c.red(`${totalErrors} error${totalErrors > 1 ? 's' : ''}`));
+      countParts.push(
+        c.red(`${totalErrors} error${totalErrors > 1 ? 's' : ''}`),
+      );
     if (totalWarnings > 0)
-      countParts.push(c.yellow(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`));
-    const countsLine = countParts.length > 0 ? countParts.join(', ') : c.green('0 issues');
+      countParts.push(
+        c.yellow(`${totalWarnings} warning${totalWarnings > 1 ? 's' : ''}`),
+      );
+    const countsLine =
+      countParts.length > 0 ? countParts.join(', ') : c.green('0 issues');
 
     out(
       `${statusLine}  ${countsLine}  ${c.grey(`in ${ctx.sources.length} file${ctx.sources.length > 1 ? 's' : ''} (${ctx.duration}ms)`)}\n\n`,
@@ -574,7 +597,9 @@ async function main(): Promise<void> {
 
   if (rawArgs.length === 0) {
     // No args: run the three built-in smoke fixtures
-    process.stdout.write(HEADER + c.grey('No files specified — running default smoke fixtures.\n'));
+    process.stdout.write(
+      HEADER + c.grey('No files specified — running default smoke fixtures.\n'),
+    );
     filePaths = [
       'smoke-fixtures/valid-style.json',
       'smoke-fixtures/broken-style.json',
@@ -599,7 +624,9 @@ async function main(): Promise<void> {
       process.exit(2);
     }
     process.stderr.write(
-      c.yellow(`\n  Continuing with ${valid.length} valid file${valid.length > 1 ? 's' : ''}.\n\n`),
+      c.yellow(
+        `\n  Continuing with ${valid.length} valid file${valid.length > 1 ? 's' : ''}.\n\n`,
+      ),
     );
   }
 
@@ -610,7 +637,9 @@ async function main(): Promise<void> {
   });
 
   process.stdout.write(
-    c.grey(`Engine ready — validating ${valid.length} file${valid.length > 1 ? 's' : ''}...\n`),
+    c.grey(
+      `Engine ready — validating ${valid.length} file${valid.length > 1 ? 's' : ''}...\n`,
+    ),
   );
 
   let result: RunResult;
@@ -621,7 +650,9 @@ async function main(): Promise<void> {
     // genuine bug in the engine itself or a catastrophic environment failure.
     const message = err instanceof Error ? err.message : String(err);
     const stack = err instanceof Error ? err.stack : undefined;
-    process.stderr.write(c.red(`\n[smoke] Fatal: engine.run() threw unexpectedly.\n`));
+    process.stderr.write(
+      c.red(`\n[smoke] Fatal: engine.run() threw unexpectedly.\n`),
+    );
     process.stderr.write(`${message}\n`);
     if (stack !== undefined) {
       process.stderr.write(c.grey(`${stack}\n`));

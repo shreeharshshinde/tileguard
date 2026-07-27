@@ -19,10 +19,16 @@ import type { OverlayDescriptor, OverlayStrategy } from '../overlay-adapter.ts';
 export const selfIntersectionStrategy: OverlayStrategy = {
   ruleId: 'tile/self-intersection',
 
-  toDescriptors(diagnostic: Diagnostic, _artifact: VectorTileArtifact): OverlayDescriptor[] {
-    const layerName = diagnostic.location?.layer ?? (diagnostic.data?.layer as string | undefined);
+  toDescriptors(
+    diagnostic: Diagnostic,
+    _artifact: VectorTileArtifact,
+  ): OverlayDescriptor[] {
+    const layerName =
+      diagnostic.location?.layer ??
+      (diagnostic.data?.layer as string | undefined);
     const featureIndex =
-      diagnostic.location?.featureIndex ?? (diagnostic.data?.featureIndex as number | undefined);
+      diagnostic.location?.featureIndex ??
+      (diagnostic.data?.featureIndex as number | undefined);
     const segments = diagnostic.data?.segments as [number, number] | undefined;
 
     // Strict validation — do not invent indices if metadata is missing

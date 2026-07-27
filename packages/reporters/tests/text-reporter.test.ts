@@ -36,13 +36,20 @@ function capture(
 }
 
 /** Build a minimal ReporterContext. */
-function makeContext(overrides: Partial<ReporterContext> = {}): ReporterContext {
+function makeContext(
+  overrides: Partial<ReporterContext> = {},
+): ReporterContext {
   return {
     duration: overrides.duration ?? 42,
     sources: overrides.sources ?? ['test.pbf'],
     ruleCount: overrides.ruleCount ?? 1,
     artifactCount: overrides.artifactCount ?? 1,
-    summary: overrides.summary ?? { errors: 0, warnings: 0, infos: 0, pass: true },
+    summary: overrides.summary ?? {
+      errors: 0,
+      warnings: 0,
+      infos: 0,
+      pass: true,
+    },
     config: overrides.config ?? {},
   };
 }
@@ -52,10 +59,14 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
   return {
     ruleId: overrides.ruleId ?? 'tile/required-layers',
     severity: overrides.severity ?? 'error',
-    message: overrides.message ?? 'Required layer "buildings" is not present in the tile.',
+    message:
+      overrides.message ??
+      'Required layer "buildings" is not present in the tile.',
     artifact: overrides.artifact ?? { type: 'VectorTile', source: 'test.pbf' },
     ...(overrides.location !== undefined && { location: overrides.location }),
-    ...(overrides.suggestion !== undefined && { suggestion: overrides.suggestion }),
+    ...(overrides.suggestion !== undefined && {
+      suggestion: overrides.suggestion,
+    }),
     ...(overrides.docsUrl !== undefined && { docsUrl: overrides.docsUrl }),
     ...(overrides.data !== undefined && { data: overrides.data }),
   };
@@ -84,23 +95,35 @@ describe('textReporter', () => {
   describe('severity rendering', () => {
     it('renders error icon for error diagnostics', () => {
       const diag = makeDiagnostic({ severity: 'error' });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('✗');
       expect(output).toContain('tile/required-layers');
     });
 
     it('renders warning icon for warning diagnostics', () => {
-      const diag = makeDiagnostic({ severity: 'warning', ruleId: 'tile/no-empty' });
-      const ctx = makeContext({ summary: { errors: 0, warnings: 1, infos: 0, pass: true } });
+      const diag = makeDiagnostic({
+        severity: 'warning',
+        ruleId: 'tile/no-empty',
+      });
+      const ctx = makeContext({
+        summary: { errors: 0, warnings: 1, infos: 0, pass: true },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('⚠');
       expect(output).toContain('tile/no-empty');
     });
 
     it('renders info icon for info diagnostics', () => {
-      const diag = makeDiagnostic({ severity: 'info', ruleId: 'tile/feature-count' });
-      const ctx = makeContext({ summary: { errors: 0, warnings: 0, infos: 1, pass: true } });
+      const diag = makeDiagnostic({
+        severity: 'info',
+        ruleId: 'tile/feature-count',
+      });
+      const ctx = makeContext({
+        summary: { errors: 0, warnings: 0, infos: 1, pass: true },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('ℹ');
       expect(output).toContain('tile/feature-count');
@@ -117,7 +140,9 @@ describe('textReporter', () => {
       });
       const output = capture([diag], ctx);
       expect(output).toContain('./fixtures/test.pbf');
-      expect(output).toContain('Required layer "buildings" is not present in the tile.');
+      expect(output).toContain(
+        'Required layer "buildings" is not present in the tile.',
+      );
     });
 
     it('renders multiple source groups', () => {
@@ -145,7 +170,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: { layer: 'buildings' },
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('layer: buildings');
     });
@@ -154,7 +181,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: { layer: 'water', featureIndex: 7, partIndex: 0 },
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('layer: water, feature: 7, part: 0');
     });
@@ -163,7 +192,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: { jsonPath: 'layers[3].paint.fill-color' },
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('layers[3].paint.fill-color');
     });
@@ -172,7 +203,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: { line: 12, column: 5 },
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('line: 12, column: 5');
     });
@@ -181,7 +214,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: {},
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).not.toContain('at test.pbf →');
     });
@@ -190,7 +225,9 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         location: { region: { x: 100, y: 200, width: 32, height: 32 } },
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('region: 100,200 32×32');
     });
@@ -201,32 +238,47 @@ describe('textReporter', () => {
       const diag = makeDiagnostic({
         suggestion: 'Add a "buildings" layer to your tile generation pipeline.',
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
-      expect(output).toContain('Add a "buildings" layer to your tile generation pipeline.');
+      expect(output).toContain(
+        'Add a "buildings" layer to your tile generation pipeline.',
+      );
     });
 
     it('renders a docs URL', () => {
       const diag = makeDiagnostic({
         docsUrl: 'https://tileguard.dev/rules/tile/required-layers',
       });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
-      expect(output).toContain('https://tileguard.dev/rules/tile/required-layers');
+      expect(output).toContain(
+        'https://tileguard.dev/rules/tile/required-layers',
+      );
     });
   });
 
   describe('summary line', () => {
     it('renders FAILED verdict when errors exist', () => {
       const diag = makeDiagnostic({ severity: 'error' });
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('FAILED');
     });
 
     it('renders PASS verdict when only warnings exist', () => {
-      const diag = makeDiagnostic({ severity: 'warning', ruleId: 'tile/no-empty' });
-      const ctx = makeContext({ summary: { errors: 0, warnings: 1, infos: 0, pass: true } });
+      const diag = makeDiagnostic({
+        severity: 'warning',
+        ruleId: 'tile/no-empty',
+      });
+      const ctx = makeContext({
+        summary: { errors: 0, warnings: 1, infos: 0, pass: true },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('PASS');
     });
@@ -270,7 +322,9 @@ describe('textReporter', () => {
 
     it('renders separator line', () => {
       const diag = makeDiagnostic();
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx);
       expect(output).toContain('─'.repeat(40));
     });
@@ -279,7 +333,9 @@ describe('textReporter', () => {
   describe('color support', () => {
     it('includes ANSI codes when color is enabled', () => {
       const diag = makeDiagnostic();
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx, true);
       // ANSI escape code for red
       expect(output).toContain('\x1b[31m');
@@ -287,7 +343,9 @@ describe('textReporter', () => {
 
     it('excludes ANSI codes when color is disabled', () => {
       const diag = makeDiagnostic();
-      const ctx = makeContext({ summary: { errors: 1, warnings: 0, infos: 0, pass: false } });
+      const ctx = makeContext({
+        summary: { errors: 1, warnings: 0, infos: 0, pass: false },
+      });
       const output = capture([diag], ctx, false);
       expect(output).not.toContain('\x1b[');
     });

@@ -15,7 +15,11 @@
  * All tests use synthetic VectorTileArtifact fixtures. No file I/O.
  */
 
-import type { VectorTileArtifact, VectorTileFeature, VectorTileLayer } from '@tileguard/tile-rules';
+import type {
+  VectorTileArtifact,
+  VectorTileFeature,
+  VectorTileLayer,
+} from '@tileguard/tile-rules';
 import { describe, expect, it } from 'vitest';
 import {
   distanceSquared,
@@ -23,7 +27,10 @@ import {
   pointInPolygon,
   pointToSegmentDistanceSquared,
 } from '../src/hittest/helpers.js';
-import { createHitTester, DEFAULT_HIT_RADIUS } from '../src/hittest/hit-tester.js';
+import {
+  createHitTester,
+  DEFAULT_HIT_RADIUS,
+} from '../src/hittest/hit-tester.js';
 
 // ---------------------------------------------------------------------------
 // Fixture builders
@@ -36,18 +43,39 @@ function pt(x: number, y: number): Pt {
 }
 
 function makePointFeature(points: Pt[]): VectorTileFeature {
-  return { id: 0, type: 1, geometryType: 'Point', properties: {}, geometry: points };
+  return {
+    id: 0,
+    type: 1,
+    geometryType: 'Point',
+    properties: {},
+    geometry: points,
+  };
 }
 
 function makeLineFeature(parts: Pt[][]): VectorTileFeature {
-  return { id: 0, type: 2, geometryType: 'LineString', properties: {}, geometry: parts };
+  return {
+    id: 0,
+    type: 2,
+    geometryType: 'LineString',
+    properties: {},
+    geometry: parts,
+  };
 }
 
 function makePolygonFeature(rings: Pt[][]): VectorTileFeature {
-  return { id: 0, type: 3, geometryType: 'Polygon', properties: {}, geometry: rings };
+  return {
+    id: 0,
+    type: 3,
+    geometryType: 'Polygon',
+    properties: {},
+    geometry: rings,
+  };
 }
 
-function makeLayer(name: string, features: VectorTileFeature[]): VectorTileLayer {
+function makeLayer(
+  name: string,
+  features: VectorTileFeature[],
+): VectorTileLayer {
   return { name, version: 2, extent: 4096, keys: [], values: [], features };
 }
 
@@ -63,7 +91,13 @@ function makeArtifact(layers: VectorTileLayer[]): VectorTileArtifact {
 
 // Common shapes
 const UNIT_SQUARE = [pt(0, 0), pt(100, 0), pt(100, 100), pt(0, 100), pt(0, 0)];
-const UNIT_SQUARE_HOLE = [pt(25, 25), pt(75, 25), pt(75, 75), pt(25, 75), pt(25, 25)];
+const UNIT_SQUARE_HOLE = [
+  pt(25, 25),
+  pt(75, 25),
+  pt(75, 75),
+  pt(25, 75),
+  pt(25, 25),
+];
 
 // ---------------------------------------------------------------------------
 // Part 1 — Geometry helpers
@@ -87,7 +121,9 @@ describe('distanceSquared', () => {
   });
 
   it('is symmetric', () => {
-    expect(distanceSquared(pt(1, 2), pt(5, 7))).toBe(distanceSquared(pt(5, 7), pt(1, 2)));
+    expect(distanceSquared(pt(1, 2), pt(5, 7))).toBe(
+      distanceSquared(pt(5, 7), pt(1, 2)),
+    );
   });
 
   it('handles negative coordinates', () => {
@@ -97,39 +133,55 @@ describe('distanceSquared', () => {
 
 describe('pointToSegmentDistanceSquared', () => {
   it('returns 0 when point is on the segment start', () => {
-    expect(pointToSegmentDistanceSquared(pt(0, 0), pt(0, 0), pt(10, 0))).toBe(0);
+    expect(pointToSegmentDistanceSquared(pt(0, 0), pt(0, 0), pt(10, 0))).toBe(
+      0,
+    );
   });
 
   it('returns 0 when point is on the segment end', () => {
-    expect(pointToSegmentDistanceSquared(pt(10, 0), pt(0, 0), pt(10, 0))).toBe(0);
+    expect(pointToSegmentDistanceSquared(pt(10, 0), pt(0, 0), pt(10, 0))).toBe(
+      0,
+    );
   });
 
   it('returns 0 when point is in the middle of the segment', () => {
-    expect(pointToSegmentDistanceSquared(pt(5, 0), pt(0, 0), pt(10, 0))).toBe(0);
+    expect(pointToSegmentDistanceSquared(pt(5, 0), pt(0, 0), pt(10, 0))).toBe(
+      0,
+    );
   });
 
   it('returns perpendicular distance squared for point above midpoint', () => {
     // Point at (5,3), segment from (0,0) to (10,0) → perpendicular distance = 3
-    expect(pointToSegmentDistanceSquared(pt(5, 3), pt(0, 0), pt(10, 0))).toBeCloseTo(9);
+    expect(
+      pointToSegmentDistanceSquared(pt(5, 3), pt(0, 0), pt(10, 0)),
+    ).toBeCloseTo(9);
   });
 
   it('returns endpoint distance when projection falls before segment start', () => {
     // Point at (-3, 4), segment (0,0)→(10,0): projection t<0, nearest = (0,0), dist²=25
-    expect(pointToSegmentDistanceSquared(pt(-3, 4), pt(0, 0), pt(10, 0))).toBeCloseTo(25);
+    expect(
+      pointToSegmentDistanceSquared(pt(-3, 4), pt(0, 0), pt(10, 0)),
+    ).toBeCloseTo(25);
   });
 
   it('returns endpoint distance when projection falls after segment end', () => {
     // Point at (13, 4), segment (0,0)→(10,0): projection t>1, nearest = (10,0), dist²=25
-    expect(pointToSegmentDistanceSquared(pt(13, 4), pt(0, 0), pt(10, 0))).toBeCloseTo(25);
+    expect(
+      pointToSegmentDistanceSquared(pt(13, 4), pt(0, 0), pt(10, 0)),
+    ).toBeCloseTo(25);
   });
 
   it('handles degenerate segment (a === b) — returns distance to point a', () => {
-    expect(pointToSegmentDistanceSquared(pt(3, 4), pt(0, 0), pt(0, 0))).toBeCloseTo(25);
+    expect(
+      pointToSegmentDistanceSquared(pt(3, 4), pt(0, 0), pt(0, 0)),
+    ).toBeCloseTo(25);
   });
 
   it('handles diagonal segment', () => {
     // Point at (0,2), segment from (0,0) to (2,2) — nearest point (1,1), dist²=2
-    expect(pointToSegmentDistanceSquared(pt(0, 2), pt(0, 0), pt(2, 2))).toBeCloseTo(2);
+    expect(
+      pointToSegmentDistanceSquared(pt(0, 2), pt(0, 0), pt(2, 2)),
+    ).toBeCloseTo(2);
   });
 });
 
@@ -159,7 +211,13 @@ describe('pointInPolygon', () => {
   });
 
   it('works for a larger polygon (rectangle)', () => {
-    const rect = [pt(100, 100), pt(400, 100), pt(400, 300), pt(100, 300), pt(100, 100)];
+    const rect = [
+      pt(100, 100),
+      pt(400, 100),
+      pt(400, 300),
+      pt(100, 300),
+      pt(100, 100),
+    ];
     expect(pointInPolygon(pt(250, 200), rect)).toBe(true);
     expect(pointInPolygon(pt(50, 200), rect)).toBe(false);
   });
@@ -198,7 +256,9 @@ describe('HitTester — Point features', () => {
   const tester = createHitTester();
 
   it('hits a point feature at exact location (distance 0)', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(100, 100)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(100, 100)])]),
+    ]);
     const result = tester.hitTest(pt(100, 100), art);
     expect(result).toBeDefined();
     expect(result?.layerName).toBe('pts');
@@ -207,33 +267,43 @@ describe('HitTester — Point features', () => {
   });
 
   it('hits a point feature within default radius', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(100, 100)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(100, 100)])]),
+    ]);
     const result = tester.hitTest(pt(100 + DEFAULT_HIT_RADIUS - 1, 100), art);
     expect(result).toBeDefined();
   });
 
   it('misses a point feature just outside default radius', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(100, 100)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(100, 100)])]),
+    ]);
     const result = tester.hitTest(pt(100 + DEFAULT_HIT_RADIUS + 1, 100), art);
     expect(result).toBeUndefined();
   });
 
   it('hits the closest of two point vertices in a multi-point feature', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(50, 50), pt(200, 200)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(50, 50), pt(200, 200)])]),
+    ]);
     const result = tester.hitTest(pt(52, 50), art, 20);
     expect(result).toBeDefined();
     expect(result?.distance).toBeCloseTo(2);
   });
 
   it('returns exact distance for a point feature', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(0, 0)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(0, 0)])]),
+    ]);
     const result = tester.hitTest(pt(3, 4), art, 20);
     expect(result).toBeDefined();
     expect(result?.distance).toBeCloseTo(5);
   });
 
   it('respects custom radius for point features', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(100, 100)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(100, 100)])]),
+    ]);
     expect(tester.hitTest(pt(100, 115), art, 10)).toBeUndefined();
     expect(tester.hitTest(pt(100, 115), art, 20)).toBeDefined();
   });
@@ -258,19 +328,25 @@ describe('HitTester — LineString features', () => {
 
   it('hits a horizontal segment perpendicularly', () => {
     // Segment (0,0)→(100,0). Query at (50,5) — perpendicular distance = 5.
-    const art = makeArtifact([makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])])]);
+    const art = makeArtifact([
+      makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])]),
+    ]);
     const result = tester.hitTest(pt(50, 5), art, 10);
     expect(result).toBeDefined();
     expect(result?.distance).toBeCloseTo(5);
   });
 
   it('misses a segment beyond hit radius', () => {
-    const art = makeArtifact([makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])])]);
+    const art = makeArtifact([
+      makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])]),
+    ]);
     expect(tester.hitTest(pt(50, 20), art, 10)).toBeUndefined();
   });
 
   it('hits segment endpoint', () => {
-    const art = makeArtifact([makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])])]);
+    const art = makeArtifact([
+      makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0)]])]),
+    ]);
     const result = tester.hitTest(pt(-3, 4), art, 10);
     expect(result).toBeDefined();
     expect(result?.distance).toBeCloseTo(5);
@@ -278,7 +354,9 @@ describe('HitTester — LineString features', () => {
 
   it('hits on a multi-segment linestring', () => {
     const art = makeArtifact([
-      makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 0), pt(100, 100)]])]),
+      makeLayer('lines', [
+        makeLineFeature([[pt(0, 0), pt(100, 0), pt(100, 100)]]),
+      ]),
     ]);
     // Query near the second segment (100,0)→(100,100), at (95,50)
     const result = tester.hitTest(pt(95, 50), art, 10);
@@ -287,7 +365,9 @@ describe('HitTester — LineString features', () => {
   });
 
   it('returns undefined for linestring with single point part', () => {
-    const art = makeArtifact([makeLayer('lines', [makeLineFeature([[pt(50, 50)]])])]);
+    const art = makeArtifact([
+      makeLayer('lines', [makeLineFeature([[pt(50, 50)]])]),
+    ]);
     expect(tester.hitTest(pt(50, 50), art)).toBeUndefined();
   });
 
@@ -298,7 +378,9 @@ describe('HitTester — LineString features', () => {
 
   it('hits a diagonal segment at perpendicular distance', () => {
     // Segment (0,0)→(100,100). Point at (0,10) — perpendicular foot at (5,5), dist=√50≈7.07
-    const art = makeArtifact([makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 100)]])])]);
+    const art = makeArtifact([
+      makeLayer('lines', [makeLineFeature([[pt(0, 0), pt(100, 100)]])]),
+    ]);
     const result = tester.hitTest(pt(0, 10), art, 10);
     expect(result).toBeDefined();
     expect(result?.distance).toBeCloseTo(Math.sqrt(50), 1);
@@ -313,26 +395,34 @@ describe('HitTester — Polygon features', () => {
   const tester = createHitTester();
 
   it('returns distance 0 for point inside solid polygon', () => {
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])]),
+    ]);
     const result = tester.hitTest(pt(50, 50), art, DEFAULT_HIT_RADIUS);
     expect(result).toBeDefined();
     expect(result?.distance).toBe(0);
   });
 
   it('returns distance 0 for point near center of polygon (large radius)', () => {
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])]),
+    ]);
     const result = tester.hitTest(pt(50, 50), art, 200);
     expect(result?.distance).toBe(0);
   });
 
   it('misses polygon when point is clearly outside and beyond radius', () => {
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])]),
+    ]);
     // UNIT_SQUARE is (0,0)→(100,100). Point at (200,200): nearest corner at (100,100), dist≈141
     expect(tester.hitTest(pt(200, 200), art, 10)).toBeUndefined();
   });
 
   it('hits polygon boundary from outside when within radius', () => {
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([UNIT_SQUARE])]),
+    ]);
     // Point at (105,50): 5 units outside right edge
     const result = tester.hitTest(pt(105, 50), art, 10);
     expect(result).toBeDefined();
@@ -367,7 +457,9 @@ describe('HitTester — Polygon features', () => {
   });
 
   it('returns undefined for polygon whose exterior ring has fewer than 3 points', () => {
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([[pt(0, 0), pt(1, 1)]])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([[pt(0, 0), pt(1, 1)]])]),
+    ]);
     expect(tester.hitTest(pt(0, 0), art)).toBeUndefined();
   });
 
@@ -382,7 +474,9 @@ describe('HitTester — Polygon features', () => {
       pt(0, 200),
       pt(0, 0),
     ];
-    const art = makeArtifact([makeLayer('polys', [makePolygonFeature([lShape])])]);
+    const art = makeArtifact([
+      makeLayer('polys', [makePolygonFeature([lShape])]),
+    ]);
     // Point at (50,150) is inside the L-shape
     const result = tester.hitTest(pt(50, 150), art, DEFAULT_HIT_RADIUS);
     expect(result).toBeDefined();
@@ -487,13 +581,17 @@ describe('HitTester — hit radius edge cases', () => {
   const tester = createHitTester();
 
   it('radius = 0: only hits at exact point location', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(50, 50)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(50, 50)])]),
+    ]);
     expect(tester.hitTest(pt(50, 50), art, 0)).toBeDefined();
     expect(tester.hitTest(pt(51, 50), art, 0)).toBeUndefined();
   });
 
   it('radius = 1: hits at distance exactly 1', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(0, 0)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(0, 0)])]),
+    ]);
     expect(tester.hitTest(pt(1, 0), art, 1)).toBeDefined();
     expect(tester.hitTest(pt(2, 0), art, 1)).toBeUndefined();
   });
@@ -503,13 +601,17 @@ describe('HitTester — hit radius edge cases', () => {
   });
 
   it('uses DEFAULT_HIT_RADIUS when radius parameter is omitted', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(0, 0)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(0, 0)])]),
+    ]);
     expect(tester.hitTest(pt(9, 0), art)).toBeDefined(); // within default
     expect(tester.hitTest(pt(11, 0), art)).toBeUndefined(); // outside default
   });
 
   it('very large radius hits anything on the tile', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(4096, 4096)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(4096, 4096)])]),
+    ]);
     expect(tester.hitTest(pt(0, 0), art, 10000)).toBeDefined();
   });
 });
@@ -526,7 +628,9 @@ describe('HitTester — robustness', () => {
   });
 
   it('returns undefined for a layer with no features', () => {
-    expect(tester.hitTest(pt(0, 0), makeArtifact([makeLayer('empty', [])]))).toBeUndefined();
+    expect(
+      tester.hitTest(pt(0, 0), makeArtifact([makeLayer('empty', [])])),
+    ).toBeUndefined();
   });
 
   it('skips unknown feature type gracefully', () => {
@@ -542,7 +646,9 @@ describe('HitTester — robustness', () => {
   });
 
   it('skips a polygon feature with only 1 ring of 2 points without throwing', () => {
-    const art = makeArtifact([makeLayer('p', [makePolygonFeature([[pt(0, 0), pt(1, 1)]])])]);
+    const art = makeArtifact([
+      makeLayer('p', [makePolygonFeature([[pt(0, 0), pt(1, 1)]])]),
+    ]);
     expect(() => tester.hitTest(pt(0, 0), art)).not.toThrow();
   });
 
@@ -578,7 +684,9 @@ describe('HitTester — robustness', () => {
   });
 
   it('is reusable across multiple calls (stateless)', () => {
-    const art = makeArtifact([makeLayer('pts', [makePointFeature([pt(10, 10)])])]);
+    const art = makeArtifact([
+      makeLayer('pts', [makePointFeature([pt(10, 10)])]),
+    ]);
     const r1 = tester.hitTest(pt(10, 10), art);
     const r2 = tester.hitTest(pt(10, 10), art);
     expect(r1?.distance).toBe(r2?.distance);
@@ -615,7 +723,13 @@ describe('HitTester — large synthetic dataset', () => {
       const y = Math.floor(i / 20) * 50;
       features.push(
         makePolygonFeature([
-          [pt(x, y), pt(x + 40, y), pt(x + 40, y + 40), pt(x, y + 40), pt(x, y)],
+          [
+            pt(x, y),
+            pt(x + 40, y),
+            pt(x + 40, y + 40),
+            pt(x, y + 40),
+            pt(x, y),
+          ],
         ]),
       );
     }

@@ -56,7 +56,11 @@ export function distanceSquared(a: TilePoint, b: TilePoint): number {
  * @param b  Segment end.
  * @returns  Squared distance from p to the nearest point on segment [a, b].
  */
-export function pointToSegmentDistanceSquared(p: TilePoint, a: TilePoint, b: TilePoint): number {
+export function pointToSegmentDistanceSquared(
+  p: TilePoint,
+  a: TilePoint,
+  b: TilePoint,
+): number {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const lenSq = dx * dx + dy * dy;
@@ -67,7 +71,10 @@ export function pointToSegmentDistanceSquared(p: TilePoint, a: TilePoint, b: Til
   }
 
   // Scalar projection of (p − a) onto (b − a), clamped to [0, 1]
-  const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lenSq));
+  const t = Math.max(
+    0,
+    Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lenSq),
+  );
 
   // Nearest point on segment
   const nearestX = a.x + t * dx;
@@ -99,7 +106,10 @@ export function pointToSegmentDistanceSquared(p: TilePoint, a: TilePoint, b: Til
  *              or implicitly closed — both are handled correctly).
  * @returns true if p is inside the ring.
  */
-export function pointInPolygon(p: TilePoint, ring: readonly TilePoint[]): boolean {
+export function pointInPolygon(
+  p: TilePoint,
+  ring: readonly TilePoint[],
+): boolean {
   const n = ring.length;
   if (n < 3) return false;
 
@@ -110,7 +120,10 @@ export function pointInPolygon(p: TilePoint, ring: readonly TilePoint[]): boolea
     if (vi === undefined || vj === undefined) continue;
 
     // Standard crossing-number test
-    if (vi.y > p.y !== vj.y > p.y && p.x < ((vj.x - vi.x) * (p.y - vi.y)) / (vj.y - vi.y) + vi.x) {
+    if (
+      vi.y > p.y !== vj.y > p.y &&
+      p.x < ((vj.x - vi.x) * (p.y - vi.y)) / (vj.y - vi.y) + vi.x
+    ) {
       inside = !inside;
     }
   }
@@ -134,7 +147,10 @@ export function pointInPolygon(p: TilePoint, ring: readonly TilePoint[]): boolea
  * @returns     Minimum squared distance to the ring boundary, or Infinity
  *              if the ring has fewer than 2 vertices.
  */
-export function minRingDistanceSquared(p: TilePoint, ring: readonly TilePoint[]): number {
+export function minRingDistanceSquared(
+  p: TilePoint,
+  ring: readonly TilePoint[],
+): number {
   const n = ring.length;
   if (n < 2) return Infinity;
 

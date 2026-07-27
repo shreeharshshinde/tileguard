@@ -88,7 +88,11 @@ export type InspectorLifecycle =
   | { readonly status: 'empty'; readonly filePath: string }
 
   /** Tile load failed. `error` contains the underlying cause. */
-  | { readonly status: 'error'; readonly filePath: string; readonly error: Error }
+  | {
+      readonly status: 'error';
+      readonly filePath: string;
+      readonly error: Error;
+    }
 
   /**
    * Store has been disposed. All listeners have been released.

@@ -73,7 +73,10 @@ function makeMockStore(
     diagnostics: [],
     filePath: 'test.pbf',
   },
-): InspectorStore & { select: ReturnType<typeof vi.fn>; setHover: ReturnType<typeof vi.fn> } {
+): InspectorStore & {
+  select: ReturnType<typeof vi.fn>;
+  setHover: ReturnType<typeof vi.fn>;
+} {
   const nullRef: FeatureRef = { layerName: null, featureIndex: null };
   const filters: FilterState = {
     visibleLayers: Object.freeze(new Set<string>()),
@@ -96,7 +99,11 @@ function makeMockStore(
 
 /** Build a controller and its collaborators with default hit result. */
 function makeController(
-  opts: { hitResult?: HitResult; throwViewport?: boolean; lifecycle?: InspectorLifecycle } = {},
+  opts: {
+    hitResult?: HitResult;
+    throwViewport?: boolean;
+    lifecycle?: InspectorLifecycle;
+  } = {},
 ) {
   const viewport = makeMockViewport(opts.throwViewport ?? false);
   const hitTester = makeMockHitTester(opts.hitResult);
@@ -167,7 +174,9 @@ describe('InteractionController — handlePointerMove (miss)', () => {
 
 describe('InteractionController — handlePointerMove (viewport failure)', () => {
   it('silently ignores the event when screenToTile throws', () => {
-    const { controller, store, hitTester } = makeController({ throwViewport: true });
+    const { controller, store, hitTester } = makeController({
+      throwViewport: true,
+    });
     expect(() => controller.handlePointerMove(SCREEN_PT)).not.toThrow();
     expect(store.setHover).not.toHaveBeenCalled();
     expect(hitTester.hitTest).not.toHaveBeenCalled();
@@ -246,7 +255,9 @@ describe('InteractionController — handleClick (miss)', () => {
 
 describe('InteractionController — handleClick (viewport failure)', () => {
   it('silently ignores the event when screenToTile throws', () => {
-    const { controller, store, hitTester } = makeController({ throwViewport: true });
+    const { controller, store, hitTester } = makeController({
+      throwViewport: true,
+    });
     expect(() => controller.handleClick(SCREEN_PT)).not.toThrow();
     expect(store.select).not.toHaveBeenCalled();
     expect(hitTester.hitTest).not.toHaveBeenCalled();
@@ -276,7 +287,11 @@ describe('InteractionController — unloaded store lifecycle', () => {
 
   it('clears hover when store is in error state', () => {
     const { controller, store } = makeController({
-      lifecycle: { status: 'error', filePath: 'test.pbf', error: new Error('fail') },
+      lifecycle: {
+        status: 'error',
+        filePath: 'test.pbf',
+        error: new Error('fail'),
+      },
     });
     controller.handlePointerMove(SCREEN_PT);
     expect(store.setHover).toHaveBeenCalledWith(null, null);
@@ -324,7 +339,8 @@ describe('InteractionController — repeated interactions', () => {
     controller.handlePointerMove({ x: 10, y: 20 });
     controller.handlePointerMove({ x: 30, y: 40 });
     expect(hitTester.hitTest).toHaveBeenCalledTimes(2);
-    const [call1, call2] = (hitTester.hitTest as ReturnType<typeof vi.fn>).mock.calls;
+    const [call1, call2] = (hitTester.hitTest as ReturnType<typeof vi.fn>).mock
+      .calls;
     expect(call1?.[0]).toEqual({ x: 1010, y: 1020 });
     expect(call2?.[0]).toEqual({ x: 1030, y: 1040 });
   });
@@ -353,7 +369,9 @@ describe('InteractionController — delegation contract', () => {
           (v as ReturnType<typeof vi.fn>).mock.calls.length > 0,
       )
       .map(([k]) => k);
-    expect(calledMethods.every((m) => ['select', 'setHover'].includes(m))).toBe(true);
+    expect(calledMethods.every((m) => ['select', 'setHover'].includes(m))).toBe(
+      true,
+    );
   });
 
   it('passes the artifact from the loaded lifecycle to hitTest', () => {
@@ -364,7 +382,10 @@ describe('InteractionController — delegation contract', () => {
       diagnostics: [],
       filePath: 'test.pbf',
     };
-    const { controller, hitTester } = makeController({ hitResult: HIT, lifecycle });
+    const { controller, hitTester } = makeController({
+      hitResult: HIT,
+      lifecycle,
+    });
     controller.handlePointerMove(SCREEN_PT);
     expect(hitTester.hitTest).toHaveBeenCalledWith(expect.anything(), artifact);
   });

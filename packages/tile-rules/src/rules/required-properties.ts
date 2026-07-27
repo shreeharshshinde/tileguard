@@ -10,7 +10,8 @@ export interface RequiredPropertiesOptions {
 export const requiredPropertiesRule: Rule<RequiredPropertiesOptions> = {
   id: 'tile/required-properties',
   meta: {
-    description: 'Vector tile features must include configured required properties.',
+    description:
+      'Vector tile features must include configured required properties.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/tile/required-properties',
     recommended: true,
@@ -28,7 +29,11 @@ export const requiredPropertiesRule: Rule<RequiredPropertiesOptions> = {
       const layer = tile.layers[layerName];
       if (layer === undefined) continue;
 
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex += 1) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex += 1
+      ) {
         const feature = layer.features[featureIndex]!;
         for (const property of properties) {
           if (Object.hasOwn(feature.properties, property)) continue;
@@ -50,11 +55,15 @@ function normalizeRequiredProperties(
 ): Readonly<Record<string, readonly string[]>> {
   if (options === undefined) return {};
   if (options.layers !== undefined) return options.layers;
-  if (options.requiredProperties !== undefined) return options.requiredProperties;
+  if (options.requiredProperties !== undefined)
+    return options.requiredProperties;
 
   const result: Record<string, readonly string[]> = {};
   for (const [key, value] of Object.entries(options)) {
-    if (Array.isArray(value) && value.every((item) => typeof item === 'string')) {
+    if (
+      Array.isArray(value) &&
+      value.every((item) => typeof item === 'string')
+    ) {
       result[key] = value;
     }
   }

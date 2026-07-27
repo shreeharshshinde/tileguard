@@ -27,7 +27,10 @@ function buildRules() {
   };
 
   if (mode === 'legacy') {
-    rules['tile/coordinate-range'] = ['error', { buffer: 0, excludeLayers: [] }];
+    rules['tile/coordinate-range'] = [
+      'error',
+      { buffer: 0, excludeLayers: [] },
+    ];
   } else if (mode === 'after') {
     rules['tile/coordinate-range'] = 'error';
   } else if (mode !== 'disabled') {
@@ -81,7 +84,8 @@ for (let x = 0; x < 4; x++) {
 const DATASETS = [
   {
     name: 'OpenMapTiles',
-    urlPattern: (z, x, y) => `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
+    urlPattern: (z, x, y) =>
+      `https://demotiles.maplibre.org/tiles/${z}/${x}/${y}.pbf`,
   },
   {
     name: 'OpenFreeMap',
@@ -236,10 +240,14 @@ async function runBenchmark() {
 
       // Safety Check: Verify that we did not fail to load the tile
       const loadFailure = result.diagnostics.find(
-        (d) => d.ruleId === 'artifact/load-failed' || d.ruleId === 'artifact/no-provider',
+        (d) =>
+          d.ruleId === 'artifact/load-failed' ||
+          d.ruleId === 'artifact/no-provider',
       );
       if (loadFailure) {
-        throw new Error(`CRITICAL: Tile failed to load during benchmark: ${loadFailure.message}`);
+        throw new Error(
+          `CRITICAL: Tile failed to load during benchmark: ${loadFailure.message}`,
+        );
       }
 
       processed++;
@@ -282,7 +290,9 @@ async function runBenchmark() {
   const cacheInfo = getDirInfo(CACHE_DIR);
   log(`\n=== CACHE VERIFICATION ===`);
   log(`Total valid cache files: ${cacheInfo.fileCount}`);
-  log(`Total cache size: ${(cacheInfo.totalBytes / 1024 / 1024).toFixed(2)} MB`);
+  log(
+    `Total cache size: ${(cacheInfo.totalBytes / 1024 / 1024).toFixed(2)} MB`,
+  );
 
   if (jsonOutput) {
     console.log(
@@ -330,7 +340,9 @@ Based on execution times and geometry structure:
   }
   const reportPath = path.join(reportDir, 'tileguard_benchmark_results.md');
   fs.writeFileSync(reportPath, reportMarkdown);
-  console.log(`\nBenchmark run completed successfully. Report saved to: ${reportPath}`);
+  console.log(
+    `\nBenchmark run completed successfully. Report saved to: ${reportPath}`,
+  );
 }
 
 runBenchmark().catch((err) => {

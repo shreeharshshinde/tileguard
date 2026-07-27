@@ -22,7 +22,10 @@ export default defineConfig({
       '@tileguard/core': resolve(__dirname, '../core/src/index.ts'),
       '@tileguard/shared': resolve(__dirname, '../shared/src/index.ts'),
       '@tileguard/tile-rules': resolve(__dirname, '../tile-rules/src/index.ts'),
-      '@tileguard/style-rules': resolve(__dirname, '../style-rules/src/index.ts'),
+      '@tileguard/style-rules': resolve(
+        __dirname,
+        '../style-rules/src/index.ts',
+      ),
       '@tileguard/reporters': resolve(__dirname, '../reporters/src/index.ts'),
     },
   },

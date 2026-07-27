@@ -13,7 +13,9 @@ export interface Point {
 
 export type TileValue = string | number | boolean | null;
 
-export type VectorTileGeometry = readonly Point[] | readonly (readonly Point[])[];
+export type VectorTileGeometry =
+  | readonly Point[]
+  | readonly (readonly Point[])[];
 
 export interface VectorTileFeature {
   readonly id?: number;
@@ -36,7 +38,10 @@ export interface VectorTileContent {
   readonly layers: Readonly<Record<string, VectorTileLayer>>;
 }
 
-export type VectorTileArtifact = Artifact<typeof VECTOR_TILE_ARTIFACT_TYPE, VectorTileContent>;
+export type VectorTileArtifact = Artifact<
+  typeof VECTOR_TILE_ARTIFACT_TYPE,
+  VectorTileContent
+>;
 
 export interface LayerFeatureBounds {
   readonly min?: number;
@@ -49,7 +54,9 @@ export function getVectorTile(artifact: Artifact): VectorTileContent {
   return artifact.content as VectorTileContent;
 }
 
-export function getFeatureParts(feature: VectorTileFeature): readonly (readonly Point[])[] {
+export function getFeatureParts(
+  feature: VectorTileFeature,
+): readonly (readonly Point[])[] {
   if (feature.type === 1) {
     return [feature.geometry as readonly Point[]];
   }
@@ -57,5 +64,8 @@ export function getFeatureParts(feature: VectorTileFeature): readonly (readonly 
 }
 
 export function totalFeatureCount(tile: VectorTileContent): number {
-  return Object.values(tile.layers).reduce((total, layer) => total + layer.features.length, 0);
+  return Object.values(tile.layers).reduce(
+    (total, layer) => total + layer.features.length,
+    0,
+  );
 }
