@@ -1,0 +1,64 @@
+/* DiagnosticPanel */
+
+.diagnostic-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Panel header */
+.diagnostic-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tg-space-md) var(--tg-space-lg);
+  border-bottom: 1px solid var(--tg-border);
+  flex-shrink: 0;
+}
+
+.diagnostic-panel__title {
+  font-size: var(--tg-font-size-sm);
+  font-weight: var(--tg-font-weight-bold);
+  color: var(--tg-text-primary);
+}
+
+.diagnostic-panel__count {
+  font-size: var(--tg-font-size-xs);
+  color: var(--tg-text-muted);
+  font-variant-numeric: tabular-nums;
+  background-color: var(--tg-bg-surface);
+  padding: 1px var(--tg-space-sm);
+  border-radius: 99px;
+}
+
+/* Scrollable list area */
+.diagnostic-panel__list-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty state (no diagnostics) */
+.diagnostic-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tg-space-sm);
+  padding: var(--tg-space-2xl);
+  color: var(--tg-text-muted);
+  text-align: center;
+  flex: 1;
+}
+
+.diagnostic-panel__empty-icon {
+  font-size: 24px;
+  color: var(--tg-success);
+}
+
+.diagnostic-panel__empty-text {
+  font-size: var(--tg-font-size-sm);
+}

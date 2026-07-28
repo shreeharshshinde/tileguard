@@ -1,0 +1,34 @@
+/* SeverityBadge */
+
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tg-space-xs);
+  font-size: var(--tg-font-size-xs);
+  font-weight: var(--tg-font-weight-medium);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.severity-badge__icon {
+  line-height: 1;
+  font-size: 12px;
+}
+
+.severity-badge__count,
+.severity-badge__label {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Severity colour variants */
+.severity-badge--error {
+  color: var(--tg-error);
+}
+
+.severity-badge--warning {
+  color: var(--tg-warning);
+}
+
+.severity-badge--info {
+  color: var(--tg-info);
+}

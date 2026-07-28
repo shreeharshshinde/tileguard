@@ -1,0 +1,187 @@
+/* DiagnosticToolbar */
+
+.diagnostic-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--tg-space-xs);
+  padding: var(--tg-space-xs) var(--tg-space-md);
+  border-bottom: 1px solid var(--tg-border);
+  background-color: var(--tg-bg-secondary);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  min-height: 36px;
+}
+
+/* Severity checkbox group */
+.diagnostic-toolbar__severity-group {
+  display: flex;
+  align-items: center;
+  gap: var(--tg-space-xs);
+}
+
+.diagnostic-toolbar__severity-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: var(--tg-border-radius);
+  transition: background-color var(--tg-transition-fast);
+}
+
+.diagnostic-toolbar__severity-item:hover {
+  background-color: var(--tg-bg-hover);
+}
+
+.diagnostic-toolbar__severity-item--error {
+  color: var(--tg-error);
+}
+
+.diagnostic-toolbar__severity-item--warning {
+  color: var(--tg-warning);
+}
+
+.diagnostic-toolbar__severity-item--info {
+  color: var(--tg-info);
+}
+
+.diagnostic-toolbar__checkbox {
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  accent-color: var(--tg-accent);
+}
+
+/* Layer dropdown */
+.diagnostic-toolbar__layer-group {
+  position: relative;
+}
+
+.diagnostic-toolbar__dropdown {
+  position: relative;
+}
+
+.diagnostic-toolbar__dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tg-space-xs);
+  padding: 2px var(--tg-space-sm);
+  font-size: var(--tg-font-size-xs);
+  color: var(--tg-text-secondary);
+  border-radius: var(--tg-border-radius);
+  cursor: pointer;
+  border: 1px solid var(--tg-border);
+  background: var(--tg-bg-surface);
+  transition: background-color var(--tg-transition-fast);
+  user-select: none;
+  list-style: none;
+}
+
+.diagnostic-toolbar__dropdown-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.diagnostic-toolbar__dropdown-trigger:hover {
+  background-color: var(--tg-bg-hover);
+  color: var(--tg-text-primary);
+}
+
+.diagnostic-toolbar__dropdown-trigger--active {
+  border-color: var(--tg-accent);
+  color: var(--tg-accent);
+}
+
+.diagnostic-toolbar__active-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--tg-accent);
+  color: white;
+  font-size: 10px;
+  font-weight: var(--tg-font-weight-bold);
+}
+
+.diagnostic-toolbar__dropdown-content {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  min-width: 160px;
+  background-color: var(--tg-bg-secondary);
+  border: 1px solid var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  box-shadow: var(--tg-shadow-md);
+  padding: var(--tg-space-xs) 0;
+}
+
+.diagnostic-toolbar__layer-item {
+  display: flex;
+  align-items: center;
+  gap: var(--tg-space-sm);
+  padding: var(--tg-space-xs) var(--tg-space-md);
+  font-size: var(--tg-font-size-xs);
+  cursor: pointer;
+  transition: background-color var(--tg-transition-fast);
+}
+
+.diagnostic-toolbar__layer-item:hover {
+  background-color: var(--tg-bg-hover);
+}
+
+.diagnostic-toolbar__layer-name {
+  flex: 1;
+  color: var(--tg-text-primary);
+}
+
+.diagnostic-toolbar__layer-count {
+  color: var(--tg-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Spacer */
+.diagnostic-toolbar__spacer {
+  flex: 1;
+}
+
+/* Sort select */
+.diagnostic-toolbar__sort {
+  display: flex;
+  align-items: center;
+}
+
+.diagnostic-toolbar__sort-select {
+  padding: 2px var(--tg-space-sm);
+  font-size: var(--tg-font-size-xs);
+  color: var(--tg-text-secondary);
+  background-color: var(--tg-bg-surface);
+  border: 1px solid var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  cursor: pointer;
+  outline: none;
+}
+
+.diagnostic-toolbar__sort-select:hover {
+  background-color: var(--tg-bg-hover);
+  color: var(--tg-text-primary);
+}
+
+/* Reset button */
+.diagnostic-toolbar__reset {
+  padding: 2px var(--tg-space-xs);
+  font-size: var(--tg-font-size-sm);
+  color: var(--tg-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--tg-border-radius);
+  cursor: pointer;
+  transition: color var(--tg-transition-fast);
+  line-height: 1;
+}
+
+.diagnostic-toolbar__reset:hover {
+  color: var(--tg-text-primary);
+}

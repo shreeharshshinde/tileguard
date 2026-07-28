@@ -1,0 +1,90 @@
+/* DiagnosticItem */
+
+.diagnostic-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-xs);
+  width: 100%;
+  padding: var(--tg-space-sm) var(--tg-space-md);
+  border: none;
+  border-bottom: 1px solid var(--tg-border);
+  background: transparent;
+  color: var(--tg-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--tg-transition-fast);
+}
+
+.diagnostic-item:hover {
+  background-color: var(--tg-bg-hover);
+}
+
+.diagnostic-item:focus-visible {
+  outline: 2px solid var(--tg-accent);
+  outline-offset: -2px;
+}
+
+.diagnostic-item--selected {
+  background-color: color-mix(in srgb, var(--tg-accent) 15%, transparent);
+  border-left: 2px solid var(--tg-accent);
+}
+
+.diagnostic-item--selected:hover {
+  background-color: color-mix(in srgb, var(--tg-accent) 22%, transparent);
+}
+
+/* Header row: icon + message */
+.diagnostic-item__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tg-space-sm);
+}
+
+.diagnostic-item__message {
+  font-size: var(--tg-font-size-sm);
+  line-height: 1.4;
+  color: var(--tg-text-primary);
+  word-break: break-word;
+}
+
+/* Meta row: layer, feature ID, rule ID */
+.diagnostic-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tg-space-xs);
+  margin-left: calc(12px + var(--tg-space-sm)); /* align with message */
+}
+
+.diagnostic-item__layer,
+.diagnostic-item__feature,
+.diagnostic-item__rule {
+  font-size: var(--tg-font-size-xs);
+  padding: 1px var(--tg-space-xs);
+  border-radius: calc(var(--tg-border-radius) / 2);
+  white-space: nowrap;
+}
+
+.diagnostic-item__layer {
+  background-color: var(--tg-bg-surface);
+  color: var(--tg-text-secondary);
+}
+
+.diagnostic-item__feature {
+  background-color: var(--tg-bg-surface);
+  color: var(--tg-accent);
+}
+
+.diagnostic-item__rule {
+  background-color: var(--tg-bg-surface);
+  color: var(--tg-text-muted);
+  font-family: var(--tg-font-mono);
+}
+
+/* Suggestion row */
+.diagnostic-item__suggestion {
+  margin-left: calc(12px + var(--tg-space-sm));
+  font-size: var(--tg-font-size-xs);
+  color: var(--tg-text-muted);
+  font-style: italic;
+  line-height: 1.3;
+}
