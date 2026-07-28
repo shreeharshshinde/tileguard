@@ -1,0 +1,93 @@
+/* PropertyTable */
+
+.property-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--tg-font-size-xs);
+  table-layout: fixed;
+}
+
+.property-table--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tg-space-lg);
+}
+
+.property-table__empty-text {
+  color: var(--tg-text-muted);
+  font-size: var(--tg-font-size-xs);
+}
+
+.property-table__head {
+  position: sticky;
+  top: 0;
+  background-color: var(--tg-bg-secondary);
+  z-index: 1;
+}
+
+.property-table__th {
+  padding: var(--tg-space-xs) var(--tg-space-sm);
+  text-align: left;
+  font-weight: var(--tg-font-weight-medium);
+  color: var(--tg-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+  border-bottom: 1px solid var(--tg-border);
+}
+
+.property-table__th:first-child {
+  width: 40%;
+}
+
+.property-table__row {
+  border-bottom: 1px solid color-mix(in srgb, var(--tg-border) 50%, transparent);
+  transition: background-color var(--tg-transition-fast);
+}
+
+.property-table__row:hover {
+  background-color: var(--tg-bg-hover);
+}
+
+.property-table__row:last-child {
+  border-bottom: none;
+}
+
+.property-table__key {
+  padding: var(--tg-space-xs) var(--tg-space-sm);
+  color: var(--tg-text-secondary);
+  font-family: var(--tg-font-mono);
+  font-size: var(--tg-font-size-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.property-table__value {
+  padding: var(--tg-space-xs) var(--tg-space-sm);
+  font-family: var(--tg-font-mono);
+  font-size: var(--tg-font-size-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Value syntax colouring */
+.property-table__value--string {
+  color: var(--tg-success);
+}
+
+.property-table__value--number {
+  color: var(--tg-info);
+}
+
+.property-table__value--boolean {
+  color: var(--tg-warning);
+}
+
+.property-table__value--null {
+  color: var(--tg-text-muted);
+  font-style: italic;
+}

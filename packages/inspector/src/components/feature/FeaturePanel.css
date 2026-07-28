@@ -1,0 +1,63 @@
+/* FeaturePanel */
+
+.feature-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Empty state */
+.feature-panel--empty {
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-panel__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tg-space-sm);
+  padding: var(--tg-space-xl);
+  text-align: center;
+  color: var(--tg-text-muted);
+}
+
+.feature-panel__empty-icon {
+  font-size: 28px;
+  margin-bottom: var(--tg-space-xs);
+}
+
+.feature-panel__empty-title {
+  font-size: var(--tg-font-size-sm);
+  font-weight: var(--tg-font-weight-medium);
+  color: var(--tg-text-secondary);
+}
+
+.feature-panel__empty-hint {
+  font-size: var(--tg-font-size-xs);
+  line-height: 1.5;
+}
+
+/* Sections */
+.feature-panel__section {
+  padding: var(--tg-space-md) var(--tg-space-lg);
+  flex-shrink: 0;
+}
+
+.feature-panel__section-title {
+  font-size: var(--tg-font-size-xs);
+  font-weight: var(--tg-font-weight-bold);
+  color: var(--tg-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--tg-space-sm);
+}
+
+/* Dividers */
+.feature-panel__divider {
+  height: 1px;
+  background-color: var(--tg-border);
+  flex-shrink: 0;
+}

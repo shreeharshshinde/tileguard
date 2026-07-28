@@ -1,0 +1,58 @@
+/* FeatureHeader */
+
+.feature-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-sm);
+}
+
+.feature-header__row {
+  display: flex;
+  align-items: center;
+  gap: var(--tg-space-md);
+}
+
+.feature-header__label {
+  font-size: var(--tg-font-size-xs);
+  font-weight: var(--tg-font-weight-medium);
+  color: var(--tg-text-muted);
+  width: 72px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Layer name */
+.feature-header__layer-name {
+  font-size: var(--tg-font-size-sm);
+  font-weight: var(--tg-font-weight-medium);
+  color: var(--tg-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Geometry */
+.feature-header__geometry {
+  display: flex;
+  align-items: center;
+  gap: var(--tg-space-xs);
+}
+
+.feature-header__geometry-icon {
+  font-size: 13px;
+  color: var(--tg-accent);
+}
+
+.feature-header__geometry-label {
+  font-size: var(--tg-font-size-sm);
+  color: var(--tg-text-secondary);
+}
+
+/* Feature ID */
+.feature-header__id {
+  font-size: var(--tg-font-size-sm);
+  font-family: var(--tg-font-mono);
+  color: var(--tg-accent);
+  font-variant-numeric: tabular-nums;
+}
