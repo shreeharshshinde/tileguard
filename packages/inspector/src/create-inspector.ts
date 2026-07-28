@@ -1,58 +1,17 @@
 /**
- * @tileguard/inspector — Inspector Integration Layer (Milestone 5 — Step 5)
+ * @tileguard/inspector — Inspector Integration Layer (Milestone 6 — Step 3)
  *
- * Composes the components implemented in Steps 1–4 into a complete inspector
- * interaction and rendering pipeline.
+ * Adds Step 3 settings and statistics API while keeping Steps 1 & 2 intact.
  *
- * Component graph (constructed once, never recreated):
+ * Step 3 additions:
+ *   - getSettings()        → InspectorSettings (from SettingsService)
+ *   - updateSettings()     → partial update, persists to localStorage
+ *   - resetSettings()      → restore defaults, persists to localStorage
+ *   - getTileStatistics()  → TileStatistics (from StatisticsService)
+ *   - getStatistics()      → kept as DiagnosticSummary alias for Step 2 compat
  *
- *   Inspector
- *     owns
- *       InspectorStore          (state machine)
- *       HitTester               (stateless geometry picker)
- *       InteractionController   (pointer → store orchestration)
- *       SelectionProducer       (store → overlay descriptors)
- *       RenderCoordinator       (overlay descriptors → renderer)
- *
- * Data flow:
- *
- *   Pointer Event
- *       │
- *       ▼
- *   InteractionController
- *       │
- *       ▼
- *   HitTester
- *       │
- *       ▼
- *   InspectorStore
- *       │  (listener notification)
- *       ▼
- *   RenderCoordinator
- *       │
- *       ▼
- *   SelectionProducer
- *       │
- *       ▼
- *   CanvasRenderer
- *
- * Responsibilities (only):
- *   1. Construct the component graph.
- *   2. Wire store changes to rendering (store.subscribe → coordinator.render).
- *   3. Expose a simple inspector-facing API.
- *
- * Invariants:
- *   - No new business logic.
- *   - No new rendering algorithms.
- *   - No new geometry.
- *   - No duplicated state — all state lives in InspectorStore.
- *   - InteractionController never references Renderer.
- *   - RenderCoordinator never references InteractionController.
- *   - HitTester remains completely independent.
- *   - Errors propagate unchanged from underlying components.
- *
- * Boundary: The Inspector facade is the package's primary entry point.
- * Internal components are not exposed directly.
+ * Architecture: SettingsService is a singleton; Inspector is the bridge
+ * between settings changes and the renderer (CanvasRenderer.setOptions).
  */
 
 import type { Diagnostic } from '@tileguard/core';
@@ -65,10 +24,27 @@ import {
 } from './interaction/interaction-controller.js';
 import { createSelectionProducer } from './overlay/selection-producer.js';
 import {
+  createDiagnosticProvider,
+  createFeatureProvider,
+  createLayerProvider,
+  type DiagnosticSummary,
+  type FeatureProvider,
+  type ResolvedFeature,
+} from './providers/index.js';
+import {
   createRenderCoordinator,
   type RenderCoordinator,
 } from './render/render-coordinator.js';
-import type { Renderer } from './renderer/canvas-renderer.js';
+import type { CanvasRenderer, Renderer } from './renderer/canvas-renderer.js';
+import { createSearchService, type SearchResult } from './services/SearchService.js';
+import {
+  createStatisticsService,
+  type TileStatistics,
+} from './services/StatisticsService.js';
+import {
+  getSettingsService,
+  type InspectorSettings,
+} from './services/SettingsService.js';
 import {
   createInspectorStore,
   type InspectorStore,
@@ -79,81 +55,55 @@ import type { Viewport } from './viewport/viewport.js';
 // Public Interface
 // ---------------------------------------------------------------------------
 
-/**
- * Inspector — unified facade for the tile inspection pipeline.
- *
- * This is the package's primary entry point. All interaction, rendering, and
- * lifecycle management flows through this interface.
- */
 export interface Inspector {
-  /**
-   * Load a tile file into the inspector.
-   *
-   * Transitions the store through loading → loaded/empty/error and
-   * automatically triggers a render pass on completion.
-   *
-   * @param filePath     Path or identifier for the tile file.
-   * @param artifact     Pre-decoded tile artifact (synchronous load path).
-   * @param diagnostics  Pre-computed diagnostics for the tile.
-   */
+  // ── Step 1 API ────────────────────────────────────────────────────────
   load(
     filePath: string,
     artifact: VectorTileArtifact,
     diagnostics: readonly Diagnostic[],
   ): Promise<void>;
-
-  /**
-   * Handle a pointer move over the canvas.
-   *
-   * Pipeline: screenPoint → tilePoint → hitTest → store.setHover() → render()
-   */
   handlePointerMove(screenPoint: ScreenPoint): void;
-
-  /**
-   * Handle the pointer leaving the canvas.
-   *
-   * Clears hover state and triggers a render pass.
-   */
   handlePointerLeave(): void;
-
-  /**
-   * Handle a click on the canvas.
-   *
-   * Pipeline: screenPoint → tilePoint → hitTest → store.select() → render()
-   */
   handleClick(screenPoint: ScreenPoint): void;
-
-  /**
-   * Execute one rendering pass.
-   *
-   * Reads store state, produces interaction overlays, and invokes the renderer.
-   * Safe to call at any time — returns immediately if no tile is loaded.
-   */
   render(): void;
+  dispose(): void;
+
+  // ── Step 2 API ────────────────────────────────────────────────────────
+  selectDiagnostic(index: number): void;
+  focusFeature(layerName: string, featureIndex: number): void;
+  search(query: string): readonly SearchResult[];
+  clearSearch(): void;
+  getSelectedFeature(): ResolvedFeature | null;
+  getDiagnostic(index: number): Diagnostic | null;
+  /** @deprecated use getTileStatistics() for the full model */
+  getStatistics(): DiagnosticSummary;
+
+  // ── Step 3 API ────────────────────────────────────────────────────────
+
+  /** Full tile statistics snapshot (layers, geometry counts, diagnostic counts). */
+  getTileStatistics(): TileStatistics;
+
+  /** Returns the current user settings from SettingsService. */
+  getSettings(): InspectorSettings;
 
   /**
-   * Dispose the inspector and release all resources.
-   *
-   * Disposes the store, removes the render subscription, and prevents further
-   * rendering. Safe to call multiple times.
+   * Apply a partial settings update.
+   * Persists to localStorage and immediately updates the renderer where
+   * applicable (e.g. showVertices → CanvasRenderer.setOptions).
    */
-  dispose(): void;
+  updateSettings(patch: Partial<InspectorSettings>): void;
+
+  /** Reset all settings to defaults. Persists and updates renderer. */
+  resetSettings(): void;
 }
 
 // ---------------------------------------------------------------------------
 // Construction Options
 // ---------------------------------------------------------------------------
 
-/** Dependencies required to construct an Inspector. */
 export interface InspectorOptions {
-  /** The viewport used for screen ↔ tile coordinate conversion. */
   readonly viewport: Viewport;
-  /** The renderer that draws the tile and overlays to the canvas. */
   readonly renderer: Renderer;
-  /**
-   * Optional externally-owned store. This lets presentation hosts observe the
-   * same state instance used by the inspection pipeline.
-   */
   readonly store?: InspectorStore;
 }
 
@@ -165,15 +115,17 @@ class InspectorImpl implements Inspector {
   private readonly _store: InspectorStore;
   private readonly _interactionController: InteractionController;
   private readonly _renderCoordinator: RenderCoordinator;
+  private readonly _featureProvider: FeatureProvider;
   private readonly _unsubscribe: () => void;
+  private readonly _renderer: Renderer;
+
+  private _lastSearchResults: readonly SearchResult[] = [];
 
   constructor({ viewport, renderer, store }: InspectorOptions) {
-    // ── Step 1: Construct the component graph (once) ──────────────────────
-
     this._store = store ?? createInspectorStore();
+    this._renderer = renderer;
 
     const hitTester = createHitTester();
-
     this._interactionController = createInteractionController({
       store: this._store,
       viewport,
@@ -181,25 +133,20 @@ class InspectorImpl implements Inspector {
     });
 
     const selectionProducer = createSelectionProducer();
-
     this._renderCoordinator = createRenderCoordinator({
       store: this._store,
       selectionProducer,
       renderer,
     });
 
-    // ── Step 2: Wire store changes to rendering ──────────────────────────
-    // This is the only automatic wiring: store change → render().
-    // It ensures that pointer move → store.setHover() → render() and
-    // click → store.select() → render() happen without the interaction
-    // layer knowing anything about rendering.
+    this._featureProvider = createFeatureProvider(this._store);
 
     this._unsubscribe = this._store.subscribe(() => {
       this._renderCoordinator.render();
     });
   }
 
-  // ── Public API (delegates only) ─────────────────────────────────────────
+  // ── Step 1 ──────────────────────────────────────────────────────────────
 
   async load(
     filePath: string,
@@ -229,35 +176,95 @@ class InspectorImpl implements Inspector {
     this._store.dispose();
     this._unsubscribe();
   }
+
+  // ── Step 2 ──────────────────────────────────────────────────────────────
+
+  selectDiagnostic(index: number): void {
+    const { lifecycle } = this._store;
+    if (lifecycle.status !== 'loaded') return;
+    const diagnostic = lifecycle.diagnostics[index];
+    if (diagnostic === undefined) return;
+    const location = diagnostic.location as
+      | { layer?: string; featureIndex?: number }
+      | undefined;
+    if (location?.layer !== undefined && location.featureIndex !== undefined) {
+      this._store.select(location.layer, location.featureIndex);
+    }
+  }
+
+  focusFeature(layerName: string, featureIndex: number): void {
+    this._store.select(layerName, featureIndex);
+  }
+
+  search(query: string): readonly SearchResult[] {
+    const service = createSearchService(this._featureProvider);
+    this._lastSearchResults = service.search(query);
+    return this._lastSearchResults;
+  }
+
+  clearSearch(): void {
+    this._lastSearchResults = [];
+  }
+
+  getSelectedFeature(): ResolvedFeature | null {
+    return this._featureProvider.getSelectedFeature();
+  }
+
+  getDiagnostic(index: number): Diagnostic | null {
+    return createDiagnosticProvider(this._store).getDiagnosticAt(index);
+  }
+
+  getStatistics(): DiagnosticSummary {
+    return createDiagnosticProvider(this._store).getSummary();
+  }
+
+  // ── Step 3 ──────────────────────────────────────────────────────────────
+
+  getTileStatistics(): TileStatistics {
+    const featureProvider = this._featureProvider;
+    const diagProvider = createDiagnosticProvider(this._store);
+    const layerProvider = createLayerProvider(this._store);
+    return createStatisticsService(
+      featureProvider,
+      diagProvider,
+      layerProvider,
+    ).compute();
+  }
+
+  getSettings(): InspectorSettings {
+    return getSettingsService().getSettings();
+  }
+
+  updateSettings(patch: Partial<InspectorSettings>): void {
+    getSettingsService().updateSettings(patch);
+    this._applySettingsToRenderer();
+    this._renderCoordinator.render();
+  }
+
+  resetSettings(): void {
+    getSettingsService().resetSettings();
+    this._applySettingsToRenderer();
+    this._renderCoordinator.render();
+  }
+
+  /**
+   * Push the settings that affect the renderer into CanvasRenderer.setOptions().
+   * CanvasRenderer is the concrete class; we access setOptions() via a type
+   * guard rather than widening the Renderer interface (which stays minimal).
+   */
+  private _applySettingsToRenderer(): void {
+    const settings = getSettingsService().getSettings();
+    const cr = this._renderer as Partial<CanvasRenderer>;
+    if (typeof cr.setOptions === 'function') {
+      cr.setOptions({ showVertices: settings.showVertices });
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Factory
 // ---------------------------------------------------------------------------
 
-/**
- * Creates a fully wired Inspector instance.
- *
- * The returned Inspector owns all internal components. Disposing it releases
- * every subscription and prevents further rendering.
- *
- * @example
- *   const inspector = createInspector({ viewport, renderer });
- *   await inspector.load('./my-tile.pbf', artifact, diagnostics);
- *
- *   canvas.addEventListener('mousemove', (e) => {
- *     inspector.handlePointerMove({ x: e.offsetX, y: e.offsetY });
- *   });
- *   canvas.addEventListener('mouseleave', () => {
- *     inspector.handlePointerLeave();
- *   });
- *   canvas.addEventListener('click', (e) => {
- *     inspector.handleClick({ x: e.offsetX, y: e.offsetY });
- *   });
- *
- *   // …later…
- *   inspector.dispose();
- */
 export function createInspector(options: InspectorOptions): Inspector {
   return new InspectorImpl(options);
 }
