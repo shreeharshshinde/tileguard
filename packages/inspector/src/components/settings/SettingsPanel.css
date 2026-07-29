@@ -1,0 +1,81 @@
+/* SettingsPanel styles — CSS tokens integration */
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background-color: var(--tg-bg-secondary);
+  color: var(--tg-text-primary);
+  font-family: var(--tg-font-sans);
+}
+
+.settings-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tg-space-md) var(--tg-space-lg);
+  border-bottom: 1px solid var(--tg-border);
+  background-color: var(--tg-bg-surface);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.settings-panel__title {
+  color: var(--tg-text-primary);
+}
+
+.settings-panel__reset-btn {
+  font-size: 0.75rem;
+  color: var(--tg-text-secondary);
+  background: transparent;
+  border: 1px solid var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  padding: var(--tg-space-xs) var(--tg-space-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-panel__reset-btn:hover {
+  color: var(--tg-text-primary);
+  background-color: var(--tg-bg-hover);
+}
+
+.settings-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-xl);
+  padding: var(--tg-space-lg);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-md);
+}
+
+.settings-section__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tg-text-muted);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tg-space-sm) 0;
+}
+
+.settings-row__label {
+  font-size: 0.8125rem;
+  color: var(--tg-text-primary);
+}
+
+.settings-row__description {
+  font-size: 0.7rem;
+  color: var(--tg-text-muted);
+}

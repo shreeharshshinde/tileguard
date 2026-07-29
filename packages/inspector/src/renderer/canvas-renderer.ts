@@ -202,7 +202,7 @@ export class CanvasRenderer implements Renderer {
   private _canvas: HTMLCanvasElement | null = null;
   private _ctx: CanvasRenderingContext2D | null = null;
   private _viewport: Viewport;
-  private readonly _showVertices: boolean;
+  private _showVertices: boolean;
 
   constructor(options: CanvasRendererOptions) {
     this._viewport = options.viewport;
@@ -218,6 +218,19 @@ export class CanvasRenderer implements Renderer {
 
   getViewport(): Viewport {
     return this._viewport;
+  }
+
+  /**
+   * Update renderer options at runtime without reconstructing the renderer.
+   * Only the supplied keys are changed; others remain at their current values.
+   */
+  setOptions(patch: Partial<CanvasRendererOptions>): void {
+    if (patch.showVertices !== undefined) {
+      this._showVertices = patch.showVertices;
+    }
+    if (patch.viewport !== undefined) {
+      this._viewport = patch.viewport;
+    }
   }
 
   // ---- Renderer interface ------------------------------------------------
