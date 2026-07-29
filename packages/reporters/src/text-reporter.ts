@@ -149,7 +149,6 @@ export function createTextReporter(
       ) {
         process.stdout.write(text);
       } else {
-        console.log(text.endsWith('\n') ? text.slice(0, -1) : text);
       }
     });
   const useColor =

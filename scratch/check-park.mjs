@@ -10,11 +10,8 @@ async function main() {
 
   const layer = tile.layers.park;
   if (!layer) {
-    console.log('No park layer found');
     return;
   }
-
-  console.log(`Park layer has ${layer.features.length} features.`);
   for (let i = 0; i < layer.features.length; i++) {
     const f = layer.features[i];
     const parts = getFeatureParts(f);
@@ -29,12 +26,6 @@ async function main() {
       }
     }
     if (out) {
-      console.log(
-        `Feature ${i}: type=${f.type}, properties=`,
-        f.properties,
-        `out-of-range coordinates:`,
-        pts,
-      );
     }
   }
 }

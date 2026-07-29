@@ -63,15 +63,11 @@ async function main() {
       // ignore
     }
   }
-
-  console.log(`Found ${issues.length} coordinate-range issues.`);
   // Group by layer name
   const byLayer = {};
   for (const issue of issues) {
     byLayer[issue.layer] = (byLayer[issue.layer] || 0) + 1;
   }
-  console.log('Issues by layer:', byLayer);
-  console.log('Sample issues:', issues.slice(0, 10));
 }
 
 main().catch(console.error);

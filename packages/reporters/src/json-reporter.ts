@@ -121,7 +121,6 @@ export function createJsonReporter(
       ) {
         process.stdout.write(text);
       } else {
-        console.info(text.endsWith('\n') ? text.slice(0, -1) : text);
       }
     });
   const indent = options.indent ?? 2;
