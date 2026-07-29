@@ -38,7 +38,10 @@ export function FeaturePanel({ store }: FeaturePanelProps): JSX.Element {
 
   if (feature === null) {
     return (
-      <div className="feature-panel feature-panel--empty" aria-label="Feature Inspector panel">
+      <div
+        className="feature-panel feature-panel--empty"
+        aria-label="Feature Inspector panel"
+      >
         <div className="feature-panel__empty-state">
           <span className="feature-panel__empty-icon" aria-hidden="true">
             🔍
@@ -55,7 +58,11 @@ export function FeaturePanel({ store }: FeaturePanelProps): JSX.Element {
   }
 
   return (
-    <div className="feature-panel" aria-label="Feature Inspector panel" aria-live="polite">
+    <div
+      className="feature-panel"
+      aria-label="Feature Inspector panel"
+      aria-live="polite"
+    >
       <div className="feature-panel__section feature-panel__section--header">
         <FeatureHeader feature={feature} />
       </div>

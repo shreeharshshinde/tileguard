@@ -20,8 +20,8 @@ interface Segment {
 }
 
 const SEGMENTS: Omit<Segment, 'value'>[] = [
-  { label: 'Points',   color: '#3b82f6', cssVar: '--tg-info' },
-  { label: 'Lines',    color: '#22c55e', cssVar: '--tg-success' },
+  { label: 'Points', color: '#3b82f6', cssVar: '--tg-info' },
+  { label: 'Lines', color: '#22c55e', cssVar: '--tg-success' },
   { label: 'Polygons', color: '#f59e0b', cssVar: '--tg-warning' },
 ];
 
@@ -34,7 +34,7 @@ function describeArc(
   endAngle: number,
 ): string {
   const start = polarToCartesian(cx, cy, r, endAngle);
-  const end   = polarToCartesian(cx, cy, r, startAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
   const large = endAngle - startAngle > 180 ? 1 : 0;
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 0 ${end.x} ${end.y}`;
 }
@@ -55,7 +55,7 @@ export function GeometryChart({
   polygon,
 }: GeometryChartProps): JSX.Element {
   const values = [point, line, polygon];
-  const total  = values.reduce((s, v) => s + v, 0);
+  const total = values.reduce((s, v) => s + v, 0);
 
   if (total === 0) {
     return (
@@ -72,10 +72,10 @@ export function GeometryChart({
   let currentAngle = 0;
 
   const arcs = SEGMENTS.map((seg, i) => {
-    const value    = values[i] ?? 0;
-    const sweep    = (value / total) * 360;
-    const start    = currentAngle;
-    currentAngle  += sweep;
+    const value = values[i] ?? 0;
+    const sweep = (value / total) * 360;
+    const start = currentAngle;
+    currentAngle += sweep;
 
     if (sweep === 0) return null;
 
@@ -104,18 +104,44 @@ export function GeometryChart({
             polarToCartesian(cx, cy, innerR, currentAngle - arc.sweep).y
           } ${arc.innerPath} Z`;
           // Build the correct closed path for the donut segment
-          const startOuter = polarToCartesian(cx, cy, outerR, arcs.indexOf(arc) === 0
-            ? 0
-            : arcs.slice(0, arcs.indexOf(arc)).reduce((s, a) => s + (a?.sweep ?? 0), 0));
-          const endOuter   = polarToCartesian(cx, cy, outerR,
-            arcs.slice(0, arcs.indexOf(arc) + 1).reduce((s, a) => s + (a?.sweep ?? 0), 0));
-          const startInner = polarToCartesian(cx, cy, innerR,
-            arcs.slice(0, arcs.indexOf(arc) + 1).reduce((s, a) => s + (a?.sweep ?? 0), 0));
-          const endInner   = polarToCartesian(cx, cy, innerR, arcs.indexOf(arc) === 0
-            ? 0
-            : arcs.slice(0, arcs.indexOf(arc)).reduce((s, a) => s + (a?.sweep ?? 0), 0));
-          const large      = arc.sweep > 180 ? 1 : 0;
-          const pathD      = [
+          const startOuter = polarToCartesian(
+            cx,
+            cy,
+            outerR,
+            arcs.indexOf(arc) === 0
+              ? 0
+              : arcs
+                  .slice(0, arcs.indexOf(arc))
+                  .reduce((s, a) => s + (a?.sweep ?? 0), 0),
+          );
+          const endOuter = polarToCartesian(
+            cx,
+            cy,
+            outerR,
+            arcs
+              .slice(0, arcs.indexOf(arc) + 1)
+              .reduce((s, a) => s + (a?.sweep ?? 0), 0),
+          );
+          const startInner = polarToCartesian(
+            cx,
+            cy,
+            innerR,
+            arcs
+              .slice(0, arcs.indexOf(arc) + 1)
+              .reduce((s, a) => s + (a?.sweep ?? 0), 0),
+          );
+          const endInner = polarToCartesian(
+            cx,
+            cy,
+            innerR,
+            arcs.indexOf(arc) === 0
+              ? 0
+              : arcs
+                  .slice(0, arcs.indexOf(arc))
+                  .reduce((s, a) => s + (a?.sweep ?? 0), 0),
+          );
+          const large = arc.sweep > 180 ? 1 : 0;
+          const pathD = [
             `M ${startOuter.x} ${startOuter.y}`,
             `A ${outerR} ${outerR} 0 ${large} 1 ${endOuter.x} ${endOuter.y}`,
             `L ${startInner.x} ${startInner.y}`,
@@ -123,12 +149,7 @@ export function GeometryChart({
             'Z',
           ].join(' ');
           return (
-            <path
-              key={arc.label}
-              d={pathD}
-              fill={arc.color}
-              opacity={0.85}
-            >
+            <path key={arc.label} d={pathD} fill={arc.color} opacity={0.85}>
               <title>{`${arc.label}: ${arc.value.toLocaleString()} (${Math.round((arc.value / total) * 100)}%)`}</title>
             </path>
           );

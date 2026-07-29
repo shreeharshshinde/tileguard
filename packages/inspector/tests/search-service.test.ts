@@ -34,15 +34,29 @@ function makeArtifact(): VectorTileArtifact {
               type: 2,
               geometryType: 'LineString',
               id: 48,
-              properties: { highway: 'primary', name: 'Main Street', bridge: 'yes' },
-              geometry: [[{ x: 0, y: 0 }, { x: 100, y: 100 }]],
+              properties: {
+                highway: 'primary',
+                name: 'Main Street',
+                bridge: 'yes',
+              },
+              geometry: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 100 },
+                ],
+              ],
             },
             {
               type: 2,
               geometryType: 'LineString',
               id: 81,
               properties: { highway: 'secondary', oneway: 'yes' },
-              geometry: [[{ x: 50, y: 50 }, { x: 200, y: 200 }]],
+              geometry: [
+                [
+                  { x: 50, y: 50 },
+                  { x: 200, y: 200 },
+                ],
+              ],
             },
           ],
         },
@@ -56,7 +70,16 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'Polygon',
               id: 52,
               properties: { type: 'civic', name: 'City Hall', height: 25 },
-              geometry: [[[{ x: 10, y: 10 }, { x: 20, y: 10 }, { x: 20, y: 20 }, { x: 10, y: 10 }]]],
+              geometry: [
+                [
+                  [
+                    { x: 10, y: 10 },
+                    { x: 20, y: 10 },
+                    { x: 20, y: 20 },
+                    { x: 10, y: 10 },
+                  ],
+                ],
+              ],
             },
           ],
         },
@@ -70,7 +93,16 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'Polygon',
               id: 17,
               properties: { class: 'lake', name: 'Blue Lake' },
-              geometry: [[[{ x: 300, y: 300 }, { x: 400, y: 300 }, { x: 400, y: 400 }, { x: 300, y: 300 }]]],
+              geometry: [
+                [
+                  [
+                    { x: 300, y: 300 },
+                    { x: 400, y: 300 },
+                    { x: 400, y: 400 },
+                    { x: 300, y: 300 },
+                  ],
+                ],
+              ],
             },
           ],
         },

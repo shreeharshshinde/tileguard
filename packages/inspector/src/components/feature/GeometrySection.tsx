@@ -13,10 +13,7 @@ export interface GeometrySectionProps {
 }
 
 /** Count the total number of coordinates across all geometry rings/paths. */
-function countCoordinates(
-  geometryType: string,
-  geometry: unknown,
-): number {
+function countCoordinates(geometryType: string, geometry: unknown): number {
   if (!Array.isArray(geometry)) return 0;
 
   if (geometryType === 'Point') {
@@ -50,7 +47,9 @@ function countCoordinates(
   return 0;
 }
 
-export function GeometrySection({ feature }: GeometrySectionProps): JSX.Element {
+export function GeometrySection({
+  feature,
+}: GeometrySectionProps): JSX.Element {
   const coordCount = countCoordinates(feature.geometryType, feature.geometry);
 
   return (

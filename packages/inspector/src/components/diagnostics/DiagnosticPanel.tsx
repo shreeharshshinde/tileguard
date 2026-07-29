@@ -50,13 +50,14 @@ export function DiagnosticPanel({
 
   // Apply severity + layer filters to the grouped diagnostics (pure derivation)
   const filteredGrouped = useMemo(() => {
-    const { error: showError, warning: showWarning, info: showInfo } =
-      filters.severity;
+    const {
+      error: showError,
+      warning: showWarning,
+      info: showInfo,
+    } = filters.severity;
     const activeLayerFilter = filters.layers;
 
-    function shouldShow(
-      diag: import('@tileguard/core').Diagnostic,
-    ): boolean {
+    function shouldShow(diag: import('@tileguard/core').Diagnostic): boolean {
       const loc = diag.location as { layer?: string } | undefined;
       const diagLayer = loc?.layer ?? null;
       if (activeLayerFilter.size > 0 && diagLayer !== null) {

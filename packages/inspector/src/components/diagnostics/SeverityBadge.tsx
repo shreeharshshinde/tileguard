@@ -22,7 +22,11 @@ const SEVERITY_META: Record<
   { icon: string; label: string; className: string }
 > = {
   error: { icon: '❌', label: 'Error', className: 'severity-badge--error' },
-  warning: { icon: '⚠', label: 'Warning', className: 'severity-badge--warning' },
+  warning: {
+    icon: '⚠',
+    label: 'Warning',
+    className: 'severity-badge--warning',
+  },
   info: { icon: 'ℹ', label: 'Info', className: 'severity-badge--info' },
 };
 

@@ -33,7 +33,9 @@ export function SliderSetting({
   const displayed = format !== undefined ? format(value) : String(value);
 
   return (
-    <div className={`slider-setting${disabled ? ' slider-setting--disabled' : ''}`}>
+    <div
+      className={`slider-setting${disabled ? ' slider-setting--disabled' : ''}`}
+    >
       <div className="slider-setting__header">
         <div className="slider-setting__text">
           <span className="slider-setting__label">{label}</span>

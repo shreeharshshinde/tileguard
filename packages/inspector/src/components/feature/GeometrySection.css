@@ -49,11 +49,11 @@
 }
 
 .geometry-section__raw-summary::before {
-  content: '▸ ';
+  content: "▸ ";
 }
 
 details[open] .geometry-section__raw-summary::before {
-  content: '▾ ';
+  content: "▾ ";
 }
 
 .geometry-section__raw-content {

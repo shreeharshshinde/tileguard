@@ -29,21 +29,28 @@ export function DiagnosticChart({
   if (total === 0) {
     return (
       <div className="diagnostic-chart diagnostic-chart--empty">
-        <span className="diagnostic-chart__empty-text">
-          ✓ No diagnostics
-        </span>
+        <span className="diagnostic-chart__empty-text">✓ No diagnostics</span>
       </div>
     );
   }
 
   const bars: Bar[] = [
-    { label: 'Errors',   value: errors,   color: 'var(--tg-error)',   icon: '❌' },
-    { label: 'Warnings', value: warnings, color: 'var(--tg-warning)', icon: '⚠' },
-    { label: 'Info',     value: info,     color: 'var(--tg-info)',    icon: 'ℹ' },
+    { label: 'Errors', value: errors, color: 'var(--tg-error)', icon: '❌' },
+    {
+      label: 'Warnings',
+      value: warnings,
+      color: 'var(--tg-warning)',
+      icon: '⚠',
+    },
+    { label: 'Info', value: info, color: 'var(--tg-info)', icon: 'ℹ' },
   ];
 
   return (
-    <div className="diagnostic-chart" role="list" aria-label="Diagnostic severity chart">
+    <div
+      className="diagnostic-chart"
+      role="list"
+      aria-label="Diagnostic severity chart"
+    >
       {bars.map((bar) => {
         const pct = total > 0 ? (bar.value / total) * 100 : 0;
         return (

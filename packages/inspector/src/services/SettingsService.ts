@@ -40,9 +40,9 @@ export interface InspectorSettings {
   readonly minSeverity: 'error' | 'warning' | 'info';
 
   // Appearance
-  readonly overlayOpacity: number;   // 0.0 – 1.0
+  readonly overlayOpacity: number; // 0.0 – 1.0
   readonly selectionThickness: number; // 1 – 6
-  readonly hoverThickness: number;   // 1 – 6
+  readonly hoverThickness: number; // 1 – 6
 }
 
 // ---------------------------------------------------------------------------
@@ -72,9 +72,10 @@ const STORAGE_KEY = 'tileguard:inspector:settings:v1';
 
 function loadFromStorage(): InspectorSettings {
   try {
-    const raw = typeof window !== 'undefined'
-      ? window.localStorage.getItem(STORAGE_KEY)
-      : null;
+    const raw =
+      typeof window !== 'undefined'
+        ? window.localStorage.getItem(STORAGE_KEY)
+        : null;
     if (raw === null) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw) as Partial<InspectorSettings>;
     // Merge parsed values over defaults — unknown keys are ignored
@@ -82,9 +83,21 @@ function loadFromStorage(): InspectorSettings {
       ...DEFAULT_SETTINGS,
       ...parsed,
       // Clamp numeric values to safe ranges
-      overlayOpacity: clamp(parsed.overlayOpacity ?? DEFAULT_SETTINGS.overlayOpacity, 0, 1),
-      selectionThickness: clamp(parsed.selectionThickness ?? DEFAULT_SETTINGS.selectionThickness, 1, 6),
-      hoverThickness: clamp(parsed.hoverThickness ?? DEFAULT_SETTINGS.hoverThickness, 1, 6),
+      overlayOpacity: clamp(
+        parsed.overlayOpacity ?? DEFAULT_SETTINGS.overlayOpacity,
+        0,
+        1,
+      ),
+      selectionThickness: clamp(
+        parsed.selectionThickness ?? DEFAULT_SETTINGS.selectionThickness,
+        1,
+        6,
+      ),
+      hoverThickness: clamp(
+        parsed.hoverThickness ?? DEFAULT_SETTINGS.hoverThickness,
+        1,
+        6,
+      ),
     };
   } catch {
     return DEFAULT_SETTINGS;

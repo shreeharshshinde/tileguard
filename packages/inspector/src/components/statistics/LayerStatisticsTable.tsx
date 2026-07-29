@@ -21,18 +21,18 @@ interface ColDef {
 }
 
 const COLUMNS: ColDef[] = [
-  { key: 'name',        label: 'Layer',      align: 'left' },
-  { key: null,          label: 'Geometry',   align: 'left' },
-  { key: 'features',    label: 'Features',   align: 'right' },
-  { key: 'diagnostics', label: 'Diag.',      align: 'right' },
+  { key: 'name', label: 'Layer', align: 'left' },
+  { key: null, label: 'Geometry', align: 'left' },
+  { key: 'features', label: 'Features', align: 'right' },
+  { key: 'diagnostics', label: 'Diag.', align: 'right' },
 ];
 
 function geometryLabel(layer: LayerStatistics): string {
   const { point, line, polygon } = layer.geometryCounts;
   const parts: string[] = [];
   if (polygon > 0) parts.push('Polygon');
-  if (line > 0)    parts.push('Line');
-  if (point > 0)   parts.push('Point');
+  if (line > 0) parts.push('Line');
+  if (point > 0) parts.push('Point');
   return parts.join(', ') || '—';
 }
 
@@ -62,16 +62,19 @@ export function LayerStatisticsTable({
               tabIndex={col.key !== null ? 0 : undefined}
               onKeyDown={
                 col.key !== null
-                  ? (e) => { if (e.key === 'Enter' || e.key === ' ') onSort(col.key!); }
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') onSort(col.key!);
+                    }
                   : undefined
               }
-              aria-sort={
-                col.key === sortKey ? 'descending' : undefined
-              }
+              aria-sort={col.key === sortKey ? 'descending' : undefined}
             >
               {col.label}
               {col.key !== null && (
-                <span className="layer-stats-table__sort-icon" aria-hidden="true">
+                <span
+                  className="layer-stats-table__sort-icon"
+                  aria-hidden="true"
+                >
                   {col.key === sortKey ? ' ▾' : ' ↕'}
                 </span>
               )}

@@ -21,7 +21,9 @@ export function Section({
     <details className="settings-section" open={defaultOpen}>
       <summary className="settings-section__summary">
         <span className="settings-section__title">{title}</span>
-        <span className="settings-section__chevron" aria-hidden="true">▾</span>
+        <span className="settings-section__chevron" aria-hidden="true">
+          ▾
+        </span>
       </summary>
       <div className="settings-section__content">{children}</div>
     </details>

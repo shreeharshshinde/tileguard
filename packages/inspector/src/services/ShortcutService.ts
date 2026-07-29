@@ -36,7 +36,7 @@ export type ShortcutAction =
   | 'showSettings';
 
 export interface ShortcutBinding {
-  readonly key: string;          // e.g. 'f', 'r', 'escape', ',', '1', '2', '3'
+  readonly key: string; // e.g. 'f', 'r', 'escape', ',', '1', '2', '3'
   readonly ctrl?: boolean;
   readonly shift?: boolean;
   readonly action: ShortcutAction;
@@ -44,14 +44,44 @@ export interface ShortcutBinding {
 }
 
 export const DEFAULT_SHORTCUTS: readonly ShortcutBinding[] = Object.freeze([
-  { key: 'f',      ctrl: false, action: 'focusFeature',    description: 'Focus selected feature' },
-  { key: 'r',      ctrl: false, action: 'resetView',       description: 'Reset view' },
-  { key: 'escape', ctrl: false, action: 'clearSelection',  description: 'Clear selection' },
-  { key: 'f',      ctrl: true,  action: 'focusSearch',     description: 'Focus search' },
-  { key: ',',      ctrl: true,  action: 'openSettings',    description: 'Open settings' },
-  { key: '1',      ctrl: true,  action: 'showDiagnostics', description: 'Show diagnostics' },
-  { key: '2',      ctrl: true,  action: 'showStatistics',  description: 'Show statistics' },
-  { key: '3',      ctrl: true,  action: 'showSettings',    description: 'Show settings' },
+  {
+    key: 'f',
+    ctrl: false,
+    action: 'focusFeature',
+    description: 'Focus selected feature',
+  },
+  { key: 'r', ctrl: false, action: 'resetView', description: 'Reset view' },
+  {
+    key: 'escape',
+    ctrl: false,
+    action: 'clearSelection',
+    description: 'Clear selection',
+  },
+  { key: 'f', ctrl: true, action: 'focusSearch', description: 'Focus search' },
+  {
+    key: ',',
+    ctrl: true,
+    action: 'openSettings',
+    description: 'Open settings',
+  },
+  {
+    key: '1',
+    ctrl: true,
+    action: 'showDiagnostics',
+    description: 'Show diagnostics',
+  },
+  {
+    key: '2',
+    ctrl: true,
+    action: 'showStatistics',
+    description: 'Show statistics',
+  },
+  {
+    key: '3',
+    ctrl: true,
+    action: 'showSettings',
+    description: 'Show settings',
+  },
 ]);
 
 export type ShortcutHandler = (action: ShortcutAction) => void;
@@ -124,10 +154,7 @@ class ShortcutServiceImpl implements ShortcutService {
 
     for (const binding of this._bindings) {
       const bindingCtrl = binding.ctrl ?? false;
-      if (
-        binding.key.toLowerCase() === key &&
-        bindingCtrl === ctrl
-      ) {
+      if (binding.key.toLowerCase() === key && bindingCtrl === ctrl) {
         event.preventDefault();
         this._dispatch(binding.action);
         return;

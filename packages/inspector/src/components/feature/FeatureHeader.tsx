@@ -28,16 +28,15 @@ export function FeatureHeader({ feature }: FeatureHeaderProps): JSX.Element {
   const icon = GEOMETRY_ICONS[feature.geometryType] ?? '?';
   const label = GEOMETRY_LABELS[feature.geometryType] ?? feature.geometryType;
   const idLabel =
-    feature.id !== undefined ? String(feature.id) : String(feature.featureIndex);
+    feature.id !== undefined
+      ? String(feature.id)
+      : String(feature.featureIndex);
 
   return (
     <div className="feature-header">
       <div className="feature-header__row feature-header__row--layer">
         <span className="feature-header__label">Layer</span>
-        <span
-          className="feature-header__layer-name"
-          title={feature.layerName}
-        >
+        <span className="feature-header__layer-name" title={feature.layerName}>
           {feature.layerName}
         </span>
       </div>

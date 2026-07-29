@@ -93,10 +93,10 @@ function Footer({
   readonly viewport: ViewportState | null;
 }): JSX.Element {
   const { store } = useInspectorContext();
-  const lifecycle  = useLifecycle(store);
-  const stats      = useStatistics(store);
-  const selected   = useSelectedFeature(store);
-  const loaded     = lifecycle.status === 'loaded';
+  const lifecycle = useLifecycle(store);
+  const stats = useStatistics(store);
+  const selected = useSelectedFeature(store);
+  const loaded = lifecycle.status === 'loaded';
 
   return (
     <footer
@@ -126,7 +126,10 @@ function Footer({
           </span>
           <span className="text-[var(--tg-text-muted)]">·</span>
           <span>{stats.totalFeatures.toLocaleString()} features</span>
-          {(stats.diagnostics.errors + stats.diagnostics.warnings + stats.diagnostics.info) > 0 && (
+          {stats.diagnostics.errors +
+            stats.diagnostics.warnings +
+            stats.diagnostics.info >
+            0 && (
             <>
               <span className="text-[var(--tg-text-muted)]">·</span>
               <span
@@ -136,7 +139,10 @@ function Footer({
                     : 'text-[var(--tg-warning)]'
                 }
               >
-                {(stats.diagnostics.errors + stats.diagnostics.warnings + stats.diagnostics.info)} diag.
+                {stats.diagnostics.errors +
+                  stats.diagnostics.warnings +
+                  stats.diagnostics.info}{' '}
+                diag.
               </span>
             </>
           )}
@@ -158,7 +164,8 @@ function Footer({
       {/* Viewport zoom */}
       {viewport !== null && (
         <span>
-          Zoom {viewport.zoom.toFixed(1)}× · {Math.round(viewport.width)}×{Math.round(viewport.height)}
+          Zoom {viewport.zoom.toFixed(1)}× · {Math.round(viewport.width)}×
+          {Math.round(viewport.height)}
         </span>
       )}
     </footer>
@@ -171,10 +178,10 @@ function Footer({
 
 function Workspace(): JSX.Element {
   const { inspector, store } = useInspectorContext();
-  const lifecycle  = useLifecycle(store);
-  const search     = useSearch(store);
+  const lifecycle = useLifecycle(store);
+  const search = useSearch(store);
   const [activeTab, setActiveTab] = useState<NavTab>('welcome');
-  const [leftCollapsed,  setLeftCollapsed]  = useState(false);
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [viewport, setViewport] = useState<ViewportState | null>(null);
@@ -196,8 +203,12 @@ function Workspace(): JSX.Element {
         cancelled ? undefined : inspector.load(pendingFile.name, artifact, []),
       )
       .catch(() => undefined)
-      .finally(() => { if (!cancelled) setPendingFile(null); });
-    return () => { cancelled = true; };
+      .finally(() => {
+        if (!cancelled) setPendingFile(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [inspector, pendingFile]);
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
@@ -206,7 +217,7 @@ function Workspace(): JSX.Element {
     const unsub = shortcuts.registerHandler((action: ShortcutAction) => {
       switch (action) {
         case 'clearSelection':
-          inspector?.focusFeature('', -1);   // cleared via null guard in store
+          inspector?.focusFeature('', -1); // cleared via null guard in store
           store.select(null, null);
           break;
         case 'resetView':
@@ -230,7 +241,10 @@ function Workspace(): JSX.Element {
       }
     });
     const cleanup = shortcuts.attach(window);
-    return () => { cleanup(); unsub(); };
+    return () => {
+      cleanup();
+      unsub();
+    };
   }, [inspector, store]);
 
   // ── Panel content for left aside (depends on activeTab) ──────────────────
@@ -287,9 +301,11 @@ function Workspace(): JSX.Element {
                 <aside
                   className="w-[var(--tg-sidebar-width)] shrink-0 border-r border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] overflow-hidden flex flex-col"
                   aria-label={
-                    activeTab === 'statistics' ? 'Statistics' :
-                    activeTab === 'settings'   ? 'Settings' :
-                    'Diagnostics'
+                    activeTab === 'statistics'
+                      ? 'Statistics'
+                      : activeTab === 'settings'
+                        ? 'Settings'
+                        : 'Diagnostics'
                   }
                 >
                   {leftPanel}

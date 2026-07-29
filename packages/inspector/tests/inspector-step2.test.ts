@@ -34,14 +34,24 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'LineString',
               id: 10,
               properties: { highway: 'primary', name: 'Main Street' },
-              geometry: [[{ x: 0, y: 0 }, { x: 100, y: 100 }]],
+              geometry: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 100 },
+                ],
+              ],
             },
             {
               type: 2,
               geometryType: 'LineString',
               id: 11,
               properties: { highway: 'secondary' },
-              geometry: [[{ x: 50, y: 50 }, { x: 200, y: 200 }]],
+              geometry: [
+                [
+                  { x: 50, y: 50 },
+                  { x: 200, y: 200 },
+                ],
+              ],
             },
           ],
         },
@@ -55,7 +65,16 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'Polygon',
               id: 20,
               properties: { type: 'civic', height: 30 },
-              geometry: [[[{ x: 10, y: 10 }, { x: 20, y: 10 }, { x: 20, y: 20 }, { x: 10, y: 10 }]]],
+              geometry: [
+                [
+                  [
+                    { x: 10, y: 10 },
+                    { x: 20, y: 10 },
+                    { x: 20, y: 20 },
+                    { x: 10, y: 10 },
+                  ],
+                ],
+              ],
             },
           ],
         },
@@ -131,7 +150,10 @@ describe('Inspector.getStatistics()', () => {
 
   it('returns zero counts when no tile loaded', () => {
     const viewport = createViewport({ width: 800, height: 600 });
-    const inspector = createInspector({ viewport, renderer: makeMockRenderer() });
+    const inspector = createInspector({
+      viewport,
+      renderer: makeMockRenderer(),
+    });
     const stats = inspector.getStatistics();
     expect(stats.total).toBe(0);
     inspector.dispose();
@@ -201,7 +223,10 @@ describe('Inspector.selectDiagnostic()', () => {
 
   it('is a no-op when no tile loaded', () => {
     const viewport = createViewport({ width: 800, height: 600 });
-    const inspector = createInspector({ viewport, renderer: makeMockRenderer() });
+    const inspector = createInspector({
+      viewport,
+      renderer: makeMockRenderer(),
+    });
     expect(() => inspector.selectDiagnostic(0)).not.toThrow();
     inspector.dispose();
   });

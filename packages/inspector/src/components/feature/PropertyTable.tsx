@@ -25,10 +25,8 @@ function formatValue(value: unknown): string {
 function valueClass(value: unknown): string {
   if (value === null || value === undefined)
     return 'property-table__value--null';
-  if (typeof value === 'boolean')
-    return 'property-table__value--boolean';
-  if (typeof value === 'number')
-    return 'property-table__value--number';
+  if (typeof value === 'boolean') return 'property-table__value--boolean';
+  if (typeof value === 'number') return 'property-table__value--number';
   return 'property-table__value--string';
 }
 
@@ -47,8 +45,12 @@ export function PropertyTable({ properties }: PropertyTableProps): JSX.Element {
     <table className="property-table" aria-label="Feature properties">
       <thead className="property-table__head">
         <tr>
-          <th className="property-table__th" scope="col">Key</th>
-          <th className="property-table__th" scope="col">Value</th>
+          <th className="property-table__th" scope="col">
+            Key
+          </th>
+          <th className="property-table__th" scope="col">
+            Value
+          </th>
         </tr>
       </thead>
       <tbody>

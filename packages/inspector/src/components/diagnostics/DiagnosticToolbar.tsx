@@ -71,9 +71,17 @@ export function DiagnosticToolbar({
   const hasActiveLayerFilter = activeLayers.size > 0;
 
   return (
-    <div className="diagnostic-toolbar" role="toolbar" aria-label="Diagnostic filters">
+    <div
+      className="diagnostic-toolbar"
+      role="toolbar"
+      aria-label="Diagnostic filters"
+    >
       {/* Severity checkboxes */}
-      <div className="diagnostic-toolbar__severity-group" role="group" aria-label="Filter by severity">
+      <div
+        className="diagnostic-toolbar__severity-group"
+        role="group"
+        aria-label="Filter by severity"
+      >
         <SeverityCheckbox
           id="error"
           label="Errors"
@@ -112,12 +120,21 @@ export function DiagnosticToolbar({
                 </span>
               )}
             </summary>
-            <div className="diagnostic-toolbar__dropdown-content" role="group" aria-label="Layer checkboxes">
+            <div
+              className="diagnostic-toolbar__dropdown-content"
+              role="group"
+              aria-label="Layer checkboxes"
+            >
               {layers.map((layer) => (
-                <label key={layer.name} className="diagnostic-toolbar__layer-item">
+                <label
+                  key={layer.name}
+                  className="diagnostic-toolbar__layer-item"
+                >
                   <input
                     type="checkbox"
-                    checked={!hasActiveLayerFilter || activeLayers.has(layer.name)}
+                    checked={
+                      !hasActiveLayerFilter || activeLayers.has(layer.name)
+                    }
                     onChange={() => onToggleLayer(layer.name)}
                     aria-label={`Show layer ${layer.name}`}
                     className="diagnostic-toolbar__checkbox"
@@ -138,7 +155,10 @@ export function DiagnosticToolbar({
       <span className="diagnostic-toolbar__spacer" />
 
       {/* Sort order */}
-      <label className="diagnostic-toolbar__sort" aria-label="Sort diagnostics by">
+      <label
+        className="diagnostic-toolbar__sort"
+        aria-label="Sort diagnostics by"
+      >
         <select
           value={sortOrder}
           onChange={(e) =>

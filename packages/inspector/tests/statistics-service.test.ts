@@ -5,7 +5,10 @@ import { createDiagnosticProvider } from '../src/providers/DiagnosticProvider.js
 import { createFeatureProvider } from '../src/providers/FeatureProvider.js';
 import { createLayerProvider } from '../src/providers/LayerProvider.js';
 import { createStatisticsService } from '../src/services/StatisticsService.js';
-import { createInspectorStore, type InspectorStore } from '../src/store/inspector-store.js';
+import {
+  createInspectorStore,
+  type InspectorStore,
+} from '../src/store/inspector-store.js';
 
 function makeArtifact(): VectorTileArtifact {
   return {
@@ -23,14 +26,24 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'LineString',
               id: 10,
               properties: { highway: 'primary' },
-              geometry: [[{ x: 0, y: 0 }, { x: 100, y: 100 }]],
+              geometry: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 100 },
+                ],
+              ],
             },
             {
               type: 2,
               geometryType: 'LineString',
               id: 11,
               properties: { highway: 'secondary' },
-              geometry: [[{ x: 50, y: 50 }, { x: 200, y: 200 }]],
+              geometry: [
+                [
+                  { x: 50, y: 50 },
+                  { x: 200, y: 200 },
+                ],
+              ],
             },
           ],
         },

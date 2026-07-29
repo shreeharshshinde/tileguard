@@ -13,7 +13,10 @@ import {
   createFeatureProvider,
   createLayerProvider,
 } from '../src/providers/index.js';
-import { createInspectorStore, type InspectorStore } from '../src/store/inspector-store.js';
+import {
+  createInspectorStore,
+  type InspectorStore,
+} from '../src/store/inspector-store.js';
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -35,14 +38,24 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'LineString',
               id: 10,
               properties: { highway: 'primary', name: 'Main Street' },
-              geometry: [[{ x: 0, y: 0 }, { x: 100, y: 100 }]],
+              geometry: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 100 },
+                ],
+              ],
             },
             {
               type: 2,
               geometryType: 'LineString',
               id: 11,
               properties: { highway: 'secondary', bridge: 'yes' },
-              geometry: [[{ x: 50, y: 50 }, { x: 200, y: 200 }]],
+              geometry: [
+                [
+                  { x: 50, y: 50 },
+                  { x: 200, y: 200 },
+                ],
+              ],
             },
           ],
         },
@@ -56,7 +69,16 @@ function makeArtifact(): VectorTileArtifact {
               geometryType: 'Polygon',
               id: 20,
               properties: { height: 15, name: 'City Hall' },
-              geometry: [[[{ x: 10, y: 10 }, { x: 20, y: 10 }, { x: 20, y: 20 }, { x: 10, y: 10 }]]],
+              geometry: [
+                [
+                  [
+                    { x: 10, y: 10 },
+                    { x: 20, y: 10 },
+                    { x: 20, y: 20 },
+                    { x: 10, y: 10 },
+                  ],
+                ],
+              ],
             },
           ],
         },
@@ -131,7 +153,9 @@ describe('FeatureProvider', () => {
 
   it('includes featureIndex in declaration order per layer', () => {
     const provider = createFeatureProvider(store);
-    const roads = provider.getAllFeatures().filter((f) => f.layerName === 'roads');
+    const roads = provider
+      .getAllFeatures()
+      .filter((f) => f.layerName === 'roads');
     const [first, second] = roads;
     expect(first?.featureIndex).toBe(0);
     expect(second?.featureIndex).toBe(1);
@@ -139,7 +163,9 @@ describe('FeatureProvider', () => {
 
   it('includes properties on each feature', () => {
     const provider = createFeatureProvider(store);
-    const roads = provider.getAllFeatures().filter((f) => f.layerName === 'roads');
+    const roads = provider
+      .getAllFeatures()
+      .filter((f) => f.layerName === 'roads');
     const [first] = roads;
     expect(first?.properties).toMatchObject({ highway: 'primary' });
   });
@@ -257,7 +283,9 @@ describe('DiagnosticProvider', () => {
     const filtered = provider.getFilteredDiagnostics();
     expect(filtered).toHaveLength(1);
     const [first] = filtered;
-    expect((first?.location as { layer: string } | undefined)?.layer).toBe('roads');
+    expect((first?.location as { layer: string } | undefined)?.layer).toBe(
+      'roads',
+    );
   });
 
   it('getFilteredDiagnostics with empty visibleLayers returns all', () => {

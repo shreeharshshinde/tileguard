@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createShortcutService, DEFAULT_SHORTCUTS } from '../src/services/ShortcutService.js';
+import {
+  createShortcutService,
+  DEFAULT_SHORTCUTS,
+} from '../src/services/ShortcutService.js';
 
 describe('ShortcutService', () => {
   it('returns default shortcut bindings', () => {
@@ -33,7 +36,10 @@ describe('ShortcutService', () => {
 
     expect(handler).toHaveBeenCalledWith('clearSelection');
     cleanup();
-    expect(mockTarget.removeEventListener).toHaveBeenCalledWith('keydown', expect.any(Function));
+    expect(mockTarget.removeEventListener).toHaveBeenCalledWith(
+      'keydown',
+      expect.any(Function),
+    );
   });
 
   it('ignores shortcuts when target is an input element', () => {

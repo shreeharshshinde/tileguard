@@ -71,7 +71,8 @@ function parseQuery(raw: string): ParsedQuery {
   if (kvMatch !== null) {
     const key = kvMatch[1];
     const value = kvMatch[2];
-    if (key === undefined || value === undefined) return { kind: 'text', text: q };
+    if (key === undefined || value === undefined)
+      return { kind: 'text', text: q };
     return {
       kind: 'keyValue',
       key: key.trim(),

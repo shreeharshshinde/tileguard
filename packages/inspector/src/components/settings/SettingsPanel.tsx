@@ -110,7 +110,9 @@ export function SettingsPanel({ inspector }: SettingsPanelProps): JSX.Element {
         {/* ── Diagnostics ───────────────────────────────────────────── */}
         <Section title="Diagnostics">
           <div className="settings-panel__row settings-panel__row--label">
-            <span className="settings-panel__field-label">Minimum severity</span>
+            <span className="settings-panel__field-label">
+              Minimum severity
+            </span>
           </div>
           <div
             className="settings-panel__severity-group"
@@ -175,14 +177,14 @@ export function SettingsPanel({ inspector }: SettingsPanelProps): JSX.Element {
         <Section title="Keyboard shortcuts" defaultOpen={false}>
           <div className="settings-panel__shortcuts">
             {[
-              { key: 'F',       desc: 'Focus selected feature' },
-              { key: 'R',       desc: 'Reset view' },
-              { key: 'Esc',     desc: 'Clear selection' },
-              { key: 'Ctrl+F',  desc: 'Focus search' },
-              { key: 'Ctrl+,',  desc: 'Open settings' },
-              { key: 'Ctrl+1',  desc: 'Diagnostics tab' },
-              { key: 'Ctrl+2',  desc: 'Statistics tab' },
-              { key: 'Ctrl+3',  desc: 'Settings tab' },
+              { key: 'F', desc: 'Focus selected feature' },
+              { key: 'R', desc: 'Reset view' },
+              { key: 'Esc', desc: 'Clear selection' },
+              { key: 'Ctrl+F', desc: 'Focus search' },
+              { key: 'Ctrl+,', desc: 'Open settings' },
+              { key: 'Ctrl+1', desc: 'Diagnostics tab' },
+              { key: 'Ctrl+2', desc: 'Statistics tab' },
+              { key: 'Ctrl+3', desc: 'Settings tab' },
             ].map(({ key, desc }) => (
               <div key={key} className="settings-panel__shortcut-row">
                 <kbd className="settings-panel__kbd">{key}</kbd>

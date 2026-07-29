@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_SETTINGS, getSettingsService } from '../src/services/SettingsService.js';
+import {
+  DEFAULT_SETTINGS,
+  getSettingsService,
+} from '../src/services/SettingsService.js';
 
 describe('SettingsService', () => {
   beforeEach(() => {

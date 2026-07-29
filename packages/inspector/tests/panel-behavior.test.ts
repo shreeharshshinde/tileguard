@@ -18,7 +18,10 @@ import {
   createDiagnosticProvider,
   createFeatureProvider,
 } from '../src/providers/index.js';
-import { createInspectorStore, type InspectorStore } from '../src/store/inspector-store.js';
+import {
+  createInspectorStore,
+  type InspectorStore,
+} from '../src/store/inspector-store.js';
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -39,7 +42,12 @@ function makeMixedArtifact(): VectorTileArtifact {
             geometryType: 'LineString',
             id: i + 1,
             properties: { highway: i % 2 === 0 ? 'primary' : 'secondary' },
-            geometry: [[{ x: i * 10, y: i * 10 }, { x: i * 10 + 5, y: i * 10 + 5 }]],
+            geometry: [
+              [
+                { x: i * 10, y: i * 10 },
+                { x: i * 10 + 5, y: i * 10 + 5 },
+              ],
+            ],
           })),
         },
         buildings: {
@@ -52,7 +60,16 @@ function makeMixedArtifact(): VectorTileArtifact {
               geometryType: 'Polygon',
               id: 100,
               properties: { type: 'residential' },
-              geometry: [[[{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 0 }]]],
+              geometry: [
+                [
+                  [
+                    { x: 0, y: 0 },
+                    { x: 1, y: 0 },
+                    { x: 1, y: 1 },
+                    { x: 0, y: 0 },
+                  ],
+                ],
+              ],
             },
           ],
         },

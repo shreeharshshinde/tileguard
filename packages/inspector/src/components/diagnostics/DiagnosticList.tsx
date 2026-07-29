@@ -69,11 +69,11 @@ function GroupSection({
         <SeverityBadge severity={severity} count={items.length} />
       </button>
       {isExpanded && (
-        <ul className="diagnostic-group__list" role="list">
+        <ul className="diagnostic-group__list">
           {items.map((diag, i) => {
             const globalIndex = offset + i;
             return (
-              <li key={globalIndex} role="listitem">
+              <li key={globalIndex}>
                 <DiagnosticItem
                   diagnostic={diag}
                   index={globalIndex}
@@ -101,8 +101,7 @@ export function DiagnosticList({
   onSelectDiagnostic,
   onToggleGroup,
 }: DiagnosticListProps): JSX.Element {
-  const hasAny =
-    errors.length > 0 || warnings.length > 0 || infos.length > 0;
+  const hasAny = errors.length > 0 || warnings.length > 0 || infos.length > 0;
 
   if (!hasAny) {
     return (

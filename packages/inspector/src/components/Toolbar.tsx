@@ -9,9 +9,9 @@ import {
   X,
 } from 'lucide-react';
 import { type ChangeEvent, type RefObject, useRef } from 'react';
-import type { SearchResult } from '../services/SearchService.js';
 import { useInspectorContext } from '../context/InspectorContext.js';
 import { useLifecycle } from '../hooks/use-store.js';
+import type { SearchResult } from '../services/SearchService.js';
 
 export interface ToolbarProps {
   readonly leftCollapsed: boolean;
@@ -108,12 +108,11 @@ export function Toolbar({
         {/* Search results dropdown */}
         {isSearchActive && searchResults.length > 0 && (
           <ul
-            role="listbox"
             aria-label="Search results"
             className="absolute left-0 top-full z-50 mt-1 max-h-64 w-72 overflow-y-auto rounded-[var(--tg-border-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] shadow-[var(--tg-shadow-md)]"
           >
             {searchResults.map((result, i) => (
-              <li key={i} role="option" aria-selected={false}>
+              <li key={i} aria-selected={false}>
                 <button
                   type="button"
                   className="w-full px-3 py-2 text-left hover:bg-[var(--tg-bg-hover)] focus:bg-[var(--tg-bg-hover)] focus:outline-none"

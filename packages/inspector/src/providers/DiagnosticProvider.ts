@@ -82,8 +82,10 @@ function meetsSeverity(
   minSeverity: Severity | null,
 ): boolean {
   if (minSeverity === null) return true;
-  return (SEVERITY_ORDER[diagnostic.severity] ?? 0) >=
-    (SEVERITY_ORDER[minSeverity] ?? 0);
+  return (
+    (SEVERITY_ORDER[diagnostic.severity] ?? 0) >=
+    (SEVERITY_ORDER[minSeverity] ?? 0)
+  );
 }
 
 // ---------------------------------------------------------------------------

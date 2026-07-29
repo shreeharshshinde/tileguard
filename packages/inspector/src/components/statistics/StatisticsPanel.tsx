@@ -26,7 +26,7 @@ export interface StatisticsPanelProps {
 }
 
 export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
-  const stats  = useStatistics(store);
+  const stats = useStatistics(store);
   const layers = useLayerStatistics(store);
 
   const totalDiag =
@@ -44,14 +44,8 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
         {/* Summary cards */}
         <section className="statistics-panel__section" aria-label="Summary">
           <div className="statistics-panel__cards">
-            <StatisticsCard
-              label="Layers"
-              value={stats.totalLayers}
-            />
-            <StatisticsCard
-              label="Features"
-              value={stats.totalFeatures}
-            />
+            <StatisticsCard label="Layers" value={stats.totalLayers} />
+            <StatisticsCard label="Features" value={stats.totalFeatures} />
             <StatisticsCard
               label="Diagnostics"
               value={totalDiag}
@@ -59,10 +53,10 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
                 stats.diagnostics.errors > 0
                   ? 'error'
                   : stats.diagnostics.warnings > 0
-                  ? 'warning'
-                  : totalDiag > 0
-                  ? 'info'
-                  : 'success'
+                    ? 'warning'
+                    : totalDiag > 0
+                      ? 'info'
+                      : 'success'
               }
             />
           </div>
@@ -70,7 +64,10 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
 
         {/* Geometry distribution */}
         {stats.totalFeatures > 0 && (
-          <section className="statistics-panel__section" aria-label="Geometry distribution">
+          <section
+            className="statistics-panel__section"
+            aria-label="Geometry distribution"
+          >
             <div className="statistics-panel__section-title">Geometry</div>
             <GeometryChart
               point={stats.geometryCounts.point}
@@ -81,7 +78,10 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
         )}
 
         {/* Diagnostic distribution */}
-        <section className="statistics-panel__section" aria-label="Diagnostic distribution">
+        <section
+          className="statistics-panel__section"
+          aria-label="Diagnostic distribution"
+        >
           <div className="statistics-panel__section-title">Diagnostics</div>
           <DiagnosticChart
             errors={stats.diagnostics.errors}
@@ -92,7 +92,10 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
 
         {/* Layer table */}
         {stats.totalLayers > 0 && (
-          <section className="statistics-panel__section" aria-label="Layer breakdown">
+          <section
+            className="statistics-panel__section"
+            aria-label="Layer breakdown"
+          >
             <div className="statistics-panel__section-title">Layers</div>
             <LayerStatisticsTable
               layers={layers.layers}
@@ -105,7 +108,9 @@ export function StatisticsPanel({ store }: StatisticsPanelProps): JSX.Element {
         {/* Empty state */}
         {stats.totalLayers === 0 && (
           <div className="statistics-panel__empty">
-            <span className="statistics-panel__empty-icon" aria-hidden="true">📊</span>
+            <span className="statistics-panel__empty-icon" aria-hidden="true">
+              📊
+            </span>
             <span className="statistics-panel__empty-text">
               Load a tile to see statistics
             </span>

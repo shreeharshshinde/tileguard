@@ -34,7 +34,10 @@ import {
   createLayerProvider,
   type LayerInfo,
 } from '../providers/LayerProvider.js';
-import { createSearchService, type SearchResult } from '../services/SearchService.js';
+import {
+  createSearchService,
+  type SearchResult,
+} from '../services/SearchService.js';
 import type {
   FeatureRef,
   FilterState,
@@ -137,9 +140,7 @@ export function useLayers(store: InspectorStore): readonly LayerInfo[] {
  * Returns diagnostics grouped by severity, respecting active filter state.
  * Re-renders when lifecycle or filters change.
  */
-export function useGroupedDiagnostics(
-  store: InspectorStore,
-): DiagnosticGroups {
+export function useGroupedDiagnostics(store: InspectorStore): DiagnosticGroups {
   const lifecycle = useLifecycle(store);
   const filters = useFilters(store);
 
@@ -154,9 +155,7 @@ export function useGroupedDiagnostics(
  * Returns diagnostic summary counts (unfiltered), for badge display.
  * Re-renders when lifecycle changes.
  */
-export function useDiagnosticSummary(
-  store: InspectorStore,
-): DiagnosticSummary {
+export function useDiagnosticSummary(store: InspectorStore): DiagnosticSummary {
   const lifecycle = useLifecycle(store);
 
   return useMemo(() => {
@@ -257,7 +256,9 @@ const defaultSeverityFilter = (): SeverityFilter => ({
 export function useDiagnosticFilter(
   store: InspectorStore,
 ): UseDiagnosticFilterResult {
-  const [severity, setSeverity] = useState<SeverityFilter>(defaultSeverityFilter);
+  const [severity, setSeverity] = useState<SeverityFilter>(
+    defaultSeverityFilter,
+  );
   const [layers, setLayers] = useState<ReadonlySet<string>>(new Set());
   const [geometryTypes, setGeometryTypes] = useState<ReadonlySet<string>>(
     new Set(),
@@ -342,7 +343,8 @@ export function usePanelState(): UsePanelStateResult {
   const [expandedGroups, setExpandedGroups] = useState<ReadonlySet<string>>(
     new Set(['error', 'warning', 'info']), // default: all expanded
   );
-  const [sortOrder, setSortOrderRaw] = useState<DiagnosticSortOrder>('severity');
+  const [sortOrder, setSortOrderRaw] =
+    useState<DiagnosticSortOrder>('severity');
 
   const toggleGroup = useCallback((groupId: string) => {
     setExpandedGroups((prev) => {

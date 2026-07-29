@@ -66,20 +66,36 @@
 
 /* Error group header tint */
 .diagnostic-group--error .diagnostic-group__header {
-  background-color: color-mix(in srgb, var(--tg-error) 8%, var(--tg-bg-secondary));
+  background-color: color-mix(
+    in srgb,
+    var(--tg-error) 8%,
+    var(--tg-bg-secondary)
+  );
 }
 
 .diagnostic-group--error .diagnostic-group__header:hover {
-  background-color: color-mix(in srgb, var(--tg-error) 14%, var(--tg-bg-secondary));
+  background-color: color-mix(
+    in srgb,
+    var(--tg-error) 14%,
+    var(--tg-bg-secondary)
+  );
 }
 
 /* Warning group header tint */
 .diagnostic-group--warning .diagnostic-group__header {
-  background-color: color-mix(in srgb, var(--tg-warning) 8%, var(--tg-bg-secondary));
+  background-color: color-mix(
+    in srgb,
+    var(--tg-warning) 8%,
+    var(--tg-bg-secondary)
+  );
 }
 
 .diagnostic-group--warning .diagnostic-group__header:hover {
-  background-color: color-mix(in srgb, var(--tg-warning) 14%, var(--tg-bg-secondary));
+  background-color: color-mix(
+    in srgb,
+    var(--tg-warning) 14%,
+    var(--tg-bg-secondary)
+  );
 }
 
 /* Item list (ul resets) */

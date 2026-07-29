@@ -84,7 +84,10 @@ class FeatureProviderImpl implements FeatureProvider {
     return this.getFeatureAt(selection.layerName, selection.featureIndex);
   }
 
-  getFeatureAt(layerName: string, featureIndex: number): ResolvedFeature | null {
+  getFeatureAt(
+    layerName: string,
+    featureIndex: number,
+  ): ResolvedFeature | null {
     const { lifecycle } = this._store;
     if (lifecycle.status !== 'loaded') return null;
     // Cast via unknown: VectorTileLayer has readonly features, but we only read it.

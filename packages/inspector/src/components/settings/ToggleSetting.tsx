@@ -22,7 +22,9 @@ export function ToggleSetting({
   disabled = false,
 }: ToggleSettingProps): JSX.Element {
   return (
-    <label className={`toggle-setting${disabled ? ' toggle-setting--disabled' : ''}`}>
+    <label
+      className={`toggle-setting${disabled ? ' toggle-setting--disabled' : ''}`}
+    >
       <div className="toggle-setting__text">
         <span className="toggle-setting__label">{label}</span>
         {description !== undefined && (

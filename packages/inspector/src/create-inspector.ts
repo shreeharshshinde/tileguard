@@ -36,7 +36,10 @@ import {
   type RenderCoordinator,
 } from './render/render-coordinator.js';
 import type { CanvasRenderer, Renderer } from './renderer/canvas-renderer.js';
-import { createSearchService, type SearchResult } from './services/SearchService.js';
+import {
+  createSearchService,
+  type SearchResult,
+} from './services/SearchService.js';
 import {
   createStatisticsService,
   type TileStatistics,
