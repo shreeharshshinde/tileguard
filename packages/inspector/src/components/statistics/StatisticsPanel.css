@@ -1,0 +1,81 @@
+/* StatisticsPanel styles — CSS tokens integration */
+
+.statistics-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  background-color: var(--tg-bg-secondary);
+  color: var(--tg-text-primary);
+  font-family: var(--tg-font-sans);
+}
+
+.statistics-panel__header {
+  padding: var(--tg-space-md) var(--tg-space-lg);
+  border-bottom: 1px solid var(--tg-border);
+  background-color: var(--tg-bg-surface);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.statistics-panel__title {
+  color: var(--tg-text-primary);
+}
+
+.statistics-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-lg);
+  padding: var(--tg-space-lg);
+}
+
+.statistics-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tg-space-sm);
+}
+
+.statistics-panel__section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tg-text-muted);
+}
+
+.statistics-panel__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--tg-space-md);
+}
+
+.statistics-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tg-space-md);
+  background-color: var(--tg-bg-surface);
+  border: 1px solid var(--tg-border);
+  border-radius: var(--tg-border-radius);
+}
+
+.statistics-card__label {
+  font-size: 0.7rem;
+  color: var(--tg-text-secondary);
+}
+
+.statistics-card__value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--tg-text-primary);
+}
+
+.statistics-card__value--error {
+  color: var(--tg-error);
+}
+
+.statistics-card__value--warning {
+  color: var(--tg-warning);
+}
