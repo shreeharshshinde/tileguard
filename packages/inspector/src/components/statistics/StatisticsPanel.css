@@ -46,8 +46,30 @@
 
 .statistics-panel__cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   gap: var(--tg-space-md);
+}
+
+.statistics-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tg-space-sm);
+  padding: var(--tg-space-xl);
+  border: 1px dashed var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  background-color: var(--tg-bg-surface);
+  color: var(--tg-text-muted);
+  text-align: center;
+}
+
+.statistics-panel__empty-icon {
+  font-size: 2rem;
+}
+
+.statistics-panel__empty-text {
+  font-size: 0.9rem;
 }
 
 .statistics-card {
@@ -61,21 +83,38 @@
   border-radius: var(--tg-border-radius);
 }
 
+.statistics-card--default .statistics-card__value {
+  color: var(--tg-text-primary);
+}
+
+.statistics-card--error .statistics-card__value {
+  color: var(--tg-error);
+}
+
+.statistics-card--warning .statistics-card__value {
+  color: var(--tg-warning);
+}
+
+.statistics-card--info .statistics-card__value {
+  color: var(--tg-info);
+}
+
+.statistics-card--success .statistics-card__value {
+  color: var(--tg-success);
+}
+
 .statistics-card__label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--tg-text-secondary);
 }
 
 .statistics-card__value {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--tg-text-primary);
 }
 
-.statistics-card__value--error {
-  color: var(--tg-error);
-}
-
-.statistics-card__value--warning {
-  color: var(--tg-warning);
+.statistics-card__subtitle {
+  margin-top: var(--tg-space-xs);
+  font-size: 0.75rem;
+  color: var(--tg-text-muted);
 }

@@ -1,0 +1,69 @@
+.geometry-chart {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: var(--tg-space-lg);
+  align-items: center;
+}
+
+.geometry-chart__svg {
+  width: 100%;
+  height: auto;
+  min-height: 180px;
+  border-radius: var(--tg-border-radius);
+  background-color: var(--tg-bg-surface);
+  border: 1px solid var(--tg-border);
+}
+
+.geometry-chart__center-value,
+.geometry-chart__center-label {
+  fill: var(--tg-text-primary);
+}
+
+.geometry-chart__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tg-space-sm);
+}
+
+.geometry-chart__legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tg-space-sm);
+  padding: var(--tg-space-sm);
+  border-radius: var(--tg-border-radius);
+  background-color: var(--tg-bg-surface);
+  border: 1px solid var(--tg-border);
+}
+
+.geometry-chart__legend-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.geometry-chart__legend-label {
+  color: var(--tg-text-primary);
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.geometry-chart__legend-value {
+  color: var(--tg-text-secondary);
+  font-size: 0.85rem;
+}
+
+.geometry-chart--empty {
+  padding: var(--tg-space-lg);
+  border: 1px dashed var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  background-color: var(--tg-bg-surface);
+  color: var(--tg-text-muted);
+}
+
+.geometry-chart__empty-text {
+  font-size: 0.95rem;
+}

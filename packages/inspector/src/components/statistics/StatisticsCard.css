@@ -1,0 +1,29 @@
+.statistics-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tg-space-xs);
+  padding: var(--tg-space-md);
+  background-color: var(--tg-bg-surface);
+  border: 1px solid var(--tg-border);
+  border-radius: var(--tg-border-radius);
+  min-height: 96px;
+}
+
+.statistics-card__label {
+  font-size: 0.75rem;
+  color: var(--tg-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statistics-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--tg-text-primary);
+}
+
+.statistics-card__subtitle {
+  font-size: 0.75rem;
+  color: var(--tg-text-muted);
+}

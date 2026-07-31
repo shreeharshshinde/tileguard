@@ -1,0 +1,60 @@
+.diagnostic-chart {
+  display: grid;
+  gap: var(--tg-space-sm);
+}
+
+.diagnostic-chart__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--tg-space-sm);
+  align-items: center;
+  padding: var(--tg-space-sm);
+  border-radius: var(--tg-border-radius);
+  background-color: var(--tg-bg-surface);
+}
+
+.diagnostic-chart__icon {
+  width: 1.75rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.diagnostic-chart__label {
+  color: var(--tg-text-primary);
+  font-size: 0.9rem;
+}
+
+.diagnostic-chart__track {
+  position: relative;
+  width: 100%;
+  height: 0.75rem;
+  border-radius: 999px;
+  background-color: var(--tg-border);
+  overflow: hidden;
+}
+
+.diagnostic-chart__bar {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.diagnostic-chart__count {
+  font-size: 0.85rem;
+  color: var(--tg-text-secondary);
+  min-width: 3rem;
+  text-align: right;
+}
+
+.diagnostic-chart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tg-space-lg);
+  background-color: var(--tg-bg-surface);
+  border: 1px dashed var(--tg-border);
+  border-radius: var(--tg-border-radius);
+}
+
+.diagnostic-chart__empty-text {
+  color: var(--tg-text-muted);
+}
