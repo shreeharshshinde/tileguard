@@ -68,4 +68,38 @@ describe('ShortcutService', () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it('dispatches settings actions for Ctrl+, and Ctrl+3', () => {
+    const service = createShortcutService();
+    const handler = vi.fn();
+    service.registerHandler(handler);
+
+    const listeners: Record<string, (e: unknown) => void> = {};
+    const mockTarget = {
+      addEventListener: (type: string, fn: (e: unknown) => void) => {
+        listeners[type] = fn;
+      },
+      removeEventListener: vi.fn(),
+    };
+
+    service.attach(mockTarget as unknown as EventTarget);
+
+    listeners.keydown?.({
+      key: ',',
+      ctrlKey: true,
+      shiftKey: false,
+      target: null,
+      preventDefault: vi.fn(),
+    });
+    listeners.keydown?.({
+      key: '3',
+      ctrlKey: true,
+      shiftKey: false,
+      target: null,
+      preventDefault: vi.fn(),
+    });
+
+    expect(handler).toHaveBeenNthCalledWith(1, 'openSettings');
+    expect(handler).toHaveBeenNthCalledWith(2, 'showSettings');
+  });
 });
