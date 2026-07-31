@@ -8,20 +8,23 @@
  * Filtering is purely derivational (no store mutations here).
  */
 
-import type { LayerInfo } from '../../providers/LayerProvider.js';
 import type {
   DiagnosticSortOrder,
   SeverityFilter,
 } from '../../hooks/use-store.js';
+import type { LayerInfo } from '../../providers/LayerProvider.js';
 import './DiagnosticToolbar.css';
 
 export interface DiagnosticToolbarProps {
   readonly severity: SeverityFilter;
   readonly activeLayers: ReadonlySet<string>;
+  readonly activeGeometryTypes: ReadonlySet<string>;
   readonly layers: readonly LayerInfo[];
+  readonly geometryTypes: readonly string[];
   readonly sortOrder: DiagnosticSortOrder;
   readonly onToggleSeverity: (key: keyof SeverityFilter) => void;
   readonly onToggleLayer: (layerName: string) => void;
+  readonly onToggleGeometryType: (type: string) => void;
   readonly onSetSortOrder: (order: DiagnosticSortOrder) => void;
   readonly onReset: () => void;
 }
@@ -61,14 +64,18 @@ function SeverityCheckbox({
 export function DiagnosticToolbar({
   severity,
   activeLayers,
+  activeGeometryTypes,
   layers,
+  geometryTypes,
   sortOrder,
   onToggleSeverity,
   onToggleLayer,
+  onToggleGeometryType,
   onSetSortOrder,
   onReset,
 }: DiagnosticToolbarProps): JSX.Element {
   const hasActiveLayerFilter = activeLayers.size > 0;
+  const hasActiveGeometryFilter = activeGeometryTypes.size > 0;
 
   return (
     <div
@@ -77,11 +84,10 @@ export function DiagnosticToolbar({
       aria-label="Diagnostic filters"
     >
       {/* Severity checkboxes */}
-      <div
-        className="diagnostic-toolbar__severity-group"
-        role="group"
-        aria-label="Filter by severity"
-      >
+      <fieldset className="diagnostic-toolbar__severity-group">
+        <legend className="diagnostic-toolbar__sr-only">
+          Filter by severity
+        </legend>
         <SeverityCheckbox
           id="error"
           label="Errors"
@@ -103,7 +109,7 @@ export function DiagnosticToolbar({
           checked={severity.info}
           onChange={onToggleSeverity}
         />
-      </div>
+      </fieldset>
 
       {/* Layer filter dropdown */}
       {layers.length > 0 && (
@@ -120,11 +126,10 @@ export function DiagnosticToolbar({
                 </span>
               )}
             </summary>
-            <div
-              className="diagnostic-toolbar__dropdown-content"
-              role="group"
-              aria-label="Layer checkboxes"
-            >
+            <fieldset className="diagnostic-toolbar__dropdown-content">
+              <legend className="diagnostic-toolbar__sr-only">
+                Layer checkboxes
+              </legend>
               {layers.map((layer) => (
                 <label
                   key={layer.name}
@@ -147,7 +152,50 @@ export function DiagnosticToolbar({
                   </span>
                 </label>
               ))}
-            </div>
+            </fieldset>
+          </details>
+        </div>
+      )}
+
+      {geometryTypes.length > 0 && (
+        <div className="diagnostic-toolbar__layer-group">
+          <details className="diagnostic-toolbar__dropdown">
+            <summary
+              className={`diagnostic-toolbar__dropdown-trigger${hasActiveGeometryFilter ? ' diagnostic-toolbar__dropdown-trigger--active' : ''}`}
+              aria-label={`Geometry filter${hasActiveGeometryFilter ? ` (${activeGeometryTypes.size} active)` : ''}`}
+            >
+              Geometry
+              {hasActiveGeometryFilter && (
+                <span className="diagnostic-toolbar__active-indicator">
+                  {activeGeometryTypes.size}
+                </span>
+              )}
+            </summary>
+            <fieldset className="diagnostic-toolbar__dropdown-content">
+              <legend className="diagnostic-toolbar__sr-only">
+                Geometry checkboxes
+              </legend>
+              {geometryTypes.map((geometryType) => (
+                <label
+                  key={geometryType}
+                  className="diagnostic-toolbar__layer-item"
+                >
+                  <input
+                    type="checkbox"
+                    checked={
+                      !hasActiveGeometryFilter ||
+                      activeGeometryTypes.has(geometryType)
+                    }
+                    onChange={() => onToggleGeometryType(geometryType)}
+                    aria-label={`Show geometry ${geometryType}`}
+                    className="diagnostic-toolbar__checkbox"
+                  />
+                  <span className="diagnostic-toolbar__layer-name">
+                    {geometryType}
+                  </span>
+                </label>
+              ))}
+            </fieldset>
           </details>
         </div>
       )}

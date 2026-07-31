@@ -19,6 +19,7 @@
  *     → FeaturePanel updates via hooks
  */
 
+import type { Diagnostic } from '@tileguard/core';
 import { useMemo, useState } from 'react';
 import type { Inspector } from '../../create-inspector.js';
 import {
@@ -37,18 +38,67 @@ export interface DiagnosticPanelProps {
   readonly inspector: Inspector | null;
 }
 
+function shouldShowDiagnostic(
+  diag: Diagnostic,
+  activeLayerFilter: ReadonlySet<string>,
+  activeGeometryFilter: ReadonlySet<string>,
+  artifactLayers:
+    | Readonly<Record<string, { features?: readonly { geometryType?: string }[] }>>
+    | null,
+): boolean {
+  const loc = diag.location as
+    | {
+        layer?: string;
+        featureIndex?: number;
+      }
+    | undefined;
+  const diagLayer = loc?.layer ?? null;
+
+  if (activeLayerFilter.size > 0 && diagLayer !== null) {
+    if (!activeLayerFilter.has(diagLayer)) return false;
+  }
+
+  if (activeGeometryFilter.size === 0) return true;
+
+  const featureIndex = loc?.featureIndex ?? null;
+  if (diagLayer === null || featureIndex === null || artifactLayers === null) {
+    return false;
+  }
+
+  const layerDefinition = artifactLayers[diagLayer];
+  const feature = layerDefinition?.features?.[featureIndex];
+  const geometryType = feature?.geometryType ?? null;
+
+  return geometryType !== null && activeGeometryFilter.has(geometryType);
+}
+
 export function DiagnosticPanel({
   store,
   inspector,
 }: DiagnosticPanelProps): JSX.Element {
   const grouped = useGroupedDiagnostics(store);
   const layers = useLayers(store);
-  const { filters, toggleSeverity, toggleLayer, resetFilters } =
-    useDiagnosticFilter(store);
+  const {
+    filters,
+    toggleSeverity,
+    toggleLayer,
+    toggleGeometryType,
+    resetFilters,
+  } = useDiagnosticFilter(store);
   const { panelState, toggleGroup, setSortOrder } = usePanelState();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  // Apply severity + layer filters to the grouped diagnostics (pure derivation)
+  const geometryTypes = useMemo(() => {
+    const all = new Set<string>();
+    for (const layer of layers) {
+      for (const geometryType of layer.geometryTypes) {
+        all.add(geometryType);
+      }
+    }
+    return Array.from(all).sort();
+  }, [layers]);
+
+  // Apply severity, layer, and geometry filters to the grouped diagnostics (pure derivation)
   const filteredGrouped = useMemo(() => {
     const {
       error: showError,
@@ -56,22 +106,26 @@ export function DiagnosticPanel({
       info: showInfo,
     } = filters.severity;
     const activeLayerFilter = filters.layers;
+    const activeGeometryFilter = filters.geometryTypes;
+    const artifactLayers =
+      store.lifecycle.status === 'loaded'
+        ? store.lifecycle.artifact.content.layers
+        : null;
 
-    function shouldShow(diag: import('@tileguard/core').Diagnostic): boolean {
-      const loc = diag.location as { layer?: string } | undefined;
-      const diagLayer = loc?.layer ?? null;
-      if (activeLayerFilter.size > 0 && diagLayer !== null) {
-        if (!activeLayerFilter.has(diagLayer)) return false;
-      }
-      return true;
-    }
+    const shouldShow = (diag: Diagnostic): boolean =>
+      shouldShowDiagnostic(
+        diag,
+        activeLayerFilter,
+        activeGeometryFilter,
+        artifactLayers,
+      );
 
     return {
       errors: showError ? grouped.errors.filter(shouldShow) : [],
       warnings: showWarning ? grouped.warnings.filter(shouldShow) : [],
       infos: showInfo ? grouped.infos.filter(shouldShow) : [],
     };
-  }, [grouped, filters]);
+  }, [grouped, filters, store.lifecycle]);
 
   // Compute global index offsets so DiagnosticItem can report the correct index
   // back to Inspector.selectDiagnostic() against the full unfiltered array.
@@ -94,7 +148,7 @@ export function DiagnosticPanel({
     grouped.errors.length + grouped.warnings.length + grouped.infos.length;
 
   return (
-    <div className="diagnostic-panel" aria-label="Diagnostics panel">
+    <section className="diagnostic-panel" aria-label="Diagnostics panel">
       <div className="diagnostic-panel__header">
         <span className="diagnostic-panel__title">Diagnostics</span>
         {totalAll > 0 && (
@@ -109,10 +163,13 @@ export function DiagnosticPanel({
       <DiagnosticToolbar
         severity={filters.severity}
         activeLayers={filters.layers}
+        activeGeometryTypes={filters.geometryTypes}
         layers={layers}
+        geometryTypes={geometryTypes}
         sortOrder={panelState.sortOrder}
         onToggleSeverity={toggleSeverity}
         onToggleLayer={toggleLayer}
+        onToggleGeometryType={toggleGeometryType}
         onSetSortOrder={setSortOrder}
         onReset={resetFilters}
       />
@@ -140,6 +197,6 @@ export function DiagnosticPanel({
           />
         )}
       </div>
-    </div>
+    </section>
   );
 }

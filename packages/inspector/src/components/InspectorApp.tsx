@@ -227,14 +227,14 @@ function Workspace(): JSX.Element {
           searchInputRef.current?.focus();
           break;
         case 'showDiagnostics':
-        case 'openSettings':
           setActiveTab('diagnostics');
+          break;
+        case 'openSettings':
+        case 'showSettings':
+          setActiveTab('settings');
           break;
         case 'showStatistics':
           setActiveTab('statistics');
-          break;
-        case 'showSettings':
-          setActiveTab('settings');
           break;
         default:
           break;
