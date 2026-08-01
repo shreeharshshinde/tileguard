@@ -144,4 +144,153 @@ describe('StatisticsService', () => {
     expect(roads?.geometryCounts.line).toBe(2);
     expect(roads?.diagnosticCount).toBe(1);
   });
+
+  it('updates statistics after loading a different tile', async () => {
+    await store.load('test.pbf', makeArtifact(), makeDiagnostics());
+
+    // Build a second artifact with only one layer
+    const secondArtifact = {
+      type: 'VectorTile',
+      source: 'second.pbf',
+      content: {
+        layers: {
+          water: {
+            name: 'water',
+            extent: 4096,
+            version: 2,
+            features: [
+              {
+                type: 3,
+                geometryType: 'Polygon',
+                id: 100,
+                properties: { natural: 'water' },
+                geometry: [
+                  [
+                    { x: 0, y: 0 },
+                    { x: 100, y: 0 },
+                    { x: 100, y: 100 },
+                    { x: 0, y: 0 },
+                  ],
+                ],
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as VectorTileArtifact;
+
+    await store.load('second.pbf', secondArtifact, []);
+
+    const fp = createFeatureProvider(store);
+    const dp = createDiagnosticProvider(store);
+    const lp = createLayerProvider(store);
+    const service = createStatisticsService(fp, dp, lp);
+    const stats = service.compute();
+
+    expect(stats.totalLayers).toBe(1);
+    expect(stats.totalFeatures).toBe(1);
+    expect(stats.geometryCounts.polygon).toBe(1);
+    expect(stats.geometryCounts.line).toBe(0);
+    expect(stats.diagnostics.errors).toBe(0);
+    expect(stats.diagnostics.warnings).toBe(0);
+    expect(stats.diagnostics.info).toBe(0);
+  });
+
+  it('computes correct stats for a single-layer tile', async () => {
+    const singleLayerArtifact = {
+      type: 'VectorTile',
+      source: 'single.pbf',
+      content: {
+        layers: {
+          poi: {
+            name: 'poi',
+            extent: 4096,
+            version: 2,
+            features: [
+              {
+                type: 1,
+                geometryType: 'Point',
+                id: 1,
+                properties: { name: 'cafe' },
+                geometry: [{ x: 50, y: 50 }],
+              },
+              {
+                type: 1,
+                geometryType: 'Point',
+                id: 2,
+                properties: { name: 'park' },
+                geometry: [{ x: 100, y: 100 }],
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as VectorTileArtifact;
+
+    await store.load('single.pbf', singleLayerArtifact, []);
+
+    const fp = createFeatureProvider(store);
+    const dp = createDiagnosticProvider(store);
+    const lp = createLayerProvider(store);
+    const service = createStatisticsService(fp, dp, lp);
+    const stats = service.compute();
+
+    expect(stats.totalLayers).toBe(1);
+    expect(stats.totalFeatures).toBe(2);
+    expect(stats.geometryCounts.point).toBe(2);
+    expect(stats.geometryCounts.line).toBe(0);
+    expect(stats.geometryCounts.polygon).toBe(0);
+    expect(stats.layers).toHaveLength(1);
+    expect(stats.layers[0]!.name).toBe('poi');
+  });
+
+  it('reports zero diagnostics when none are present', async () => {
+    await store.load('test.pbf', makeArtifact(), []);
+
+    const fp = createFeatureProvider(store);
+    const dp = createDiagnosticProvider(store);
+    const lp = createLayerProvider(store);
+    const service = createStatisticsService(fp, dp, lp);
+    const stats = service.compute();
+
+    expect(stats.totalFeatures).toBe(3);
+    expect(stats.diagnostics.errors).toBe(0);
+    expect(stats.diagnostics.warnings).toBe(0);
+    expect(stats.diagnostics.info).toBe(0);
+    for (const layer of stats.layers) {
+      expect(layer.diagnosticCount).toBe(0);
+    }
+  });
+
+  it('layer breakdown is sortable by name, features, and diagnostics', async () => {
+    await store.load('test.pbf', makeArtifact(), makeDiagnostics());
+
+    const fp = createFeatureProvider(store);
+    const dp = createDiagnosticProvider(store);
+    const lp = createLayerProvider(store);
+    const service = createStatisticsService(fp, dp, lp);
+    const stats = service.compute();
+
+    // Sort by name ascending
+    const byName = [...stats.layers].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+    expect(byName[0]!.name).toBe('buildings');
+    expect(byName[1]!.name).toBe('roads');
+
+    // Sort by featureCount descending
+    const byFeatures = [...stats.layers].sort(
+      (a, b) => b.featureCount - a.featureCount,
+    );
+    expect(byFeatures[0]!.name).toBe('roads');
+    expect(byFeatures[0]!.featureCount).toBe(2);
+
+    // Sort by diagnosticCount descending
+    const byDiag = [...stats.layers].sort(
+      (a, b) => b.diagnosticCount - a.diagnosticCount,
+    );
+    expect(byDiag[0]!.diagnosticCount).toBeGreaterThanOrEqual(
+      byDiag[1]!.diagnosticCount,
+    );
+  });
 });
