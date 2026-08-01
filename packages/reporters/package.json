@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/reporters",
-  "version": "0.4.1",
+  "version": "0.4.5",
   "description": "Built-in output reporters for TileGuard: text and JSON",
   "type": "module",
   "exports": {

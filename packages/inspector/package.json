@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/inspector",
-  "version": "0.6.0",
+  "version": "0.4.5",
   "description": "Visual debugging environment for TileGuard — renders MVT geometry and diagnostic overlays in the browser",
   "type": "module",
   "private": true,

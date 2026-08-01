@@ -1,6 +1,6 @@
 {
   "name": "@tileguard/shared",
-  "version": "0.4.1",
+  "version": "0.4.5",
   "description": "Shared utilities and helpers used across TileGuard packages",
   "type": "module",
   "exports": {
