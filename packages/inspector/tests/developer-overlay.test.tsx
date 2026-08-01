@@ -98,7 +98,12 @@ describe('DeveloperOverlay', () => {
     const html = renderToString(
       <DeveloperOverlay
         {...makeProps({
-          metrics: { fps: 58, frameTimeMs: 17.2, renderCount: 500, lastFrameTime: 9000 },
+          metrics: {
+            fps: 58,
+            frameTimeMs: 17.2,
+            renderCount: 500,
+            lastFrameTime: 9000,
+          },
         })}
       />,
     );
@@ -111,7 +116,12 @@ describe('DeveloperOverlay', () => {
     const html = renderToString(
       <DeveloperOverlay
         {...makeProps({
-          metrics: { fps: 60, frameTimeMs: 16.6, renderCount: 10, lastFrameTime: 0 },
+          metrics: {
+            fps: 60,
+            frameTimeMs: 16.6,
+            renderCount: 10,
+            lastFrameTime: 0,
+          },
         })}
       />,
     );
@@ -123,7 +133,12 @@ describe('DeveloperOverlay', () => {
     const html = renderToString(
       <DeveloperOverlay
         {...makeProps({
-          metrics: { fps: 60, frameTimeMs: 16.6, renderCount: 42, lastFrameTime: 0 },
+          metrics: {
+            fps: 60,
+            frameTimeMs: 16.6,
+            renderCount: 42,
+            lastFrameTime: 0,
+          },
         })}
       />,
     );
@@ -136,7 +151,9 @@ describe('DeveloperOverlay', () => {
   it('shows zoom and pan when viewport is provided', () => {
     const html = renderToString(
       <DeveloperOverlay
-        {...makeProps({ viewport: makeViewport({ zoom: 3, panX: 120, panY: 240 }) })}
+        {...makeProps({
+          viewport: makeViewport({ zoom: 3, panX: 120, panY: 240 }),
+        })}
       />,
     );
     expect(html).toContain('Zoom');
@@ -147,7 +164,9 @@ describe('DeveloperOverlay', () => {
   });
 
   it('omits Zoom and Pan rows when viewport is null', () => {
-    const html = renderToString(<DeveloperOverlay {...makeProps({ viewport: null })} />);
+    const html = renderToString(
+      <DeveloperOverlay {...makeProps({ viewport: null })} />,
+    );
     expect(html).not.toContain('>Zoom<');
     expect(html).not.toContain('>Pan<');
   });
@@ -164,7 +183,9 @@ describe('DeveloperOverlay', () => {
 
   it('shows visible features count when provided', () => {
     const html = renderToString(
-      <DeveloperOverlay {...makeProps({ visibleFeatures: 400, totalFeatures: 1000 })} />,
+      <DeveloperOverlay
+        {...makeProps({ visibleFeatures: 400, totalFeatures: 1000 })}
+      />,
     );
     expect(html).toContain('Visible');
     expect(html).toContain('400');
@@ -181,7 +202,9 @@ describe('DeveloperOverlay', () => {
 
   it('shows hovered feature identifier when hoveredFeature is provided', () => {
     const html = renderToString(
-      <DeveloperOverlay {...makeProps({ hoveredFeature: makeFeature('roads', 7) })} />,
+      <DeveloperOverlay
+        {...makeProps({ hoveredFeature: makeFeature('roads', 7) })}
+      />,
     );
     expect(html).toContain('Hover');
     expect(html).toContain('roads[7]');
@@ -198,12 +221,16 @@ describe('DeveloperOverlay', () => {
   });
 
   it('omits the Hover row when hoveredFeature is null', () => {
-    const html = renderToString(<DeveloperOverlay {...makeProps({ hoveredFeature: null })} />);
+    const html = renderToString(
+      <DeveloperOverlay {...makeProps({ hoveredFeature: null })} />,
+    );
     expect(html).not.toContain('>Hover<');
   });
 
   it('omits the Selected row when selectedFeature is null', () => {
-    const html = renderToString(<DeveloperOverlay {...makeProps({ selectedFeature: null })} />);
+    const html = renderToString(
+      <DeveloperOverlay {...makeProps({ selectedFeature: null })} />,
+    );
     expect(html).not.toContain('>Selected<');
   });
 

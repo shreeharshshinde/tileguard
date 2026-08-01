@@ -10,11 +10,12 @@
  *   ├─ Diagnostic distribution (bar chart) ──────────────────────────────┤
  *   └─ Layer table (sortable) ────────────────────────────────────────────┘
  */
-import type { InspectorStore } from '../../store/inspector-store.js';
+
 import {
   useLayerStatistics,
   useStatistics,
 } from '../../hooks/use-statistics-settings.js';
+import type { InspectorStore } from '../../store/inspector-store.js';
 import './StatisticsPanel.css';
 import { DiagnosticChart } from './DiagnosticChart.js';
 import { GeometryChart } from './GeometryChart.js';

@@ -17,8 +17,10 @@ import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createInspector, type Inspector } from '../src/create-inspector.js';
-import type { CanvasRenderer } from '../src/renderer/canvas-renderer.js';
-import type { Renderer } from '../src/renderer/canvas-renderer.js';
+import type {
+  CanvasRenderer,
+  Renderer,
+} from '../src/renderer/canvas-renderer.js';
 import {
   DEFAULT_SETTINGS,
   resetSettingsServiceInstance,

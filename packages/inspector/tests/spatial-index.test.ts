@@ -6,8 +6,8 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { createSpatialIndex } from '../src/performance/SpatialIndex.js';
 import type { SpatialFeatureRef } from '../src/performance/SpatialIndex.js';
+import { createSpatialIndex } from '../src/performance/SpatialIndex.js';
 
 // ---------------------------------------------------------------------------
 // Helpers

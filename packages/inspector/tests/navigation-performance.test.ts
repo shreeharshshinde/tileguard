@@ -20,10 +20,6 @@ import {
   type RafScheduler,
 } from '../src/animation/CameraAnimator.js';
 import {
-  createExportService,
-  ExportNotImplementedError,
-} from '../src/services/ExportService.js';
-import {
   createPerformanceProfiler,
   EMPTY_METRICS,
 } from '../src/performance/PerformanceProfiler.js';
@@ -32,11 +28,15 @@ import {
   type SpatialFeatureRef,
 } from '../src/performance/SpatialIndex.js';
 import {
+  createExportService,
+  ExportNotImplementedError,
+} from '../src/services/ExportService.js';
+import { createShortcutService } from '../src/services/ShortcutService.js';
+import {
   DEFAULT_LAYOUT,
   getWorkspaceService,
   resetWorkspaceServiceInstance,
 } from '../src/services/WorkspaceService.js';
-import { createShortcutService } from '../src/services/ShortcutService.js';
 import type { ViewportState } from '../src/viewport/viewport.js';
 
 // ---------------------------------------------------------------------------
@@ -57,17 +57,28 @@ function makeViewport(overrides: Partial<ViewportState> = {}): ViewportState {
   };
 }
 
-function makeSyncScheduler(): RafScheduler & { step: (count?: number) => void } {
+function makeSyncScheduler(): RafScheduler & {
+  step: (count?: number) => void;
+} {
   let nextId = 0;
   const pending = new Map<number, (ts: number) => void>();
   let ts = 0;
   return {
-    requestFrame(cb) { const id = nextId++; pending.set(id, cb); return id; },
-    cancelFrame(id) { pending.delete(id as number); },
+    requestFrame(cb) {
+      const id = nextId++;
+      pending.set(id, cb);
+      return id;
+    },
+    cancelFrame(id) {
+      pending.delete(id as number);
+    },
     step(count = 100_000) {
       let i = 0;
       while (pending.size > 0 && i++ < count) {
-        const [id, cb] = pending.entries().next().value as [number, (ts: number) => void];
+        const [id, cb] = pending.entries().next().value as [
+          number,
+          (ts: number) => void,
+        ];
         pending.delete(id);
         ts += 16;
         cb(ts);
@@ -79,7 +90,10 @@ function makeSyncScheduler(): RafScheduler & { step: (count?: number) => void } 
 function makeRef(
   layerName: string,
   featureIndex: number,
-  minX: number, minY: number, maxX: number, maxY: number,
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
 ): SpatialFeatureRef {
   return { layerName, featureIndex, bounds: { minX, minY, maxX, maxY } };
 }
@@ -102,11 +116,17 @@ describe('CameraAnimator ↔ WorkspaceService', () => {
       {
         duration: 128,
         easing: 'easeInOut',
-        onFrame: (s) => { finalState = s; },
+        onFrame: (s) => {
+          finalState = s;
+        },
         onComplete: () => {
           if (finalState !== null) {
             svc.updateLayout({
-              viewport: { zoom: finalState.zoom, panX: finalState.panX, panY: finalState.panY },
+              viewport: {
+                zoom: finalState.zoom,
+                panX: finalState.panX,
+                panY: finalState.panY,
+              },
             });
           }
         },
@@ -127,18 +147,14 @@ describe('CameraAnimator ↔ WorkspaceService', () => {
     const animator = createCameraAnimator(scheduler);
     const svc = getWorkspaceService();
 
-    animator.animateTo(
-      makeViewport({ zoom: 1 }),
-      makeViewport({ zoom: 10 }),
-      {
-        duration: 1000,
-        easing: 'linear',
-        onFrame: () => {},
-        onComplete: () => {
-          svc.updateLayout({ viewport: { zoom: 10, panX: 0, panY: 0 } });
-        },
+    animator.animateTo(makeViewport({ zoom: 1 }), makeViewport({ zoom: 10 }), {
+      duration: 1000,
+      easing: 'linear',
+      onFrame: () => {},
+      onComplete: () => {
+        svc.updateLayout({ viewport: { zoom: 10, panX: 0, panY: 0 } });
       },
-    );
+    });
     scheduler.step(3);
     animator.cancel();
 
@@ -167,7 +183,10 @@ describe('PerformanceProfiler — multi-instance behaviour', () => {
     const p1 = createPerformanceProfiler();
     const p2 = createPerformanceProfiler();
 
-    for (let i = 0; i < 5; i++) { p1.recordFrame(i * 16); p2.recordFrame(i * 16); }
+    for (let i = 0; i < 5; i++) {
+      p1.recordFrame(i * 16);
+      p2.recordFrame(i * 16);
+    }
     p1.reset();
 
     expect(p1.getMetrics().renderCount).toBe(0);
@@ -186,7 +205,8 @@ describe('PerformanceProfiler — multi-instance behaviour', () => {
 
   it('EMPTY_METRICS is returned when no profiler is connected (useProfiler null branch)', () => {
     // This mirrors what useProfiler does when profiler === null
-    const result = null === null ? EMPTY_METRICS : createPerformanceProfiler().getMetrics();
+    const result =
+      null === null ? EMPTY_METRICS : createPerformanceProfiler().getMetrics();
     expect(result).toEqual(EMPTY_METRICS);
   });
 });
@@ -234,12 +254,17 @@ describe('SpatialIndex — viewport culling pattern', () => {
   it('queryRegion returns only features inside the viewport bounds', () => {
     const index = createSpatialIndex();
     index.build([
-      makeRef('roads', 0, 0, 0, 500, 500),          // inside
-      makeRef('roads', 1, 2000, 2000, 3000, 3000),   // outside
-      makeRef('buildings', 0, 100, 100, 400, 400),   // inside
+      makeRef('roads', 0, 0, 0, 500, 500), // inside
+      makeRef('roads', 1, 2000, 2000, 3000, 3000), // outside
+      makeRef('buildings', 0, 100, 100, 400, 400), // inside
     ]);
 
-    const visible = index.queryRegion({ minX: 0, minY: 0, maxX: 600, maxY: 600 });
+    const visible = index.queryRegion({
+      minX: 0,
+      minY: 0,
+      maxX: 600,
+      maxY: 600,
+    });
     const keys = visible.map((r) => `${r.layerName}:${r.featureIndex}`);
 
     expect(keys).toContain('roads:0');
@@ -252,7 +277,12 @@ describe('SpatialIndex — viewport culling pattern', () => {
     index.build([makeRef('old', 0, 0, 0, 100, 100)]);
     index.build([makeRef('new', 0, 2000, 2000, 3000, 3000)]);
 
-    const nearOrigin = index.queryRegion({ minX: 0, minY: 0, maxX: 200, maxY: 200 });
+    const nearOrigin = index.queryRegion({
+      minX: 0,
+      minY: 0,
+      maxX: 200,
+      maxY: 200,
+    });
     expect(nearOrigin.some((r) => r.layerName === 'old')).toBe(false);
   });
 });

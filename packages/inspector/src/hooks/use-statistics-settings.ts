@@ -13,15 +13,15 @@ import {
   createLayerProvider,
 } from '../providers/index.js';
 import {
+  getSettingsService,
+  type InspectorSettings,
+} from '../services/SettingsService.js';
+import {
   createStatisticsService,
   EMPTY_TILE_STATISTICS,
   type LayerStatistics,
   type TileStatistics,
 } from '../services/StatisticsService.js';
-import {
-  getSettingsService,
-  type InspectorSettings,
-} from '../services/SettingsService.js';
 import type { InspectorStore } from '../store/inspector-store.js';
 import { useLifecycle } from './use-store.js';
 
