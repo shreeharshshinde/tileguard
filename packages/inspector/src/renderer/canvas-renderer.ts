@@ -149,6 +149,16 @@ export interface CanvasRendererOptions {
    * Defaults to false.
    */
   showVertices?: boolean;
+  /** Whether to draw the tile extent rectangle. Defaults to true. */
+  showTileBounds?: boolean;
+  /** Whether to draw the buffer zone rectangle. Defaults to true. */
+  showBufferBounds?: boolean;
+  /** Global opacity for diagnostic overlay markers (0.0–1.0). Defaults to 0.9. */
+  overlayOpacity?: number;
+  /** Line width for selection outlines in screen pixels. Defaults to 2. */
+  selectionThickness?: number;
+  /** Line width for hover outlines in screen pixels. Defaults to 2. */
+  hoverThickness?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -203,10 +213,21 @@ export class CanvasRenderer implements Renderer {
   private _ctx: CanvasRenderingContext2D | null = null;
   private _viewport: Viewport;
   private _showVertices: boolean;
+  private _showTileBounds: boolean;
+  private _showBufferBounds: boolean;
+  private _overlayOpacity: number;
+  private _selectionThickness: number;
+  private _hoverThickness: number;
 
   constructor(options: CanvasRendererOptions) {
     this._viewport = options.viewport;
     this._showVertices = options.showVertices ?? false;
+    this._showTileBounds = options.showTileBounds ?? true;
+    this._showBufferBounds = options.showBufferBounds ?? true;
+    this._overlayOpacity = options.overlayOpacity ?? OVERLAY_STYLE.globalAlpha;
+    this._selectionThickness =
+      options.selectionThickness ?? OVERLAY_STYLE.lineWidth;
+    this._hoverThickness = options.hoverThickness ?? OVERLAY_STYLE.lineWidth;
   }
 
   // ---- Public accessors --------------------------------------------------
@@ -230,6 +251,21 @@ export class CanvasRenderer implements Renderer {
     }
     if (patch.viewport !== undefined) {
       this._viewport = patch.viewport;
+    }
+    if (patch.showTileBounds !== undefined) {
+      this._showTileBounds = patch.showTileBounds;
+    }
+    if (patch.showBufferBounds !== undefined) {
+      this._showBufferBounds = patch.showBufferBounds;
+    }
+    if (patch.overlayOpacity !== undefined) {
+      this._overlayOpacity = patch.overlayOpacity;
+    }
+    if (patch.selectionThickness !== undefined) {
+      this._selectionThickness = patch.selectionThickness;
+    }
+    if (patch.hoverThickness !== undefined) {
+      this._hoverThickness = patch.hoverThickness;
     }
   }
 
@@ -267,8 +303,10 @@ export class CanvasRenderer implements Renderer {
     // 1. Clear
     this.clear();
 
-    // 2. Draw tile boundary + buffer zone
-    this._drawBoundary(ctx, artifact, vp);
+    // 2. Draw tile boundary + buffer zone (conditional on settings)
+    if (this._showTileBounds || this._showBufferBounds) {
+      this._drawBoundary(ctx, artifact, vp);
+    }
 
     // 3. Collect all geometry into a temporary buffer in a single traversal pass.
     //    This buffer is local to this call — it is discarded when render() returns.
@@ -316,8 +354,8 @@ export class CanvasRenderer implements Renderer {
       maxCorner,
       bufferOrigin,
       bufferMax,
-      TILE_BOUNDARY_STYLE,
-      BUFFER_BOUNDARY_STYLE,
+      this._showTileBounds ? TILE_BOUNDARY_STYLE : null,
+      this._showBufferBounds ? BUFFER_BOUNDARY_STYLE : null,
     );
   }
 
@@ -434,7 +472,7 @@ export class CanvasRenderer implements Renderer {
             fillColor: color,
             strokeColor: '#ffffff',
             lineWidth: OVERLAY_STYLE.lineWidth,
-            globalAlpha: OVERLAY_STYLE.globalAlpha,
+            globalAlpha: this._overlayOpacity,
           });
         }
       } else if (overlay.type === 'segment-highlight') {
@@ -448,7 +486,7 @@ export class CanvasRenderer implements Renderer {
             lineWidth: OVERLAY_STYLE.lineWidth * 2,
             lineCap: OVERLAY_STYLE.lineCap,
             lineJoin: OVERLAY_STYLE.lineJoin,
-            globalAlpha: OVERLAY_STYLE.globalAlpha,
+            globalAlpha: this._overlayOpacity,
           });
         }
       } else if (overlay.type === 'ring-highlight') {
@@ -466,7 +504,7 @@ export class CanvasRenderer implements Renderer {
             lineWidth: OVERLAY_STYLE.lineWidth * 2,
             lineCap: OVERLAY_STYLE.lineCap,
             lineJoin: OVERLAY_STYLE.lineJoin,
-            globalAlpha: OVERLAY_STYLE.globalAlpha,
+            globalAlpha: this._overlayOpacity,
           });
         }
       } else if (overlay.type === 'bbox-fill') {
@@ -491,7 +529,7 @@ export class CanvasRenderer implements Renderer {
               strokeColor: color,
               lineWidth: OVERLAY_STYLE.lineWidth,
               lineJoin: OVERLAY_STYLE.lineJoin,
-              globalAlpha: OVERLAY_STYLE.globalAlpha,
+              globalAlpha: this._overlayOpacity,
             },
           );
         }

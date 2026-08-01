@@ -42,9 +42,9 @@ function shouldShowDiagnostic(
   diag: Diagnostic,
   activeLayerFilter: ReadonlySet<string>,
   activeGeometryFilter: ReadonlySet<string>,
-  artifactLayers:
-    | Readonly<Record<string, { features?: readonly { geometryType?: string }[] }>>
-    | null,
+  artifactLayers: Readonly<
+    Record<string, { features?: readonly { geometryType?: string }[] }>
+  > | null,
 ): boolean {
   const loc = diag.location as
     | {

@@ -285,25 +285,32 @@ export function drawTileBoundary(
   maxCorner: ScreenPoint,
   bufferOrigin: ScreenPoint | null,
   bufferMaxCorner: ScreenPoint | null,
-  tileStyle: BoundaryStyle,
-  bufferStyle?: BoundaryStyle,
+  tileStyle: BoundaryStyle | null,
+  bufferStyle?: BoundaryStyle | null,
 ): void {
   // --- Draw tile extent box ---
-  ctx.save();
-  ctx.strokeStyle = tileStyle.strokeColor;
-  ctx.lineWidth = tileStyle.lineWidth;
-  ctx.setLineDash(tileStyle.lineDash.slice());
+  if (tileStyle !== null) {
+    ctx.save();
+    ctx.strokeStyle = tileStyle.strokeColor;
+    ctx.lineWidth = tileStyle.lineWidth;
+    ctx.setLineDash(tileStyle.lineDash.slice());
 
-  ctx.beginPath();
-  ctx.rect(origin.x, origin.y, maxCorner.x - origin.x, maxCorner.y - origin.y);
-  ctx.stroke();
-  ctx.restore();
+    ctx.beginPath();
+    ctx.rect(
+      origin.x,
+      origin.y,
+      maxCorner.x - origin.x,
+      maxCorner.y - origin.y,
+    );
+    ctx.stroke();
+    ctx.restore();
+  }
 
   // --- Draw buffer zone box (optional) ---
   if (
     bufferOrigin !== null &&
     bufferMaxCorner !== null &&
-    bufferStyle !== undefined
+    bufferStyle != null
   ) {
     ctx.save();
     ctx.strokeStyle = bufferStyle.strokeColor;

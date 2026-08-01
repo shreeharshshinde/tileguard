@@ -57,13 +57,17 @@
   border-radius: 999px;
   background-color: var(--tg-bg-secondary);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .toggle-setting__checkbox:checked + .toggle-setting__track {
   background-color: var(--tg-accent);
 }
 
-.toggle-setting__checkbox:checked + .toggle-setting__track .toggle-setting__thumb {
+.toggle-setting__checkbox:checked
+  + .toggle-setting__track
+  .toggle-setting__thumb {
   transform: translateX(1.5rem);
 }

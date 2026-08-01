@@ -259,7 +259,14 @@ class InspectorImpl implements Inspector {
     const settings = getSettingsService().getSettings();
     const cr = this._renderer as Partial<CanvasRenderer>;
     if (typeof cr.setOptions === 'function') {
-      cr.setOptions({ showVertices: settings.showVertices });
+      cr.setOptions({
+        showVertices: settings.showVertices,
+        showTileBounds: settings.showTileBounds,
+        showBufferBounds: settings.showBufferBounds,
+        overlayOpacity: settings.overlayOpacity,
+        selectionThickness: settings.selectionThickness,
+        hoverThickness: settings.hoverThickness,
+      });
     }
   }
 }
