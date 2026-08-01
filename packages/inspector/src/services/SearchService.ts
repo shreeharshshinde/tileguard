@@ -1,17 +1,25 @@
 /**
- * @tileguard/inspector — SearchService
+ * @tileguard/inspector — SearchService (Milestone 6 — Step 4 extended)
  *
  * Executes text-based feature searches against the loaded tile, using
- * FeatureProvider to access features. Supports the following query patterns:
+ * FeatureProvider to access features.
  *
- *   roads            — match layer name (case-insensitive, contains)
- *   feature:48       — match feature ID exactly
- *   highway=primary  — match property key=value (case-insensitive)
- *   bridge           — match any property key (case-insensitive, contains)
- *   Main Street      — match any string property value (case-insensitive, contains)
+ * Supported query syntax:
  *
- * SearchService never reads InspectorStore directly; it goes through
- * FeatureProvider, keeping it independent of the store's structure.
+ *   roads                — free text: match layer name or any property
+ *   feature:48           — feature ID exact match
+ *   layer:roads          — explicit layer name match (contains)
+ *   type:polygon         — geometry type match (contains)
+ *   id:123               — feature ID (alias for feature:123)
+ *   highway=primary      — property key=value
+ *   /regex/              — regex match against all string property values
+ *   query1 AND query2    — AND-combination of any two sub-queries
+ *
+ * Results are ranked by relevance:
+ *   1. Exact layer-name match
+ *   2. Property key=value match
+ *   3. Feature-ID match
+ *   4. Partial/free-text match
  *
  * Boundary: Zero imports from renderer/, overlay/, viewport/, or DOM APIs.
  */
@@ -28,9 +36,13 @@ export interface SearchResult {
   readonly feature: ResolvedFeature;
   /**
    * Human-readable description of why this feature matched the query.
-   * e.g. "Layer: roads", "Feature ID: 48", "highway = primary"
    */
   readonly matchReason: string;
+  /**
+   * Relevance score (higher = more relevant).
+   * Used to sort results with the most relevant first.
+   */
+  readonly score: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -40,8 +52,9 @@ export interface SearchResult {
 export interface SearchService {
   /**
    * Execute a search query.
-   * Returns all features that match the query, ordered by layer then index.
-   * Returns an empty array when the provider has no features (no tile loaded).
+   * Returns all features that match, sorted by descending relevance score.
+   * Returns an empty array when the provider has no features or the query
+   * is blank.
    */
   search(query: string): readonly SearchResult[];
 }
@@ -50,53 +63,121 @@ export interface SearchService {
 // Query parsing
 // ---------------------------------------------------------------------------
 
-type ParsedQuery =
+type AtomicQuery =
   | { kind: 'featureId'; id: string }
+  | { kind: 'layer'; text: string }
+  | { kind: 'type'; text: string }
   | { kind: 'keyValue'; key: string; value: string }
+  | { kind: 'regex'; pattern: RegExp; raw: string }
   | { kind: 'text'; text: string };
 
-function parseQuery(raw: string): ParsedQuery {
+type ParsedQuery =
+  | { kind: 'and'; left: ParsedQuery; right: ParsedQuery }
+  | AtomicQuery;
+
+function parseAtomic(raw: string): AtomicQuery {
   const q = raw.trim();
 
-  // feature:48 — feature ID lookup
-  const featureIdMatch = /^feature:(.+)$/i.exec(q);
+  // feature:48 or id:48
+  const featureIdMatch = /^(?:feature|id):(.+)$/i.exec(q);
   if (featureIdMatch !== null) {
-    const id = featureIdMatch[1];
-    if (id === undefined) return { kind: 'text', text: q };
-    return { kind: 'featureId', id: id.trim() };
+    return { kind: 'featureId', id: (featureIdMatch[1] ?? '').trim() };
   }
 
-  // key=value — property key=value lookup
+  // layer:roads
+  const layerMatch = /^layer:(.+)$/i.exec(q);
+  if (layerMatch !== null) {
+    return { kind: 'layer', text: (layerMatch[1] ?? '').trim() };
+  }
+
+  // type:polygon
+  const typeMatch = /^type:(.+)$/i.exec(q);
+  if (typeMatch !== null) {
+    return { kind: 'type', text: (typeMatch[1] ?? '').trim() };
+  }
+
+  // /regex/ — a forward-slash-delimited regex (optional trailing slash)
+  const regexMatch = /^\/(.+?)(?:\/)?\s*$/.exec(q);
+  if (regexMatch !== null) {
+    const pat = regexMatch[1] ?? '';
+    try {
+      return { kind: 'regex', pattern: new RegExp(pat, 'i'), raw: pat };
+    } catch {
+      // Invalid regex — fall through to free-text
+    }
+  }
+
+  // key=value
   const kvMatch = /^([^=]+)=(.+)$/.exec(q);
   if (kvMatch !== null) {
-    const key = kvMatch[1];
-    const value = kvMatch[2];
-    if (key === undefined || value === undefined)
-      return { kind: 'text', text: q };
-    return {
-      kind: 'keyValue',
-      key: key.trim(),
-      value: value.trim(),
-    };
+    const key = kvMatch[1] ?? '';
+    const value = kvMatch[2] ?? '';
+    return { kind: 'keyValue', key: key.trim(), value: value.trim() };
   }
 
-  // Anything else — free text search across layer names and property values
+  // Free text
   return { kind: 'text', text: q };
 }
 
+function parseQuery(raw: string): ParsedQuery {
+  // AND — split on first occurrence of " AND " (case-insensitive)
+  const andIdx = raw.search(/ AND /i);
+  if (andIdx !== -1) {
+    const left = raw.slice(0, andIdx).trim();
+    const right = raw.slice(andIdx + 5).trim(); // skip " AND "
+    if (left.length > 0 && right.length > 0) {
+      return {
+        kind: 'and',
+        left: parseQuery(left),
+        right: parseQuery(right),
+      };
+    }
+  }
+  return parseAtomic(raw);
+}
+
 // ---------------------------------------------------------------------------
-// Match functions
+// Match functions (return reason string + score, or null)
 // ---------------------------------------------------------------------------
 
-function matchFeature(
+interface MatchResult {
+  reason: string;
+  score: number;
+}
+
+function matchAtomic(
   feature: ResolvedFeature,
-  query: ParsedQuery,
-): string | null {
+  query: AtomicQuery,
+): MatchResult | null {
   switch (query.kind) {
     case 'featureId': {
       const id = feature.id;
       if (id !== undefined && String(id) === query.id) {
-        return `Feature ID: ${id}`;
+        return { reason: `Feature ID: ${id}`, score: 90 };
+      }
+      return null;
+    }
+
+    case 'layer': {
+      if (feature.layerName.toLowerCase().includes(query.text.toLowerCase())) {
+        const exact =
+          feature.layerName.toLowerCase() === query.text.toLowerCase();
+        return {
+          reason: `Layer: ${feature.layerName}`,
+          score: exact ? 100 : 70,
+        };
+      }
+      return null;
+    }
+
+    case 'type': {
+      if (
+        feature.geometryType.toLowerCase().includes(query.text.toLowerCase())
+      ) {
+        return {
+          reason: `Type: ${feature.geometryType}`,
+          score: 60,
+        };
       }
       return null;
     }
@@ -109,7 +190,16 @@ function matchFeature(
           k.toLowerCase().includes(keyLower) &&
           String(v).toLowerCase().includes(valueLower)
         ) {
-          return `${k} = ${String(v)}`;
+          return { reason: `${k} = ${String(v)}`, score: 80 };
+        }
+      }
+      return null;
+    }
+
+    case 'regex': {
+      for (const [k, v] of Object.entries(feature.properties)) {
+        if (typeof v === 'string' && query.pattern.test(v)) {
+          return { reason: `/${query.raw}/ → ${k} = ${v}`, score: 75 };
         }
       }
       return null;
@@ -118,28 +208,50 @@ function matchFeature(
     case 'text': {
       const textLower = query.text.toLowerCase();
 
-      // 1. Layer name match
+      // Layer name — best partial match
       if (feature.layerName.toLowerCase().includes(textLower)) {
-        return `Layer: ${feature.layerName}`;
+        const exact = feature.layerName.toLowerCase() === textLower;
+        return {
+          reason: `Layer: ${feature.layerName}`,
+          score: exact ? 100 : 65,
+        };
       }
 
-      // 2. Property key match
+      // Property key match
       for (const k of Object.keys(feature.properties)) {
         if (k.toLowerCase().includes(textLower)) {
-          return `Property key: ${k}`;
+          return { reason: `Property key: ${k}`, score: 55 };
         }
       }
 
-      // 3. Property value match (string values only)
+      // Property value match
       for (const [k, v] of Object.entries(feature.properties)) {
         if (typeof v === 'string' && v.toLowerCase().includes(textLower)) {
-          return `${k} = ${v}`;
+          return { reason: `${k} = ${v}`, score: 50 };
         }
       }
 
       return null;
     }
   }
+}
+
+function matchQuery(
+  feature: ResolvedFeature,
+  query: ParsedQuery,
+): MatchResult | null {
+  if (query.kind === 'and') {
+    const left = matchQuery(feature, query.left);
+    const right = matchQuery(feature, query.right);
+    if (left !== null && right !== null) {
+      return {
+        reason: `${left.reason} & ${right.reason}`,
+        score: Math.min(left.score, right.score) + 10,
+      };
+    }
+    return null;
+  }
+  return matchAtomic(feature, query);
 }
 
 // ---------------------------------------------------------------------------
@@ -158,11 +270,23 @@ class SearchServiceImpl implements SearchService {
     const results: SearchResult[] = [];
 
     for (const feature of features) {
-      const reason = matchFeature(feature, parsed);
-      if (reason !== null) {
-        results.push({ feature, matchReason: reason });
+      const match = matchQuery(feature, parsed);
+      if (match !== null) {
+        results.push({
+          feature,
+          matchReason: match.reason,
+          score: match.score,
+        });
       }
     }
+
+    // Sort by score descending, then by layer+index for stability
+    results.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const layerCmp = a.feature.layerName.localeCompare(b.feature.layerName);
+      if (layerCmp !== 0) return layerCmp;
+      return a.feature.featureIndex - b.feature.featureIndex;
+    });
 
     return results;
   }
@@ -178,6 +302,8 @@ class SearchServiceImpl implements SearchService {
  * @example
  *   const service = createSearchService(featureProvider);
  *   const results = service.search('highway=primary');
+ *   const layerResults = service.search('layer:roads');
+ *   const polyResults = service.search('type:polygon AND height=30');
  */
 export function createSearchService(
   featureProvider: FeatureProvider,
