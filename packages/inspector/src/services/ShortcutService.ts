@@ -1,22 +1,22 @@
 /**
- * @tileguard/inspector — ShortcutService (Milestone 6 — Step 3)
+ * @tileguard/inspector — ShortcutService (Milestone 6 — Step 4)
  *
  * Registers and dispatches keyboard shortcuts.
  * Shortcuts never fire when focus is inside a text input/textarea.
  *
  * Supported shortcuts:
- *   F          — focus selected feature (fit bounds)
- *   R          — reset view
- *   Escape     — clear selection
- *   Ctrl+F     — focus search input
- *   Ctrl+,     — open settings tab
- *   Ctrl+1     — show diagnostics tab
- *   Ctrl+2     — show statistics tab
- *   Ctrl+3     — show settings tab
- *
- * All shortcuts route through registered action callbacks.
- * ShortcutService only handles key dispatch; it never touches the store,
- * renderer, or DOM beyond addEventListener.
+ *   F            — focus selected feature (fit bounds)
+ *   R            — reset view
+ *   Escape       — clear selection
+ *   Ctrl+F       — focus search input
+ *   Ctrl+,       — open settings tab
+ *   Ctrl+1       — show diagnostics tab
+ *   Ctrl+2       — show statistics tab
+ *   Ctrl+3       — show settings tab
+ *   Ctrl+H       — toggle hover highlight (Step 4)
+ *   Ctrl+Shift+V — toggle vertex display (Step 4)
+ *   Ctrl+B       — toggle tile bounds (Step 4)
+ *   Ctrl+Shift+D — toggle developer overlay (Step 4)
  *
  * Boundary: DOM KeyboardEvent only. No React, no store, no renderer.
  */
@@ -33,10 +33,15 @@ export type ShortcutAction =
   | 'openSettings'
   | 'showDiagnostics'
   | 'showStatistics'
-  | 'showSettings';
+  | 'showSettings'
+  // Step 4
+  | 'toggleHover'
+  | 'toggleVertices'
+  | 'toggleBounds'
+  | 'toggleDevOverlay';
 
 export interface ShortcutBinding {
-  readonly key: string; // e.g. 'f', 'r', 'escape', ',', '1', '2', '3'
+  readonly key: string;
   readonly ctrl?: boolean;
   readonly shift?: boolean;
   readonly action: ShortcutAction;
@@ -47,40 +52,87 @@ export const DEFAULT_SHORTCUTS: readonly ShortcutBinding[] = Object.freeze([
   {
     key: 'f',
     ctrl: false,
+    shift: false,
     action: 'focusFeature',
     description: 'Focus selected feature',
   },
-  { key: 'r', ctrl: false, action: 'resetView', description: 'Reset view' },
+  {
+    key: 'r',
+    ctrl: false,
+    shift: false,
+    action: 'resetView',
+    description: 'Reset view',
+  },
   {
     key: 'escape',
     ctrl: false,
+    shift: false,
     action: 'clearSelection',
     description: 'Clear selection',
   },
-  { key: 'f', ctrl: true, action: 'focusSearch', description: 'Focus search' },
+  {
+    key: 'f',
+    ctrl: true,
+    shift: false,
+    action: 'focusSearch',
+    description: 'Focus search',
+  },
   {
     key: ',',
     ctrl: true,
+    shift: false,
     action: 'openSettings',
     description: 'Open settings',
   },
   {
     key: '1',
     ctrl: true,
+    shift: false,
     action: 'showDiagnostics',
     description: 'Show diagnostics',
   },
   {
     key: '2',
     ctrl: true,
+    shift: false,
     action: 'showStatistics',
     description: 'Show statistics',
   },
   {
     key: '3',
     ctrl: true,
+    shift: false,
     action: 'showSettings',
     description: 'Show settings',
+  },
+  // Step 4 additions
+  {
+    key: 'h',
+    ctrl: true,
+    shift: false,
+    action: 'toggleHover',
+    description: 'Toggle hover highlight',
+  },
+  {
+    key: 'v',
+    ctrl: true,
+    shift: true,
+    action: 'toggleVertices',
+    description: 'Toggle vertex display',
+  },
+  {
+    key: 'b',
+    ctrl: true,
+    shift: false,
+    action: 'toggleBounds',
+    description: 'Toggle tile bounds',
+  },
+  {
+    key: 'd',
+    ctrl: true,
+    shift: true,
+    action: 'toggleDevOverlay',
+    description: 'Toggle developer overlay',
   },
 ]);
 
@@ -91,16 +143,8 @@ export type ShortcutHandler = (action: ShortcutAction) => void;
 // ---------------------------------------------------------------------------
 
 export interface ShortcutService {
-  /** Register a handler for all shortcut actions. Returns unsubscribe. */
   registerHandler(handler: ShortcutHandler): () => void;
-
-  /**
-   * Attach the global keydown listener to the given target (default: window).
-   * Returns a cleanup function. Call in a useEffect cleanup.
-   */
   attach(target?: EventTarget): () => void;
-
-  /** Returns the current shortcut bindings (for a help panel). */
   getBindings(): readonly ShortcutBinding[];
 }
 
@@ -108,7 +152,6 @@ export interface ShortcutService {
 // Implementation
 // ---------------------------------------------------------------------------
 
-/** Returns true when focus is inside a text-entry element. */
 function isTextInput(target: EventTarget | null): boolean {
   if (target === null) return false;
   const el = target as HTMLElement;
@@ -146,15 +189,20 @@ class ShortcutServiceImpl implements ShortcutService {
   }
 
   private _onKeyDown(event: KeyboardEvent): void {
-    // Never fire inside text inputs
     if (isTextInput(event.target)) return;
 
     const key = event.key.toLowerCase();
     const ctrl = Boolean(event.ctrlKey || event.metaKey);
+    const shift = Boolean(event.shiftKey);
 
     for (const binding of this._bindings) {
       const bindingCtrl = binding.ctrl ?? false;
-      if (binding.key.toLowerCase() === key && bindingCtrl === ctrl) {
+      const bindingShift = binding.shift ?? false;
+      if (
+        binding.key.toLowerCase() === key &&
+        bindingCtrl === ctrl &&
+        bindingShift === shift
+      ) {
         event.preventDefault();
         this._dispatch(binding.action);
         return;
@@ -177,19 +225,6 @@ class ShortcutServiceImpl implements ShortcutService {
 // Factory
 // ---------------------------------------------------------------------------
 
-/**
- * Creates a ShortcutService with the default bindings.
- *
- * @example
- *   const shortcuts = createShortcutService();
- *   const cleanup = shortcuts.attach(window);
- *   const unsub = shortcuts.registerHandler((action) => {
- *     if (action === 'resetView') inspector.render();
- *   });
- *   // …later…
- *   cleanup();
- *   unsub();
- */
 export function createShortcutService(
   bindings: readonly ShortcutBinding[] = DEFAULT_SHORTCUTS,
 ): ShortcutService {
