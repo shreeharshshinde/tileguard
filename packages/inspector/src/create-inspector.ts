@@ -1,22 +1,30 @@
 /**
- * @tileguard/inspector — Inspector Integration Layer (Milestone 6 — Step 3)
+ * @tileguard/inspector — Inspector Integration Layer (Milestone 6 — Step 4)
  *
- * Adds Step 3 settings and statistics API while keeping Steps 1 & 2 intact.
+ * Extends the Step 3 facade with:
+ *   - Animated viewport transitions via CameraAnimator
+ *   - animateTo(bounds) — smooth camera pan/zoom to a bounding box
+ *   - export()          — ExportService stub (Milestone 7 implementation)
+ *   - getSupportedExportFormats()
  *
- * Step 3 additions:
- *   - getSettings()        → InspectorSettings (from SettingsService)
- *   - updateSettings()     → partial update, persists to localStorage
- *   - resetSettings()      → restore defaults, persists to localStorage
- *   - getTileStatistics()  → TileStatistics (from StatisticsService)
- *   - getStatistics()      → kept as DiagnosticSummary alias for Step 2 compat
+ * Step 3 additions remain:
+ *   - getSettings / updateSettings / resetSettings
+ *   - getTileStatistics
+ *   - getStatistics (deprecated alias)
  *
- * Architecture: SettingsService is a singleton; Inspector is the bridge
- * between settings changes and the renderer (CanvasRenderer.setOptions).
+ * Architecture: CameraAnimator is injected at construction time for
+ * testability. In production it is created with the browser RAF scheduler.
  */
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import type { ScreenPoint } from './geometry/index.js';
+import {
+  createCameraAnimator,
+  type CameraAnimator,
+  type RafScheduler,
+} from './animation/CameraAnimator.js';
+import { createBoundsFromPoints } from './geometry/bounds.js';
+import type { BoundingBox, ScreenPoint } from './geometry/index.js';
 import { createHitTester } from './hittest/hit-tester.js';
 import {
   createInteractionController,
@@ -37,6 +45,13 @@ import {
 } from './render/render-coordinator.js';
 import type { CanvasRenderer, Renderer } from './renderer/canvas-renderer.js';
 import {
+  createExportService,
+  type ExportFormat,
+  type ExportOptions,
+  type ExportResult,
+  type ExportService,
+} from './services/ExportService.js';
+import {
   createSearchService,
   type SearchResult,
 } from './services/SearchService.js';
@@ -52,7 +67,11 @@ import {
   createInspectorStore,
   type InspectorStore,
 } from './store/inspector-store.js';
-import type { Viewport } from './viewport/viewport.js';
+import {
+  createViewport,
+  type Viewport,
+  type ViewportState,
+} from './viewport/viewport.js';
 
 // ---------------------------------------------------------------------------
 // Public Interface
@@ -82,22 +101,35 @@ export interface Inspector {
   getStatistics(): DiagnosticSummary;
 
   // ── Step 3 API ────────────────────────────────────────────────────────
-
-  /** Full tile statistics snapshot (layers, geometry counts, diagnostic counts). */
   getTileStatistics(): TileStatistics;
-
-  /** Returns the current user settings from SettingsService. */
   getSettings(): InspectorSettings;
+  updateSettings(patch: Partial<InspectorSettings>): void;
+  resetSettings(): void;
+
+  // ── Step 4 API ────────────────────────────────────────────────────────
 
   /**
-   * Apply a partial settings update.
-   * Persists to localStorage and immediately updates the renderer where
-   * applicable (e.g. showVertices → CanvasRenderer.setOptions).
+   * Animate the viewport so that the given bounding box fills the canvas.
+   * Uses CameraAnimator for smooth easing. Fires onViewportChange each frame.
+   *
+   * @param bounds      Target bounding box in tile coordinate space.
+   * @param onViewportChange  Called each animation frame with the interpolated state.
+   * @param duration    Animation duration in ms (default 350).
    */
-  updateSettings(patch: Partial<InspectorSettings>): void;
+  animateTo(
+    bounds: BoundingBox,
+    onViewportChange: (state: ViewportState) => void,
+    duration?: number,
+  ): void;
 
-  /** Reset all settings to defaults. Persists and updates renderer. */
-  resetSettings(): void;
+  /** Cancel any in-progress viewport animation. */
+  cancelAnimation(): void;
+
+  /** Export the inspection state. Full implementation in Milestone 7. */
+  export(options: ExportOptions): Promise<ExportResult>;
+
+  /** Returns the formats this instance can export. Empty in Step 4. */
+  getSupportedExportFormats(): readonly ExportFormat[];
 }
 
 // ---------------------------------------------------------------------------
@@ -108,6 +140,8 @@ export interface InspectorOptions {
   readonly viewport: Viewport;
   readonly renderer: Renderer;
   readonly store?: InspectorStore;
+  /** Injectable RAF scheduler for testing CameraAnimator. */
+  readonly rafScheduler?: RafScheduler;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,12 +155,18 @@ class InspectorImpl implements Inspector {
   private readonly _featureProvider: FeatureProvider;
   private readonly _unsubscribe: () => void;
   private readonly _renderer: Renderer;
+  private readonly _viewport: Viewport;
+  private readonly _animator: CameraAnimator;
+  private readonly _exportService: ExportService;
 
   private _lastSearchResults: readonly SearchResult[] = [];
 
-  constructor({ viewport, renderer, store }: InspectorOptions) {
+  constructor({ viewport, renderer, store, rafScheduler }: InspectorOptions) {
     this._store = store ?? createInspectorStore();
     this._renderer = renderer;
+    this._viewport = viewport;
+    this._animator = createCameraAnimator(rafScheduler);
+    this._exportService = createExportService();
 
     const hitTester = createHitTester();
     this._interactionController = createInteractionController({
@@ -176,6 +216,7 @@ class InspectorImpl implements Inspector {
   }
 
   dispose(): void {
+    this._animator.cancel();
     this._store.dispose();
     this._unsubscribe();
   }
@@ -250,11 +291,43 @@ class InspectorImpl implements Inspector {
     this._renderCoordinator.render();
   }
 
-  /**
-   * Push the settings that affect the renderer into CanvasRenderer.setOptions().
-   * CanvasRenderer is the concrete class; we access setOptions() via a type
-   * guard rather than widening the Renderer interface (which stays minimal).
-   */
+  // ── Step 4 ──────────────────────────────────────────────────────────────
+
+  animateTo(
+    bounds: BoundingBox,
+    onViewportChange: (state: ViewportState) => void,
+    duration = 350,
+  ): void {
+    const from = this._viewport.getState();
+    const targetViewport = this._viewport.fitBounds(bounds, 40);
+    const to = targetViewport.getState();
+
+    this._animator.animateTo(from, to, {
+      duration,
+      easing: 'easeInOut',
+      onFrame: (state) => {
+        onViewportChange(state);
+      },
+      onComplete: () => {
+        onViewportChange(to);
+      },
+    });
+  }
+
+  cancelAnimation(): void {
+    this._animator.cancel();
+  }
+
+  async export(options: ExportOptions): Promise<ExportResult> {
+    return this._exportService.export(options);
+  }
+
+  getSupportedExportFormats(): readonly ExportFormat[] {
+    return this._exportService.getSupportedFormats();
+  }
+
+  // ── Internal helpers ─────────────────────────────────────────────────────
+
   private _applySettingsToRenderer(): void {
     const settings = getSettingsService().getSettings();
     const cr = this._renderer as Partial<CanvasRenderer>;
@@ -278,3 +351,8 @@ class InspectorImpl implements Inspector {
 export function createInspector(options: InspectorOptions): Inspector {
   return new InspectorImpl(options);
 }
+
+// ---------------------------------------------------------------------------
+// Re-export geometry helpers used by InspectorApp
+// ---------------------------------------------------------------------------
+export { createBoundsFromPoints, createViewport };
