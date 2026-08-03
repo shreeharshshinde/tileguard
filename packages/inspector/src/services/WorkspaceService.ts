@@ -25,6 +25,9 @@ export type WorkspaceTab =
   | 'inspector'
   | 'diagnostics'
   | 'statistics'
+  | 'compare'
+  | 'regression'
+  | 'reports'
   | 'settings';
 
 export interface WorkspaceViewport {
@@ -126,6 +129,7 @@ function isValidTab(tab: unknown): tab is WorkspaceTab {
     tab === 'inspector' ||
     tab === 'diagnostics' ||
     tab === 'statistics' ||
+    tab === 'compare' ||
     tab === 'settings'
   );
 }

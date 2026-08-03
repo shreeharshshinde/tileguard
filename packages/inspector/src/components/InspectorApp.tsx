@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — InspectorApp (Milestone 6 — Step 4)
+ * @tileguard/inspector — InspectorApp (Milestone 7 — Step 1)
  *
  * Full production shell integrating:
  *   - WorkspaceService (panel layout persistence)
@@ -7,8 +7,9 @@
  *   - PerformanceProfiler + DeveloperOverlay
  *   - LoadingOverlay with multi-step progress
  *   - Enhanced Footer (FPS, hover, selected, zoom)
- *   - All 12 keyboard shortcuts (including Step 4: Ctrl+H, Ctrl+Shift+V, Ctrl+B, Ctrl+Shift+D)
+ *   - All 12 keyboard shortcuts
  *   - Wired Settings button, Reset View button
+ *   - Compare tab with ComparisonPage (Milestone 7)
  */
 
 import {
@@ -22,16 +23,21 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  createComparisonService,
+  type TileComparison,
+  type TileSnapshot,
+} from '../comparison/index.js';
+import {
   InspectorProvider,
   useInspectorContext,
 } from '../context/InspectorContext.js';
+import { useStatistics } from '../hooks/use-statistics-settings.js';
 import {
   useHover,
   useLifecycle,
   useSearch,
   useSelectedFeature,
 } from '../hooks/use-store.js';
-import { useStatistics } from '../hooks/use-statistics-settings.js';
 import { useProfiler } from '../hooks/useProfiler.js';
 import { useWorkspace } from '../hooks/useWorkspace.js';
 import {
@@ -44,11 +50,16 @@ import {
   type ShortcutAction,
 } from '../services/ShortcutService.js';
 import type { ViewportState } from '../viewport/viewport.js';
+import { createRegressionEngine } from '../analysis/RegressionEngine.js';
+import type { RegressionAnalysis } from '../analysis/models/regression.js';
 import { CanvasView } from './CanvasView.js';
+import { ComparisonPage } from './comparison/ComparisonPage.js';
+import { RegressionPage } from './regression/RegressionPage.js';
+import { ReportPage } from './report/ReportPage.js';
 import { DiagnosticPanel } from './diagnostics/DiagnosticPanel.js';
 import { FeaturePanel } from './feature/FeaturePanel.js';
-import { LoadingOverlay } from './loading/LoadingOverlay.js';
 import type { LoadingStep } from './loading/LoadingOverlay.js';
+import { LoadingOverlay } from './loading/LoadingOverlay.js';
 import { DeveloperOverlay } from './profiler/DeveloperOverlay.js';
 import { type NavTab, SidebarNav } from './SidebarNav.js';
 import { SettingsPanel } from './settings/SettingsPanel.js';
@@ -275,9 +286,7 @@ function Workspace(): JSX.Element {
 
   // Workspace persistence
   const { layout, updateLayout } = useWorkspace();
-  const [activeTab, setActiveTabRaw] = useState<NavTab>(
-    layout.activeTab as NavTab,
-  );
+  const [activeTab, setActiveTabRaw] = useState<NavTab>(layout.activeTab);
   const [leftCollapsed, setLeftCollapsed] = useState(layout.leftCollapsed);
   const [rightCollapsed, setRightCollapsed] = useState(layout.rightCollapsed);
 
@@ -323,6 +332,76 @@ function Workspace(): JSX.Element {
 
   // ── Profiler metrics ───────────────────────────────────────────────────
   const metrics = useProfiler(_profiler, 500);
+
+  // ── Comparison state ─────────────────────────────────────────────────────
+  const [snapshotA, setSnapshotA] = useState<TileSnapshot | null>(null);
+  const [snapshotB, setSnapshotB] = useState<TileSnapshot | null>(null);
+  const [filePathA, setFilePathA] = useState<string | null>(null);
+  const [filePathB, setFilePathB] = useState<string | null>(null);
+  const [comparison, setComparison] = useState<TileComparison | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
+
+  // Build a snapshot from a loaded tile file using a temporary store
+  const captureSnapshot = useCallback(
+    async (file: File): Promise<TileSnapshot | null> => {
+      try {
+        const { createInspectorStore } = await import(
+          '../store/inspector-store.js'
+        );
+        const tmpStore = createInspectorStore();
+        const artifact = await decodeBrowserTile(file);
+        await tmpStore.load(file.name, artifact, []);
+        const svc = createComparisonService();
+        const snap = svc.createSnapshot(tmpStore);
+        tmpStore.dispose();
+        return snap;
+      } catch {
+        return null;
+      }
+    },
+    [],
+  );
+
+  const handleFileSelectedA = useCallback(
+    async (file: File) => {
+      setFilePathA(file.name);
+      const snap = await captureSnapshot(file);
+      setSnapshotA(snap);
+      setComparison(null);
+    },
+    [captureSnapshot],
+  );
+
+  const handleFileSelectedB = useCallback(
+    async (file: File) => {
+      setFilePathB(file.name);
+      const snap = await captureSnapshot(file);
+      setSnapshotB(snap);
+      setComparison(null);
+    },
+    [captureSnapshot],
+  );
+
+  const handleRunComparison = useCallback(() => {
+    if (!snapshotA || !snapshotB) return;
+    setIsComparing(true);
+    // Run on next tick to allow UI to update
+    setTimeout(() => {
+      try {
+        const svc = createComparisonService();
+        const result = svc.compare(snapshotA, snapshotB);
+        setComparison(result);
+      } finally {
+        setIsComparing(false);
+      }
+    }, 0);
+  }, [snapshotA, snapshotB]);
+
+  // ── Regression analysis (shared with RegressionPage + ReportPage) ───────
+  const regressionAnalysis = useMemo<RegressionAnalysis | null>(() => {
+    if (!comparison) return null;
+    return createRegressionEngine().analyze(comparison);
+  }, [comparison]);
 
   // Record a frame whenever the viewport changes (proxy for render activity)
   useEffect(() => {
@@ -458,6 +537,38 @@ function Workspace(): JSX.Element {
 
         {activeTab === 'welcome' && !loaded ? (
           <WelcomeView onFileSelected={selectFile} />
+        ) : activeTab === 'compare' ? (
+          /* ── Compare view (full-width, no toolbar/canvas) ─────────────── */
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <ComparisonPage
+              comparison={comparison}
+              filePathA={filePathA}
+              filePathB={filePathB}
+              isComparing={isComparing}
+              onFileSelectedA={(f) => {
+                void handleFileSelectedA(f);
+              }}
+              onFileSelectedB={(f) => {
+                void handleFileSelectedB(f);
+              }}
+              onRunComparison={handleRunComparison}
+            />
+          </div>
+        ) : activeTab === 'regression' ? (
+          /* ── Regression Investigation view ─────────────────────────────── */
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <RegressionPage
+              comparison={comparison}
+            />
+          </div>
+        ) : activeTab === 'reports' ? (
+          /* ── Report Generation view ────────────────────────────────────── */
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <ReportPage
+              comparison={comparison}
+              regression={regressionAnalysis}
+            />
+          </div>
         ) : (
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
             <Toolbar

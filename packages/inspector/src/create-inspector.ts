@@ -19,10 +19,17 @@
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
 import {
-  createCameraAnimator,
   type CameraAnimator,
+  createCameraAnimator,
   type RafScheduler,
 } from './animation/CameraAnimator.js';
+import { createComparisonService } from './comparison/ComparisonService.js';
+import type { TileComparison, TileSnapshot } from './comparison/models.js';
+import { createRegressionEngine } from './analysis/RegressionEngine.js';
+import type { RegressionAnalysis } from './analysis/models/regression.js';
+import { buildReportInputs } from './report/report-adapter.js';
+import { createReportEngine } from '@tileguard/reporters';
+import type { ReportResult } from '@tileguard/reporters';
 import { createBoundsFromPoints } from './geometry/bounds.js';
 import type { BoundingBox, ScreenPoint } from './geometry/index.js';
 import { createHitTester } from './hittest/hit-tester.js';
@@ -56,13 +63,13 @@ import {
   type SearchResult,
 } from './services/SearchService.js';
 import {
-  createStatisticsService,
-  type TileStatistics,
-} from './services/StatisticsService.js';
-import {
   getSettingsService,
   type InspectorSettings,
 } from './services/SettingsService.js';
+import {
+  createStatisticsService,
+  type TileStatistics,
+} from './services/StatisticsService.js';
 import {
   createInspectorStore,
   type InspectorStore,
@@ -130,6 +137,47 @@ export interface Inspector {
 
   /** Returns the formats this instance can export. Empty in Step 4. */
   getSupportedExportFormats(): readonly ExportFormat[];
+
+  // ── Step 5 (Milestone 7 Step 1) API ──────────────────────────────────
+
+  /**
+   * Capture an immutable TileSnapshot from the currently loaded tile.
+   * Returns null if no tile is loaded.
+   */
+  createSnapshot(): TileSnapshot | null;
+
+  /**
+   * Compare two tile snapshots and return a complete TileComparison result.
+   * Deterministic: same inputs always produce the same output.
+   */
+  compare(snapshotA: TileSnapshot, snapshotB: TileSnapshot): TileComparison;
+
+  // ── Step 6 (Milestone 7 Step 2) API ──────────────────────────────────
+
+  /**
+   * Analyse a TileComparison and return a ranked RegressionAnalysis.
+   *
+   * The engine never re-reads tiles or calls ComparisonService again —
+   * it only reads the supplied comparison argument. This is a pure
+   * transformation: same input always produces the same output.
+   */
+  analyzeRegression(comparison: TileComparison): RegressionAnalysis;
+
+  // ── Step 7 (Milestone 7 Step 3) API ──────────────────────────────────
+
+  /**
+   * Generate an engineering report from a comparison + regression analysis.
+   *
+   * @param comparison  The TileComparison produced by compare().
+   * @param regression  The RegressionAnalysis produced by analyzeRegression().
+   * @param format      Output format: 'markdown' | 'html' | 'json'.
+   * @returns           ReportResult — ok with content, or error with code+message.
+   */
+  generateReport(
+    comparison: TileComparison,
+    regression: RegressionAnalysis,
+    format: 'markdown' | 'html' | 'json',
+  ): ReportResult;
 }
 
 // ---------------------------------------------------------------------------
@@ -324,6 +372,37 @@ class InspectorImpl implements Inspector {
 
   getSupportedExportFormats(): readonly ExportFormat[] {
     return this._exportService.getSupportedFormats();
+  }
+
+  // ── Step 5 (Milestone 7 Step 1) ──────────────────────────────────────────
+
+  createSnapshot(): TileSnapshot | null {
+    return createComparisonService().createSnapshot(this._store);
+  }
+
+  compare(snapshotA: TileSnapshot, snapshotB: TileSnapshot): TileComparison {
+    return createComparisonService().compare(snapshotA, snapshotB);
+  }
+
+  // ── Step 6 (Milestone 7 Step 2) ──────────────────────────────────────────
+
+  analyzeRegression(comparison: TileComparison): RegressionAnalysis {
+    return createRegressionEngine().analyze(comparison);
+  }
+
+  // ── Step 7 (Milestone 7 Step 3) ──────────────────────────────────────────
+
+  generateReport(
+    comparison: TileComparison,
+    regression: RegressionAnalysis,
+    format: 'markdown' | 'html' | 'json',
+  ): ReportResult {
+    const { comparisonInput, regressionInput } = buildReportInputs(comparison, regression);
+    return createReportEngine({ tileguardVersion: '0.4.5' }).generate(
+      comparisonInput,
+      regressionInput,
+      format,
+    );
   }
 
   // ── Internal helpers ─────────────────────────────────────────────────────

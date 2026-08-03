@@ -2,16 +2,16 @@ import {
   AlertTriangle,
   BarChart3,
   Crosshair,
+  FileOutput,
+  GitCompare,
   Home,
+  SearchCode,
   Settings,
 } from 'lucide-react';
+import type { WorkspaceTab } from '../services/WorkspaceService.js';
 
-export type NavTab =
-  | 'welcome'
-  | 'inspector'
-  | 'diagnostics'
-  | 'statistics'
-  | 'settings';
+/** NavTab is an alias of WorkspaceTab — single source of truth in WorkspaceService. */
+export type NavTab = WorkspaceTab;
 
 interface SidebarNavProps {
   readonly activeTab: NavTab;
@@ -27,6 +27,9 @@ export function SidebarNav({
     { id: 'inspector', label: 'Inspector', icon: Crosshair },
     { id: 'diagnostics', label: 'Diagnostics', icon: AlertTriangle },
     { id: 'statistics', label: 'Statistics', icon: BarChart3 },
+    { id: 'compare', label: 'Compare', icon: GitCompare },
+    { id: 'regression', label: 'Regression', icon: SearchCode },
+    { id: 'reports', label: 'Reports', icon: FileOutput },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
