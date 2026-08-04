@@ -1,0 +1,94 @@
+{
+  "version": "1.0.0",
+  "description": "TileGuard demo datasets for FOSS4G 2026 presentation",
+  "datasets": [
+    {
+      "id": "tokyo-clean",
+      "title": "Tokyo — Clean Tile",
+      "description": "A well-formed 403 KB vector tile covering central Tokyo. All layers valid, no diagnostics expected. Use this to demonstrate the Inspector feature explorer and canvas interaction.",
+      "path": "tokyo/clean/tokyo-clean.pbf",
+      "type": "tile",
+      "tags": ["inspector", "clean", "real-world"],
+      "defaultZoom": 1.0,
+      "defaultCenter": [0, 0],
+      "expectedDiagnostics": {
+        "errors": 0,
+        "warnings": 0,
+        "info": 0
+      },
+      "expectedLayers": ["water", "landuse", "park", "building", "road", "transit", "admin", "place_label"],
+      "demoStep": "Inspector",
+      "speakerNote": "Open this tile first. Show the Feature Explorer on the left — layers, feature counts. Click a road feature to open the Feature Inspector panel on the right. Zoom in to see individual vertices."
+    },
+    {
+      "id": "broken-geometry",
+      "title": "Broken Geometry",
+      "description": "Synthetic tile with a self-intersecting polygon. The diagnostics engine will flag tile/self-intersection with precise location and a suggested fix.",
+      "path": "tokyo/broken/invalid-polygon.pbf",
+      "type": "tile",
+      "tags": ["diagnostics", "broken", "geometry"],
+      "defaultZoom": 1.0,
+      "defaultCenter": [0, 0],
+      "expectedDiagnostics": {
+        "errors": 1,
+        "warnings": 0,
+        "info": 0
+      },
+      "demoStep": "Diagnostics",
+      "speakerNote": "Switch to the Diagnostics tab. The Tile Health panel shows 1 error. Click the error row — the camera animates to the affected feature and the Rule Details panel on the right explains why this is invalid and how to fix it."
+    },
+    {
+      "id": "missing-property",
+      "title": "Missing Required Property",
+      "description": "Synthetic tile where features are missing a required property. Demonstrates the tile/required-properties rule.",
+      "path": "tokyo/broken/missing-property.pbf",
+      "type": "tile",
+      "tags": ["diagnostics", "broken", "properties"],
+      "defaultZoom": 1.0,
+      "defaultCenter": [0, 0],
+      "expectedDiagnostics": {
+        "errors": 1,
+        "warnings": 0,
+        "info": 0
+      },
+      "demoStep": "Diagnostics",
+      "speakerNote": "A tile with out-of-range coordinates. Shows the coordinate-range rule in action."
+    },
+    {
+      "id": "comparison-demo",
+      "title": "Comparison — Before & After",
+      "description": "Two tiles representing a before/after deployment. Load both into the Compare tab to see which features changed, appeared, or disappeared.",
+      "paths": {
+        "before": "tokyo/comparison/before.pbf",
+        "after": "tokyo/comparison/after.pbf"
+      },
+      "type": "comparison",
+      "tags": ["compare", "diff"],
+      "demoStep": "Compare",
+      "speakerNote": "Switch to the Compare tab. Load 'before.pbf' as tile A and 'after.pbf' as tile B. Click Run Comparison. The Difference Explorer shows added/removed/changed features layer by layer."
+    },
+    {
+      "id": "regression-demo",
+      "title": "Regression Investigation",
+      "description": "Two tiles that can be diffed to identify a regression. The Regression tab analyses the comparison output for high-confidence regressions with evidence.",
+      "paths": {
+        "before": "tokyo/regression/before.pbf",
+        "after": "tokyo/regression/after.pbf"
+      },
+      "type": "comparison",
+      "tags": ["regression", "investigation"],
+      "demoStep": "Regression",
+      "speakerNote": "After running a comparison, switch to the Regression tab. The engine identifies the highest-confidence regressions and ranks them. Click a candidate to see the Evidence Panel with geometry diffs."
+    },
+    {
+      "id": "style-demo",
+      "title": "Style Linting",
+      "description": "A valid MapLibre style specification for analysis in the Style Explorer tab.",
+      "path": "tokyo/style/style.json",
+      "type": "style",
+      "tags": ["style", "lint"],
+      "demoStep": "Style",
+      "speakerNote": "Open the Style Explorer tab and load this style.json. The linter validates all 9 style rules instantly — source references, zoom ranges, duplicate layer IDs, deprecated properties."
+    }
+  ]
+}
