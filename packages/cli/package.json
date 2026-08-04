@@ -22,6 +22,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@tileguard/analysis": "workspace:*",
     "@tileguard/config": "workspace:*",
     "@tileguard/core": "workspace:*",
     "@tileguard/reporters": "workspace:*",

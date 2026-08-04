@@ -29,6 +29,18 @@ import {
   runRulesExplain,
   runRulesList,
 } from './commands/rules.js';
+import { runCompare } from './commands/compare.js';
+import { runAnalyze } from './commands/analyze.js';
+import { runReport } from './commands/report.js';
+import { runStats } from './commands/stats.js';
+import { runDoctor } from './commands/doctor.js';
+import { runVersion } from './commands/version.js';
+import { runStyle } from './commands/style.js';
+import { createLogger } from './logging/Logger.js';
+import type { LogLevel } from './logging/Logger.js';
+import { loadYamlConfig } from './config/ConfigLoader.js';
+import { runCommand } from './runner/CommandRunner.js';
+import type { CommandContext } from './runner/CommandRunner.js';
 
 /**
  * Presents the result of any command to the terminal, then exits the process.
@@ -40,7 +52,7 @@ import {
  * This is the single location in the package where streams are written to and
  * where `process.exit` is called.
  */
-function present(result: Awaited<ReturnType<typeof runCheck>>): never {
+function present(result: { exitCode: number; message?: string; output?: string }): never {
   if (result.message !== undefined) {
     process.stderr.write(`${result.message}\n`);
   }
@@ -120,6 +132,153 @@ rules
   .description('Open documentation for a rule (coming soon)')
   .action(async (ruleId: string) => {
     const result = await runRulesDocs(ruleId);
+    present(result);
+  });
+
+// ── Shared context builder ────────────────────────────────────────────────
+function buildContext(flags: { verbose?: boolean; debug?: boolean; quiet?: boolean; config?: string }): CommandContext {
+  const level: LogLevel = flags.debug ? 'debug' : flags.verbose ? 'verbose' : flags.quiet ? 'quiet' : 'normal';
+  const logger = createLogger({ level });
+  const { config } = loadYamlConfig(flags.config ? { configPath: flags.config } : {});
+  return { logger, config, cwd: process.cwd() };
+}
+
+// ── compare ───────────────────────────────────────────────────────────────
+program
+  .command('compare')
+  .description('Compare two vector tiles and report structural differences')
+  .argument('<before>', 'Path to the baseline tile')
+  .argument('<after>', 'Path to the updated tile')
+  .option('--json', 'Output as JSON')
+  .option('-o, --output <path>', 'Write output to file')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (before: string, after: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'compare',
+      args: { before, after, format: flags.json ? 'json' : 'text', output: flags.output },
+      ctx,
+      fn: runCompare,
+    });
+    present(result);
+  });
+
+// ── analyze ───────────────────────────────────────────────────────────────
+program
+  .command('analyze')
+  .description('Run full analysis: comparison + regression investigation')
+  .argument('<before>', 'Path to the baseline tile')
+  .argument('<after>', 'Path to the updated tile')
+  .option('--json', 'Output as JSON')
+  .option('-o, --output <path>', 'Write output to file')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (before: string, after: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'analyze',
+      args: { before, after, format: flags.json ? 'json' : 'text', output: flags.output },
+      ctx,
+      fn: runAnalyze,
+    });
+    present(result);
+  });
+
+// ── report ────────────────────────────────────────────────────────────────
+program
+  .command('report')
+  .description('Generate an engineering report (Markdown / HTML / JSON)')
+  .argument('<before>', 'Path to the baseline tile')
+  .argument('<after>', 'Path to the updated tile')
+  .option('-f, --format <format>', 'Report format: markdown | html | json', 'markdown')
+  .option('-o, --output <path>', 'Write report to file')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (before: string, after: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'report',
+      args: { before, after, format: flags.format ?? 'markdown', output: flags.output },
+      ctx,
+      fn: runReport,
+    });
+    present(result);
+  });
+
+// ── stats ─────────────────────────────────────────────────────────────────
+program
+  .command('stats')
+  .description('Display tile statistics: layers, geometry, diagnostics')
+  .argument('<file>', 'Path to a vector tile')
+  .option('--json', 'Output as JSON')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (file: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'stats',
+      args: { file, format: flags.json ? 'json' : 'text' },
+      ctx,
+      fn: runStats,
+    });
+    present(result);
+  });
+
+// ── doctor ────────────────────────────────────────────────────────────────
+program
+  .command('doctor')
+  .description('Health check: verify configuration, rules, parser, and reporters')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'doctor',
+      args: {},
+      ctx,
+      fn: runDoctor,
+    });
+    present(result);
+  });
+
+// ── style ─────────────────────────────────────────────────────────────────
+program
+  .command('style')
+  .description('Analyze a MapLibre style specification: parse, validate, report')
+  .argument('<file>', 'Path to a style.json file')
+  .option('--json', 'Output as JSON')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (file: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'style',
+      args: { file, format: flags.json ? 'json' : 'text' },
+      ctx,
+      fn: runStyle,
+    });
+    present(result);
+  });
+
+// ── version (extended) ────────────────────────────────────────────────────
+program
+  .command('ver')
+  .description('Display detailed version information')
+  .option('--json', 'Output as JSON')
+  .action((flags) => {
+    const result = runVersion({ format: flags.json ? 'json' : 'text' });
     present(result);
   });
 

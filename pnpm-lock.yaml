@@ -21,8 +21,27 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
 
+  packages/analysis:
+    dependencies:
+      '@tileguard/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.0
+        version: 26.1.0
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@26.1.0)(lightningcss@1.32.0)
+
   packages/cli:
     dependencies:
+      '@tileguard/analysis':
+        specifier: workspace:*
+        version: link:../analysis
       '@tileguard/config':
         specifier: workspace:*
         version: link:../config
@@ -88,6 +107,9 @@ importers:
 
   packages/inspector:
     dependencies:
+      '@tileguard/analysis':
+        specifier: workspace:*
+        version: link:../analysis
       '@tileguard/core':
         specifier: workspace:*
         version: link:../core
