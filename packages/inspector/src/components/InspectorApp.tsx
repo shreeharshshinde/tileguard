@@ -56,6 +56,7 @@ import { CanvasView } from './CanvasView.js';
 import { ComparisonPage } from './comparison/ComparisonPage.js';
 import { RegressionPage } from './regression/RegressionPage.js';
 import { ReportPage } from './report/ReportPage.js';
+import { StyleExplorerPage } from './style/StyleExplorerPage.js';
 import { DiagnosticPanel } from './diagnostics/DiagnosticPanel.js';
 import { FeaturePanel } from './feature/FeaturePanel.js';
 import type { LoadingStep } from './loading/LoadingOverlay.js';
@@ -568,6 +569,11 @@ function Workspace(): JSX.Element {
               comparison={comparison}
               regression={regressionAnalysis}
             />
+          </div>
+        ) : activeTab === 'style-explorer' ? (
+          /* ── Style Explorer view ───────────────────────────────────────── */
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <StyleExplorerPage />
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">

@@ -28,6 +28,7 @@ export type WorkspaceTab =
   | 'compare'
   | 'regression'
   | 'reports'
+  | 'style-explorer'
   | 'settings';
 
 export interface WorkspaceViewport {

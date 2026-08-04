@@ -10,48 +10,15 @@
 import type { DiagnosticProvider } from '../providers/DiagnosticProvider.js';
 import type { FeatureProvider } from '../providers/FeatureProvider.js';
 import type { LayerProvider } from '../providers/LayerProvider.js';
+import type { TileStatistics, LayerStatistics } from '@tileguard/analysis';
+import { EMPTY_TILE_STATISTICS } from '@tileguard/analysis';
 
 // ---------------------------------------------------------------------------
-// Public types
+// Public types (re-export for backward compatibility)
 // ---------------------------------------------------------------------------
 
-/** Per-layer statistics row. */
-export interface LayerStatistics {
-  readonly name: string;
-  readonly featureCount: number;
-  readonly geometryCounts: {
-    readonly point: number;
-    readonly line: number;
-    readonly polygon: number;
-  };
-  readonly diagnosticCount: number;
-}
-
-/** Full tile statistics snapshot. Immutable after construction. */
-export interface TileStatistics {
-  readonly totalLayers: number;
-  readonly totalFeatures: number;
-  readonly geometryCounts: {
-    readonly point: number;
-    readonly line: number;
-    readonly polygon: number;
-  };
-  readonly diagnostics: {
-    readonly errors: number;
-    readonly warnings: number;
-    readonly info: number;
-  };
-  readonly layers: readonly LayerStatistics[];
-}
-
-/** Empty statistics (returned when no tile is loaded). */
-export const EMPTY_TILE_STATISTICS: TileStatistics = Object.freeze({
-  totalLayers: 0,
-  totalFeatures: 0,
-  geometryCounts: Object.freeze({ point: 0, line: 0, polygon: 0 }),
-  diagnostics: Object.freeze({ errors: 0, warnings: 0, info: 0 }),
-  layers: Object.freeze([]),
-});
+export type { LayerStatistics, TileStatistics } from '@tileguard/analysis';
+export { EMPTY_TILE_STATISTICS } from '@tileguard/analysis';
 
 // ---------------------------------------------------------------------------
 // Geometry type normalisation
