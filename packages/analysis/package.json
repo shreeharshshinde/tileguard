@@ -1,0 +1,23 @@
+{
+  "name": "@tileguard/analysis",
+  "version": "0.4.5",
+  "description": "Shared comparison and regression analysis engine for TileGuard",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@tileguard/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "typescript": "5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
