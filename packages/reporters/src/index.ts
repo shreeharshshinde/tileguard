@@ -29,3 +29,36 @@ export type {
 } from './text-reporter.js';
 // Text reporter — the default, human-readable terminal output
 export { createTextReporter, textReporter } from './text-reporter.js';
+
+// Engineering Report Engine (Milestone 7 — Step 3)
+export {
+  createReportEngine,
+  createReporterRegistry,
+  defaultRegistry,
+  renderMarkdown,
+  renderHtml,
+  renderJson,
+  MarkdownWriter,
+  HtmlWriter,
+  escapeHtml,
+} from './report/index.js';
+export type {
+  ComparisonInput,
+  DiagnosticCounts,
+  EngineeringReport,
+  FeatureChangeSummary,
+  FormatRenderer,
+  JsonReportOptions,
+  LayerChangeSummary,
+  NewDiagnosticEntry,
+  ReportEngine,
+  ReportEngineOptions,
+  ReportError,
+  ReportFormat,
+  ReportOutput,
+  ReportResult,
+  ReporterRegistry,
+  RegressionCandidateInput,
+  RegressionInput,
+  StatsDelta,
+} from './report/index.js';
