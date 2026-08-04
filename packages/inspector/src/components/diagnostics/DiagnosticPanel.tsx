@@ -36,6 +36,13 @@ import { DiagnosticToolbar } from './DiagnosticToolbar.js';
 export interface DiagnosticPanelProps {
   readonly store: InspectorStore;
   readonly inspector: Inspector | null;
+  /**
+   * Optional callback invoked when a diagnostic is selected.
+   * Used by DiagnosticsPage to synchronise the RuleDetailsPanel.
+   */
+  readonly onDiagnosticSelected?: (globalIndex: number) => void;
+  /** Panel title shown in the header. Defaults to "Diagnostics". */
+  readonly panelTitle?: string;
 }
 
 function shouldShowDiagnostic(
@@ -75,6 +82,8 @@ function shouldShowDiagnostic(
 export function DiagnosticPanel({
   store,
   inspector,
+  onDiagnosticSelected,
+  panelTitle = 'Diagnostics',
 }: DiagnosticPanelProps): JSX.Element {
   const grouped = useGroupedDiagnostics(store);
   const layers = useLayers(store);
@@ -137,6 +146,7 @@ export function DiagnosticPanel({
   const handleSelectDiagnostic = (globalIndex: number) => {
     setSelectedIndex(globalIndex);
     inspector?.selectDiagnostic(globalIndex);
+    onDiagnosticSelected?.(globalIndex);
   };
 
   const totalFiltered =
@@ -150,7 +160,7 @@ export function DiagnosticPanel({
   return (
     <section className="diagnostic-panel" aria-label="Diagnostics panel">
       <div className="diagnostic-panel__header">
-        <span className="diagnostic-panel__title">Diagnostics</span>
+        <span className="diagnostic-panel__title">{panelTitle}</span>
         {totalAll > 0 && (
           <span className="diagnostic-panel__count">
             {totalFiltered === totalAll
