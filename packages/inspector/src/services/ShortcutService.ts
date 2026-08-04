@@ -38,7 +38,9 @@ export type ShortcutAction =
   | 'toggleHover'
   | 'toggleVertices'
   | 'toggleBounds'
-  | 'toggleDevOverlay';
+  | 'toggleDevOverlay'
+  // Milestone 7.5 — Step D
+  | 'togglePresentationMode';
 
 export interface ShortcutBinding {
   readonly key: string;
@@ -133,6 +135,14 @@ export const DEFAULT_SHORTCUTS: readonly ShortcutBinding[] = Object.freeze([
     shift: true,
     action: 'toggleDevOverlay',
     description: 'Toggle developer overlay',
+  },
+  // Milestone 7.5 — Step D
+  {
+    key: 'p',
+    ctrl: true,
+    shift: true,
+    action: 'togglePresentationMode',
+    description: 'Toggle presentation mode',
   },
 ]);
 

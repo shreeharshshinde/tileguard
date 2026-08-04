@@ -48,8 +48,8 @@ describe('ShortcutService', () => {
     expect(service.getBindings()).toEqual(DEFAULT_SHORTCUTS);
   });
 
-  it('DEFAULT_SHORTCUTS contains exactly 12 bindings', () => {
-    expect(DEFAULT_SHORTCUTS).toHaveLength(12);
+  it('DEFAULT_SHORTCUTS contains exactly 13 bindings', () => {
+    expect(DEFAULT_SHORTCUTS).toHaveLength(13);
   });
 
   it('accepts custom bindings at construction time', () => {

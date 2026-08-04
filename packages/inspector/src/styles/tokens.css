@@ -42,3 +42,61 @@
   --tg-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
   --tg-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Presentation Mode (Milestone 7.5 — Step D)
+   Activated by: Ctrl+Shift+P → adds class "presentation-mode" to <html>
+   Purpose: Optimise for projector screens — larger text, higher contrast,
+            hide developer noise.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.presentation-mode {
+  /* Scale up font sizes by ~20% */
+  --tg-font-size-xs: 13px;
+  --tg-font-size-sm: 14px;
+  --tg-font-size-base: 17px;
+  --tg-font-size-lg: 20px;
+
+  /* Increase spacing */
+  --tg-space-xs: 6px;
+  --tg-space-sm: 10px;
+  --tg-space-md: 16px;
+  --tg-space-lg: 20px;
+  --tg-space-xl: 28px;
+  --tg-space-2xl: 40px;
+
+  /* Expand sidebar and toolbar */
+  --tg-sidebar-width: 360px;
+  --tg-toolbar-height: 56px;
+  --tg-footer-height: 36px;
+
+  /* Higher contrast accents */
+  --tg-accent: #60a5fa;
+  --tg-accent-hover: #93c5fd;
+  --tg-error: #f87171;
+  --tg-warning: #fbbf24;
+  --tg-success: #34d399;
+
+  /* Slightly brighter borders */
+  --tg-border: #475569;
+  --tg-text-secondary: #cbd5e1;
+  --tg-text-muted: #94a3b8;
+}
+
+/* Hide developer noise in presentation mode */
+.presentation-mode [data-dev-overlay],
+.presentation-mode [data-fps-counter],
+.presentation-mode [data-debug-button] {
+  display: none !important;
+}
+
+/* Slightly larger icon targets */
+.presentation-mode button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Thicker selection outline on canvas */
+.presentation-mode canvas {
+  outline: none;
+}
