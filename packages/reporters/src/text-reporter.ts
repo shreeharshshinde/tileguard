@@ -149,6 +149,8 @@ export function createTextReporter(
       ) {
         process.stdout.write(text);
       } else {
+        // Browser/non-Node fallback
+        console.log(text);
       }
     });
   const useColor =
