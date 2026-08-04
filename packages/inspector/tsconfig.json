@@ -32,6 +32,7 @@
       "@tileguard/tile-rules": ["../tile-rules/src/index.ts"],
       "@tileguard/tile-rules/browser": ["../tile-rules/src/browser.ts"],
       "@tileguard/style-rules": ["../style-rules/src/index.ts"],
+      "@tileguard/style-rules/analysis": ["../style-rules/src/analysis.ts"],
       "@tileguard/reporters": ["../reporters/src/index.ts"]
     }
   },

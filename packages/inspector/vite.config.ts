@@ -27,6 +27,10 @@ export default defineConfig({
         '../tile-rules/src/browser.ts',
       ),
       '@tileguard/tile-rules': resolve(__dirname, '../tile-rules/src/index.ts'),
+      '@tileguard/style-rules/analysis': resolve(
+        __dirname,
+        '../style-rules/src/analysis.ts',
+      ),
       '@tileguard/style-rules': resolve(
         __dirname,
         '../style-rules/src/index.ts',

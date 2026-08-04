@@ -49,6 +49,7 @@ import {
   createShortcutService,
   type ShortcutAction,
 } from '../services/ShortcutService.js';
+import { getPresentationService } from '../services/PresentationService.js';
 import type { ViewportState } from '../viewport/viewport.js';
 import { createRegressionEngine } from '../analysis/RegressionEngine.js';
 import type { RegressionAnalysis } from '../analysis/models/regression.js';
@@ -57,7 +58,15 @@ import { ComparisonPage } from './comparison/ComparisonPage.js';
 import { RegressionPage } from './regression/RegressionPage.js';
 import { ReportPage } from './report/ReportPage.js';
 import { StyleExplorerPage } from './style/StyleExplorerPage.js';
-import { DiagnosticPanel } from './diagnostics/DiagnosticPanel.js';
+import {
+  DiagnosticsPageHeader,
+  DiagnosticsLeftPanel,
+  DiagnosticsRightPanel,
+  useDiagnosticsState,
+} from './diagnostics/DiagnosticsPage.js';
+import { FeatureExplorer } from './inspector/FeatureExplorer.js';
+import { InspectorPageHeader } from './inspector/InspectorPageHeader.js';
+import { PresentationToggle } from './presentation/PresentationToggle.js';
 import { FeaturePanel } from './feature/FeaturePanel.js';
 import type { LoadingStep } from './loading/LoadingOverlay.js';
 import { LoadingOverlay } from './loading/LoadingOverlay.js';
@@ -110,6 +119,7 @@ function AppHeader(): JSX.Element {
         >
           <SettingsIcon className="h-4 w-4" />
         </button>
+        <PresentationToggle />
         <span
           className="mx-1 h-4 w-px bg-[var(--tg-border)]"
           aria-hidden="true"
@@ -191,24 +201,24 @@ function Footer({
             stats.diagnostics.warnings +
             stats.diagnostics.info >
             0 && (
-            <>
-              <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
-                ·
-              </span>
-              <span
-                className={
-                  stats.diagnostics.errors > 0
-                    ? 'text-[var(--tg-error)]'
-                    : 'text-[var(--tg-warning)]'
-                }
-              >
-                {stats.diagnostics.errors +
-                  stats.diagnostics.warnings +
-                  stats.diagnostics.info}{' '}
-                diag.
-              </span>
-            </>
-          )}
+              <>
+                <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+                  ·
+                </span>
+                <span
+                  className={
+                    stats.diagnostics.errors > 0
+                      ? 'text-[var(--tg-error)]'
+                      : 'text-[var(--tg-warning)]'
+                  }
+                >
+                  {stats.diagnostics.errors +
+                    stats.diagnostics.warnings +
+                    stats.diagnostics.info}{' '}
+                  diag.
+                </span>
+              </>
+            )}
         </>
       )}
 
@@ -250,9 +260,9 @@ function Footer({
       {/* Zoom */}
       {viewport !== null && <span>{viewport.zoom.toFixed(1)}×</span>}
 
-      {/* FPS */}
+      {/* FPS — hidden in presentation mode */}
       {fps > 0 && (
-        <>
+        <span data-fps-counter="" className="flex items-center gap-1">
           <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
             ·
           </span>
@@ -267,7 +277,7 @@ function Footer({
           >
             {fps.toFixed(0)} fps
           </span>
-        </>
+        </span>
       )}
     </footer>
   );
@@ -503,6 +513,9 @@ function Workspace(): JSX.Element {
         case 'toggleDevOverlay':
           setDevOverlayVisible((v) => !v);
           break;
+        case 'togglePresentationMode':
+          getPresentationService().toggle();
+          break;
         default:
           break;
       }
@@ -514,13 +527,31 @@ function Workspace(): JSX.Element {
     };
   }, [inspector, store, setActiveTab]);
 
+  // ── Diagnostics panel state (lifted so left + right panels share it) ────
+  const diagnostics = useDiagnosticsState(store, inspector);
+
   // ── Left panel content ────────────────────────────────────────────────────
   const leftPanel = useMemo<JSX.Element | null>(() => {
     if (activeTab === 'statistics') return <StatisticsPanel store={store} />;
-    if (activeTab === 'settings')
-      return <SettingsPanel inspector={inspector} />;
-    return <DiagnosticPanel store={store} inspector={inspector} />;
-  }, [activeTab, store, inspector]);
+    if (activeTab === 'settings') return <SettingsPanel inspector={inspector} />;
+    if (activeTab === 'diagnostics')
+      return (
+        <DiagnosticsLeftPanel
+          store={store}
+          inspector={inspector}
+          onDiagnosticSelected={diagnostics.handleSelectDiagnostic}
+        />
+      );
+    // inspector tab (and any other canvas tab)
+    return (
+      <FeatureExplorer
+        store={store}
+        inspector={inspector}
+        searchQuery={search.query}
+        onSearchChange={search.setQuery}
+      />
+    );
+  }, [activeTab, store, inspector, search.query, search.setQuery, diagnostics.handleSelectDiagnostic]);
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--tg-bg-primary)] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
@@ -537,7 +568,22 @@ function Workspace(): JSX.Element {
         />
 
         {activeTab === 'welcome' && !loaded ? (
-          <WelcomeView onFileSelected={selectFile} />
+          <WelcomeView
+            onFileSelected={selectFile}
+            onComparisonSelected={async (fileA: File, fileB: File) => {
+              // Load both snapshots, store them, then navigate to compare
+              const [snapA, snapB] = await Promise.all([
+                captureSnapshot(fileA),
+                captureSnapshot(fileB),
+              ]);
+              setFilePathA(fileA.name);
+              setFilePathB(fileB.name);
+              setSnapshotA(snapA);
+              setSnapshotB(snapB);
+              setComparison(null);
+              setActiveTab('compare');
+            }}
+          />
         ) : activeTab === 'compare' ? (
           /* ── Compare view (full-width, no toolbar/canvas) ─────────────── */
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -577,6 +623,9 @@ function Workspace(): JSX.Element {
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            {/* Page identity header — varies by active canvas tab */}
+            {activeTab === 'inspector' && <InspectorPageHeader store={store} />}
+            {activeTab === 'diagnostics' && <DiagnosticsPageHeader store={store} />}
             <Toolbar
               leftCollapsed={leftCollapsed}
               rightCollapsed={rightCollapsed}
@@ -608,7 +657,9 @@ function Workspace(): JSX.Element {
                       ? 'Statistics'
                       : activeTab === 'settings'
                         ? 'Settings'
-                        : 'Diagnostics'
+                        : activeTab === 'diagnostics'
+                          ? 'Diagnostic Explorer'
+                          : 'Feature Explorer'
                   }
                 >
                   {leftPanel}
@@ -635,27 +686,35 @@ function Workspace(): JSX.Element {
 
                 {/* Developer overlay */}
                 {devOverlayVisible && (
-                  <DeveloperOverlay
-                    metrics={metrics}
-                    viewport={viewport}
-                    hoveredFeature={
-                      hover.layerName !== null && hover.featureIndex !== null
-                        ? (inspector?.getSelectedFeature() ?? null)
-                        : null
-                    }
-                    selectedFeature={selectedFeature}
-                    totalFeatures={stats.totalFeatures}
-                  />
+                  <div data-dev-overlay="">
+                    <DeveloperOverlay
+                      metrics={metrics}
+                      viewport={viewport}
+                      hoveredFeature={
+                        hover.layerName !== null && hover.featureIndex !== null
+                          ? (inspector?.getSelectedFeature() ?? null)
+                          : null
+                      }
+                      selectedFeature={selectedFeature}
+                      totalFeatures={stats.totalFeatures}
+                    />
+                  </div>
                 )}
               </div>
 
-              {/* Right panel: Feature Inspector */}
+              {/* Right panel: context-sensitive */}
               {!rightCollapsed && (
                 <aside
                   className="w-[var(--tg-sidebar-width)] shrink-0 border-l border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] overflow-hidden flex flex-col"
-                  aria-label="Feature Inspector"
+                  aria-label={activeTab === 'diagnostics' ? 'Rule Details' : 'Feature Inspector'}
                 >
-                  <FeaturePanel store={store} />
+                  {activeTab === 'diagnostics' ? (
+                    <DiagnosticsRightPanel
+                      diagnostic={diagnostics.selectedDiagnostic}
+                    />
+                  ) : (
+                    <FeaturePanel store={store} />
+                  )}
                 </aside>
               )}
             </div>
