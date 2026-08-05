@@ -49,7 +49,7 @@ node packages/cli/dist/bin/tileguard.js check fixtures/bad/invalid-tile-self-int
 ## Minute 4–5 — Close
 
 **Say:**
-> "MIT license. Rule engine architecture — write a custom rule in 25 lines of TypeScript. GitHub: shreeharsh-shinde/tileguard. Happy to talk after."
+> "MIT license. Rule engine architecture — write a custom rule in 25 lines of TypeScript. GitHub: shreeharshshinde/tileguard. Happy to talk after."
 
 ---
 

@@ -5,7 +5,7 @@
 TileGuard is a rule-based validation framework for vector tiles and MapLibre style specifications — the same engineering discipline ESLint brings to JavaScript, applied to the geospatial stack.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CI](https://github.com/shreeharsh-shinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharsh-shinde/tileguard/actions/workflows/tile-quality.yml)
+[![CI](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml)
 [![FOSS4G 2026](https://img.shields.io/badge/Presented%20at-FOSS4G%202026%20Hiroshima-red)](https://2026.foss4g.org)
 
 ---
