@@ -53,7 +53,7 @@ export interface WorkspaceLayout {
 export const DEFAULT_LAYOUT: Readonly<WorkspaceLayout> = Object.freeze({
   leftCollapsed: false,
   rightCollapsed: false,
-  activeTab: 'welcome',
+  activeTab: 'inspector',
   viewport: null,
   lastFilePath: null,
 });
