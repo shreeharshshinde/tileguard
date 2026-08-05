@@ -1,15 +1,23 @@
 /**
- * @tileguard/inspector — InspectorApp (Milestone 7 — Step 1)
+ * @tileguard/inspector — InspectorApp (Phase 1 — Foundation)
  *
- * Full production shell integrating:
- *   - WorkspaceService (panel layout persistence)
- *   - CameraAnimator (smooth feature focus)
- *   - PerformanceProfiler + DeveloperOverlay
- *   - LoadingOverlay with multi-step progress
- *   - Enhanced Footer (FPS, hover, selected, zoom)
- *   - All 12 keyboard shortcuts
- *   - Wired Settings button, Reset View button
- *   - Compare tab with ComparisonPage (Milestone 7)
+ * Application root. Mounts the React context providers and delegates
+ * routing to ApplicationRouter.
+ *
+ * Architecture (Phase 1):
+ *
+ *   InspectorApp
+ *     └── InspectorProvider        (store + inspector context)
+ *           └── ApplicationRouter  (Home ↔ Workspace lifecycle)
+ *                 ├── HomePage     (permanent entry point)
+ *                 └── Workspace    (session-based engineering workstation)
+ *
+ * All existing analysis functionality (Explore, Diagnostics, Statistics,
+ * Compare, Regression, Reports, Style) lives inside Workspace, unchanged.
+ *
+ * The previous monolithic Workspace/AppHeader/Footer implementation has been
+ * extracted into dedicated components in components/workspace/ and remains
+ * fully functional.
  */
 
 import {
@@ -76,6 +84,8 @@ import { SettingsPanel } from './settings/SettingsPanel.js';
 import { StatisticsPanel } from './statistics/StatisticsPanel.js';
 import { Toolbar } from './Toolbar.js';
 import { WelcomeView } from './WelcomeView.js';
+import { ApplicationRouter } from './ApplicationRouter.js';
+import { Toaster } from 'sonner';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton profiler (shared across renders)
@@ -727,11 +737,23 @@ function Workspace(): JSX.Element {
   );
 }
 
-/** Step 4 production application shell. */
+/** Phase 1 production application shell. */
 export function InspectorApp(): JSX.Element {
   return (
     <InspectorProvider>
-      <Workspace />
+      <ApplicationRouter />
+      <Toaster
+        position="bottom-right"
+        theme="dark"
+        toastOptions={{
+          style: {
+            background: 'var(--tg-bg-surface)',
+            border: '1px solid var(--tg-border)',
+            color: 'var(--tg-text-primary)',
+            fontSize: '13px',
+          },
+        }}
+      />
     </InspectorProvider>
   );
 }

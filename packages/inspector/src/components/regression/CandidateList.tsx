@@ -142,7 +142,7 @@ export function CandidateList({
                 {/* Top reason summary */}
                 {c.reasons.length > 0 && (
                   <p className="mt-1 truncate text-[10px] text-[var(--tg-text-muted)]">
-                    {c.reasons[0].description}
+                    {c.reasons[0]?.description}
                   </p>
                 )}
               </div>

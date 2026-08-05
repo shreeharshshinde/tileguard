@@ -53,13 +53,11 @@ export function buildReportInputs(
       ruleId: d.ruleId,
       severity: d.severity as 'error' | 'warning' | 'info',
       message: d.message,
-      layer: undefined,
     })),
     resolvedDiagnostics: diagnostics.resolvedDiagnostics.map((d) => ({
       ruleId: d.ruleId,
       severity: d.severity as 'error' | 'warning' | 'info',
       message: d.message,
-      layer: undefined,
     })),
     stats: {
       layersA: statistics.layersA,

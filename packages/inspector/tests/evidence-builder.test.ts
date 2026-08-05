@@ -287,7 +287,7 @@ describe('EvidenceBuilder', () => {
       };
       const comparison = makeComparison([fc]);
       // inject a new diagnostic
-      (comparison.diagnostics as { newDiagnostics: unknown[] }).newDiagnostics = [
+      (comparison.diagnostics as { newDiagnostics: readonly unknown[] }).newDiagnostics = [
         { ruleId: 'tile/self-intersection', severity: 'error', message: 'self-intersection in roads', artifact: 'b.pbf' },
       ];
       const result = builder.buildForFeature(fc, comparison);

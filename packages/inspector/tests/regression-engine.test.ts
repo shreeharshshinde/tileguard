@@ -214,7 +214,8 @@ describe('RegressionEngine', () => {
     it('classifies large geometry shift as geometry kind', () => {
       const comparison = makeComparison([largeGeoShiftFC()]);
       const result = engine.analyze(comparison);
-      expect(result.candidates[0].kind).toBe('geometry');
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      expect(result.candidates[0]!.kind).toBe('geometry');
     });
 
     it('isClean=false when regression exists', () => {
@@ -229,7 +230,7 @@ describe('RegressionEngine', () => {
       const comparison = makeComparison([highSignalPropFC()]);
       const result = engine.analyze(comparison);
       expect(result.candidates.length).toBeGreaterThan(0);
-      expect(result.candidates[0].kind).toBe('attribute');
+      expect(result.candidates[0]!.kind).toBe('attribute');
     });
   });
 
@@ -239,7 +240,7 @@ describe('RegressionEngine', () => {
       const comparison = withNewDiagnostic(makeComparison([fc]), 'roads');
       const result = engine.analyze(comparison);
       expect(result.candidates.length).toBeGreaterThan(0);
-      expect(result.candidates[0].kind).toBe('diagnostic');
+      expect(result.candidates[0]!.kind).toBe('diagnostic');
     });
   });
 
@@ -247,13 +248,13 @@ describe('RegressionEngine', () => {
     it('classifies added feature as layer kind', () => {
       const comparison = makeComparison([addedFC()]);
       const result = engine.analyze(comparison);
-      expect(result.candidates[0].kind).toBe('layer');
+      expect(result.candidates[0]!.kind).toBe('layer');
     });
 
     it('classifies removed feature as layer kind', () => {
       const comparison = makeComparison([removedFC()]);
       const result = engine.analyze(comparison);
-      expect(result.candidates[0].kind).toBe('layer');
+      expect(result.candidates[0]!.kind).toBe('layer');
     });
   });
 
@@ -272,7 +273,7 @@ describe('RegressionEngine', () => {
       const result = engine.analyze(comparison);
       expect(result.candidates.length).toBeGreaterThan(0);
       // geometry + attribute active → mixed
-      expect(result.candidates[0].kind).toBe('mixed');
+      expect(result.candidates[0]!.kind).toBe('mixed');
     });
   });
 
@@ -286,7 +287,7 @@ describe('RegressionEngine', () => {
       const result = engine.analyze(comparison);
       const confidences = result.candidates.map((c) => c.confidence);
       for (let i = 0; i < confidences.length - 1; i++) {
-        expect(confidences[i]).toBeGreaterThanOrEqual(confidences[i + 1]);
+        expect(confidences[i]!).toBeGreaterThanOrEqual(confidences[i + 1]!);
       }
     });
 
@@ -296,7 +297,7 @@ describe('RegressionEngine', () => {
         largeGeoShiftFC('roads', 1),
       ]);
       const result = engine.analyze(comparison);
-      const first = result.candidates[0];
+      const first = result.candidates[0]!;
       expect(first.kind).toBe('geometry');
     });
   });
@@ -344,7 +345,7 @@ describe('RegressionEngine', () => {
     it('topConfidence matches first candidate confidence', () => {
       const comparison = makeComparison([largeGeoShiftFC()]);
       const result = engine.analyze(comparison);
-      expect(result.summary.topConfidence).toBe(result.candidates[0].confidence);
+      expect(result.summary.topConfidence).toBe(result.candidates[0]!.confidence);
     });
 
     it('kindCounts sum equals candidates.length', () => {
@@ -397,8 +398,8 @@ describe('RegressionEngine', () => {
       expect(first.candidates.length).toBe(second.candidates.length);
       expect(first.confidence).toBe(second.confidence);
       for (let i = 0; i < first.candidates.length; i++) {
-        expect(first.candidates[i].confidence).toBe(second.candidates[i].confidence);
-        expect(first.candidates[i].kind).toBe(second.candidates[i].kind);
+        expect(first.candidates[i]!.confidence).toBe(second.candidates[i]!.confidence);
+        expect(first.candidates[i]!.kind).toBe(second.candidates[i]!.kind);
       }
     });
   });

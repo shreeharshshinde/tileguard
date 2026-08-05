@@ -75,7 +75,7 @@ describe('WorkspaceService', () => {
   it('DEFAULT_LAYOUT has expected shape', () => {
     expect(DEFAULT_LAYOUT.leftCollapsed).toBe(false);
     expect(DEFAULT_LAYOUT.rightCollapsed).toBe(false);
-    expect(DEFAULT_LAYOUT.activeTab).toBe('welcome');
+    expect(DEFAULT_LAYOUT.activeTab).toBe('inspector');
     expect(DEFAULT_LAYOUT.viewport).toBeNull();
     expect(DEFAULT_LAYOUT.lastFilePath).toBeNull();
   });

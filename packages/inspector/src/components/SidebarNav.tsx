@@ -24,8 +24,8 @@ export function SidebarNav({
   onTabChange,
 }: SidebarNavProps): JSX.Element {
   const items: readonly { id: NavTab; label: string; icon: typeof Home }[] = [
-    { id: 'welcome', label: 'Welcome', icon: Home },
-    { id: 'inspector', label: 'Inspector', icon: Crosshair },
+    { id: 'welcome', label: 'Home', icon: Home },
+    { id: 'inspector', label: 'Explore', icon: Crosshair },
     { id: 'diagnostics', label: 'Diagnostics', icon: AlertTriangle },
     { id: 'statistics', label: 'Statistics', icon: BarChart3 },
     { id: 'style-explorer', label: 'Style', icon: FileJson },

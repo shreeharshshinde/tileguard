@@ -41,7 +41,7 @@ export function RecommendationPanel({
         // Gather evidence labels referenced by this recommendation
         const refEvidence = rec.evidenceIndices
           .map((idx) => evidence[idx])
-          .filter(Boolean);
+          .filter((ev): ev is NonNullable<typeof ev> => ev !== undefined);
 
         return (
           <div
