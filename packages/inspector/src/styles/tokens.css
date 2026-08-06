@@ -100,3 +100,57 @@
 .presentation-mode canvas {
   outline: none;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Custom Scrollbars — Premium dark design matching TileGuard palette
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Scrollbar appears on hover of scroll containers */
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb,
+[class*="overflow-y"]::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.6);
+}
+
+.overflow-y-auto:hover::-webkit-scrollbar-thumb,
+.overflow-auto:hover::-webkit-scrollbar-thumb,
+[class*="overflow-y"]:hover::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.overflow-y-auto:hover::-webkit-scrollbar-thumb:hover,
+.overflow-auto:hover::-webkit-scrollbar-thumb:hover,
+[class*="overflow-y"]:hover::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
