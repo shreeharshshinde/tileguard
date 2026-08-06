@@ -1,89 +1,187 @@
 /**
- * @tileguard/inspector — HomePage (Phase 1 — Step 7)
+ * @tileguard/inspector — HomePage (Phase 2 redesign)
  *
- * The permanent application entry point.  Shown when no session is active.
- * Canvas is NOT mounted while this page is visible.
+ * Professional engineering workstation home screen.
  *
- * Layout (per spec):
+ * Layout:
+ *   ┌──────────────────────────────────────────────────┐
+ *   │  Hero (HomeHeader — full-bleed with stats)       │
+ *   ├───────────────────────────┬──────────────────────┤
+ *   │  Quick Start              │  Recent + Docs       │
+ *   │  Capabilities             │  (right rail)        │
+ *   │  Demo Gallery             │                      │
+ *   └───────────────────────────┴──────────────────────┘
  *
- *   TileGuard
- *   Engineering Workstation
- *   ────────────────────
- *   Quick Actions
- *     Load Tile  |  Load Style  |  Open Demo
- *   ────────────────────
- *   Demo Gallery
- *     Tokyo  |  Regression Demo  |  Broken Geometry
- *   ────────────────────
- *   Recent Sessions
- *   ────────────────────
- *   Documentation
+ * The entire page scrolls. Max-width 1200px, centred.
+ * Right rail is sticky on larger viewports.
  */
-import { BookOpen, ExternalLink } from 'lucide-react';
+import { BookOpen, ExternalLink, Clock, File, FolderOpen } from 'lucide-react';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { motion } from 'framer-motion';
 import { useRef } from 'react';
+import { toast } from 'sonner';
+import { getWorkspaceService } from '../../services/WorkspaceService.js';
+import { CapabilitiesSection } from './CapabilitiesSection.js';
 import { DemoGallery } from './DemoGallery.js';
 import { HomeHeader } from './HomeHeader.js';
 import { QuickActions } from './QuickActions.js';
-import { RecentSessions } from './RecentSessions.js';
 
 export interface HomePageProps {
   readonly onFileSelected: (file: File) => void;
   readonly onComparisonSelected?: (fileA: File, fileB: File) => void;
-  /** Called when the user requests to open the file picker from the recent-sessions list. */
   readonly onOpenFilePicker?: () => void;
 }
 
 // ---------------------------------------------------------------------------
-// Documentation links section
+// Section divider
 // ---------------------------------------------------------------------------
 
-function DocumentationLinks(): JSX.Element {
-  const links: readonly { label: string; href: string }[] = [
-    { label: 'Architecture', href: 'https://github.com/shreeharshshinde/tileguard/docs/architecture' },
-    { label: 'Rule Reference', href: 'https://github.com/shreeharshshinde/tileguard/docs/rules' },
-    { label: 'Contributing', href: 'https://github.com/shreeharshshinde/tileguard/CONTRIBUTING.md' },
-  ];
+function SectionGap(): JSX.Element {
+  return <div className="h-8" aria-hidden="true" />;
+}
+
+// ---------------------------------------------------------------------------
+// Right rail — Recent sessions
+// ---------------------------------------------------------------------------
+
+function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX.Element {
+  const layout = getWorkspaceService().getLayout();
+  const lastFile = layout.lastFilePath;
+
+  const handleClick = (filePath: string, e: React.MouseEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      void navigator.clipboard.writeText(filePath).then(() => {
+        toast.success('Path copied', { description: filePath, duration: 2500 });
+      });
+      return;
+    }
+    onOpenFilePicker();
+  };
 
   return (
-    <section aria-labelledby="docs-heading" className="mb-[var(--tg-space-2xl)]">
-      <div className="mb-[var(--tg-space-md)] flex items-center gap-[var(--tg-space-sm)]">
-        <BookOpen className="h-4 w-4 text-[var(--tg-text-muted)]" aria-hidden="true" />
-        <h2
-          id="docs-heading"
-          className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
-        >
-          Documentation
+    <div className="rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]">
+      <div className="flex items-center gap-2 border-b border-[var(--tg-border)] px-4 py-3">
+        <Clock className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
+          Recent Sessions
         </h2>
       </div>
-      <ul className="flex flex-wrap gap-[var(--tg-space-sm)]">
-        {links.map(({ label, href }) => (
-          <li key={label}>
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-[var(--tg-border-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-[var(--tg-space-md)] py-[var(--tg-space-xs)] text-xs text-[var(--tg-text-secondary)] transition hover:border-[var(--tg-accent)] hover:text-[var(--tg-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)]"
+
+      <div className="p-3">
+        {lastFile !== null ? (
+          <Tooltip.Root delayDuration={400}>
+            <Tooltip.Trigger asChild>
+              <button
+                type="button"
+                onClick={(e) => handleClick(lastFile, e)}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-[var(--tg-bg-hover)]"
+                aria-label={`Reload ${lastFile} (Ctrl+click to copy path)`}
+              >
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--tg-bg-surface)]">
+                  <File className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+                </div>
+                <span className="min-w-0 flex-1 truncate font-mono text-xs text-[var(--tg-text-secondary)]">
+                  {lastFile.split('/').pop() ?? lastFile}
+                </span>
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                side="right" sideOffset={8}
+                className="z-50 max-w-[18rem] rounded-lg border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-3 py-2 font-mono text-[11px] text-[var(--tg-text-secondary)] shadow-xl"
+              >
+                {lastFile}
+                <div className="mt-1 font-sans text-[10px] text-[var(--tg-text-muted)]">Ctrl+click to copy</div>
+                <Tooltip.Arrow className="fill-[var(--tg-border)]" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center gap-2 py-5 text-center"
+          >
+            <FolderOpen className="h-6 w-6 text-[var(--tg-text-muted)]" aria-hidden="true" />
+            <p className="text-xs text-[var(--tg-text-muted)]">No recent sessions</p>
+            <button
+              type="button"
+              onClick={onOpenFilePicker}
+              className="rounded-md border border-[var(--tg-border)] px-3 py-1 text-xs font-medium text-[var(--tg-text-secondary)] transition hover:border-[var(--tg-accent)]/50 hover:text-[var(--tg-accent)]"
             >
-              {label}
-              <ExternalLink className="h-3 w-3" aria-hidden="true" />
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
+              Open File…
+            </button>
+          </motion.div>
+        )}
+      </div>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Divider helper
+// Right rail — Documentation links
 // ---------------------------------------------------------------------------
 
-function Divider(): JSX.Element {
+function DocsRail(): JSX.Element {
+  const links = [
+    { label: 'Architecture', href: 'https://github.com/shreeharshshinde/tileguard/docs/architecture' },
+    { label: 'Rule Reference', href: 'https://github.com/shreeharshshinde/tileguard/docs/rules' },
+    { label: 'Contributing', href: 'https://github.com/shreeharshshinde/tileguard/CONTRIBUTING.md' },
+    { label: 'GitHub', href: 'https://github.com/shreeharshshinde/tileguard' },
+  ];
+
   return (
-    <div
-      className="my-[var(--tg-space-xl)] h-px bg-[var(--tg-border)]"
-      aria-hidden="true"
-    />
+    <div className="rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]">
+      <div className="flex items-center gap-2 border-b border-[var(--tg-border)] px-4 py-3">
+        <BookOpen className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
+          Documentation
+        </h2>
+      </div>
+      <div className="p-3 space-y-0.5">
+        {links.map(({ label, href }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-[var(--tg-text-secondary)] transition hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)]"
+          >
+            {label}
+            <ExternalLink className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]" aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Right rail — About / version card
+// ---------------------------------------------------------------------------
+
+function AboutRail(): JSX.Element {
+  return (
+    <div className="rounded-xl border border-[var(--tg-border)] bg-gradient-to-br from-[var(--tg-accent)]/6 to-transparent p-4">
+      <p className="mb-1 text-sm font-semibold text-[var(--tg-text-primary)]">TileGuard Inspector</p>
+      <p className="mb-3 text-xs leading-relaxed text-[var(--tg-text-secondary)]">
+        The ESLint of geospatial — rule-based quality gates for vector tiles and MapLibre style specs.
+      </p>
+      <div className="space-y-1.5 text-[11px] text-[var(--tg-text-muted)]">
+        <div className="flex justify-between">
+          <span>Version</span>
+          <span className="font-mono text-[var(--tg-text-secondary)]">1.0.0</span>
+        </div>
+        <div className="flex justify-between">
+          <span>License</span>
+          <span className="font-mono text-[var(--tg-text-secondary)]">MIT</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Presented at</span>
+          <span className="text-[var(--tg-text-secondary)]">FOSS4G 2026</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -103,47 +201,69 @@ export function HomePage({
   };
 
   const handleOpenFilePicker = () => {
-    if (onOpenFilePicker !== undefined) {
-      onOpenFilePicker();
-    }
+    onOpenFilePicker?.();
   };
 
   return (
-    <main
-      className="min-w-0 flex-1 overflow-y-auto bg-[var(--tg-bg-primary)]"
-      aria-label="TileGuard Home"
-    >
-      <div className="mx-auto max-w-3xl px-[var(--tg-space-2xl)] py-[var(--tg-space-2xl)]">
-        {/* Header */}
-        <HomeHeader />
+    <Tooltip.Provider>
+      <main
+        className="h-full w-full overflow-y-auto bg-[var(--tg-bg-primary)]"
+        aria-label="TileGuard Home"
+      >
+        <div className="mx-auto max-w-[1200px] px-6 py-8 lg:px-10">
 
-        <Divider />
+          {/* ── Hero ────────────────────────────────────────────── */}
+          <HomeHeader />
 
-        {/* Quick Actions */}
-        <QuickActions
-          onFileSelected={onFileSelected}
-          onOpenDemo={scrollToGallery}
-        />
+          <SectionGap />
 
-        <Divider />
+          {/* ── Two-column layout ───────────────────────────────── */}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
 
-        {/* Demo Gallery */}
-        <DemoGallery
-          onFileSelected={onFileSelected}
-          {...(onComparisonSelected !== undefined ? { onComparisonSelected } : {})}
-          galleryRef={galleryRef as React.RefObject<HTMLElement>}
-        />
+            {/* ── Left: main content ─────────────────────────── */}
+            <div className="min-w-0 flex-1 space-y-8">
 
-        <Divider />
+              {/* Quick Start */}
+              <QuickActions
+                onFileSelected={onFileSelected}
+                onOpenDemo={scrollToGallery}
+              />
 
-        {/* Recent Sessions */}
-        <RecentSessions onOpenFilePicker={handleOpenFilePicker} />
+              {/* Capabilities */}
+              <CapabilitiesSection />
 
-        <Divider />
+              {/* Demo Gallery */}
+              <section aria-labelledby="demo-gallery-outer-heading">
+                <div className="mb-4 flex items-center gap-2">
+                  <h2
+                    id="demo-gallery-outer-heading"
+                    className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
+                  >
+                    Demo Gallery
+                  </h2>
+                  <div className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
+                </div>
+                <DemoGallery
+                  onFileSelected={onFileSelected}
+                  {...(onComparisonSelected !== undefined ? { onComparisonSelected } : {})}
+                  galleryRef={galleryRef as React.RefObject<HTMLElement>}
+                  hideSectionHeader
+                />
+              </section>
+            </div>
 
-        {/* Documentation */}
-        <DocumentationLinks />
-      </div>
-    </main>
+            {/* ── Right rail ─────────────────────────────────── */}
+            <div className="w-full space-y-4 lg:w-72 lg:shrink-0 lg:sticky lg:top-4">
+              <RecentRail onOpenFilePicker={handleOpenFilePicker} />
+              <DocsRail />
+              <AboutRail />
+            </div>
+          </div>
+
+          {/* Bottom padding so last section isn't flush against the edge */}
+          <div className="h-16" aria-hidden="true" />
+        </div>
+      </main>
+    </Tooltip.Provider>
   );
 }

@@ -31,6 +31,8 @@ export interface DemoGalleryProps {
   readonly onComparisonSelected?: (fileA: File, fileB: File) => void;
   /** Ref forwarded by HomePage so QuickActions "Open Demo" can scroll here. */
   readonly galleryRef?: React.RefObject<HTMLElement>;
+  /** When true, hides the built-in "Demo Gallery" section heading. */
+  readonly hideSectionHeader?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -225,6 +227,7 @@ export function DemoGallery({
   onFileSelected,
   onComparisonSelected,
   galleryRef,
+  hideSectionHeader = false,
 }: DemoGalleryProps): JSX.Element {
   const [datasets, setDatasets] = useState<readonly DemoDataset[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -304,12 +307,14 @@ export function DemoGallery({
         className="mb-10"
       >
         {/* Section heading */}
-        <h2
-          id="demo-gallery-heading"
-          className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
-        >
-          Demo Gallery
-        </h2>
+        {!hideSectionHeader && (
+          <h2
+            id="demo-gallery-heading"
+            className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
+          >
+            Demo Gallery
+          </h2>
+        )}
 
         {/* Error state */}
         {manifestError !== null ? (

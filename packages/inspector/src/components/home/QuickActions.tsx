@@ -1,20 +1,12 @@
 /**
- * @tileguard/inspector — QuickActions
+ * @tileguard/inspector — QuickActions (Phase 2 redesign)
  *
- * Three primary entry-point actions on the Home screen:
- *   - Load Tile     — react-dropzone drag-and-drop zone + click to pick
- *   - Load Style    — OS file picker for a MapLibre .json style
- *   - Open Demo     — scrolls to / triggers the demo gallery
- *
- * Libraries:
- *   - react-dropzone   reliable cross-browser drag-and-drop with MIME filtering
- *   - framer-motion    entrance stagger + hover lift + drag-state icon animation
- *   - @radix-ui/react-tooltip  accessible keyboard shortcut hints on each button
- *   - sonner           toast on rejected file type
+ * Three primary entry-point cards. Larger, more visual, with descriptions
+ * and animated drop zones. Professional VS Code / Figma aesthetic.
  */
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { motion } from 'framer-motion';
-import { FileJson, PlayCircle, Upload } from 'lucide-react';
+import { FileJson, Globe, PlayCircle, Upload } from 'lucide-react';
 import { useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
@@ -24,128 +16,75 @@ export interface QuickActionsProps {
   readonly onOpenDemo: () => void;
 }
 
-// ---------------------------------------------------------------------------
-// Animation variants
-// ---------------------------------------------------------------------------
-
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.18 } },
 };
 
 const card = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' as const } },
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.24, ease: 'easeOut' as const } },
 };
 
 // ---------------------------------------------------------------------------
-// ActionTooltip — wraps any trigger in a Radix accessible tooltip
+// TileDropZone
 // ---------------------------------------------------------------------------
 
-function ActionTooltip({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}): JSX.Element {
-  return (
-    <Tooltip.Root delayDuration={350}>
-      <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Content
-          side="top"
-          sideOffset={8}
-          className="z-50 rounded-lg border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-2.5 py-1.5 text-[11px] text-[var(--tg-text-secondary)] shadow-xl"
-        >
-          {label}
-          <Tooltip.Arrow className="fill-[var(--tg-border)]" />
-        </Tooltip.Content>
-      </Tooltip.Portal>
-    </Tooltip.Root>
-  );
-}
+function TileDropZone({ onFileSelected }: { onFileSelected: (f: File) => void }): JSX.Element {
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+    accept: { '*/*': ['.pbf', '.mvt'] },
+    maxFiles: 1,
+    onDropAccepted: (files) => { const f = files[0]; if (f) onFileSelected(f); },
+    onDropRejected: () => {
+      toast.error('Invalid file type', { description: 'Drop a .pbf or .mvt vector tile.', duration: 4000 });
+    },
+  });
 
-// ---------------------------------------------------------------------------
-// TileDropZone — drag-and-drop + click to open .pbf / .mvt tiles
-// ---------------------------------------------------------------------------
+  const state = isDragReject ? 'reject' : isDragActive ? 'active' : 'idle';
 
-function TileDropZone({
-  onFileSelected,
-}: {
-  onFileSelected: (f: File) => void;
-}): JSX.Element {
-  const { getRootProps, getInputProps, isDragActive, isDragReject } =
-    useDropzone({
-      // Accept any binary file with .pbf or .mvt extension.
-      // We use '*' as the MIME because browsers often send
-      // 'application/octet-stream' or '' for these binary formats.
-      accept: {
-        '*/*': ['.pbf', '.mvt'],
-      },
-      maxFiles: 1,
-      onDropAccepted: (files) => {
-        const file = files[0];
-        if (file !== undefined) onFileSelected(file);
-      },
-      onDropRejected: () => {
-        toast.error('Invalid file type', {
-          description: 'Drop a .pbf or .mvt vector tile file.',
-          duration: 4000,
-        });
-      },
-    });
+  const borderCls = {
+    reject: 'border-[var(--tg-error)]/70 bg-[var(--tg-error)]/6',
+    active: 'border-[var(--tg-accent)] bg-[var(--tg-accent)]/8 shadow-[0_0_0_4px_rgba(59,130,246,0.12)]',
+    idle:   'border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] hover:border-[var(--tg-accent)]/50 hover:bg-[var(--tg-bg-hover)]',
+  }[state];
 
-  const borderColor = isDragReject
-    ? 'border-[var(--tg-error)] bg-[var(--tg-error)]/5 text-[var(--tg-error)]'
-    : isDragActive
-      ? 'border-[var(--tg-accent)] bg-[var(--tg-accent)]/10 text-[var(--tg-accent)]'
-      : 'border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] text-[var(--tg-text-primary)] hover:border-[var(--tg-accent)]/60 hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-accent)]';
+  const iconColor = {
+    reject: 'text-[var(--tg-error)]',
+    active: 'text-[var(--tg-accent)]',
+    idle:   'text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)]',
+  }[state];
 
-  const { onClick, onKeyDown, onFocus, onBlur, onDragEnter, onDragLeave, onDragOver, onDrop, tabIndex, role, ...restRootProps } = getRootProps();
+  const { onClick, onKeyDown, onFocus, onBlur, onDragEnter, onDragLeave, onDragOver, onDrop, tabIndex, role, ...rest } = getRootProps();
 
   return (
-    <ActionTooltip label="Click or drag & drop a .pbf / .mvt tile file">
-      <motion.div variants={card} whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
-        {/* Wrapper div carries dropzone events — motion.div carries Framer props only */}
-        <div
-          onClick={onClick}
-          onKeyDown={onKeyDown}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onDragEnter={onDragEnter}
-          onDragLeave={onDragLeave}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          tabIndex={tabIndex}
-          role={role}
-          {...restRootProps}
-          className={`flex h-full cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--tg-panel-radius)] border-2 border-dashed px-6 py-6 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] ${borderColor}`}
-          aria-label="Load a vector tile — click or drag and drop a .pbf file"
-        >
-          <input {...getInputProps()} />
-
-          <motion.span
-            animate={
-              isDragActive
-                ? { scale: 1.2, rotate: -10 }
-                : { scale: 1, rotate: 0 }
-            }
+    <motion.div variants={card} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }} className="col-span-2 sm:col-span-1">
+      <div
+        onClick={onClick} onKeyDown={onKeyDown} onFocus={onFocus} onBlur={onBlur}
+        onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDragOver={onDragOver} onDrop={onDrop}
+        tabIndex={tabIndex} role={role} {...rest}
+        className={`group flex cursor-pointer flex-col gap-3 rounded-xl border-2 border-dashed p-6 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] ${borderCls}`}
+        aria-label="Load a vector tile — click or drag and drop"
+      >
+        <input {...getInputProps()} />
+        <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tg-bg-surface)] transition-colors ${isDragActive ? 'bg-[var(--tg-accent)]/15' : ''}`}>
+          <motion.div
+            animate={isDragActive ? { scale: 1.25, rotate: -8 } : { scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-            className="block"
           >
-            <Upload className="h-6 w-6" aria-hidden="true" />
-          </motion.span>
-
-          <span className="font-semibold">
-            {isDragActive ? 'Drop to load…' : 'Load Tile'}
-          </span>
-          <span className="text-[10px] font-normal text-[var(--tg-text-muted)]">
-            .pbf · .mvt
-          </span>
+            <Upload className={`h-5 w-5 transition-colors ${iconColor}`} aria-hidden="true" />
+          </motion.div>
         </div>
-      </motion.div>
-    </ActionTooltip>
+        <div>
+          <p className="text-sm font-semibold text-[var(--tg-text-primary)] group-hover:text-[var(--tg-accent)]">
+            {isDragActive ? 'Drop to load…' : 'Load Tile'}
+          </p>
+          <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
+            Drag &amp; drop or click to browse
+          </p>
+          <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">.pbf · .mvt</p>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -153,80 +92,82 @@ function TileDropZone({
 // QuickActions
 // ---------------------------------------------------------------------------
 
-export function QuickActions({
-  onFileSelected,
-  onOpenDemo,
-}: QuickActionsProps): JSX.Element {
+export function QuickActions({ onFileSelected, onOpenDemo }: QuickActionsProps): JSX.Element {
   const styleInputRef = useRef<HTMLInputElement>(null);
 
   const handleStyleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file !== undefined) onFileSelected(file);
+    if (file) onFileSelected(file);
     e.target.value = '';
   };
 
-  const btnBase =
-    'flex flex-col items-center justify-center gap-2 rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-6 py-6 text-sm font-medium text-[var(--tg-text-primary)] transition-colors hover:border-[var(--tg-accent)]/60 hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] w-full';
+  const secondaryCard = (
+    icon: React.ReactNode,
+    label: string,
+    description: string,
+    sub: string,
+    onClick: () => void,
+    ariaLabel: string,
+  ) => (
+    <motion.button
+      type="button"
+      variants={card}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      className="group flex flex-col gap-3 rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] p-6 text-left transition-all hover:border-[var(--tg-accent)]/50 hover:bg-[var(--tg-bg-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)]"
+    >
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)] transition-colors group-hover:bg-[var(--tg-accent)]/10 group-hover:text-[var(--tg-accent)]">
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-[var(--tg-text-primary)] group-hover:text-[var(--tg-accent)]">
+          {label}
+        </p>
+        <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">{description}</p>
+        <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">{sub}</p>
+      </div>
+    </motion.button>
+  );
 
   return (
     <Tooltip.Provider>
-      <section aria-labelledby="quick-actions-heading" className="mb-10">
-        <h2
-          id="quick-actions-heading"
-          className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
-        >
-          Quick Actions
-        </h2>
+      <section aria-labelledby="quick-actions-heading">
+        <div className="mb-4 flex items-center gap-2">
+          <h2 id="quick-actions-heading" className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
+            Quick Start
+          </h2>
+          <div className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
+        </div>
 
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-3 gap-3"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3"
         >
-          {/* Tile — dropzone */}
           <TileDropZone onFileSelected={onFileSelected} />
 
-          {/* Style — OS file picker */}
-          <ActionTooltip label="Load a MapLibre GL / Mapbox style (.json)">
-            <motion.button
-              type="button"
-              variants={card}
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.97 }}
-              className={btnBase}
-              onClick={() => styleInputRef.current?.click()}
-              aria-label="Load a MapLibre style (.json)"
-            >
-              <FileJson className="h-6 w-6" aria-hidden="true" />
-              <span className="font-semibold">Load Style</span>
-              <span className="text-[10px] font-normal text-[var(--tg-text-muted)]">
-                .json
-              </span>
-            </motion.button>
-          </ActionTooltip>
+          {secondaryCard(
+            <FileJson className="h-5 w-5" aria-hidden="true" />,
+            'Load Style',
+            'Validate a MapLibre style spec',
+            '.json',
+            () => styleInputRef.current?.click(),
+            'Load a MapLibre style (.json)',
+          )}
 
-          {/* Open Demo */}
-          <ActionTooltip label="Browse offline demo datasets — no internet required">
-            <motion.button
-              type="button"
-              variants={card}
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.97 }}
-              className={btnBase}
-              onClick={onOpenDemo}
-              aria-label="Browse demo datasets"
-            >
-              <PlayCircle className="h-6 w-6" aria-hidden="true" />
-              <span className="font-semibold">Open Demo</span>
-              <span className="text-[10px] font-normal text-[var(--tg-text-muted)]">
-                guided tour
-              </span>
-            </motion.button>
-          </ActionTooltip>
+          {secondaryCard(
+            <PlayCircle className="h-5 w-5" aria-hidden="true" />,
+            'Open Demo',
+            'Explore curated Tokyo datasets',
+            'guided tour',
+            onOpenDemo,
+            'Browse demo datasets',
+          )}
         </motion.div>
 
-        {/* Hidden style file input */}
         <input
           ref={styleInputRef}
           type="file"
