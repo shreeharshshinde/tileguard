@@ -14,11 +14,11 @@ describe('LoadingOverlay', () => {
 
   it('renders all 5 loading steps by label', () => {
     const html = renderToString(<LoadingOverlay currentStep="loading" />);
-    expect(html).toContain('Loading tile');
-    expect(html).toContain('Parsing geometry');
-    expect(html).toContain('Building statistics');
-    expect(html).toContain('Preparing diagnostics');
-    expect(html).toContain('Ready');
+    expect(html).toContain('Reading PBF');
+    expect(html).toContain('Decoding geometry');
+    expect(html).toContain('Computing statistics');
+    expect(html).toContain('Running diagnostics');
+    expect(html).toContain('Workspace ready');
   });
 
   it('renders an ordered list element (ol) for the step list', () => {
@@ -45,15 +45,15 @@ describe('LoadingOverlay', () => {
 
   // ── Active step ──────────────────────────────────────────────────────
 
-  it('shows the "Loading" heading when no error is present', () => {
+  it('shows the "Preparing Workspace" heading when no error is present', () => {
     const html = renderToString(<LoadingOverlay currentStep="loading" />);
-    expect(html).toContain('Loading');
+    expect(html).toContain('Preparing Workspace');
   });
 
-  it('marks "Building statistics" as current when currentStep=statistics', () => {
+  it('marks "Computing statistics" as current when currentStep=statistics', () => {
     const html = renderToString(<LoadingOverlay currentStep="statistics" />);
     expect(html).toContain('aria-current="step"');
-    expect(html).toContain('Building statistics');
+    expect(html).toContain('Computing statistics');
   });
 
   it('marks "Ready" as current when currentStep=ready', () => {
