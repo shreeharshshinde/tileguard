@@ -1,9 +1,10 @@
 /**
- * @tileguard/reporters — ReportEngine (Milestone 7 — Step 3)
+ * @tileguard/reporters — ReportEngine (Milestone 7.3 — Engineering Report UX)
  *
  * Orchestrates report generation:
  *   1. Validates inputs.
- *   2. Builds an immutable EngineeringReport from ComparisonInput + RegressionInput.
+ *   2. Builds an immutable EngineeringReport from ComparisonInput + RegressionInput
+ *      via ReportAssembler (populates all new UX sections + legacy sections).
  *   3. Dispatches to the format-specific renderer via ReporterRegistry.
  *   4. Returns a ReportResult (ok | error) — never throws.
  *
@@ -24,6 +25,17 @@ import type {
   StatisticsSection,
 } from './models/EngineeringReport.js';
 import { createReporterRegistry, type ReporterRegistry } from './ReporterRegistry.js';
+import {
+  buildAppendix,
+  buildDiagnosticsSummary,
+  buildExecutiveSummary,
+  buildKeyFindings,
+  buildLayerImpact,
+  buildPrioritizedRecommendations,
+  buildRegressionHighlights,
+  buildStatisticsDashboard,
+  flattenRecommendations,
+} from './ReportAssembler.js';
 
 // ---------------------------------------------------------------------------
 // Options
@@ -126,6 +138,8 @@ function buildReport(
   const totalDurationMs = options.totalDurationMs ?? defaults.totalDurationMs ?? 0;
   const generatedAt = new Date().toISOString();
 
+  // ── Legacy sections (preserved for JSON backwards-compat) ──────────────
+
   const overview: OverviewSection = {
     sourceTile: comparison.sourceTile,
     targetTile: comparison.targetTile,
@@ -155,15 +169,22 @@ function buildReport(
     diagnosticsB: comparison.stats.diagnosticsB,
   };
 
-  // Collect unique recommendation strings from all candidates
-  const recSet = new Set<string>();
-  for (const c of regression.candidates) {
-    for (const r of c.recommendations) {
-      recSet.add(r);
-    }
-  }
+  // ── New UX sections — assembled by ReportAssembler ─────────────────────
+
+  const executiveSummary = buildExecutiveSummary(comparison, regression, totalDurationMs, generatedAt);
+  const keyFindings = buildKeyFindings(comparison, regression);
+  const layerImpact = buildLayerImpact(comparison, regression);
+  const regressionHighlights = buildRegressionHighlights(regression);
+  const diagnosticsSummary = buildDiagnosticsSummary(comparison);
+  const statisticsDashboard = buildStatisticsDashboard(comparison);
+  const prioritizedRecommendations = buildPrioritizedRecommendations(comparison, regression);
+  const appendix = buildAppendix(comparison, regression, statisticsDashboard);
+
+  // ── Legacy recommendations — derived from prioritized recs ─────────────
+  // This keeps existing tests passing (they check recommendations.items)
+  const legacyItems = flattenRecommendations(prioritizedRecommendations, regression.candidates);
   const recommendations: RecommendationSection = {
-    items: [...recSet],
+    items: legacyItems,
     notes: [],
   };
 
@@ -175,6 +196,7 @@ function buildReport(
       targetTile: comparison.targetTile,
       totalDurationMs,
     },
+    // Legacy sections
     overview,
     comparison: {
       features: comparison.features,
@@ -193,5 +215,14 @@ function buildReport(
     statistics,
     diagnostics,
     recommendations,
+    // New UX sections
+    executiveSummary,
+    keyFindings,
+    layerImpact,
+    regressionHighlights,
+    diagnosticsSummary,
+    statisticsDashboard,
+    prioritizedRecommendations,
+    appendix,
   };
 }
