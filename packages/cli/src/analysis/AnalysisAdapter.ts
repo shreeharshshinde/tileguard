@@ -12,6 +12,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
 import { basename } from 'node:path';
 import { createEngine } from '@tileguard/core';
 import type { Diagnostic } from '@tileguard/core';
@@ -98,7 +99,9 @@ export interface AnalysisOptions {
 
 export async function loadTileSnapshot(filePath: string): Promise<TileSnapshot> {
   const buffer = readFileSync(filePath);
-  const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const rawBytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const gzipped = rawBytes.length >= 2 && rawBytes[0] === 0x1f && rawBytes[1] === 0x8b;
+  const bytes = gzipped ? gunzipSync(rawBytes) : rawBytes;
   const tile = decodeMvt(bytes);
 
   // Run diagnostics via the check engine
