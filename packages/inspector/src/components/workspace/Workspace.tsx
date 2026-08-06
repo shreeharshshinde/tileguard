@@ -1,23 +1,19 @@
 /**
- * @tileguard/inspector — Workspace (Phase 1 — Step 3)
+ * @tileguard/inspector — Workspace (Phase 2)
  *
- * Container that hosts every existing Inspector feature.
- * Rendered by ApplicationRouter only when a session is active.
+ * Engineering workstation shell.
  *
- * Structure:
- *   Workspace
- *   ├── WorkspaceHeader
- *   ├── [body row]
- *   │   ├── WorkspaceSidebar
- *   │   └── ActivePage (canvas, compare, regression, reports, style)
- *   └── WorkspaceFooter
- *
- * The canvas is mounted exactly once on first Workspace mount and is
- * never unmounted while Workspace is alive.
- *
- * Exit flow: WorkspaceSidebar calls onGoHome() when the user clicks Home.
- * The caller (ApplicationRouter) decides whether to show ReturnHomeDialog.
+ * Phase 2 changes:
+ *   - WorkspaceHeader now shows page identity (title, subtitle, breadcrumb, back button).
+ *   - WorkspaceSidebar uses the new sectioned Sidebar with structured navigation.
+ *   - ResizablePanel replaces fixed-width aside panels.
+ *   - NextStepBar rendered at the bottom of every page.
+ *   - CommandPalette (Ctrl+K), ShortcutOverlay (?), HelpOverlay integrated.
+ *   - Sonner toasts replace browser alerts.
+ *   - AnimatePresence + Framer Motion for panel/header transitions.
+ *   - All engine/renderer code is unchanged.
  */
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createComparisonService,
@@ -34,6 +30,7 @@ import {
 } from '../../hooks/use-store.js';
 import { useProfiler } from '../../hooks/useProfiler.js';
 import { useWorkspace } from '../../hooks/useWorkspace.js';
+import { tileLoadedToast, tileLoadErrorToast, comparisonCompleteToast } from '../../lib/toast.js';
 import {
   createPerformanceProfiler,
   type PerformanceProfiler,
@@ -44,6 +41,7 @@ import {
   type ShortcutAction,
 } from '../../services/ShortcutService.js';
 import { getPresentationService } from '../../services/PresentationService.js';
+import { getNavigationService } from '../../services/NavigationService.js';
 import type { ViewportState } from '../../viewport/viewport.js';
 import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
 import type { RegressionAnalysis } from '../../analysis/models/regression.js';
@@ -65,13 +63,17 @@ import type { LoadingStep } from '../loading/LoadingOverlay.js';
 import { LoadingOverlay } from '../loading/LoadingOverlay.js';
 import { DeveloperOverlay } from '../profiler/DeveloperOverlay.js';
 import type { NavTab } from '../SidebarNav.js';
-import { SettingsPanel } from '../settings/SettingsPanel.js';
+import { SettingsOverlay } from '../settings/SettingsOverlay.js';
 import { StatisticsPanel } from '../statistics/StatisticsPanel.js';
 import { Toolbar } from '../Toolbar.js';
-import { SettingsOverlay } from '../settings/SettingsOverlay.js';
+import { CommandPalette } from '../dialogs/CommandPalette.js';
+import { ShortcutOverlay } from '../dialogs/ShortcutOverlay.js';
+import { HelpOverlay } from '../dialogs/HelpOverlay.js';
+import { NextStepBar } from '../navigation/NextStepBar.js';
 import { WorkspaceFooter } from './WorkspaceFooter.js';
 import { WorkspaceHeader } from './WorkspaceHeader.js';
 import { WorkspaceSidebar } from './WorkspaceSidebar.js';
+import { ResizablePanel } from './ResizablePanel.js';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton profiler (shared across renders)
@@ -83,14 +85,8 @@ const _profiler: PerformanceProfiler = createPerformanceProfiler();
 // ---------------------------------------------------------------------------
 
 export interface WorkspaceProps {
-  /**
-   * Called when the user clicks the Home nav item.
-   * The parent (ApplicationRouter) handles ReturnHomeDialog logic.
-   */
   readonly onGoHome: () => void;
-  /** If provided, this file is loaded immediately on mount. */
   readonly initialFile?: File;
-  /** Comparison pair — both must be provided together. */
   readonly initialComparisonA?: File;
   readonly initialComparisonB?: File;
 }
@@ -114,13 +110,27 @@ export function Workspace({
 
   const { layout, updateLayout } = useWorkspace();
 
-  // Always open workspace on 'inspector' (Explore) tab, regardless of persisted state
+  // Active tab
   const [activeTab, setActiveTabRaw] = useState<NavTab>('inspector');
   const [leftCollapsed, setLeftCollapsed] = useState(layout.leftCollapsed);
   const [rightCollapsed, setRightCollapsed] = useState(layout.rightCollapsed);
 
-  // Settings overlay
+  // Resizable panel widths
+  const [leftPanelWidth, setLeftPanelWidth] = useState(280);
+  const [rightPanelWidth, setRightPanelWidth] = useState(280);
+
+  // Overlay visibility
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
+  const [helpOverlayOpen, setHelpOverlayOpen] = useState(false);
+
+  // Active file name for sidebar card
+  const [activeFileName, setActiveFileName] = useState<string | null>(
+    layout.lastFilePath ?? null,
+  );
+
+  const nav = getNavigationService();
 
   const setActiveTab = useCallback(
     (tab: NavTab) => {
@@ -130,8 +140,10 @@ export function Workspace({
       }
       setActiveTabRaw(tab);
       updateLayout({ activeTab: tab });
+      // Sync with NavigationService
+      nav.navigate(tab as NavTab);
     },
-    [updateLayout],
+    [updateLayout, nav],
   );
 
   const toggleLeft = useCallback(() => {
@@ -234,6 +246,12 @@ export function Workspace({
         const svc = createComparisonService();
         const result = svc.compare(snapshotA, snapshotB);
         setComparison(result);
+        // Toast
+        const diffCount =
+          (result.summary.addedFeatures ?? 0) +
+          (result.summary.removedFeatures ?? 0) +
+          (result.summary.modifiedFeatures ?? 0);
+        comparisonCompleteToast(diffCount);
       } finally {
         setIsComparing(false);
       }
@@ -256,6 +274,7 @@ export function Workspace({
       setPendingFile(file);
       setActiveTabRaw('inspector');
       setLoadError(undefined);
+      setActiveFileName(file.name);
       updateLayout({ lastFilePath: file.name, activeTab: 'inspector' });
     },
     [updateLayout],
@@ -279,10 +298,14 @@ export function Workspace({
         await new Promise<void>((r) => setTimeout(r, 20));
         if (cancelled) return;
         setLoadingStep('ready');
+        // Toast on successful load
+        tileLoadedToast(pendingFile.name);
       } catch (err) {
         if (!cancelled) {
-          setLoadError(err instanceof Error ? err.message : 'Unknown error');
+          const msg = err instanceof Error ? err.message : 'Unknown error';
+          setLoadError(msg);
           setLoadingStep('loading');
+          tileLoadErrorToast(pendingFile.name, msg);
         }
       } finally {
         if (!cancelled) setPendingFile(null);
@@ -319,7 +342,31 @@ export function Workspace({
       }
     });
     const cleanup = shortcuts.attach(window);
-    return () => { cleanup(); unsub(); };
+
+    // Additional Phase 2 shortcuts
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+K → Command palette
+      if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+        return;
+      }
+      // ? → Shortcut overlay
+      if (e.key === '?' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          setShortcutOverlayOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      cleanup();
+      unsub();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [inspector, store, setActiveTab]);
 
   // ── Diagnostics state ─────────────────────────────────────────────────────
@@ -346,133 +393,210 @@ export function Workspace({
     );
   }, [activeTab, store, inspector, search.query, search.setQuery, diagnostics.handleSelectDiagnostic]);
 
+  // ── Canvas-based page ─────────────────────────────────────────────────────
+  const isCanvasPage =
+    activeTab === 'inspector' ||
+    activeTab === 'diagnostics' ||
+    activeTab === 'statistics';
+
+  // ── Page transition key ───────────────────────────────────────────────────
+  const pageGroupKey = isCanvasPage ? 'canvas' : activeTab;
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--tg-bg-primary)] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
-      <WorkspaceHeader onOpenSettings={() => setSettingsOpen(true)} />
+      {/* Application header with page identity */}
+      <WorkspaceHeader
+        activePage={activeTab as any}
+        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenHelp={() => setHelpOverlayOpen(true)}
+      />
 
+      {/* Body row: Sidebar + content */}
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <WorkspaceSidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
           onHomeRequested={onGoHome}
+          currentFile={activeFileName}
+          onOpenFile={() => {
+            // Trigger the toolbar's file picker — handled via DropZone
+            document.querySelector<HTMLInputElement>('[data-file-input]')?.click();
+          }}
+          onHelpRequested={() => setHelpOverlayOpen(true)}
         />
 
-        {/* ── Active page ────────────────────────────────────────────── */}
-        {activeTab === 'compare' ? (
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <ComparisonPage
-              comparison={comparison}
-              filePathA={filePathA}
-              filePathB={filePathB}
-              isComparing={isComparing}
-              onFileSelectedA={(f) => { void handleFileSelectedA(f); }}
-              onFileSelectedB={(f) => { void handleFileSelectedB(f); }}
-              onRunComparison={handleRunComparison}
-            />
-          </div>
-        ) : activeTab === 'regression' ? (
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <RegressionPage comparison={comparison} />
-          </div>
-        ) : activeTab === 'reports' ? (
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <ReportPage comparison={comparison} regression={regressionAnalysis} />
-          </div>
-        ) : activeTab === 'style-explorer' ? (
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <StyleExplorerPage />
-          </div>
-        ) : (
-          /* ── Canvas-based pages: inspector/explore, diagnostics, statistics */
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            {activeTab === 'inspector' && <InspectorPageHeader store={store} />}
-            {activeTab === 'diagnostics' && <DiagnosticsPageHeader store={store} />}
+        {/* Page content area */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          {/* Page header (Toolbar replaces PageHeader for canvas pages) */}
+          {isCanvasPage && (
+            <>
+              {activeTab === 'inspector' && <InspectorPageHeader store={store} />}
+              {activeTab === 'diagnostics' && <DiagnosticsPageHeader store={store} />}
 
-            <Toolbar
-              leftCollapsed={leftCollapsed}
-              rightCollapsed={rightCollapsed}
-              onToggleLeft={toggleLeft}
-              onToggleRight={toggleRight}
-              onFileSelected={selectFile}
-              onResetView={() => inspector?.render()}
-              onOpenSettings={() => setSettingsOpen(true)}
-              searchQuery={search.query}
-              onSearchChange={search.setQuery}
-              searchResults={search.results}
-              searchInputRef={searchInputRef}
-              onSelectSearchResult={(result) => {
-                inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
-                search.clearSearch();
-              }}
-            />
+              <Toolbar
+                leftCollapsed={leftCollapsed}
+                rightCollapsed={rightCollapsed}
+                onToggleLeft={toggleLeft}
+                onToggleRight={toggleRight}
+                onFileSelected={selectFile}
+                onResetView={() => inspector?.render()}
+                onOpenSettings={() => setSettingsOpen(true)}
+                searchQuery={search.query}
+                onSearchChange={search.setQuery}
+                searchResults={search.results}
+                searchInputRef={searchInputRef}
+                onSelectSearchResult={(result) => {
+                  inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
+                  search.clearSearch();
+                }}
+              />
+            </>
+          )}
 
-            <div className="relative flex min-h-0 flex-1 overflow-hidden">
-              {!leftCollapsed && (
-                <aside
-                  className="w-[var(--tg-sidebar-width)] shrink-0 border-r border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] overflow-hidden flex flex-col"
-                  aria-label={
-                    activeTab === 'statistics' ? 'Statistics'
-                      : activeTab === 'diagnostics' ? 'Diagnostic Explorer'
-                      : 'Feature Explorer'
+          {/* Animated page content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pageGroupKey}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.12, ease: 'easeOut' }}
+              className="flex min-h-0 flex-1 flex-col overflow-hidden"
+            >
+              {activeTab === 'compare' ? (
+                <ComparisonPage
+                  comparison={comparison}
+                  filePathA={filePathA}
+                  filePathB={filePathB}
+                  isComparing={isComparing}
+                  onFileSelectedA={(f) => { void handleFileSelectedA(f); }}
+                  onFileSelectedB={(f) => { void handleFileSelectedB(f); }}
+                  onRunComparison={handleRunComparison}
+                />
+              ) : activeTab === 'regression' ? (
+                <RegressionPage comparison={comparison} />
+              ) : activeTab === 'reports' ? (
+                <ReportPage comparison={comparison} regression={regressionAnalysis} />
+              ) : activeTab === 'style-explorer' ? (
+                <StyleExplorerPage />
+              ) : (
+                /* Canvas-based pages: inspector/explore, diagnostics, statistics */
+                <ResizablePanel
+                  leftWidth={leftPanelWidth}
+                  rightWidth={rightPanelWidth}
+                  leftCollapsed={leftCollapsed}
+                  rightCollapsed={rightCollapsed}
+                  onLeftResize={setLeftPanelWidth}
+                  onRightResize={setRightPanelWidth}
+                  left={
+                    leftPanel ? (
+                      <div
+                        className="flex h-full flex-col overflow-hidden"
+                        aria-label={
+                          activeTab === 'statistics'
+                            ? 'Statistics'
+                            : activeTab === 'diagnostics'
+                            ? 'Diagnostic Explorer'
+                            : 'Feature Explorer'
+                        }
+                      >
+                        {leftPanel}
+                      </div>
+                    ) : null
                   }
-                >
-                  {leftPanel}
-                </aside>
-              )}
-
-              {/* Canvas — always mounted while Workspace is alive */}
-              <div className="relative min-w-0 flex-1">
-                <CanvasView onFileSelected={selectFile} onViewportChange={setViewport} />
-
-                {isLoading && loadingStep !== 'ready' && (
-                  <LoadingOverlay
-                    currentStep={loadingStep}
-                    {...(pendingFile !== null ? { fileName: pendingFile.name } : {})}
-                    {...(loadError !== undefined ? { error: loadError } : {})}
-                  />
-                )}
-
-                {devOverlayVisible && (
-                  <div data-dev-overlay="">
-                    <DeveloperOverlay
-                      metrics={metrics}
-                      viewport={viewport}
-                      hoveredFeature={
-                        hover.layerName !== null && hover.featureIndex !== null
-                          ? (inspector?.getSelectedFeature() ?? null)
-                          : null
+                  center={
+                    <div className="relative flex h-full w-full flex-col overflow-hidden">
+                      <CanvasView
+                        onFileSelected={selectFile}
+                        onViewportChange={setViewport}
+                      />
+                      {isLoading && loadingStep !== 'ready' && (
+                        <LoadingOverlay
+                          currentStep={loadingStep}
+                          {...(pendingFile !== null ? { fileName: pendingFile.name } : {})}
+                          {...(loadError !== undefined ? { error: loadError } : {})}
+                        />
+                      )}
+                      {devOverlayVisible && (
+                        <div data-dev-overlay="">
+                          <DeveloperOverlay
+                            metrics={metrics}
+                            viewport={viewport}
+                            hoveredFeature={
+                              hover.layerName !== null && hover.featureIndex !== null
+                                ? (inspector?.getSelectedFeature() ?? null)
+                                : null
+                            }
+                            selectedFeature={selectedFeature}
+                            totalFeatures={stats.totalFeatures}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  }
+                  right={
+                    <div
+                      className="flex h-full flex-col overflow-hidden"
+                      aria-label={
+                        activeTab === 'diagnostics' ? 'Rule Details' : 'Feature Inspector'
                       }
-                      selectedFeature={selectedFeature}
-                      totalFeatures={stats.totalFeatures}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {!rightCollapsed && (
-                <aside
-                  className="w-[var(--tg-sidebar-width)] shrink-0 border-l border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] overflow-hidden flex flex-col"
-                  aria-label={activeTab === 'diagnostics' ? 'Rule Details' : 'Feature Inspector'}
-                >
-                  {activeTab === 'diagnostics' ? (
-                    <DiagnosticsRightPanel diagnostic={diagnostics.selectedDiagnostic} />
-                  ) : (
-                    <FeaturePanel store={store} />
-                  )}
-                </aside>
+                    >
+                      {activeTab === 'diagnostics' ? (
+                        <DiagnosticsRightPanel
+                          diagnostic={diagnostics.selectedDiagnostic}
+                        />
+                      ) : (
+                        <FeaturePanel store={store} />
+                      )}
+                    </div>
+                  }
+                />
               )}
-            </div>
-          </div>
-        )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* NextStepBar — contextual recommended actions */}
+          <NextStepBar
+            currentPage={activeTab as any}
+            onNavigate={(page) => setActiveTab(page as NavTab)}
+          />
+        </div>
       </div>
 
+      {/* Footer */}
       <WorkspaceFooter viewport={viewport} fps={metrics.fps} />
 
-      {/* Settings overlay — renders over workspace without unmounting canvas */}
-      {settingsOpen && (
-        <SettingsOverlay onClose={() => setSettingsOpen(false)} />
-      )}
+      {/* Overlays — render over workspace without unmounting canvas */}
+      <AnimatePresence>
+        {settingsOpen && (
+          <SettingsOverlay key="settings" onClose={() => setSettingsOpen(false)} />
+        )}
+        {commandPaletteOpen && (
+          <CommandPalette
+            key="command-palette"
+            onClose={() => setCommandPaletteOpen(false)}
+            onNavigate={(page) => setActiveTab(page as NavTab)}
+            onGoHome={onGoHome}
+            onOpenSettings={() => { setCommandPaletteOpen(false); setSettingsOpen(true); }}
+            onOpenShortcuts={() => { setCommandPaletteOpen(false); setShortcutOverlayOpen(true); }}
+            onTogglePresentationMode={() => { getPresentationService().toggle(); setCommandPaletteOpen(false); }}
+            onOpenFile={() => setCommandPaletteOpen(false)}
+          />
+        )}
+        {shortcutOverlayOpen && (
+          <ShortcutOverlay
+            key="shortcuts"
+            onClose={() => setShortcutOverlayOpen(false)}
+          />
+        )}
+        {helpOverlayOpen && (
+          <HelpOverlay
+            key="help"
+            onClose={() => setHelpOverlayOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

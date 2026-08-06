@@ -1,97 +1,164 @@
 /**
- * @tileguard/inspector — WorkspaceHeader (Phase 1 — Step 3)
+ * @tileguard/inspector — WorkspaceHeader (Phase 2 — Step 3+4)
  *
- * The top application bar rendered inside the Workspace shell.
+ * Top application bar for the workspace.
  *
- * This is an extraction of the existing AppHeader from InspectorApp.tsx into
- * a dedicated, named component so the Workspace shell can compose it cleanly.
+ * Phase 2 improvements:
+ *   - Shows page identity: title, subtitle, and breadcrumb trail.
+ *   - Back button rendered when navigation history is available.
+ *   - Actions slot: search toggle, settings, presentation, help.
  *
- * Nothing has changed functionally — only the component has been moved into
- * the workspace/ directory with a spec-compliant name.
+ * Positioned above the sidebar + content area (full-width).
+ * The sidebar renders below it.
  */
 import {
+  ArrowLeft,
+  ChevronRight,
   HelpCircle,
-  Minus,
   Moon,
   Settings as SettingsIcon,
   Shield,
-  Square,
-  X,
 } from 'lucide-react';
-import { getPresentationService } from '../../services/PresentationService.js';
+import { getNavigationService } from '../../services/NavigationService.js';
+import type { WorkspacePage } from '../../services/NavigationService.js';
 import { PresentationToggle } from '../presentation/PresentationToggle.js';
 
 export interface WorkspaceHeaderProps {
-  /** Called when the user clicks the global settings (gear) icon. */
-  readonly onOpenSettings?: () => void;
+  /** The currently active workspace page, used to derive page identity. */
+  readonly activePage: WorkspacePage;
+  /** Called when the user clicks the global settings icon. */
+  readonly onOpenSettings?: (() => void) | undefined;
+  /** Called when the user clicks the help icon. */
+  readonly onOpenHelp?: (() => void) | undefined;
+  /** Optional extra actions to render on the right side. */
+  readonly actions?: React.ReactNode | undefined;
 }
 
-export function WorkspaceHeader({ onOpenSettings }: WorkspaceHeaderProps): JSX.Element {
+export function WorkspaceHeader({
+  activePage,
+  onOpenSettings,
+  onOpenHelp,
+  actions,
+}: WorkspaceHeaderProps): JSX.Element {
+  const nav = getNavigationService();
+  const canGoBack = nav.canGoBack();
+  const meta = nav.getPageMeta(activePage);
+
   const iconButton =
     'rounded-[var(--tg-border-radius)] p-1.5 text-[var(--tg-text-secondary)] transition hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]';
 
-  const handleThemeToggle = () => {
-    // Future: wire to ThemeService when introduced.
+  const handleBack = () => {
+    nav.back();
   };
 
   return (
-    <header className="flex h-10 shrink-0 items-center justify-between border-b border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-3">
-      <div className="flex items-center gap-4">
-        <div className="flex gap-1.5" aria-hidden="true">
-          <span className="h-3 w-3 rounded-full bg-[var(--tg-error)]" />
-          <span className="h-3 w-3 rounded-full bg-[var(--tg-warning)]" />
-          <span className="h-3 w-3 rounded-full bg-[var(--tg-success)]" />
-        </div>
-        <div className="flex items-center gap-2 text-sm font-semibold text-[var(--tg-text-primary)]">
+    <header className="flex h-12 shrink-0 items-center border-b border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-3">
+      {/* Left: brand + back + page identity */}
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        {/* Brand mark */}
+        <div
+          className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[var(--tg-text-primary)]"
+          aria-label="TileGuard Inspector"
+        >
           <Shield
             className="h-4 w-4 text-[var(--tg-accent)]"
             aria-hidden="true"
           />
-          TileGuard Inspector
+          <span className="hidden text-[var(--tg-text-muted)] sm:inline">TileGuard</span>
         </div>
+
+        {/* Separator */}
+        <span className="h-4 w-px shrink-0 bg-[var(--tg-border)]" aria-hidden="true" />
+
+        {/* Back button */}
+        {canGoBack && (
+          <button
+            type="button"
+            onClick={handleBack}
+            aria-label="Go back"
+            className={iconButton}
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
+
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1 sm:flex">
+          {meta.breadcrumb.map((segment, i) => {
+            const isLast = i === meta.breadcrumb.length - 1;
+            return (
+              <span key={`${segment}-${i}`} className="flex items-center gap-1">
+                <span
+                  className={[
+                    'truncate text-xs',
+                    isLast
+                      ? 'font-semibold text-[var(--tg-text-primary)]'
+                      : 'text-[var(--tg-text-muted)]',
+                  ].join(' ')}
+                >
+                  {segment}
+                </span>
+                {!isLast && (
+                  <ChevronRight
+                    className="h-3 w-3 shrink-0 text-[var(--tg-text-muted)]"
+                    aria-hidden="true"
+                  />
+                )}
+              </span>
+            );
+          })}
+        </nav>
+
+        {/* Mobile: show just the title */}
+        <span className="truncate text-xs font-semibold text-[var(--tg-text-primary)] sm:hidden">
+          {meta.title}
+        </span>
       </div>
-      <div className="flex items-center gap-1">
+
+      {/* Right: subtitle + actions */}
+      <div className="flex shrink-0 items-center gap-1">
+        {/* Subtitle — visible on wider viewports */}
+        {meta.subtitle && (
+          <span className="mr-3 hidden max-w-xs truncate text-xs text-[var(--tg-text-muted)] lg:block">
+            {meta.subtitle}
+          </span>
+        )}
+
+        {/* Custom actions from parent */}
+        {actions}
+
         <button
           type="button"
           className={iconButton}
           aria-label="Toggle theme"
-          onClick={handleThemeToggle}
+          onClick={() => {
+            /* Future: wire to ThemeService */
+          }}
         >
           <Moon className="h-4 w-4" />
         </button>
-        <button type="button" className={iconButton} aria-label="Help">
-          <HelpCircle className="h-4 w-4" />
-        </button>
+
+        {onOpenHelp && (
+          <button
+            type="button"
+            className={iconButton}
+            aria-label="Help"
+            onClick={onOpenHelp}
+          >
+            <HelpCircle className="h-4 w-4" />
+          </button>
+        )}
+
         <button
           type="button"
           className={iconButton}
-          aria-label="Application settings"
+          aria-label="Settings"
           onClick={onOpenSettings}
         >
           <SettingsIcon className="h-4 w-4" />
         </button>
+
         <PresentationToggle />
-        <span
-          className="mx-1 h-4 w-px bg-[var(--tg-border)]"
-          aria-hidden="true"
-        />
-        <button
-          type="button"
-          className={iconButton}
-          aria-label="Minimize window"
-        >
-          <Minus className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          className={iconButton}
-          aria-label="Maximize window"
-        >
-          <Square className="h-3.5 w-3.5" />
-        </button>
-        <button type="button" className={iconButton} aria-label="Close window">
-          <X className="h-4 w-4" />
-        </button>
       </div>
     </header>
   );

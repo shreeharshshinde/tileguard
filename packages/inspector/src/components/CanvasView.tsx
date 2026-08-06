@@ -137,7 +137,7 @@ export function CanvasView({
   const showDropZone =
     lifecycle.status === 'uninitialized' || lifecycle.status === 'empty';
   return (
-    <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-[var(--tg-bg-primary)]">
+    <main className="relative h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden bg-[var(--tg-bg-primary)]">
       <CanvasSurface
         cursor={cursor}
         onCanvasReady={onCanvasReady}
