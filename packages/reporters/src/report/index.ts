@@ -1,33 +1,70 @@
 /**
- * @tileguard/reporters — Report Engine public API (Milestone 7 — Step 3)
+ * @tileguard/reporters — Report Engine public API (Milestone 7.3 — Engineering Report UX)
  */
 
 // Models
 export type {
+  // Input types
   ComparisonInput,
   DiagnosticCounts,
-  DiagnosticSection,
-  EngineeringReport,
   FeatureChangeSummary,
   LayerChangeSummary,
+  LayerStatInput,
   NewDiagnosticEntry,
-  OverviewSection,
-  RecommendationSection,
   RegressionCandidateInput,
   RegressionInput,
+  StatsDelta,
+
+  // Legacy section types
+  ComparisonSection,
+  DiagnosticSection,
+  OverviewSection,
+  RecommendationSection,
   RegressionSection,
+  StatisticsSection,
+
+  // New UX section types (Milestone 7.3)
+  AppendixFeatureGroup,
+  DiagnosticsSummarySection,
+  ExecutiveSummary,
+  FindingSeverity,
+  KeyFinding,
+  LayerImpactEntry,
+  PrioritizedRecommendation,
+  RecommendationPriority,
+  RegressionHighlight,
+  RegressionHighlightSection,
+  RegressionRisk,
+  ReportAppendix,
+  ReportStatus,
+  StatisticsDashboard,
+  TopDiagnosticRule,
+
+  // Report output types
+  EngineeringReport,
   ReportError,
   ReportFormat,
   ReportMetadata,
   ReportOutput,
   ReportResult,
-  StatsDelta,
-  StatisticsSection,
 } from './models/EngineeringReport.js';
 
 // Engine
 export type { ReportEngine, ReportEngineOptions } from './ReportEngine.js';
 export { createReportEngine } from './ReportEngine.js';
+
+// Assembler
+export {
+  buildAppendix,
+  buildDiagnosticsSummary,
+  buildExecutiveSummary,
+  buildKeyFindings,
+  buildLayerImpact,
+  buildPrioritizedRecommendations,
+  buildRegressionHighlights,
+  buildStatisticsDashboard,
+  flattenRecommendations,
+} from './ReportAssembler.js';
 
 // Registry
 export type { FormatRenderer, ReporterRegistry } from './ReporterRegistry.js';
