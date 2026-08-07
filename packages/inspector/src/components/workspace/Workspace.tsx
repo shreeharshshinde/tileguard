@@ -1,17 +1,22 @@
 /**
- * @tileguard/inspector — Workspace (Phase 2)
+ * @tileguard/inspector — Workspace (Phase 3 — Engineering Workspaces)
  *
  * Engineering workstation shell.
  *
- * Phase 2 changes:
- *   - WorkspaceHeader now shows page identity (title, subtitle, breadcrumb, back button).
- *   - WorkspaceSidebar uses the new sectioned Sidebar with structured navigation.
- *   - ResizablePanel replaces fixed-width aside panels.
- *   - NextStepBar rendered at the bottom of every page.
- *   - CommandPalette (Ctrl+K), ShortcutOverlay (?), HelpOverlay integrated.
- *   - Sonner toasts replace browser alerts.
- *   - AnimatePresence + Framer Motion for panel/header transitions.
- *   - All engine/renderer code is unchanged.
+ * Canvas architecture:
+ *   The CanvasView is mounted ONCE and lives for the entire Workspace lifetime.
+ *   It is NEVER inside AnimatePresence — its subtree must never unmount, because
+ *   CanvasView.dispose() calls store.dispose(), and a disposed store throws on
+ *   any subsequent subscribe() call from re-mounting components.
+ *
+ *   Canvas-page workspaces (Explore, Diagnose) are rendered permanently alongside
+ *   the canvas. Non-active canvas panels are hidden with `hidden` (display:none).
+ *   Non-canvas pages (Statistics, Style, Compare, Regression, Reports) are
+ *   rendered in a separate absolutely-positioned layer that covers the canvas
+ *   when active.
+ *
+ * Selection and viewport persist across all tab switches because the store
+ * singleton and canvas renderer are never recreated.
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -30,7 +35,11 @@ import {
 } from '../../hooks/use-store.js';
 import { useProfiler } from '../../hooks/useProfiler.js';
 import { useWorkspace } from '../../hooks/useWorkspace.js';
-import { tileLoadedToast, tileLoadErrorToast, comparisonCompleteToast } from '../../lib/toast.js';
+import {
+  tileLoadedToast,
+  tileLoadErrorToast,
+  comparisonCompleteToast,
+} from '../../lib/toast.js';
 import {
   createPerformanceProfiler,
   type PerformanceProfiler,
@@ -45,26 +54,30 @@ import { getNavigationService } from '../../services/NavigationService.js';
 import type { ViewportState } from '../../viewport/viewport.js';
 import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
 import type { RegressionAnalysis } from '../../analysis/models/regression.js';
+
+// ── Components ───────────────────────────────────────────────────────────────
 import { CanvasView } from '../CanvasView.js';
 import { ComparisonPage } from '../comparison/ComparisonPage.js';
 import { RegressionPage } from '../regression/RegressionPage.js';
 import { ReportPage } from '../report/ReportPage.js';
-import { StyleExplorerPage } from '../style/StyleExplorerPage.js';
-import {
-  DiagnosticsPageHeader,
-  DiagnosticsLeftPanel,
-  DiagnosticsRightPanel,
-  useDiagnosticsState,
-} from '../diagnostics/DiagnosticsPage.js';
-import { FeatureExplorer } from '../inspector/FeatureExplorer.js';
+
+// Phase 3 workspaces
+import { DiagnosticExplorer } from '../diagnostics/DiagnosticExplorer.js';
+import { RuleInspector } from '../diagnostics/RuleInspector.js';
+import { TileHealthHeader } from '../diagnostics/TileHealthHeader.js';
+import { useDiagnosticsState } from '../diagnostics/DiagnosticsPage.js';
 import { InspectorPageHeader } from '../inspector/InspectorPageHeader.js';
-import { FeaturePanel } from '../feature/FeaturePanel.js';
+import { LayerExplorer } from '../explore/LayerExplorer.js';
+import { FeatureInspector } from '../explore/FeatureInspector.js';
+import { StatisticsDashboard } from '../statistics/StatisticsDashboard.js';
+import { StylePage } from '../style/StylePage.js';
+
+// Shell
 import type { LoadingStep } from '../loading/LoadingOverlay.js';
 import { LoadingOverlay } from '../loading/LoadingOverlay.js';
 import { DeveloperOverlay } from '../profiler/DeveloperOverlay.js';
 import type { NavTab } from '../SidebarNav.js';
 import { SettingsOverlay } from '../settings/SettingsOverlay.js';
-import { StatisticsPanel } from '../statistics/StatisticsPanel.js';
 import { Toolbar } from '../Toolbar.js';
 import { CommandPalette } from '../dialogs/CommandPalette.js';
 import { ShortcutOverlay } from '../dialogs/ShortcutOverlay.js';
@@ -76,7 +89,7 @@ import { WorkspaceSidebar } from './WorkspaceSidebar.js';
 import { ResizablePanel } from './ResizablePanel.js';
 
 // ---------------------------------------------------------------------------
-// Module-level singleton profiler (shared across renders)
+// Module-level singleton profiler
 // ---------------------------------------------------------------------------
 const _profiler: PerformanceProfiler = createPerformanceProfiler();
 
@@ -110,22 +123,19 @@ export function Workspace({
 
   const { layout, updateLayout } = useWorkspace();
 
-  // Active tab
+  // ── Tab & panel state ─────────────────────────────────────────────────────
   const [activeTab, setActiveTabRaw] = useState<NavTab>('inspector');
   const [leftCollapsed, setLeftCollapsed] = useState(layout.leftCollapsed);
   const [rightCollapsed, setRightCollapsed] = useState(layout.rightCollapsed);
-
-  // Resizable panel widths
   const [leftPanelWidth, setLeftPanelWidth] = useState(280);
   const [rightPanelWidth, setRightPanelWidth] = useState(280);
 
-  // Overlay visibility
+  // ── Overlay state ─────────────────────────────────────────────────────────
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
   const [helpOverlayOpen, setHelpOverlayOpen] = useState(false);
 
-  // Active file name for sidebar card
   const [activeFileName, setActiveFileName] = useState<string | null>(
     layout.lastFilePath ?? null,
   );
@@ -140,7 +150,6 @@ export function Workspace({
       }
       setActiveTabRaw(tab);
       updateLayout({ activeTab: tab });
-      // Sync with NavigationService
       nav.navigate(tab as NavTab);
     },
     [updateLayout, nav],
@@ -160,7 +169,7 @@ export function Workspace({
     });
   }, [updateLayout]);
 
-  // Loading state
+  // ── Loading state ─────────────────────────────────────────────────────────
   const [pendingFile, setPendingFile] = useState<File | null>(initialFile ?? null);
   const [loadingStep, setLoadingStep] = useState<LoadingStep>('ready');
   const [loadError, setLoadError] = useState<string | undefined>();
@@ -169,7 +178,6 @@ export function Workspace({
   const [viewport, setViewport] = useState<ViewportState | null>(null);
   const [devOverlayVisible, setDevOverlayVisible] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-
   const metrics = useProfiler(_profiler, 500);
 
   // ── Comparison state ──────────────────────────────────────────────────────
@@ -198,7 +206,6 @@ export function Workspace({
     [],
   );
 
-  // Load initial comparison pair on first mount
   useEffect(() => {
     if (initialComparisonA !== undefined && initialComparisonB !== undefined) {
       void (async () => {
@@ -214,15 +221,13 @@ export function Workspace({
         updateLayout({ activeTab: 'compare' });
       })();
     }
-  // Run once on mount only
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFileSelectedA = useCallback(
     async (file: File) => {
       setFilePathA(file.name);
-      const snap = await captureSnapshot(file);
-      setSnapshotA(snap);
+      setSnapshotA(await captureSnapshot(file));
       setComparison(null);
     },
     [captureSnapshot],
@@ -231,8 +236,7 @@ export function Workspace({
   const handleFileSelectedB = useCallback(
     async (file: File) => {
       setFilePathB(file.name);
-      const snap = await captureSnapshot(file);
-      setSnapshotB(snap);
+      setSnapshotB(await captureSnapshot(file));
       setComparison(null);
     },
     [captureSnapshot],
@@ -246,7 +250,6 @@ export function Workspace({
         const svc = createComparisonService();
         const result = svc.compare(snapshotA, snapshotB);
         setComparison(result);
-        // Toast
         const diffCount =
           (result.summary.addedFeatures ?? 0) +
           (result.summary.removedFeatures ?? 0) +
@@ -258,7 +261,6 @@ export function Workspace({
     }, 0);
   }, [snapshotA, snapshotB]);
 
-  // ── Regression analysis ───────────────────────────────────────────────────
   const regressionAnalysis = useMemo<RegressionAnalysis | null>(() => {
     if (!comparison) return null;
     return createRegressionEngine().analyze(comparison);
@@ -298,7 +300,6 @@ export function Workspace({
         await new Promise<void>((r) => setTimeout(r, 20));
         if (cancelled) return;
         setLoadingStep('ready');
-        // Toast on successful load
         tileLoadedToast(pendingFile.name);
       } catch (err) {
         if (!cancelled) {
@@ -343,15 +344,12 @@ export function Workspace({
     });
     const cleanup = shortcuts.attach(window);
 
-    // Additional Phase 2 shortcuts
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+K → Command palette
       if (e.ctrlKey && e.key === 'k') {
         e.preventDefault();
         setCommandPaletteOpen(true);
         return;
       }
-      // ? → Shortcut overlay
       if (e.key === '?' && !e.ctrlKey && !e.altKey && !e.metaKey) {
         const target = e.target as HTMLElement;
         if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
@@ -361,7 +359,6 @@ export function Workspace({
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       cleanup();
       unsub();
@@ -369,50 +366,35 @@ export function Workspace({
     };
   }, [inspector, store, setActiveTab]);
 
-  // ── Diagnostics state ─────────────────────────────────────────────────────
+  // ── Diagnostics state (shared between left + right panels) ───────────────
   const diagnostics = useDiagnosticsState(store, inspector);
 
-  // ── Left panel ────────────────────────────────────────────────────────────
-  const leftPanel = useMemo<JSX.Element | null>(() => {
-    if (activeTab === 'statistics') return <StatisticsPanel store={store} />;
-    if (activeTab === 'diagnostics')
-      return (
-        <DiagnosticsLeftPanel
-          store={store}
-          inspector={inspector}
-          onDiagnosticSelected={diagnostics.handleSelectDiagnostic}
-        />
-      );
-    return (
-      <FeatureExplorer
-        store={store}
-        inspector={inspector}
-        searchQuery={search.query}
-        onSearchChange={search.setQuery}
-      />
-    );
-  }, [activeTab, store, inspector, search.query, search.setQuery, diagnostics.handleSelectDiagnostic]);
+  // ── Derived flags ─────────────────────────────────────────────────────────
+  // Canvas workspaces: canvas is visible, canvas-adjacent panels shown
+  const isExplore     = activeTab === 'inspector';
+  const isDiagnose    = activeTab === 'diagnostics';
+  const isCanvasPage  = isExplore || isDiagnose;
 
-  // ── Canvas-based page ─────────────────────────────────────────────────────
-  const isCanvasPage =
-    activeTab === 'inspector' ||
-    activeTab === 'diagnostics' ||
-    activeTab === 'statistics';
-
-  // ── Page transition key ───────────────────────────────────────────────────
-  const pageGroupKey = isCanvasPage ? 'canvas' : activeTab;
+  // Non-canvas pages that render in the full-page overlay layer
+  const isNonCanvasFullPage =
+    activeTab === 'statistics' ||
+    activeTab === 'style-explorer' ||
+    activeTab === 'compare' ||
+    activeTab === 'regression' ||
+    activeTab === 'reports';
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--tg-bg-primary)] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
-      {/* Application header with page identity */}
+
+      {/* Application header */}
       <WorkspaceHeader
         activePage={activeTab as any}
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenHelp={() => setHelpOverlayOpen(true)}
       />
 
-      {/* Body row: Sidebar + content */}
+      {/* Body: Sidebar + content */}
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <WorkspaceSidebar
           activeTab={activeTab}
@@ -420,143 +402,181 @@ export function Workspace({
           onHomeRequested={onGoHome}
           currentFile={activeFileName}
           onOpenFile={() => {
-            // Trigger the toolbar's file picker — handled via DropZone
             document.querySelector<HTMLInputElement>('[data-file-input]')?.click();
           }}
           onHelpRequested={() => setHelpOverlayOpen(true)}
         />
 
-        {/* Page content area */}
+        {/* Content column */}
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          {/* Page header (Toolbar replaces PageHeader for canvas pages) */}
-          {isCanvasPage && (
-            <>
-              {activeTab === 'inspector' && <InspectorPageHeader store={store} />}
-              {activeTab === 'diagnostics' && <DiagnosticsPageHeader store={store} />}
 
-              <Toolbar
-                leftCollapsed={leftCollapsed}
-                rightCollapsed={rightCollapsed}
-                onToggleLeft={toggleLeft}
-                onToggleRight={toggleRight}
-                onFileSelected={selectFile}
-                onResetView={() => inspector?.render()}
-                onOpenSettings={() => setSettingsOpen(true)}
-                searchQuery={search.query}
-                onSearchChange={search.setQuery}
-                searchResults={search.results}
-                searchInputRef={searchInputRef}
-                onSelectSearchResult={(result) => {
-                  inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
-                  search.clearSearch();
-                }}
-              />
-            </>
+          {/* ── Canvas-page identity headers (always present when on those tabs) */}
+          {isExplore && <InspectorPageHeader store={store} />}
+          {isDiagnose && <TileHealthHeader store={store} />}
+
+          {/* ── Toolbar (canvas pages only) */}
+          {isCanvasPage && (
+            <Toolbar
+              leftCollapsed={leftCollapsed}
+              rightCollapsed={rightCollapsed}
+              onToggleLeft={toggleLeft}
+              onToggleRight={toggleRight}
+              onFileSelected={selectFile}
+              onResetView={() => inspector?.render()}
+              onOpenSettings={() => setSettingsOpen(true)}
+              searchQuery={search.query}
+              onSearchChange={search.setQuery}
+              searchResults={search.results}
+              searchInputRef={searchInputRef}
+              onSelectSearchResult={(result) => {
+                inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
+                search.clearSearch();
+              }}
+            />
           )}
 
-          {/* Animated page content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pageGroupKey}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12, ease: 'easeOut' }}
-              className="flex min-h-0 flex-1 flex-col overflow-hidden"
-            >
-              {activeTab === 'compare' ? (
-                <ComparisonPage
-                  comparison={comparison}
-                  filePathA={filePathA}
-                  filePathB={filePathB}
-                  isComparing={isComparing}
-                  onFileSelectedA={(f) => { void handleFileSelectedA(f); }}
-                  onFileSelectedB={(f) => { void handleFileSelectedB(f); }}
-                  onRunComparison={handleRunComparison}
-                />
-              ) : activeTab === 'regression' ? (
-                <RegressionPage comparison={comparison} />
-              ) : activeTab === 'reports' ? (
-                <ReportPage comparison={comparison} regression={regressionAnalysis} />
-              ) : activeTab === 'style-explorer' ? (
-                <StyleExplorerPage />
-              ) : (
-                /* Canvas-based pages: inspector/explore, diagnostics, statistics */
-                <ResizablePanel
-                  leftWidth={leftPanelWidth}
-                  rightWidth={rightPanelWidth}
-                  leftCollapsed={leftCollapsed}
-                  rightCollapsed={rightCollapsed}
-                  onLeftResize={setLeftPanelWidth}
-                  onRightResize={setRightPanelWidth}
-                  left={
-                    leftPanel ? (
-                      <div
-                        className="flex h-full flex-col overflow-hidden"
-                        aria-label={
-                          activeTab === 'statistics'
-                            ? 'Statistics'
-                            : activeTab === 'diagnostics'
-                            ? 'Diagnostic Explorer'
-                            : 'Feature Explorer'
-                        }
-                      >
-                        {leftPanel}
-                      </div>
-                    ) : null
-                  }
-                  center={
-                    <div className="relative flex h-full w-full flex-col overflow-hidden">
-                      <CanvasView
-                        onFileSelected={selectFile}
-                        onViewportChange={setViewport}
-                      />
-                      {isLoading && loadingStep !== 'ready' && (
-                        <LoadingOverlay
-                          currentStep={loadingStep}
-                          {...(pendingFile !== null ? { fileName: pendingFile.name } : {})}
-                          {...(loadError !== undefined ? { error: loadError } : {})}
-                        />
-                      )}
-                      {devOverlayVisible && (
-                        <div data-dev-overlay="">
-                          <DeveloperOverlay
-                            metrics={metrics}
-                            viewport={viewport}
-                            hoveredFeature={
-                              hover.layerName !== null && hover.featureIndex !== null
-                                ? (inspector?.getSelectedFeature() ?? null)
-                                : null
-                            }
-                            selectedFeature={selectedFeature}
-                            totalFeatures={stats.totalFeatures}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  }
-                  right={
-                    <div
-                      className="flex h-full flex-col overflow-hidden"
-                      aria-label={
-                        activeTab === 'diagnostics' ? 'Rule Details' : 'Feature Inspector'
-                      }
-                    >
-                      {activeTab === 'diagnostics' ? (
-                        <DiagnosticsRightPanel
-                          diagnostic={diagnostics.selectedDiagnostic}
-                        />
-                      ) : (
-                        <FeaturePanel store={store} />
-                      )}
-                    </div>
-                  }
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
+          {/* ── Main content area ──────────────────────────────────────────── */}
+          <div className="relative flex min-h-0 flex-1 overflow-hidden">
 
-          {/* NextStepBar — contextual recommended actions */}
+            {/* ══════════════════════════════════════════════════════════════
+                CANVAS LAYER — always mounted, never inside AnimatePresence.
+                Visibility is controlled by `hidden` class so the DOM and
+                React fiber stay alive. The InspectorStore is never disposed.
+            ═══════════════════════════════════════════════════════════════ */}
+            <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${isNonCanvasFullPage ? 'hidden' : ''}`}>
+              {/* Explore workspace: LayerExplorer | Canvas | FeatureInspector */}
+              <ResizablePanel
+                leftWidth={leftPanelWidth}
+                rightWidth={rightPanelWidth}
+                leftCollapsed={leftCollapsed || !isExplore}
+                rightCollapsed={rightCollapsed || !isExplore}
+                onLeftResize={setLeftPanelWidth}
+                onRightResize={setRightPanelWidth}
+                left={
+                  <LayerExplorer
+                    store={store}
+                    inspector={inspector}
+                    searchQuery={search.query}
+                    onSearchChange={search.setQuery}
+                  />
+                }
+                center={
+                  <div className="relative flex h-full w-full flex-col overflow-hidden">
+                    <CanvasView
+                      onFileSelected={selectFile}
+                      onViewportChange={setViewport}
+                    />
+                    {isLoading && loadingStep !== 'ready' && (
+                      <LoadingOverlay
+                        currentStep={loadingStep}
+                        {...(pendingFile !== null ? { fileName: pendingFile.name } : {})}
+                        {...(loadError !== undefined ? { error: loadError } : {})}
+                      />
+                    )}
+                    {devOverlayVisible && (
+                      <div data-dev-overlay="">
+                        <DeveloperOverlay
+                          metrics={metrics}
+                          viewport={viewport}
+                          hoveredFeature={
+                            hover.layerName !== null && hover.featureIndex !== null
+                              ? (inspector?.getSelectedFeature() ?? null)
+                              : null
+                          }
+                          selectedFeature={selectedFeature}
+                          totalFeatures={stats.totalFeatures}
+                        />
+                      </div>
+                    )}
+                  </div>
+                }
+                right={<FeatureInspector store={store} inspector={inspector} />}
+              />
+
+              {/* Diagnose overlay panels (replace left+right when isDiagnose) */}
+              {isDiagnose && (
+                <div className="absolute inset-0 flex overflow-hidden pointer-events-none">
+                  {/* Left: DiagnosticExplorer */}
+                  {!leftCollapsed && (
+                    <aside
+                      className="pointer-events-auto relative flex shrink-0 flex-col overflow-hidden border-r border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]"
+                      style={{ width: leftPanelWidth }}
+                      aria-label="Diagnostic Explorer"
+                    >
+                      <DiagnosticExplorer
+                        store={store}
+                        inspector={inspector}
+                        onDiagnosticSelected={diagnostics.handleSelectDiagnostic}
+                      />
+                    </aside>
+                  )}
+                  {/* Center spacer — canvas underneath shows through */}
+                  <div className="flex-1" />
+                  {/* Right: RuleInspector */}
+                  {!rightCollapsed && (
+                    <aside
+                      className="pointer-events-auto relative flex shrink-0 flex-col overflow-hidden border-l border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]"
+                      style={{ width: rightPanelWidth }}
+                      aria-label="Rule Inspector"
+                    >
+                      <RuleInspector diagnostic={diagnostics.selectedDiagnostic} />
+                    </aside>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ══════════════════════════════════════════════════════════════
+                FULL-PAGE OVERLAY — non-canvas workspaces rendered on top.
+                AnimatePresence only covers this layer, never the canvas.
+            ═══════════════════════════════════════════════════════════════ */}
+            <AnimatePresence>
+              {isNonCanvasFullPage && (
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.12, ease: 'easeOut' }}
+                  className="absolute inset-0 flex flex-col overflow-hidden bg-[var(--tg-bg-primary)]"
+                >
+                  {activeTab === 'statistics' && (
+                    <StatisticsDashboard store={store} />
+                  )}
+                  {activeTab === 'style-explorer' && (
+                    <StylePage
+                      leftWidth={leftPanelWidth}
+                      rightWidth={rightPanelWidth}
+                      leftCollapsed={leftCollapsed}
+                      rightCollapsed={rightCollapsed}
+                      onLeftResize={setLeftPanelWidth}
+                      onRightResize={setRightPanelWidth}
+                    />
+                  )}
+                  {activeTab === 'compare' && (
+                    <ComparisonPage
+                      comparison={comparison}
+                      filePathA={filePathA}
+                      filePathB={filePathB}
+                      isComparing={isComparing}
+                      onFileSelectedA={(f) => { void handleFileSelectedA(f); }}
+                      onFileSelectedB={(f) => { void handleFileSelectedB(f); }}
+                      onRunComparison={handleRunComparison}
+                    />
+                  )}
+                  {activeTab === 'regression' && (
+                    <RegressionPage comparison={comparison} />
+                  )}
+                  {activeTab === 'reports' && (
+                    <ReportPage comparison={comparison} regression={regressionAnalysis} />
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+          </div>
+
+          {/* NextStepBar */}
           <NextStepBar
             currentPage={activeTab as any}
             onNavigate={(page) => setActiveTab(page as NavTab)}
@@ -564,10 +584,10 @@ export function Workspace({
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer status bar */}
       <WorkspaceFooter viewport={viewport} fps={metrics.fps} />
 
-      {/* Overlays — render over workspace without unmounting canvas */}
+      {/* Overlays */}
       <AnimatePresence>
         {settingsOpen && (
           <SettingsOverlay key="settings" onClose={() => setSettingsOpen(false)} />
@@ -585,16 +605,10 @@ export function Workspace({
           />
         )}
         {shortcutOverlayOpen && (
-          <ShortcutOverlay
-            key="shortcuts"
-            onClose={() => setShortcutOverlayOpen(false)}
-          />
+          <ShortcutOverlay key="shortcuts" onClose={() => setShortcutOverlayOpen(false)} />
         )}
         {helpOverlayOpen && (
-          <HelpOverlay
-            key="help"
-            onClose={() => setHelpOverlayOpen(false)}
-          />
+          <HelpOverlay key="help" onClose={() => setHelpOverlayOpen(false)} />
         )}
       </AnimatePresence>
     </div>
