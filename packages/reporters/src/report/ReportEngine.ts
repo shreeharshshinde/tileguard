@@ -46,6 +46,15 @@ export interface ReportEngineOptions {
   readonly totalDurationMs?: number;
   /** Injectable registry for testing / plugins. */
   readonly registry?: ReporterRegistry;
+  // ── Investigation metadata (Phase 2 — Step 2) ──
+  readonly platform?: string;
+  readonly cliVersion?: string;
+  readonly nodeVersion?: string;
+  readonly ruleSetVersion?: string;
+  readonly configPath?: string;
+  readonly sourceTileHash?: string;
+  readonly targetTileHash?: string;
+  readonly reportId?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -125,6 +134,17 @@ export function createReportEngine(defaults: ReportEngineOptions = {}): ReportEn
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Generate a short unique report ID (8-char hex). */
+function generateReportId(): string {
+  const now = Date.now().toString(36);
+  const rand = Math.random().toString(36).slice(2, 6);
+  return `tg-${now.slice(-4)}${rand}`;
+}
+
+// ---------------------------------------------------------------------------
 // Build the immutable EngineeringReport from inputs
 // ---------------------------------------------------------------------------
 
@@ -137,6 +157,16 @@ function buildReport(
   const tileguardVersion = options.tileguardVersion ?? defaults.tileguardVersion ?? '0.0.0';
   const totalDurationMs = options.totalDurationMs ?? defaults.totalDurationMs ?? 0;
   const generatedAt = new Date().toISOString();
+
+  // Resolve investigation metadata (Phase 2 — Step 2)
+  const platform = options.platform ?? defaults.platform;
+  const cliVersion = options.cliVersion ?? defaults.cliVersion;
+  const nodeVersion = options.nodeVersion ?? defaults.nodeVersion;
+  const ruleSetVersion = options.ruleSetVersion ?? defaults.ruleSetVersion;
+  const configPath = options.configPath ?? defaults.configPath;
+  const sourceTileHash = options.sourceTileHash ?? defaults.sourceTileHash;
+  const targetTileHash = options.targetTileHash ?? defaults.targetTileHash;
+  const reportId = options.reportId ?? defaults.reportId ?? generateReportId();
 
   // ── Legacy sections (preserved for JSON backwards-compat) ──────────────
 
@@ -195,6 +225,14 @@ function buildReport(
       sourceTile: comparison.sourceTile,
       targetTile: comparison.targetTile,
       totalDurationMs,
+      ...(platform !== undefined ? { platform } : {}),
+      ...(cliVersion !== undefined ? { cliVersion } : {}),
+      ...(nodeVersion !== undefined ? { nodeVersion } : {}),
+      ...(ruleSetVersion !== undefined ? { ruleSetVersion } : {}),
+      ...(configPath !== undefined ? { configPath } : {}),
+      ...(sourceTileHash !== undefined ? { sourceTileHash } : {}),
+      ...(targetTileHash !== undefined ? { targetTileHash } : {}),
+      ...(reportId !== undefined ? { reportId } : {}),
     },
     // Legacy sections
     overview,

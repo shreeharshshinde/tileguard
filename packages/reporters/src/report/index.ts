@@ -73,7 +73,7 @@ export { createReporterRegistry, defaultRegistry } from './ReporterRegistry.js';
 // Format renderers (usable directly if needed)
 export { renderMarkdown } from './reporters/MarkdownReporter.js';
 export { renderHtml } from './reporters/HtmlReporter.js';
-export { renderJson } from './reporters/JsonReporter.js';
+export { renderJson, JSON_SCHEMA_VERSION } from './reporters/JsonReporter.js';
 export type { JsonReportOptions } from './reporters/JsonReporter.js';
 
 // Writer utilities

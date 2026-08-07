@@ -46,6 +46,7 @@ export {
   escapeHtml,
   flattenRecommendations,
   HtmlWriter,
+  JSON_SCHEMA_VERSION,
   MarkdownWriter,
   renderHtml,
   renderJson,

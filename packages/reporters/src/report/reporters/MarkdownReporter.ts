@@ -67,6 +67,28 @@ export function renderMarkdown(report: EngineeringReport): string {
     `**Duration:** ${metadata.totalDurationMs}ms  |  ` +
     `**Engine:** Analysis`,
   );
+
+  // Investigation Metadata block (Phase 2 — Step 2)
+  const metaItems: string[][] = [
+    ['Report ID', metadata.reportId ?? '—'],
+    ['Generated', metadata.generatedAt],
+    ['TileGuard Version', metadata.tileguardVersion],
+    ['Duration', `${metadata.totalDurationMs}ms`],
+    ['Source Tile', md.code(metadata.sourceTile)],
+    ['Target Tile', md.code(metadata.targetTile)],
+  ];
+  if (metadata.platform) metaItems.push(['Platform', metadata.platform]);
+  if (metadata.cliVersion) metaItems.push(['CLI Version', metadata.cliVersion]);
+  if (metadata.nodeVersion) metaItems.push(['Node.js', metadata.nodeVersion]);
+  if (metadata.ruleSetVersion) metaItems.push(['Rule Set', metadata.ruleSetVersion]);
+  if (metadata.configPath) metaItems.push(['Config', md.code(metadata.configPath)]);
+  if (metadata.sourceTileHash) metaItems.push(['Source Hash', md.code(metadata.sourceTileHash.slice(0, 12) + '…')]);
+  if (metadata.targetTileHash) metaItems.push(['Target Hash', md.code(metadata.targetTileHash.slice(0, 12) + '…')]);
+
+  md.p('<details>\n<summary><strong>📋 Investigation Metadata</strong></summary>\n');
+  md.table(['Field', 'Value'], metaItems);
+  md.p('</details>\n');
+
   md.hr();
 
   // ═══════════════════════════════════════════════════════════════════════════

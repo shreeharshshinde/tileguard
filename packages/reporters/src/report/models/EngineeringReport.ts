@@ -118,6 +118,23 @@ export interface ReportMetadata {
   readonly targetTile: string;
   /** Total wall-clock duration of comparison + regression in ms. */
   readonly totalDurationMs: number;
+  // ── Investigation metadata (Phase 2 — Step 2) ──
+  /** Operating system identifier (e.g., "linux x64", "darwin arm64"). */
+  readonly platform?: string | undefined;
+  /** CLI version that invoked the report (may differ from tileguardVersion). */
+  readonly cliVersion?: string | undefined;
+  /** Node.js version used for execution. */
+  readonly nodeVersion?: string | undefined;
+  /** Rule set version or config hash. */
+  readonly ruleSetVersion?: string | undefined;
+  /** Configuration file path used (if any). */
+  readonly configPath?: string | undefined;
+  /** SHA-256 hash of the source tile (for reproducibility). */
+  readonly sourceTileHash?: string | undefined;
+  /** SHA-256 hash of the target tile (for reproducibility). */
+  readonly targetTileHash?: string | undefined;
+  /** Unique report ID for cross-referencing. */
+  readonly reportId?: string | undefined;
 }
 
 // ---------------------------------------------------------------------------
