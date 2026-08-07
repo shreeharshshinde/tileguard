@@ -34,6 +34,13 @@ export type ShortcutAction =
   | 'showDiagnostics'
   | 'showStatistics'
   | 'showSettings'
+  // Phase 4 — workspace navigation (Ctrl+1-7)
+  | 'showExplore'
+  | 'showStyle'
+  | 'showCompare'
+  | 'showRegression'
+  | 'showReports'
+  | 'goHome'
   // Step 4
   | 'toggleHover'
   | 'toggleVertices'
@@ -90,22 +97,50 @@ export const DEFAULT_SHORTCUTS: readonly ShortcutBinding[] = Object.freeze([
     key: '1',
     ctrl: true,
     shift: false,
-    action: 'showDiagnostics',
-    description: 'Show diagnostics',
+    action: 'showExplore',
+    description: 'Open Explore workspace',
   },
   {
     key: '2',
     ctrl: true,
     shift: false,
-    action: 'showStatistics',
-    description: 'Show statistics',
+    action: 'showDiagnostics',
+    description: 'Open Diagnostics workspace',
   },
   {
     key: '3',
     ctrl: true,
     shift: false,
-    action: 'showSettings',
-    description: 'Show settings',
+    action: 'showStatistics',
+    description: 'Open Statistics workspace',
+  },
+  {
+    key: '4',
+    ctrl: true,
+    shift: false,
+    action: 'showStyle',
+    description: 'Open Style Explorer workspace',
+  },
+  {
+    key: '5',
+    ctrl: true,
+    shift: false,
+    action: 'showCompare',
+    description: 'Open Compare workspace',
+  },
+  {
+    key: '6',
+    ctrl: true,
+    shift: false,
+    action: 'showRegression',
+    description: 'Open Regression workspace',
+  },
+  {
+    key: '7',
+    ctrl: true,
+    shift: false,
+    action: 'showReports',
+    description: 'Open Reports workspace',
   },
   // Step 4 additions
   {
