@@ -311,7 +311,7 @@ The framework's architectural foundation is complete. Two domain packages are fu
 | Render regression testing | 📋 Planned | Perceptual pixel comparison via headless rendering |
 | CI workflow | ✅ Complete | Build, test, dependency boundary lint, per-rule test coverage |
 
-**131 tests passing**, including end-to-end verification against real files on disk — not mocked artifacts — for both domain packages. The prototype in `legacy/js/` and `legacy/python/` is frozen and retained as a behavioral regression oracle; see the [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) for the full migration map.
+**1,635 tests passing**, including end-to-end verification against real files on disk — not mocked artifacts — for both domain packages. The prototype in `legacy/js/` and `legacy/python/` is frozen and retained as a behavioral regression oracle; see the [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) for the full migration map.
 
 ---
 

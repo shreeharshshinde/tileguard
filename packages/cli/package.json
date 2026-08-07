@@ -1,26 +1,56 @@
 {
   "name": "@tileguard/cli",
-  "version": "0.4.5",
-  "description": "Command-line interface for TileGuard — geospatial quality analysis framework",
+  "version": "0.5.0-rc.1",
+  "description": "Command-line interface for TileGuard — automated quality gates for geospatial software",
   "type": "module",
   "bin": {
     "tileguard": "./dist/bin.js"
   },
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "tileguard",
     "cli",
     "geospatial",
-    "validation"
+    "validation",
+    "vector-tiles",
+    "maplibre",
+    "quality",
+    "ci",
+    "lint"
   ],
   "license": "MIT",
+  "author": "Shreeharsh Shinde",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shreeharshshinde/tileguard.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/shreeharshshinde/tileguard#readme",
+  "bugs": "https://github.com/shreeharshshinde/tileguard/issues",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@tileguard/analysis": "workspace:*",
     "@tileguard/config": "workspace:*",

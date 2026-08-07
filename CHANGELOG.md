@@ -7,12 +7,54 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.5.0-rc.1] — 2026-08-07
+
+### Highlights
+
+First release candidate. The complete framework — from CLI through analysis to visual inspection — is functional and tested. **1,635 tests passing** across 9 packages.
+
+### Added
+
+- **Inspector** — Visual debugging environment with canvas-based geometry rendering, diagnostic overlays, and investigation workflow (Phase 4)
+- **Investigation Context** — Global shared state across all workspaces (selection, camera, timeline persist across tab switches)
+- **Command Palette** (Ctrl+K) — VS Code-style command access using cmdk
+- **Global Search** (Ctrl+/) — Universal search across features, layers, diagnostics
+- **Engineering Console** (Ctrl+`) — Bottom panel with logs, diagnostics, timeline, performance tabs
+- **Engineering Reports** — Markdown, HTML, and JSON report generation with executive summary, key findings, evidence chains, and prioritized recommendations
+- **JSON Schema v2** — Versioned, documented, stable report API (`schemaVersion: 2`)
+- **Investigation Metadata** — Reports include platform, Node version, config, file hashes for reproducibility
+- **Contextual Recommendations** — Intelligent "next step" suggestions per workspace
+- **Presentation Mode** (Ctrl+Shift+P) — Conference-optimized display with larger fonts and higher contrast
+- **Demo Datasets** — 6 bundled Tokyo demo tiles for one-click investigation
+- **Keyboard Shortcuts** — Full Ctrl+1-7 workspace navigation, comprehensive shortcut system
+- **Compare workflow** — Structural tile diff with regression analysis and evidence panel
+- **Tabbed Feature Inspector** — Summary, Properties, Geometry, Coordinates, JSON tabs
+- **Breadcrumb navigation** — Context-aware path showing dataset, workspace, layer, feature
+- **CLI commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `ver`
+
+### Changed
+
+- All packages bumped to 0.5.0-rc.1
+- Package exports now include `types` condition for TypeScript consumers
+- All packages include `files`, `engines`, `publishConfig`, `sideEffects` fields
+- ShortcutService expanded: Ctrl+1 (Explore) through Ctrl+7 (Reports)
+- CommandPalette rebuilt with cmdk (was custom implementation)
+- FeatureInspector converted to tabbed interface
+
+### Fixed
+
+- ShortcutService tests updated for new binding count (17 bindings)
+- Navigation performance test updated for expanded shortcut set
+
+---
+
 ## [Unreleased]
 
 ### Planned
-- `@tileguard/cli` package — unified `tileguard check` command
-- Text and JSON reporters
-- `tileguard init` config scaffold command
+- SARIF export format (GitHub Code Scanning integration)
+- PDF export
+- Render regression testing (perceptual pixel comparison)
+- Plugin marketplace
 
 ---
 

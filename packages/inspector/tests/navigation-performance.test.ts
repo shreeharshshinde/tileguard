@@ -323,7 +323,7 @@ describe('ShortcutService ↔ WorkspaceService', () => {
 
     svc.updateLayout({ leftCollapsed: true });
     // Workspace change must not corrupt shortcut bindings
-    expect(createShortcutService().getBindings()).toHaveLength(13);
+    expect(createShortcutService().getBindings()).toHaveLength(17);
 
     resetWorkspaceServiceInstance();
   });

@@ -1,21 +1,47 @@
 {
   "name": "@tileguard/shared",
-  "version": "0.4.5",
+  "version": "0.5.0-rc.1",
   "description": "Shared utilities and helpers used across TileGuard packages",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --build",
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "tileguard",
     "utilities",
-    "geospatial"
+    "geospatial",
+    "internal"
   ],
   "license": "MIT",
+  "author": "Shreeharsh Shinde",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shreeharshshinde/tileguard.git",
+    "directory": "packages/shared"
+  },
+  "homepage": "https://github.com/shreeharshshinde/tileguard/tree/main/packages/shared#readme",
+  "bugs": "https://github.com/shreeharshshinde/tileguard/issues",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@tileguard/core": "workspace:*"
   },

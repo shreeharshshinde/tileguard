@@ -48,8 +48,8 @@ describe('ShortcutService', () => {
     expect(service.getBindings()).toEqual(DEFAULT_SHORTCUTS);
   });
 
-  it('DEFAULT_SHORTCUTS contains exactly 13 bindings', () => {
-    expect(DEFAULT_SHORTCUTS).toHaveLength(13);
+  it('DEFAULT_SHORTCUTS contains exactly 17 bindings', () => {
+    expect(DEFAULT_SHORTCUTS).toHaveLength(17);
   });
 
   it('accepts custom bindings at construction time', () => {
@@ -123,7 +123,7 @@ describe('ShortcutService', () => {
     expect(handler).toHaveBeenCalledWith('openSettings');
   });
 
-  it('dispatches showDiagnostics for Ctrl+1', () => {
+  it('dispatches showExplore for Ctrl+1', () => {
     const service = createShortcutService();
     const handler = vi.fn();
     service.registerHandler(handler);
@@ -131,10 +131,10 @@ describe('ShortcutService', () => {
     service.attach(target as unknown as EventTarget);
 
     fireKey(listeners, '1', true);
-    expect(handler).toHaveBeenCalledWith('showDiagnostics');
+    expect(handler).toHaveBeenCalledWith('showExplore');
   });
 
-  it('dispatches showStatistics for Ctrl+2', () => {
+  it('dispatches showDiagnostics for Ctrl+2', () => {
     const service = createShortcutService();
     const handler = vi.fn();
     service.registerHandler(handler);
@@ -142,10 +142,10 @@ describe('ShortcutService', () => {
     service.attach(target as unknown as EventTarget);
 
     fireKey(listeners, '2', true);
-    expect(handler).toHaveBeenCalledWith('showStatistics');
+    expect(handler).toHaveBeenCalledWith('showDiagnostics');
   });
 
-  it('dispatches showSettings for Ctrl+3', () => {
+  it('dispatches showStatistics for Ctrl+3', () => {
     const service = createShortcutService();
     const handler = vi.fn();
     service.registerHandler(handler);
@@ -153,7 +153,7 @@ describe('ShortcutService', () => {
     service.attach(target as unknown as EventTarget);
 
     fireKey(listeners, '3', true);
-    expect(handler).toHaveBeenCalledWith('showSettings');
+    expect(handler).toHaveBeenCalledWith('showStatistics');
   });
 
   // ── Key-case normalisation ────────────────────────────────────────────

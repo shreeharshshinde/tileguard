@@ -1,22 +1,49 @@
 {
   "name": "@tileguard/config",
-  "version": "0.4.5",
+  "version": "0.5.0-rc.1",
   "description": "Configuration loading, schema validation, and preset resolution for TileGuard",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "tileguard",
     "config",
-    "geospatial"
+    "configuration",
+    "geospatial",
+    "validation"
   ],
   "license": "MIT",
+  "author": "Shreeharsh Shinde",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shreeharshshinde/tileguard.git",
+    "directory": "packages/config"
+  },
+  "homepage": "https://github.com/shreeharshshinde/tileguard/tree/main/packages/config#readme",
+  "bugs": "https://github.com/shreeharshshinde/tileguard/issues",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@tileguard/core": "workspace:*",
     "jiti": "^2.4.2"

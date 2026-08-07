@@ -1,23 +1,52 @@
 {
   "name": "@tileguard/tile-rules",
-  "version": "0.4.5",
-  "description": "Vector tile artifact provider and tile validation rules",
+  "version": "0.5.0-rc.1",
+  "description": "Vector tile (MVT) provider and 10 validation rules for TileGuard",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "tileguard",
     "vector-tiles",
+    "mvt",
+    "pbf",
     "validation",
-    "pbf"
+    "geospatial",
+    "maplibre",
+    "quality"
   ],
   "license": "MIT",
+  "author": "Shreeharsh Shinde",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shreeharshshinde/tileguard.git",
+    "directory": "packages/tile-rules"
+  },
+  "homepage": "https://github.com/shreeharshshinde/tileguard/tree/main/packages/tile-rules#readme",
+  "bugs": "https://github.com/shreeharshshinde/tileguard/issues",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
   "dependencies": {
     "@tileguard/core": "workspace:*",
     "@tileguard/shared": "workspace:*"
