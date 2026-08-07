@@ -39,6 +39,7 @@ import {
   InspectorProvider,
   useInspectorContext,
 } from '../context/InspectorContext.js';
+import { InvestigationProvider } from '../context/InvestigationContext.js';
 import { useStatistics } from '../hooks/use-statistics-settings.js';
 import {
   useHover,
@@ -741,7 +742,9 @@ function Workspace(): JSX.Element {
 export function InspectorApp(): JSX.Element {
   return (
     <InspectorProvider>
-      <ApplicationRouter />
+      <InvestigationProvider>
+        <ApplicationRouter />
+      </InvestigationProvider>
       <Toaster
         position="bottom-right"
         theme="dark"

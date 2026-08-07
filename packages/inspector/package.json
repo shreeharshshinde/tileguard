@@ -27,11 +27,14 @@
     "@tileguard/reporters": "workspace:*",
     "@tileguard/style-rules": "workspace:*",
     "@tileguard/tile-rules": "workspace:*",
+    "cmdk": "1.0.4",
     "framer-motion": "^12.43.0",
     "lucide-react": "^1.27.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-dropzone": "^20.0.0",
+    "react-hotkeys-hook": "4.6.1",
+    "react-resizable-panels": "2.1.7",
     "sonner": "^2.0.7"
   },
   "devDependencies": {

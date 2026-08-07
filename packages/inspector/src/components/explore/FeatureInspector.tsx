@@ -322,11 +322,22 @@ export interface FeatureInspectorProps {
   readonly inspector: Inspector | null;
 }
 
+type InspectorTab = 'summary' | 'properties' | 'geometry' | 'coordinates' | 'json';
+
+const TAB_LABELS: { key: InspectorTab; label: string }[] = [
+  { key: 'summary', label: 'Summary' },
+  { key: 'properties', label: 'Properties' },
+  { key: 'geometry', label: 'Geometry' },
+  { key: 'coordinates', label: 'Coords' },
+  { key: 'json', label: 'JSON' },
+];
+
 export function FeatureInspector({
   store,
   inspector: _inspector,
 }: FeatureInspectorProps): JSX.Element {
   const feature = useSelectedFeature(store);
+  const [activeTab, setActiveTab] = useState<InspectorTab>('summary');
 
   if (feature === null) {
     return (
@@ -349,26 +360,70 @@ export function FeatureInspector({
         />
       }
     >
-      {/* Summary card */}
-      <FeatureSummary feature={feature} />
-      <PanelDivider />
+      {/* Tab navigation */}
+      <div className="flex border-b border-[var(--tg-border)] px-1">
+        {TAB_LABELS.map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setActiveTab(key)}
+            className={[
+              'px-2 py-1.5 text-[10px] font-medium transition-colors border-b-2',
+              activeTab === key
+                ? 'border-[var(--tg-accent)] text-[var(--tg-text-primary)]'
+                : 'border-transparent text-[var(--tg-text-muted)] hover:text-[var(--tg-text-secondary)]',
+            ].join(' ')}
+            aria-selected={activeTab === key}
+            role="tab"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
-      {/* Properties */}
-      <PanelSection title="Properties">
-        <PropertyInspector properties={feature.properties} />
-      </PanelSection>
-      <PanelDivider />
+      {/* Tab content */}
+      <div className="flex-1 overflow-y-auto" role="tabpanel">
+        {activeTab === 'summary' && (
+          <>
+            <FeatureSummary feature={feature} />
+            <PanelDivider />
+            <PanelSection title="Geometry">
+              <GeometryInspector feature={feature} />
+            </PanelSection>
+          </>
+        )}
 
-      {/* Geometry */}
-      <PanelSection title="Geometry">
-        <GeometryInspector feature={feature} />
-      </PanelSection>
-      <PanelDivider />
+        {activeTab === 'properties' && (
+          <PropertyInspector properties={feature.properties} />
+        )}
 
-      {/* Coordinates */}
-      <PanelSection title="Coordinates">
-        <CoordinateViewer geometry={feature.geometry} />
-      </PanelSection>
+        {activeTab === 'geometry' && (
+          <GeometryInspector feature={feature} />
+        )}
+
+        {activeTab === 'coordinates' && (
+          <CoordinateViewer geometry={feature.geometry} />
+        )}
+
+        {activeTab === 'json' && (
+          <div className="p-[var(--tg-space-md)]">
+            <pre className="max-h-96 overflow-auto rounded bg-[var(--tg-bg-surface)] p-2 text-[9px] font-mono text-[var(--tg-text-secondary)]">
+              {JSON.stringify(
+                {
+                  id: feature.id,
+                  layerName: feature.layerName,
+                  featureIndex: feature.featureIndex,
+                  geometryType: feature.geometryType,
+                  properties: feature.properties,
+                  geometry: feature.geometry,
+                },
+                null,
+                2,
+              )}
+            </pre>
+          </div>
+        )}
+      </div>
     </WorkspacePanel>
   );
 }

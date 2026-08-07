@@ -26,6 +26,7 @@ import {
   type TileSnapshot,
 } from '../../comparison/index.js';
 import { useInspectorContext } from '../../context/InspectorContext.js';
+import { useInvestigationActions } from '../../context/InvestigationContext.js';
 import { useStatistics } from '../../hooks/use-statistics-settings.js';
 import {
   useHover,
@@ -82,11 +83,13 @@ import { Toolbar } from '../Toolbar.js';
 import { CommandPalette } from '../dialogs/CommandPalette.js';
 import { ShortcutOverlay } from '../dialogs/ShortcutOverlay.js';
 import { HelpOverlay } from '../dialogs/HelpOverlay.js';
+import { GlobalSearch } from '../command/GlobalSearch.js';
 import { NextStepBar } from '../navigation/NextStepBar.js';
 import { WorkspaceFooter } from './WorkspaceFooter.js';
 import { WorkspaceHeader } from './WorkspaceHeader.js';
 import { WorkspaceSidebar } from './WorkspaceSidebar.js';
 import { ResizablePanel } from './ResizablePanel.js';
+import { EngineeringConsole } from '../console/EngineeringConsole.js';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton profiler
@@ -115,6 +118,7 @@ export function Workspace({
   initialComparisonB,
 }: WorkspaceProps): JSX.Element {
   const { inspector, store } = useInspectorContext();
+  const investigationActions = useInvestigationActions();
   const lifecycle = useLifecycle(store);
   const search = useSearch(store);
   const stats = useStatistics(store);
@@ -135,6 +139,8 @@ export function Workspace({
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
   const [helpOverlayOpen, setHelpOverlayOpen] = useState(false);
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [consoleExpanded, setConsoleExpanded] = useState(false);
 
   const [activeFileName, setActiveFileName] = useState<string | null>(
     layout.lastFilePath ?? null,
@@ -255,11 +261,23 @@ export function Workspace({
           (result.summary.removedFeatures ?? 0) +
           (result.summary.modifiedFeatures ?? 0);
         comparisonCompleteToast(diffCount);
+        // Phase 4: update investigation context
+        investigationActions.setComparison({
+          filePathA: filePathA,
+          filePathB: filePathB,
+          isActive: true,
+        });
+        investigationActions.addTimelineEvent({
+          action: 'Comparison Complete',
+          detail: `${diffCount} differences found`,
+          workspace: 'compare',
+          icon: 'git-compare',
+        });
       } finally {
         setIsComparing(false);
       }
     }, 0);
-  }, [snapshotA, snapshotB]);
+  }, [snapshotA, snapshotB, filePathA, filePathB, investigationActions]);
 
   const regressionAnalysis = useMemo<RegressionAnalysis | null>(() => {
     if (!comparison) return null;
@@ -301,6 +319,13 @@ export function Workspace({
         if (cancelled) return;
         setLoadingStep('ready');
         tileLoadedToast(pendingFile.name);
+        // Phase 4: record in investigation context
+        investigationActions.setDatasetName(pendingFile.name);
+        investigationActions.addTimelineEvent({
+          action: 'Loaded Tile',
+          detail: pendingFile.name,
+          icon: 'zap',
+        });
       } catch (err) {
         if (!cancelled) {
           const msg = err instanceof Error ? err.message : 'Unknown error';
@@ -324,10 +349,16 @@ export function Workspace({
         case 'clearSelection': store.select(null, null); break;
         case 'resetView': inspector?.render(); break;
         case 'focusSearch': searchInputRef.current?.focus(); break;
+        case 'showExplore': setActiveTab('inspector'); break;
         case 'showDiagnostics': setActiveTab('diagnostics'); break;
+        case 'showStatistics': setActiveTab('statistics'); break;
+        case 'showStyle': setActiveTab('style-explorer'); break;
+        case 'showCompare': setActiveTab('compare'); break;
+        case 'showRegression': setActiveTab('regression'); break;
+        case 'showReports': setActiveTab('reports'); break;
         case 'openSettings':
         case 'showSettings': setSettingsOpen(true); break;
-        case 'showStatistics': setActiveTab('statistics'); break;
+        case 'goHome': onGoHome(); break;
         case 'toggleHover':
           inspector?.updateSettings({ hoverEnabled: !inspector.getSettings().hoverEnabled });
           break;
@@ -348,6 +379,16 @@ export function Workspace({
       if (e.ctrlKey && e.key === 'k') {
         e.preventDefault();
         setCommandPaletteOpen(true);
+        return;
+      }
+      if (e.ctrlKey && e.key === '/') {
+        e.preventDefault();
+        setGlobalSearchOpen(true);
+        return;
+      }
+      if (e.ctrlKey && e.key === '`') {
+        e.preventDefault();
+        setConsoleExpanded((v) => !v);
         return;
       }
       if (e.key === '?' && !e.ctrlKey && !e.altKey && !e.metaKey) {
@@ -392,6 +433,7 @@ export function Workspace({
         activePage={activeTab as any}
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenHelp={() => setHelpOverlayOpen(true)}
+        onGoHome={onGoHome}
       />
 
       {/* Body: Sidebar + content */}
@@ -587,6 +629,14 @@ export function Workspace({
       {/* Footer status bar */}
       <WorkspaceFooter viewport={viewport} fps={metrics.fps} />
 
+      {/* Engineering Console (Phase 4) */}
+      <EngineeringConsole
+        expanded={consoleExpanded}
+        onToggle={() => setConsoleExpanded((v) => !v)}
+        fps={metrics.fps}
+        fileName={activeFileName}
+      />
+
       {/* Overlays */}
       <AnimatePresence>
         {settingsOpen && (
@@ -611,6 +661,13 @@ export function Workspace({
           <HelpOverlay key="help" onClose={() => setHelpOverlayOpen(false)} />
         )}
       </AnimatePresence>
+
+      {/* Global Search (Phase 4) */}
+      <GlobalSearch
+        open={globalSearchOpen}
+        onClose={() => setGlobalSearchOpen(false)}
+        onNavigate={(page) => setActiveTab(page as NavTab)}
+      />
     </div>
   );
 }

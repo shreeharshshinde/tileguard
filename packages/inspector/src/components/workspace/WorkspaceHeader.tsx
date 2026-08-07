@@ -13,7 +13,6 @@
  */
 import {
   ArrowLeft,
-  ChevronRight,
   HelpCircle,
   Moon,
   Settings as SettingsIcon,
@@ -22,6 +21,7 @@ import {
 import { getNavigationService } from '../../services/NavigationService.js';
 import type { WorkspacePage } from '../../services/NavigationService.js';
 import { PresentationToggle } from '../presentation/PresentationToggle.js';
+import { InvestigationBreadcrumb } from '../investigation/InvestigationBreadcrumb.js';
 
 export interface WorkspaceHeaderProps {
   /** The currently active workspace page, used to derive page identity. */
@@ -30,6 +30,8 @@ export interface WorkspaceHeaderProps {
   readonly onOpenSettings?: (() => void) | undefined;
   /** Called when the user clicks the help icon. */
   readonly onOpenHelp?: (() => void) | undefined;
+  /** Called when the user requests to go home. */
+  readonly onGoHome?: (() => void) | undefined;
   /** Optional extra actions to render on the right side. */
   readonly actions?: React.ReactNode | undefined;
 }
@@ -38,6 +40,7 @@ export function WorkspaceHeader({
   activePage,
   onOpenSettings,
   onOpenHelp,
+  onGoHome,
   actions,
 }: WorkspaceHeaderProps): JSX.Element {
   const nav = getNavigationService();
@@ -53,7 +56,7 @@ export function WorkspaceHeader({
 
   return (
     <header className="flex h-12 shrink-0 items-center border-b border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-3">
-      {/* Left: brand + back + page identity */}
+      {/* Left: brand + back + breadcrumb */}
       <div className="flex min-w-0 flex-1 items-center gap-3">
         {/* Brand mark */}
         <div
@@ -82,32 +85,13 @@ export function WorkspaceHeader({
           </button>
         )}
 
-        {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1 sm:flex">
-          {meta.breadcrumb.map((segment, i) => {
-            const isLast = i === meta.breadcrumb.length - 1;
-            return (
-              <span key={`${segment}-${i}`} className="flex items-center gap-1">
-                <span
-                  className={[
-                    'truncate text-xs',
-                    isLast
-                      ? 'font-semibold text-[var(--tg-text-primary)]'
-                      : 'text-[var(--tg-text-muted)]',
-                  ].join(' ')}
-                >
-                  {segment}
-                </span>
-                {!isLast && (
-                  <ChevronRight
-                    className="h-3 w-3 shrink-0 text-[var(--tg-text-muted)]"
-                    aria-hidden="true"
-                  />
-                )}
-              </span>
-            );
-          })}
-        </nav>
+        {/* Phase 4: Context-aware investigation breadcrumb */}
+        <div className="hidden min-w-0 sm:block">
+          <InvestigationBreadcrumb
+            activePage={activePage}
+            {...(onGoHome !== undefined ? { onGoHome } : {})}
+          />
+        </div>
 
         {/* Mobile: show just the title */}
         <span className="truncate text-xs font-semibold text-[var(--tg-text-primary)] sm:hidden">
