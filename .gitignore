@@ -38,3 +38,7 @@ Thumbs.db
 # Real test tiles
 fixtures/real-tiles/
 fixtures/benchmark-cache/
+
+# Environment variables (secrets)
+.env
+.env.local
