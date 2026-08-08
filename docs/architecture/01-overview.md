@@ -42,18 +42,24 @@ depend on Core. The CLI depends on domain packages and Core. No package in an in
 ring may import from an outer ring.
 
 ```
-┌─────────────────────────────────────────────────┐
-│                     CLI                         │
-│  ┌───────────────────────────────────────────┐  │
-│  │            Domain Packages                │  │
-│  │  (tile-rules, style-rules, render-rules)  │  │
-│  │  ┌─────────────────────────────────────┐  │  │
-│  │  │              Core                   │  │  │
-│  │  │  Diagnostic · Artifact · Rule       │  │  │
-│  │  │  Reporter · Config · Engine         │  │  │
-│  │  └─────────────────────────────────────┘  │  │
-│  └───────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                CLI / Inspector                          │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │       Analysis · Config · Reporters               │  │
+│  │  ┌─────────────────────────────────────────────┐  │  │
+│  │  │            Domain Packages                  │  │  │
+│  │  │       (tile-rules, style-rules)             │  │  │
+│  │  │  ┌───────────────────────────────────────┐  │  │  │
+│  │  │  │             Shared                    │  │  │  │
+│  │  │  │  ┌─────────────────────────────────┐  │  │  │  │
+│  │  │  │  │            Core                  │  │  │  │  │
+│  │  │  │  │  Diagnostic · Artifact · Rule    │  │  │  │  │
+│  │  │  │  │  Reporter · Config · Engine      │  │  │  │  │
+│  │  │  │  └─────────────────────────────────┘  │  │  │  │
+│  │  │  └───────────────────────────────────────┘  │  │  │
+│  │  └─────────────────────────────────────────────┘  │  │
+│  └───────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ### 3. Rules Are Pure Functions of (Artifact, Config) → Diagnostic[]
@@ -104,42 +110,65 @@ graph TD
     subgraph DomainPkgs["Domain Packages"]
         TileRules["@tileguard/tile-rules"]
         StyleRules["@tileguard/style-rules"]
-        RenderRules["@tileguard/render-rules"]
     end
 
-    subgraph Reporters["Reporter Packages"]
+    subgraph AnalysisPkg["Analysis"]
+        Analysis["@tileguard/analysis"]
+    end
+
+    subgraph ReportersPkg["@tileguard/reporters"]
         TextReporter["Text Reporter"]
         JsonReporter["JSON Reporter"]
-        SarifReporter["SARIF Reporter"]
+        ReportEngine["Report Engine (Markdown, HTML, JSON)"]
+    end
+
+    subgraph ConfigPkg["@tileguard/config"]
+        ConfigLoader["Config Loader"]
+    end
+
+    subgraph SharedPkg["@tileguard/shared"]
+        Shared["Shared Utilities"]
     end
 
     subgraph CLI["@tileguard/cli"]
-        CLIApp["CLI Application"]
+        CLIApp["CLI Application (10 commands)"]
+    end
+
+    subgraph InspectorPkg["@tileguard/inspector (private)"]
+        Inspector["Visual Debugging Environment"]
     end
 
     CLIApp --> Engine
-    CLIApp --> Config
+    CLIApp --> ConfigLoader
     CLIApp --> TextReporter
     CLIApp --> JsonReporter
+    CLIApp --> Analysis
 
     TileRules --> Rule
     TileRules --> Diagnostic
     TileRules --> Artifact
+    TileRules --> Shared
 
     StyleRules --> Rule
     StyleRules --> Diagnostic
     StyleRules --> Artifact
+    StyleRules --> Shared
 
-    RenderRules --> Rule
-    RenderRules --> Diagnostic
-    RenderRules --> Artifact
+    Analysis --> Diagnostic
 
     TextReporter --> Reporter
     TextReporter --> Diagnostic
     JsonReporter --> Reporter
     JsonReporter --> Diagnostic
-    SarifReporter --> Reporter
-    SarifReporter --> Diagnostic
+    ReportEngine --> Diagnostic
+
+    ConfigLoader --> Config
+
+    Shared --> Core
+
+    Inspector --> TileRules
+    Inspector --> StyleRules
+    Inspector --> Analysis
 
     Engine --> Rule
     Engine --> Diagnostic

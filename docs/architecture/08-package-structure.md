@@ -28,33 +28,47 @@ tileguard/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
+│   ├── shared/                      ← @tileguard/shared
+│   │   ├── src/
+│   │   │   └── index.ts            ← Shared utilities
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
 │   ├── tile-rules/                  ← @tileguard/tile-rules
 │   │   ├── src/
 │   │   │   ├── index.ts            ← Plugin export + all rules
 │   │   │   ├── provider.ts         ← VectorTile artifact provider
 │   │   │   ├── types.ts            ← VectorTileArtifact, VectorTileContent, etc.
-│   │   │   ├── pbf-decoder.ts      ← Migrated custom MVT/PBF decoder
-│   │   │   ├── geometry.ts         ← Migrated geometry helpers
-│   │   │   ├── rules/
-│   │   │   │   ├── required-layers.ts
-│   │   │   │   ├── feature-count.ts
-│   │   │   │   ├── layer-feature-count.ts
-│   │   │   │   ├── required-properties.ts
-│   │   │   │   ├── coordinate-range.ts
-│   │   │   │   ├── degenerate-geometry.ts
-│   │   │   │   ├── unclosed-ring.ts
-│   │   │   │   ├── zero-area-ring.ts
-│   │   │   │   ├── self-intersection.ts
-│   │   │   │   └── no-empty.ts
+│   │   │   ├── pbf-decoder.ts      ← Custom MVT/PBF decoder
+│   │   │   ├── geometry.ts         ← Geometry helpers (ring area, intersection, etc.)
+│   │   │   ├── browser.ts          ← Browser-compatible entry point
+│   │   │   ├── browser-rules.ts    ← Browser-compatible rule bundle
+│   │   │   └── rules/
+│   │   │       ├── required-layers.ts
+│   │   │       ├── feature-count.ts
+│   │   │       ├── layer-feature-count.ts
+│   │   │       ├── required-properties.ts
+│   │   │       ├── coordinate-range.ts
+│   │   │       ├── degenerate-geometry.ts
+│   │   │       ├── unclosed-ring.ts
+│   │   │       ├── zero-area-ring.ts
+│   │   │       ├── self-intersection.ts
+│   │   │       └── no-empty.ts
 │   │   ├── tests/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
 │   ├── style-rules/                 ← @tileguard/style-rules
 │   │   ├── src/
-│   │   │   ├── index.ts
+│   │   │   ├── index.ts            ← Plugin export + all rules
+│   │   │   ├── analysis.ts         ← Secondary ./analysis entry point
 │   │   │   ├── provider.ts         ← StyleSpecification artifact provider
 │   │   │   ├── types.ts            ← StyleArtifact, StyleLayer, etc.
+│   │   │   ├── models/             ← StyleDocument, StyleLayer, StyleExpression, etc.
+│   │   │   ├── parser/             ← StyleParser, ExpressionParser, FilterParser
+│   │   │   ├── resolver/           ← SemanticResolver
+│   │   │   ├── validator/          ← StyleValidator, ExpressionValidator, LayerValidator, etc.
+│   │   │   ├── services/           ← StyleAnalysisEngine
 │   │   │   └── rules/
 │   │   │       ├── valid-json.ts
 │   │   │       ├── version.ts
@@ -69,43 +83,125 @@ tileguard/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── cli/                         ← @tileguard/cli (the `tileguard` command)
+│   ├── config/                      ← @tileguard/config
 │   │   ├── src/
-│   │   │   ├── index.ts            ← CLI entry point
-│   │   │   ├── commands/
-│   │   │   │   ├── check.ts        ← `tileguard check` (primary command)
-│   │   │   │   └── init.ts         ← `tileguard init` (generate config)
-│   │   │   ├── config-loader.ts    ← Find and load config files
-│   │   │   └── reporters/
-│   │   │       ├── text.ts         ← TextReporter implementation
-│   │   │       └── json.ts         ← JsonReporter implementation
-│   │   ├── bin/
-│   │   │   └── tileguard.ts
+│   │   │   ├── index.ts            ← Public API
+│   │   │   ├── finder.ts           ← Config file discovery
+│   │   │   ├── loader.ts           ← Config file loading (supports .ts via jiti)
+│   │   │   └── validator.ts        ← Schema validation
+│   │   ├── tests/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   └── legacy/                      ← Current JS/Python code (preserved, not maintained)
-│       ├── js/                      ← Existing packages/js/
-│       └── python/                  ← Existing packages/python/
+│   ├── reporters/                   ← @tileguard/reporters
+│   │   ├── src/
+│   │   │   ├── index.ts            ← Public API
+│   │   │   ├── text-reporter.ts    ← Human-readable terminal output
+│   │   │   ├── json-reporter.ts    ← Structured JSON output
+│   │   │   └── report/             ← Engineering report engine
+│   │   │       ├── ReportEngine.ts
+│   │   │       ├── ReportAssembler.ts
+│   │   │       ├── ReporterRegistry.ts
+│   │   │       ├── models/
+│   │   │       │   └── EngineeringReport.ts
+│   │   │       ├── reporters/
+│   │   │       │   ├── MarkdownReporter.ts
+│   │   │       │   ├── HtmlReporter.ts
+│   │   │       │   └── JsonReporter.ts
+│   │   │       └── utils/
+│   │   │           ├── MarkdownWriter.ts
+│   │   │           └── HtmlWriter.ts
+│   │   ├── tests/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── analysis/                    ← @tileguard/analysis
+│   │   ├── src/
+│   │   │   ├── index.ts            ← Public API
+│   │   │   ├── ComparisonEngine.ts ← Tile-to-tile comparison
+│   │   │   ├── RegressionEngine.ts ← Regression detection across versions
+│   │   │   ├── FeatureMatcher.ts   ← Feature correspondence matching
+│   │   │   ├── GeometryDiffer.ts   ← Geometry-level diffing
+│   │   │   ├── PropertyDiffer.ts   ← Property-level diffing
+│   │   │   ├── ConfidenceScorer.ts ← Match confidence scoring
+│   │   │   ├── EvidenceBuilder.ts  ← Structured evidence for regressions
+│   │   │   ├── SnapshotFactory.ts  ← Snapshot creation for baselines
+│   │   │   └── models/
+│   │   │       ├── comparison.ts
+│   │   │       ├── regression.ts
+│   │   │       └── statistics.ts
+│   │   ├── tests/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── cli/                         ← @tileguard/cli (the `tileguard` command)
+│   │   ├── src/
+│   │   │   ├── bin.ts              ← Binary entry point
+│   │   │   ├── index.ts            ← CLI orchestration
+│   │   │   ├── commands/
+│   │   │   │   ├── analyze.ts      ← `tileguard analyze` (deep analysis)
+│   │   │   │   ├── check.ts        ← `tileguard check` (primary validation)
+│   │   │   │   ├── compare.ts      ← `tileguard compare` (tile comparison)
+│   │   │   │   ├── doctor.ts       ← `tileguard doctor` (config diagnostics)
+│   │   │   │   ├── init.ts         ← `tileguard init` (generate config)
+│   │   │   │   ├── report.ts       ← `tileguard report` (generate reports)
+│   │   │   │   ├── rules.ts        ← `tileguard rules` (list available rules)
+│   │   │   │   ├── stats.ts        ← `tileguard stats` (run statistics)
+│   │   │   │   ├── style.ts        ← `tileguard style` (style-specific checks)
+│   │   │   │   └── version.ts      ← `tileguard version` (version info)
+│   │   │   ├── config/             ← Config loading integration
+│   │   │   ├── runner/             ← Command execution runners
+│   │   │   ├── logging/            ← Structured logging
+│   │   │   ├── output/             ← Output formatting
+│   │   │   └── ...                 ← Utility modules
+│   │   ├── tests/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── inspector/                   ← @tileguard/inspector (private, not published)
+│       ├── src/
+│       │   ├── main.tsx            ← React app entry
+│       │   ├── components/         ← UI components
+│       │   ├── render/             ← Canvas rendering
+│       │   ├── analysis/           ← Visual analysis tools
+│       │   ├── comparison/         ← Side-by-side comparison
+│       │   ├── viewport/           ← Camera and viewport management
+│       │   ├── interaction/        ← User interaction handling
+│       │   ├── services/           ← Inspector services
+│       │   ├── store/              ← State management
+│       │   └── ...                 ← Additional subsystems
+│       ├── tests/
+│       ├── package.json
+│       └── vite.config.ts
 │
-├── fixtures/                        ← Shared test fixtures (unchanged)
-│   ├── fill-color/
-│   ├── fill-extrusion/
-│   ├── line-dasharray/
-│   ├── line-width/
-│   ├── raster-opacity/
-│   └── symbol-placement/
+├── fixtures/                        ← Shared test fixtures
+│   ├── good/                        ← Valid test artifacts
+│   ├── bad/                         ← Known-invalid artifacts
+│   ├── edge-cases/                  ← Edge case scenarios
+│   ├── real-tiles/                  ← Real-world tile fixtures
+│   ├── synthetic/                   ← Programmatically generated fixtures
+│   └── benchmark-cache/             ← Cached tiles for benchmarks
+│
+├── legacy/                          ← Original JS/Python prototype (frozen)
+│   ├── js/
+│   └── python/
 │
 ├── docs/
 │   ├── architecture/                ← This handbook
-│   └── rules/                       ← Per-rule documentation (generated + manual)
+│   └── rules/                       ← Per-rule documentation
+│
+├── scripts/                         ← Build & CI scripts
+├── demo/                            ← Demo fixtures (FOSS4G presentation)
+├── analysis/                        ← Research analysis artifacts
 │
 ├── .github/
 │   └── workflows/
 │       └── tile-quality.yml
 │
-├── tileguard.config.ts              ← Dogfood: TileGuard validates itself
+├── tileguard.config.mjs             ← Dogfood: TileGuard validates itself
+├── biome.json                       ← Linter/formatter configuration
 ├── tsconfig.base.json               ← Shared TypeScript config
+├── pnpm-workspace.yaml              ← Workspace definition
 ├── package.json                     ← Workspace root
 ├── README.md
 ├── CONTRIBUTING.md
@@ -119,25 +215,35 @@ tileguard/
 | Package | npm Name | Responsibility |
 |:--------|:---------|:---------------|
 | `core` | `@tileguard/core` | Framework contracts: types, interfaces, engine |
-| `tile-rules` | `@tileguard/tile-rules` | VectorTile provider + all tile validation rules |
-| `style-rules` | `@tileguard/style-rules` | StyleSpecification provider + all style lint rules |
-| `cli` | `tileguard` | CLI application, config loading, built-in reporters |
+| `shared` | `@tileguard/shared` | Shared utilities and helpers used across packages |
+| `tile-rules` | `@tileguard/tile-rules` | VectorTile provider + 10 tile validation rules |
+| `style-rules` | `@tileguard/style-rules` | StyleSpecification provider + 9 style lint rules + parser/resolver/validator subsystem |
+| `config` | `@tileguard/config` | Configuration file discovery, loading, and schema validation |
+| `reporters` | `@tileguard/reporters` | Output reporters: text, JSON, plus report engine (Markdown, HTML, JSON reports) |
+| `analysis` | `@tileguard/analysis` | Comparison and regression analysis engine (ComparisonEngine, RegressionEngine, FeatureMatcher, GeometryDiffer) |
+| `cli` | `@tileguard/cli` | CLI application: 10 commands (analyze, check, compare, doctor, init, report, rules, stats, style, version) |
+| `inspector` | `@tileguard/inspector` | Private visual debugging environment (React + Canvas, not published to npm) |
 
-### Why `cli` Is Published as `tileguard` (Not `@tileguard/cli`)
+### Why `cli` Is Published as `@tileguard/cli`
 
-The CLI is the primary user-facing package. Users should be able to run:
+The CLI package is published as `@tileguard/cli` and provides the `tileguard`
+binary. Users run:
 
 ```bash
-npx tileguard check tile.pbf
+npx @tileguard/cli check tile.pbf
 ```
 
-An unscoped package name makes this natural. The scoped name
-`@tileguard/cli` would require `npx @tileguard/cli check tile.pbf`, which
-is verbose and unfamiliar.
+Or install globally for direct access:
 
-The CLI package depends on `@tileguard/core`, `@tileguard/tile-rules`, and
-`@tileguard/style-rules`. Installing `tileguard` installs everything a
-typical user needs.
+```bash
+npm install -g @tileguard/cli
+tileguard check tile.pbf
+```
+
+The CLI package depends on `@tileguard/core`, `@tileguard/config`,
+`@tileguard/reporters`, `@tileguard/tile-rules`, `@tileguard/style-rules`,
+and `@tileguard/analysis`. Installing it provides the full validation
+toolchain.
 
 ---
 
@@ -152,36 +258,58 @@ The dependency graph must follow the inward-pointing rule from the
 
 ```mermaid
 graph TD
-    CLI["tileguard (CLI)"]
+    CLI["@tileguard/cli"]
+    Inspector["@tileguard/inspector (private)"]
+    Analysis["@tileguard/analysis"]
+    Config["@tileguard/config"]
+    Reporters["@tileguard/reporters"]
     TileRules["@tileguard/tile-rules"]
     StyleRules["@tileguard/style-rules"]
+    Shared["@tileguard/shared"]
     Core["@tileguard/core"]
 
     CLI --> Core
+    CLI --> Config
+    CLI --> Reporters
     CLI --> TileRules
     CLI --> StyleRules
+    CLI --> Analysis
+    Inspector --> Core
+    Inspector --> Analysis
+    Inspector --> Reporters
+    Inspector --> TileRules
+    Inspector --> StyleRules
+    Analysis --> Core
+    Config --> Core
+    Reporters --> Core
     TileRules --> Core
+    TileRules --> Shared
     StyleRules --> Core
+    StyleRules --> Shared
+    Shared --> Core
     TileRules -.->|FORBIDDEN| StyleRules
     StyleRules -.->|FORBIDDEN| TileRules
-    TileRules -.->|FORBIDDEN| CLI
     Core -.->|FORBIDDEN| TileRules
     Core -.->|FORBIDDEN| CLI
 ```
 
 **Allowed:**
-- `cli` → `core`, `tile-rules`, `style-rules`
-- `tile-rules` → `core`
-- `style-rules` → `core`
+- `cli` → `core`, `config`, `reporters`, `tile-rules`, `style-rules`, `analysis`
+- `inspector` → `core`, `analysis`, `reporters`, `tile-rules`, `style-rules`
+- `analysis` → `core`
+- `config` → `core`
+- `reporters` → `core`
+- `tile-rules` → `core`, `shared`
+- `style-rules` → `core`, `shared`
+- `shared` → `core`
 
 **Forbidden:**
 - `core` → any other package (Core has zero internal dependencies)
 - `tile-rules` ↔ `style-rules` (domain packages are independent)
 - Any package → `cli` (CLI is a leaf consumer)
 
-These rules should be enforced by a workspace constraint tool (e.g., a
-simple lint script that checks `package.json` dependencies against the
-allowed graph).
+These rules are enforced by the workspace constraint check in the CI pipeline
+(`scripts/check-boundaries.mjs`).
 
 ---
 
@@ -196,10 +324,18 @@ lightweight and stable as possible.
 
 Dev dependencies: TypeScript, Vitest (testing).
 
+### Shared (`@tileguard/shared`)
+
+Runtime dependencies:
+- `@tileguard/core`
+
+Dev dependencies: TypeScript.
+
 ### Tile Rules (`@tileguard/tile-rules`)
 
-Minimal runtime dependencies:
-- `@tileguard/core` (peer dependency)
+Runtime dependencies:
+- `@tileguard/core`
+- `@tileguard/shared`
 
 The PBF decoder is a custom implementation (migrated from the existing
 codebase). It does not depend on `@mapbox/vector-tile` or `pbf`. This
@@ -208,24 +344,51 @@ actually use.
 
 ### Style Rules (`@tileguard/style-rules`)
 
-Minimal runtime dependencies:
-- `@tileguard/core` (peer dependency)
+Runtime dependencies:
+- `@tileguard/core`
+- `@tileguard/shared`
 
-The style linter implements its own checks. If deeper MapLibre spec
-validation is needed, `@maplibre/maplibre-gl-style-spec` can be added as
-an optional dependency.
+Exports a secondary `./analysis` entry point for style analysis services.
+Includes a full parser/resolver/validator subsystem for MapLibre style specs.
 
-### CLI (`tileguard`)
+### Config (`@tileguard/config`)
 
 Runtime dependencies:
 - `@tileguard/core`
+- `jiti` (for loading TypeScript config files without compilation)
+
+### Reporters (`@tileguard/reporters`)
+
+Runtime dependencies:
+- `@tileguard/core`
+
+Provides text and JSON reporters for CLI output, plus a report engine that
+generates Markdown, HTML, and JSON engineering reports.
+
+### Analysis (`@tileguard/analysis`)
+
+Runtime dependencies:
+- `@tileguard/core`
+
+Provides ComparisonEngine, RegressionEngine, FeatureMatcher, GeometryDiffer,
+PropertyDiffer, ConfidenceScorer, EvidenceBuilder, and SnapshotFactory.
+
+### CLI (`@tileguard/cli`)
+
+Runtime dependencies:
+- `@tileguard/core`
+- `@tileguard/config`
+- `@tileguard/reporters`
 - `@tileguard/tile-rules`
 - `@tileguard/style-rules`
+- `@tileguard/analysis`
+- `commander` (argument parsing)
+- `fast-glob` (file discovery)
 
-The CLI's own dependencies should be minimal. Current candidates:
-- Argument parsing: built-in `node:util.parseArgs` (Node 18+), no library
-- Config loading: custom implementation or `jiti` for TypeScript config files
-- Colors: `picocolors` (minimal terminal color library, <1KB)
+### Inspector (`@tileguard/inspector`) — Private
+
+Not published. Runtime dependencies include React, Radix UI, Framer Motion,
+and several internal packages. Uses Vite for development/build.
 
 ---
 
@@ -261,16 +424,16 @@ Each package's `tsconfig.json` extends this and adds its own `include`,
 
 ### Workspace Manager
 
-npm workspaces (native, no Lerna/Nx dependency):
+pnpm workspaces (configured via `pnpm-workspace.yaml`):
 
-```jsonc
-// Root package.json
-{
-  "name": "tileguard-workspace",
-  "private": true,
-  "workspaces": ["packages/*"]
-}
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - 'packages/*'
 ```
+
+pnpm provides strict node_modules isolation, faster installs, and workspace
+protocol (`workspace:*`) for internal dependencies.
 
 ### Testing
 
@@ -291,7 +454,7 @@ packages/core/dist/
 ```
 
 Packages ship as ESM only. CommonJS is not supported. The minimum Node.js
-version is 18 (current LTS at time of writing).
+version is 20 (current LTS).
 
 ---
 
