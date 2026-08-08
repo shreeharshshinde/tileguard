@@ -75,6 +75,34 @@ Lists all rules contributed by configured plugins — their IDs, default severit
 
 Reserved stubs — print a "coming in a future release" notice and exit 0. The namespace is declared now so `--help` output doesn't need restructuring later.
 
+### `analyze <source>`
+
+Performs deep analysis of a single artifact — producing detailed statistics, layer breakdowns, and feature distributions beyond what `check` reports.
+
+### `compare <source> <target>`
+
+Compares two tile artifacts structurally, producing a comparison report with layer-level diffs, feature matching, and delta statistics. Uses `@tileguard/analysis` for feature correspondence.
+
+### `doctor`
+
+Checks the local environment for common configuration issues: validates the config file, verifies plugin availability, and reports potential problems.
+
+### `report`
+
+Generates engineering reports (Markdown, HTML, or JSON) from previous analysis/comparison results. Uses the ReportEngine from `@tileguard/reporters`.
+
+### `stats <sources...>`
+
+Produces aggregate statistics about tile/style artifacts: layer counts, feature distributions, property schemas, and geometry type breakdowns.
+
+### `style <source>`
+
+Style-specific analysis: runs style rules and provides additional style-level information (source usage, layer hierarchy, expression types).
+
+### `version`
+
+Prints the TileGuard version and exits.
+
 ---
 
 ## Configuration
@@ -183,7 +211,7 @@ All presentation output (startup banner, progress, warnings about missing config
 
 ## Testing
 
-**49 tests, 8 test files** — all passing.
+**222 tests, 19 test files** — all passing.
 
 | File | What it covers |
 |:-----|:---------------|

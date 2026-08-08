@@ -2,7 +2,7 @@
 
 Vector tile artifact provider and validation rules for TileGuard.
 
-This package delivers `tilePlugin` — a self-contained TileGuard plugin that loads Mapbox Vector Tile (`.pbf` / `.mvt`) files as `VectorTile` artifacts and runs ten independent validation rules against them. It ships a zero-dependency custom PBF/protobuf decoder and a full geometry analysis library. It depends only on `@tileguard/core` at runtime.
+This package delivers `tilePlugin` — a self-contained TileGuard plugin that loads Mapbox Vector Tile (`.pbf` / `.mvt`) files as `VectorTile` artifacts and runs ten independent validation rules against them. It ships a zero-dependency custom PBF/protobuf decoder and a full geometry analysis library. It depends only on `@tileguard/core` and `@tileguard/shared` at runtime.
 
 ---
 

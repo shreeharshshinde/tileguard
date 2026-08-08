@@ -2,7 +2,7 @@
 
 MapLibre style specification provider and lint rules for TileGuard.
 
-This package delivers `stylePlugin` — a self-contained TileGuard plugin that loads style JSON files (or raw JSON strings) as `StyleSpecification` artifacts and runs nine independent lint rules against them. It depends only on `@tileguard/core` at runtime.
+This package delivers `stylePlugin` — a self-contained TileGuard plugin that loads style JSON files (or raw JSON strings) as `StyleSpecification` artifacts and runs nine independent lint rules against them. It depends only on `@tileguard/core` and `@tileguard/shared` at runtime.
 
 ---
 

@@ -12,7 +12,28 @@ Built-in output reporters for the TileGuard quality analysis framework. Reporter
 |:---------|:---------|:-------|:------------|
 | `textReporter` | `--reporter text` (default) | stdout | Human-readable terminal output with ANSI color, severity icons, and source grouping |
 | `jsonReporter` | `--reporter json` | stdout | Structured `{ diagnostics, summary }` JSON for CI pipelines and programmatic consumption |
-| `sarifReporter` | `--reporter sarif` | file | SARIF 2.1.0 for GitHub Code Scanning *(planned — Phase 6)* |
+
+## Report Engine
+
+In addition to real-time diagnostic reporters, this package includes a full **engineering report engine** that generates comprehensive analysis reports from comparison and regression data:
+
+| Format | Description |
+|:-------|:------------|
+| Markdown | GitHub-ready engineering reports (Issues, PRs, CI summaries) |
+| HTML | Self-contained dashboard with embedded styles |
+| JSON | Machine-readable report API (`schemaVersion: 2`) |
+
+Reports include: executive summary, key findings, layer impact analysis, regression candidates with confidence scores, diagnostic breakdowns, before/after statistics, prioritized recommendations, and full evidence appendix.
+
+```typescript
+import { ReportEngine } from '@tileguard/reporters';
+
+const engine = new ReportEngine();
+const report = engine.generate({ comparison, regressions, diagnostics });
+const markdown = engine.render(report, 'markdown');
+const html = engine.render(report, 'html');
+const json = engine.render(report, 'json');
+```
 
 ---
 
@@ -214,13 +235,14 @@ pnpm --filter @tileguard/reporters test
 pnpm --filter @tileguard/reporters test:watch
 ```
 
-**Test coverage: 43 tests across 3 suites**
+**Test coverage: 94 tests across 4 suites**
 
 | Suite | Tests | Covers |
 |:------|------:|:-------|
 | `text-reporter.test.ts` | 23 | Severity icons, PASS/FAIL verdicts, source grouping, location breadcrumbs (including region), suggestions, summary, color modes |
 | `json-reporter.test.ts` | 15 | Output structure, diagnostic serialization, summary stats, indentation options |
-| `stress-and-edge.test.ts` | 5 | Emojis & Unicode strings, extremely long paths (1,000+ chars) & messages (5,000+ chars), boundary context values, high-volume stress (2,000+ items), browser portability checks (non-Node execution) |
+| `report-engine.test.ts` | 46 | ReportEngine, ReportAssembler, Markdown/HTML/JSON rendering, evidence chains, recommendations, schema version |
+| `stress-and-edge.test.ts` | 10 | Emojis & Unicode strings, extremely long paths (1,000+ chars) & messages (5,000+ chars), boundary context values, high-volume stress (2,000+ items), browser portability checks (non-Node execution) |
 
 All test suites use the injectable `write` function to capture output without touching real stdout, ensuring 100% deterministic test execution.
 
@@ -238,14 +260,12 @@ The reporters are validated against extreme inputs and runtime settings to ensur
 
 ## 🚀 Future Scope
 
-While the reference implementation focuses on standard terminal and JSON output, the `@tileguard/reporters` architecture is designed to support rich developer integrations. 
+While the package already includes text, JSON, and the full engineering report engine (Markdown, HTML, JSON), the architecture supports further extensions:
 
 ### Planned Reporters
 
 - **SARIF (Static Analysis Results Interchange Format):** Standard JSON format for integration with security and code-scanning platforms like GitHub Code Scanning.
-- **Rich HTML Reports:** Interactive standalone HTML reports for visual review of validation runs, including map previews of vector tile features.
 - **GitHub PR Annotations:** Native output format formatting to directly annotate line-level linting/validation warnings in GitHub Actions.
-- **Markdown Summaries:** Clean formatting optimized for CI step summaries (e.g., GitHub Step Summary markdown outputs).
 
 ### Future Framework Roadmaps
 
