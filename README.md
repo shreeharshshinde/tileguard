@@ -262,10 +262,12 @@ TileGuard is a pnpm monorepo. Dependencies flow strictly inward — Core depends
 | `@tileguard/core` | Framework contracts: Diagnostic, Artifact, Rule, Plugin, Reporter, Engine | ✅ Stable |
 | `@tileguard/shared` | Utilities shared across domain packages | ✅ Stable |
 | `@tileguard/tile-rules` | MVT provider + 10 tile validation rules | ✅ Stable |
-| `@tileguard/style-rules` | Style provider + 9 style lint rules | ✅ Stable |
+| `@tileguard/style-rules` | Style provider + 9 style lint rules + parser/resolver/validator | ✅ Stable |
 | `@tileguard/config` | Configuration file discovery, compilation, and schema validation | ✅ Stable |
-| `@tileguard/reporters` | Built-in `text` and `json` reporters | ✅ Stable |
-| `tileguard` (CLI) | Unified command-line interface check/init commands | ✅ Stable |
+| `@tileguard/reporters` | Built-in `text` and `json` reporters + report engine (Markdown, HTML, JSON) | ✅ Stable |
+| `@tileguard/analysis` | Comparison and regression analysis engine | ✅ Stable |
+| `@tileguard/cli` | Unified CLI: analyze, check, compare, doctor, init, report, rules, stats, style, version | ✅ Stable |
+| `@tileguard/inspector` | Visual debugging environment (private, not published) | ✅ Stable |
 
 A project using only tile validation never loads the style package. A project using only style linting never loads the tile package. Packages are independently installable.
 
@@ -297,7 +299,7 @@ Key design decisions are documented as ADRs in [`docs/architecture/adr/`](docs/a
 
 ## Project Status
 
-The framework's architectural foundation is complete. Two domain packages are fully implemented, tested end-to-end against real fixture files, and stable. The CLI and reporters are the active development milestone.
+The framework is complete and stable across all packages. Nine packages are fully implemented, tested end-to-end against real fixture files, and stable.
 
 | Component | Status | Notes |
 |:----------|:-------|:------|
@@ -306,12 +308,14 @@ The framework's architectural foundation is complete. Two domain packages are fu
 | `@tileguard/tile-rules` | ✅ Complete | 10 rules, verified against physical `.pbf` fixtures |
 | `@tileguard/style-rules` | ✅ Complete | 9 rules, verified against physical style fixtures |
 | `@tileguard/config` | ✅ Complete | Pre-engine config discovery, loading, and shape validation |
-| `@tileguard/reporters` | ✅ Complete | `text` and `json` reporters |
-| CLI (`tileguard`) | ✅ Complete | `check` and `init` commands |
+| `@tileguard/reporters` | ✅ Complete | `text` and `json` reporters + report engine (Markdown, HTML, JSON) |
+| `@tileguard/analysis` | ✅ Complete | Comparison, regression detection, feature matching |
+| CLI (`tileguard`) | ✅ Complete | 10 commands: analyze, check, compare, doctor, init, report, rules, stats, style, version |
+| `@tileguard/inspector` | ✅ Complete | Visual debugging environment (private) |
 | Render regression testing | 📋 Planned | Perceptual pixel comparison via headless rendering |
 | CI workflow | ✅ Complete | Build, test, dependency boundary lint, per-rule test coverage |
 
-**1,635 tests passing**, including end-to-end verification against real files on disk — not mocked artifacts — for both domain packages. The prototype in `legacy/js/` and `legacy/python/` is frozen and retained as a behavioral regression oracle; see the [Codebase Assessment](docs/engineering/CODEBASE_ASSESSMENT.md) for the full migration map.
+**~1,838 tests passing** across 96 test files, including end-to-end verification against real files on disk — not mocked artifacts — for both domain packages. The prototype in `legacy/js/` and `legacy/python/` is frozen and retained as a behavioral regression oracle; see the [Codebase Assessment](docs/engineering/CURRENT_CODEBASE_ASSESSMENT.md) for the full migration map.
 
 ---
 
