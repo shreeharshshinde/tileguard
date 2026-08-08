@@ -26,7 +26,7 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
 
     // Skip layers that use label duplication (placing points far outside extent for cross-tile rendering).
     const excludeLayers = new Set(
-      context.options?.excludeLayers ?? ['place', 'water_name', 'centroids'],
+      context.options?.excludeLayers ?? ['place', 'water_name', 'centroids', 'poi', 'housenumber', 'transportation_name'],
     );
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {

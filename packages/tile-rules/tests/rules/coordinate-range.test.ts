@@ -364,8 +364,13 @@ describe('tile/coordinate-range', () => {
 
   // ── Group 3 — False-negative guard ──────────────────────────────────────
 
-  it('false-negative guard — poi layer with corrupt point IS flagged (not in excludeLayers)', async () => {
-    const engine = createEngine({ plugins: [plugin] });
+  it('false-negative guard — poi layer with corrupt point IS flagged when not excluded', async () => {
+    const engine = createEngine({
+      plugins: [plugin],
+      rules: {
+        'tile/coordinate-range': ['error', { excludeLayers: [] }],
+      },
+    });
     const source = await makeTile([
       {
         name: 'poi',

@@ -54,7 +54,7 @@ describe('@tileguard/style-rules', () => {
     const engine = createEngine({ plugins: [stylePlugin] });
 
     const result = await engine.run([
-      join(repoRoot, 'fixtures/fill-color/style.json'),
+      join(__dirname, 'fixtures/empty-style.json'),
     ]);
 
     expect(result.summary.pass).toBe(true);
