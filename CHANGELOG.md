@@ -11,7 +11,7 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Highlights
 
-First release candidate. The complete framework — from CLI through analysis to visual inspection — is functional and tested. **1,635 tests passing** across 9 packages.
+First release candidate. The complete framework — from CLI through analysis to visual inspection — is functional and tested. **~1,838 tests passing** across 9 packages.
 
 ### Added
 
