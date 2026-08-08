@@ -51,7 +51,7 @@ They are referenced from the subsystem documents where relevant.
 | 06 | [Configuration](./06-configuration.md) | Config schema, resolution, rule overrides |
 | 07 | [Engine](./07-engine.md) | Core orchestration: the run pipeline |
 | 08 | [Package Structure](./08-package-structure.md) | Monorepo layout, dependency graph, build tooling |
-| 09 | [Implementation Roadmap](./09-implementation-roadmap.md) | Phased milestones with dependency ordering |
+| — | [Execution Roadmap](../../ROADMAP.md) | Phased milestones with dependency ordering (root-level) |
 
 ### Architecture Decision Records
 
@@ -62,6 +62,12 @@ They are referenced from the subsystem documents where relevant.
 | [ADR-003](./adr/003-diagnostic-as-contract.md) | Structured diagnostics as the universal interface contract |
 | [ADR-004](./adr/004-direct-artifact-access.md) | Direct artifact access over visitor pattern |
 | [ADR-005](./adr/005-flat-configuration.md) | Flat configuration over cascading config resolution |
+| [ADR-006](./adr/006-coordinate-range-defaults.md) | Coordinate range rule default thresholds |
+| [ADR-007](./adr/007-self-intersection-hardening.md) | Self-intersection detection hardening strategy |
+| [ADR-008](./adr/008-inspector-architecture.md) | Inspector subsystem architecture |
+| [ADR-009](./adr/009-canvas-renderer-contract.md) | Canvas renderer contract |
+| [ADR-010](./adr/010-shared-analysis-engine.md) | Shared analysis engine extraction |
+| [ADR-011](./adr/011-style-analysis-package-boundaries.md) | Style analysis package boundaries |
 
 ### Guidelines & Operations
 

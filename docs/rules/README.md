@@ -1,6 +1,6 @@
 # Rule Docs: `docs/rules/`
 
-This directory contains per-rule reference documentation for all 19 TileGuard v0.3.0 rules.
+This directory contains per-rule reference documentation for all 19 built-in TileGuard rules.
 
 ## Style Rules (`@tileguard/style-rules`)
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
@@ -82,4 +82,4 @@ This directory contains per-rule reference documentation for all 19 TileGuard v0
 
 ---
 
-*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.3.0*
+*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.5.0*
