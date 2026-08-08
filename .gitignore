@@ -13,6 +13,7 @@ dist/
 
 # Python
 legacy/python/venv/
+.venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -42,3 +43,10 @@ fixtures/benchmark-cache/
 # Environment variables (secrets)
 .env
 .env.local
+
+# Large analysis data (keep locally, don't ship)
+analysis/**/*.csv
+analysis/**/*.json
+analysis/**/*.ipynb
+!analysis/**/classification.json
+!analysis/**/decoder-crosscheck.json
