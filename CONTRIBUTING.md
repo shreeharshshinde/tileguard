@@ -17,7 +17,7 @@ pnpm install
 # Build all packages
 pnpm build
 
-# Run all tests (1,635 tests across 8 packages)
+# Run all tests (~1,838 tests across 9 packages)
 pnpm test
 
 # Start the Inspector dev server

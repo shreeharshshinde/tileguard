@@ -14,7 +14,7 @@
 
 - [ ] Unit tests added/updated
 - [ ] `pnpm build` passes
-- [ ] `pnpm test` passes (1,635 tests)
+- [ ] `pnpm test` passes (~1,838 tests)
 - [ ] `pnpm lint` passes
 
 ## Type
