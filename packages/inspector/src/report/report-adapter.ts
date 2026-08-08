@@ -9,9 +9,9 @@
  * Boundary: imports only from comparison/models and analysis/models/regression.
  */
 
-import type { TileComparison } from '../comparison/models.js';
-import type { RegressionAnalysis } from '../analysis/models/regression.js';
 import type { ComparisonInput, RegressionInput } from '@tileguard/reporters';
+import type { RegressionAnalysis } from '../analysis/models/regression.js';
+import type { TileComparison } from '../comparison/models.js';
 
 export interface ReportInputs {
   readonly comparisonInput: ComparisonInput;
@@ -78,13 +78,18 @@ export function buildReportInputs(
     overallConfidence: regression.confidence,
     dominantKind: regression.summary.dominantKind,
     candidates: regression.candidates.map((c) => ({
-      layerName: c.feature.featureA?.layerName ?? c.feature.featureB?.layerName ?? 'unknown',
+      layerName:
+        c.feature.featureA?.layerName ??
+        c.feature.featureB?.layerName ??
+        'unknown',
       featureId: c.feature.featureA?.id ?? c.feature.featureB?.id,
       confidence: c.confidence,
       kind: c.kind,
       topReason: c.reasons[0]?.description ?? '',
       evidenceLabels: c.evidence.map((e) => e.label),
-      timelineLabels: c.timeline.map((t) => t.label + (t.detail ? ` (${t.detail})` : '')),
+      timelineLabels: c.timeline.map(
+        (t) => t.label + (t.detail ? ` (${t.detail})` : ''),
+      ),
       recommendations: c.recommendations.map((r) => r.action),
     })),
   };

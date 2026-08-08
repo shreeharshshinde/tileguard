@@ -14,12 +14,15 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
+import type {
+  WorkspaceLayout,
+  WorkspaceTab,
+} from '../src/services/WorkspaceService.js';
 import {
   DEFAULT_LAYOUT,
   getWorkspaceService,
   resetWorkspaceServiceInstance,
 } from '../src/services/WorkspaceService.js';
-import type { WorkspaceLayout, WorkspaceTab } from '../src/services/WorkspaceService.js';
 
 // ---------------------------------------------------------------------------
 // localStorage mock (matches pattern in workspace-service.test.ts)
@@ -30,20 +33,33 @@ type AnyGlobal = any;
 
 const STORAGE_KEY = 'tileguard:inspector:workspace:v1';
 
-function makeLocalStorageMock(initial: Record<string, string> = {}): Storage & { _store: Record<string, string> } {
+function makeLocalStorageMock(
+  initial: Record<string, string> = {},
+): Storage & { _store: Record<string, string> } {
   const _store: Record<string, string> = { ...initial };
   return {
     _store,
     getItem: (k: string) => _store[k] ?? null,
-    setItem: (k: string, v: string) => { _store[k] = v; },
-    removeItem: (k: string) => { delete _store[k]; },
-    clear: () => { for (const k of Object.keys(_store)) delete _store[k]; },
-    get length() { return Object.keys(_store).length; },
+    setItem: (k: string, v: string) => {
+      _store[k] = v;
+    },
+    removeItem: (k: string) => {
+      delete _store[k];
+    },
+    clear: () => {
+      for (const k of Object.keys(_store)) delete _store[k];
+    },
+    get length() {
+      return Object.keys(_store).length;
+    },
     key: (i: number) => Object.keys(_store)[i] ?? null,
   };
 }
 
-function withMockStorage<T>(mock: ReturnType<typeof makeLocalStorageMock>, fn: () => T): T {
+function withMockStorage<T>(
+  mock: ReturnType<typeof makeLocalStorageMock>,
+  fn: () => T,
+): T {
   const orig = (globalThis as AnyGlobal).window;
   (globalThis as AnyGlobal).window = { localStorage: mock };
   resetWorkspaceServiceInstance();
@@ -129,7 +145,11 @@ describe('WorkspaceService — Phase 3 workspace tabs', () => {
   it('reset restores all defaults including tab', () => {
     withMockStorage(makeLocalStorageMock(), () => {
       const svc = getWorkspaceService();
-      svc.updateLayout({ activeTab: 'statistics', leftCollapsed: true, rightCollapsed: true });
+      svc.updateLayout({
+        activeTab: 'statistics',
+        leftCollapsed: true,
+        rightCollapsed: true,
+      });
       svc.resetLayout();
       const layout = svc.getLayout();
       expect(layout.activeTab).toBe(DEFAULT_LAYOUT.activeTab);
@@ -139,14 +159,20 @@ describe('WorkspaceService — Phase 3 workspace tabs', () => {
   });
 
   it('survives unknown tab values in localStorage and falls back to default', () => {
-    const mock = makeLocalStorageMock({ [STORAGE_KEY]: JSON.stringify({ activeTab: 'not-a-real-tab' }) });
+    const mock = makeLocalStorageMock({
+      [STORAGE_KEY]: JSON.stringify({ activeTab: 'not-a-real-tab' }),
+    });
     withMockStorage(mock, () => {
-      expect(getWorkspaceService().getLayout().activeTab).toBe(DEFAULT_LAYOUT.activeTab);
+      expect(getWorkspaceService().getLayout().activeTab).toBe(
+        DEFAULT_LAYOUT.activeTab,
+      );
     });
   });
 
   it('restores valid style-explorer tab from localStorage', () => {
-    const mock = makeLocalStorageMock({ [STORAGE_KEY]: JSON.stringify({ activeTab: 'style-explorer' }) });
+    const mock = makeLocalStorageMock({
+      [STORAGE_KEY]: JSON.stringify({ activeTab: 'style-explorer' }),
+    });
     withMockStorage(mock, () => {
       // style-explorer is NOT in the WorkspaceService's isValidTab list — verify graceful fallback
       const tab = getWorkspaceService().getLayout().activeTab;
@@ -165,7 +191,12 @@ describe('Workspace canvas visibility rules', () => {
     tab === 'inspector' || tab === 'diagnostics';
 
   const canvasTabs: WorkspaceTab[] = ['inspector', 'diagnostics'];
-  const nonCanvasTabs: WorkspaceTab[] = ['statistics', 'compare', 'regression', 'reports'];
+  const nonCanvasTabs: WorkspaceTab[] = [
+    'statistics',
+    'compare',
+    'regression',
+    'reports',
+  ];
 
   it.each(canvasTabs)('"%s" is a canvas workspace', (tab) => {
     expect(isCanvasWorkspace(tab)).toBe(true);
@@ -222,12 +253,17 @@ describe('WorkspaceBadge variant CSS token mapping', () => {
   // These are the exact class strings defined in WorkspaceComponents.tsx.
   // Verifying them here catches any accidental token renames.
   const BADGE_CLASSES: Record<string, string> = {
-    error:   'bg-[var(--tg-error)]/15 text-[var(--tg-error)] border-[var(--tg-error)]/30',
-    warning: 'bg-[var(--tg-warning)]/15 text-[var(--tg-warning)] border-[var(--tg-warning)]/30',
-    info:    'bg-[var(--tg-info)]/15 text-[var(--tg-info)] border-[var(--tg-info)]/30',
-    success: 'bg-[var(--tg-success)]/15 text-[var(--tg-success)] border-[var(--tg-success)]/30',
-    neutral: 'bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)] border-[var(--tg-border)]',
-    accent:  'bg-[var(--tg-accent)]/15 text-[var(--tg-accent)] border-[var(--tg-accent)]/30',
+    error:
+      'bg-[var(--tg-error)]/15 text-[var(--tg-error)] border-[var(--tg-error)]/30',
+    warning:
+      'bg-[var(--tg-warning)]/15 text-[var(--tg-warning)] border-[var(--tg-warning)]/30',
+    info: 'bg-[var(--tg-info)]/15 text-[var(--tg-info)] border-[var(--tg-info)]/30',
+    success:
+      'bg-[var(--tg-success)]/15 text-[var(--tg-success)] border-[var(--tg-success)]/30',
+    neutral:
+      'bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)] border-[var(--tg-border)]',
+    accent:
+      'bg-[var(--tg-accent)]/15 text-[var(--tg-accent)] border-[var(--tg-accent)]/30',
   };
 
   it.each([
@@ -253,31 +289,49 @@ describe('WorkspaceBadge variant CSS token mapping', () => {
 describe('WorkspaceToolbar action model', () => {
   it('action fires onClick when not disabled', () => {
     const onClick = vi.fn();
-    const action = { id: 'reset', icon: {} as any, label: 'Reset View', onClick, disabled: false };
+    const action = {
+      id: 'reset',
+      icon: {} as any,
+      label: 'Reset View',
+      onClick,
+      disabled: false,
+    };
     if (!action.disabled) action.onClick();
     expect(onClick).toHaveBeenCalledOnce();
   });
 
   it('disabled guard prevents onClick from being called', () => {
     const onClick = vi.fn();
-    const action = { id: 'export', icon: {} as any, label: 'Export', onClick, disabled: true };
+    const action = {
+      id: 'export',
+      icon: {} as any,
+      label: 'Export',
+      onClick,
+      disabled: true,
+    };
     if (!action.disabled) action.onClick();
     expect(onClick).not.toHaveBeenCalled();
   });
 
   it('active flag is independently readable', () => {
-    const action = { id: 'filter', icon: {} as any, label: 'Filter', onClick: vi.fn(), active: true };
+    const action = {
+      id: 'filter',
+      icon: {} as any,
+      label: 'Filter',
+      onClick: vi.fn(),
+      active: true,
+    };
     expect(action.active).toBe(true);
   });
 
   it('explore workspace toolbar has reset-view and export actions', () => {
     const actions = [
       { id: 'reset-view', label: 'Reset View' },
-      { id: 'center',     label: 'Center' },
-      { id: 'export',     label: 'Export' },
+      { id: 'center', label: 'Center' },
+      { id: 'export', label: 'Export' },
     ];
-    expect(actions.find(a => a.id === 'reset-view')).toBeDefined();
-    expect(actions.find(a => a.id === 'export')).toBeDefined();
+    expect(actions.find((a) => a.id === 'reset-view')).toBeDefined();
+    expect(actions.find((a) => a.id === 'export')).toBeDefined();
   });
 });
 
@@ -296,9 +350,9 @@ describe('Workspace empty state conditions', () => {
 
   it('each workspace has a distinct empty-state description', () => {
     const messages = [
-      'Load a vector tile to inspect its features.',   // Explore
-      'Run diagnostics to inspect tile health.',        // Diagnose
-      'Load a tile to compute statistics.',             // Statistics
+      'Load a vector tile to inspect its features.', // Explore
+      'Run diagnostics to inspect tile health.', // Diagnose
+      'Load a tile to compute statistics.', // Statistics
       'Load a MapLibre style to inspect layers and expressions.', // Style
     ];
     expect(new Set(messages).size).toBe(messages.length);

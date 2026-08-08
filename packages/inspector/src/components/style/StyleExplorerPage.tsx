@@ -12,22 +12,22 @@
  * style analysis engine. No rendering is performed.
  */
 
-import { useState, useCallback, useRef } from 'react';
+import type {
+  ResolvedLayer,
+  StyleAnalysis,
+  StyleDiagnostic,
+} from '@tileguard/style-rules/analysis';
+import { analyzeStyle } from '@tileguard/style-rules/analysis';
 import {
   AlertTriangle,
   CheckCircle,
+  Code2,
+  Database,
   FileJson,
   Layers,
-  Database,
-  Code2,
   Upload,
 } from 'lucide-react';
-import { analyzeStyle } from '@tileguard/style-rules/analysis';
-import type {
-  StyleAnalysis,
-  StyleDiagnostic,
-  ResolvedLayer,
-} from '@tileguard/style-rules/analysis';
+import { useCallback, useRef, useState } from 'react';
 
 // ---------------------------------------------------------------------------
 // Component
@@ -142,7 +142,9 @@ export function StyleExplorerPage(): JSX.Element {
           ) : (
             <AlertTriangle className="h-3.5 w-3.5" />
           )}
-          {analysis.valid ? 'Valid' : `${analysis.errorCount} error${analysis.errorCount !== 1 ? 's' : ''}`}
+          {analysis.valid
+            ? 'Valid'
+            : `${analysis.errorCount} error${analysis.errorCount !== 1 ? 's' : ''}`}
         </span>
       </header>
 
@@ -157,7 +159,9 @@ export function StyleExplorerPage(): JSX.Element {
       {/* Sources */}
       <Section title="Sources" icon={<Database className="h-4 w-4" />}>
         {stats.sourceCount === 0 ? (
-          <p className="text-sm text-[var(--tg-text-muted)]">No sources defined.</p>
+          <p className="text-sm text-[var(--tg-text-muted)]">
+            No sources defined.
+          </p>
         ) : (
           <div className="space-y-1">
             {[...analysis.sources.entries()].map(([id, source]) => (
@@ -180,7 +184,9 @@ export function StyleExplorerPage(): JSX.Element {
       {/* Layers */}
       <Section title="Layers" icon={<Layers className="h-4 w-4" />}>
         {stats.layerCount === 0 ? (
-          <p className="text-sm text-[var(--tg-text-muted)]">No layers defined.</p>
+          <p className="text-sm text-[var(--tg-text-muted)]">
+            No layers defined.
+          </p>
         ) : (
           <div className="space-y-1 max-h-64 overflow-auto">
             {analysis.layers.map((resolved: ResolvedLayer) => (
@@ -195,7 +201,9 @@ export function StyleExplorerPage(): JSX.Element {
                   {resolved.layer.source && (
                     <span className="text-xs text-[var(--tg-text-muted)]">
                       source: {resolved.layer.source}
-                      {resolved.layer.sourceLayer ? ` → ${resolved.layer.sourceLayer}` : ''}
+                      {resolved.layer.sourceLayer
+                        ? ` → ${resolved.layer.sourceLayer}`
+                        : ''}
                     </span>
                   )}
                 </div>
@@ -214,24 +222,38 @@ export function StyleExplorerPage(): JSX.Element {
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div>
               <span className="text-[var(--tg-text-muted)]">Total: </span>
-              <span className="text-[var(--tg-text-primary)]">{stats.expressionCount}</span>
+              <span className="text-[var(--tg-text-primary)]">
+                {stats.expressionCount}
+              </span>
             </div>
             <div>
               <span className="text-[var(--tg-text-muted)]">Filters: </span>
-              <span className="text-[var(--tg-text-primary)]">{stats.filterCount}</span>
+              <span className="text-[var(--tg-text-primary)]">
+                {stats.filterCount}
+              </span>
             </div>
             <div>
-              <span className="text-[var(--tg-text-muted)]">Data-driven layers: </span>
-              <span className="text-[var(--tg-text-primary)]">{stats.dataDrivenLayerCount}</span>
+              <span className="text-[var(--tg-text-muted)]">
+                Data-driven layers:{' '}
+              </span>
+              <span className="text-[var(--tg-text-primary)]">
+                {stats.dataDrivenLayerCount}
+              </span>
             </div>
             <div>
-              <span className="text-[var(--tg-text-muted)]">Unique operators: </span>
-              <span className="text-[var(--tg-text-primary)]">{stats.expressionOperators.length}</span>
+              <span className="text-[var(--tg-text-muted)]">
+                Unique operators:{' '}
+              </span>
+              <span className="text-[var(--tg-text-primary)]">
+                {stats.expressionOperators.length}
+              </span>
             </div>
           </div>
           {stats.uniquePropertyReferences.length > 0 && (
             <div className="mt-2">
-              <span className="text-xs text-[var(--tg-text-muted)]">Referenced properties: </span>
+              <span className="text-xs text-[var(--tg-text-muted)]">
+                Referenced properties:{' '}
+              </span>
               <span className="text-xs text-[var(--tg-text-primary)]">
                 {stats.uniquePropertyReferences.join(', ')}
               </span>
@@ -242,7 +264,10 @@ export function StyleExplorerPage(): JSX.Element {
 
       {/* Diagnostics */}
       {diagnostics.length > 0 && (
-        <Section title="Diagnostics" icon={<AlertTriangle className="h-4 w-4" />}>
+        <Section
+          title="Diagnostics"
+          icon={<AlertTriangle className="h-4 w-4" />}
+        >
           <div className="space-y-1 max-h-48 overflow-auto">
             {diagnostics.map((d: StyleDiagnostic, i: number) => (
               <div
@@ -258,10 +283,16 @@ export function StyleExplorerPage(): JSX.Element {
                         : 'text-[var(--tg-text-muted)]'
                   }`}
                 >
-                  {d.severity === 'error' ? '✗' : d.severity === 'warning' ? '⚠' : 'ℹ'}
+                  {d.severity === 'error'
+                    ? '✗'
+                    : d.severity === 'warning'
+                      ? '⚠'
+                      : 'ℹ'}
                 </span>
                 <div className="flex-1">
-                  <p className="text-sm text-[var(--tg-text-primary)]">{d.message}</p>
+                  <p className="text-sm text-[var(--tg-text-primary)]">
+                    {d.message}
+                  </p>
                   {d.suggestion && (
                     <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
                       → {d.suggestion}
@@ -284,10 +315,18 @@ export function StyleExplorerPage(): JSX.Element {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function StatCard({ label, value }: { label: string; value: string | number }): JSX.Element {
+function StatCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}): JSX.Element {
   return (
     <div className="rounded-lg border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] p-3 text-center">
-      <p className="text-2xl font-bold text-[var(--tg-text-primary)]">{value}</p>
+      <p className="text-2xl font-bold text-[var(--tg-text-primary)]">
+        {value}
+      </p>
       <p className="text-xs text-[var(--tg-text-muted)]">{label}</p>
     </div>
   );

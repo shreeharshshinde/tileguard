@@ -5,6 +5,7 @@
  * Contains: Keyboard shortcuts, Workflow guide, links, and version info.
  */
 import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   BookOpen,
   CircleHelp,
@@ -15,7 +16,6 @@ import {
   Workflow,
   X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface HelpTab {
@@ -62,7 +62,10 @@ export function HelpOverlay({ onClose }: HelpOverlayProps): JSX.Element {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--tg-border)] px-4 py-3">
           <div className="flex items-center gap-2">
-            <CircleHelp className="h-4 w-4 text-[var(--tg-accent)]" aria-hidden="true" />
+            <CircleHelp
+              className="h-4 w-4 text-[var(--tg-accent)]"
+              aria-hidden="true"
+            />
             <span className="text-sm font-semibold text-[var(--tg-text-primary)]">
               TileGuard Inspector Help
             </span>
@@ -120,7 +123,7 @@ export function HelpOverlay({ onClose }: HelpOverlayProps): JSX.Element {
                   step: '2',
                   title: 'Explore geometry',
                   description:
-                    'The Explore view renders the tile\'s geometry on the canvas. Click features to inspect their properties, layers, and geometry type.',
+                    "The Explore view renders the tile's geometry on the canvas. Click features to inspect their properties, layers, and geometry type.",
                 },
                 {
                   step: '3',
@@ -197,7 +200,9 @@ export function HelpOverlay({ onClose }: HelpOverlayProps): JSX.Element {
                         key={s.key}
                         className="flex items-center justify-between rounded-md px-2 py-1.5"
                       >
-                        <span className="text-sm text-[var(--tg-text-secondary)]">{s.desc}</span>
+                        <span className="text-sm text-[var(--tg-text-secondary)]">
+                          {s.desc}
+                        </span>
                         <kbd className="rounded bg-[var(--tg-bg-surface)] px-2 py-0.5 font-mono text-[10px] text-[var(--tg-text-primary)] ring-1 ring-[var(--tg-border)]">
                           {s.key}
                         </kbd>

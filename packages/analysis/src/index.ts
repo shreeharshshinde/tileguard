@@ -7,10 +7,19 @@
  * Zero React, DOM, Vite, Canvas, or browser API dependencies.
  */
 
-// Models — statistics
-export type { TileStatistics, LayerStatistics } from './models/statistics.js';
-export { EMPTY_TILE_STATISTICS } from './models/statistics.js';
-
+// ComparisonEngine — full comparison pipeline
+export type { ComparisonEngine } from './ComparisonEngine.js';
+export { createComparisonEngine } from './ComparisonEngine.js';
+// Engines — regression
+export type { ConfidenceScorer } from './ConfidenceScorer.js';
+export { createConfidenceScorer } from './ConfidenceScorer.js';
+export type { BuiltEvidence, EvidenceBuilder } from './EvidenceBuilder.js';
+export { createEvidenceBuilder } from './EvidenceBuilder.js';
+// Engines — comparison
+export type { FeatureMatcher, FeatureMatchResult } from './FeatureMatcher.js';
+export { createFeatureMatcher } from './FeatureMatcher.js';
+export type { GeometryDiffer } from './GeometryDiffer.js';
+export { createGeometryDiffer } from './GeometryDiffer.js';
 // Models — comparison
 export type {
   BoundingRect,
@@ -31,7 +40,6 @@ export type {
   TilePoint,
   TileSnapshot,
 } from './models/comparison.js';
-
 // Models — regression
 export type {
   ConfidenceWeights,
@@ -52,31 +60,21 @@ export {
   LOW_SIGNAL_PROPERTIES,
   MIN_CANDIDATE_CONFIDENCE,
 } from './models/regression.js';
-
-// Engines — comparison
-export type { FeatureMatcher, FeatureMatchResult } from './FeatureMatcher.js';
-export { createFeatureMatcher } from './FeatureMatcher.js';
-
-export type { GeometryDiffer } from './GeometryDiffer.js';
-export { createGeometryDiffer } from './GeometryDiffer.js';
-
+// Models — statistics
+export type { LayerStatistics, TileStatistics } from './models/statistics.js';
+export { EMPTY_TILE_STATISTICS } from './models/statistics.js';
 export type { PropertyDiffer } from './PropertyDiffer.js';
 export { createPropertyDiffer } from './PropertyDiffer.js';
-
-// Engines — regression
-export type { ConfidenceScorer } from './ConfidenceScorer.js';
-export { createConfidenceScorer } from './ConfidenceScorer.js';
-
-export type { RegressionEngine, RegressionEngineOptions } from './RegressionEngine.js';
+export type {
+  RegressionEngine,
+  RegressionEngineOptions,
+} from './RegressionEngine.js';
 export { createRegressionEngine } from './RegressionEngine.js';
 
-export type { EvidenceBuilder, BuiltEvidence } from './EvidenceBuilder.js';
-export { createEvidenceBuilder } from './EvidenceBuilder.js';
-
-// ComparisonEngine — full comparison pipeline
-export type { ComparisonEngine } from './ComparisonEngine.js';
-export { createComparisonEngine } from './ComparisonEngine.js';
-
 // SnapshotFactory — creates TileSnapshots from raw data
-export type { SnapshotFactory, RawLayerData, RawFeatureData } from './SnapshotFactory.js';
+export type {
+  RawFeatureData,
+  RawLayerData,
+  SnapshotFactory,
+} from './SnapshotFactory.js';
 export { createSnapshotFactory } from './SnapshotFactory.js';

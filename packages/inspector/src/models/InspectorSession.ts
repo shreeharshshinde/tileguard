@@ -134,9 +134,7 @@ export function createSession(
  */
 export function updateSession(
   session: InspectorSession,
-  patch: Partial<
-    Omit<InspectorSession, 'id' | 'createdAt' | 'updatedAt'>
-  >,
+  patch: Partial<Omit<InspectorSession, 'id' | 'createdAt' | 'updatedAt'>>,
 ): InspectorSession {
   return {
     ...session,
@@ -152,7 +150,9 @@ export function updateSession(
 export function isActiveSession(
   session: InspectorSession | null | undefined,
 ): session is InspectorSession & { status: 'active' } {
-  return session !== null && session !== undefined && session.status === 'active';
+  return (
+    session !== null && session !== undefined && session.status === 'active'
+  );
 }
 
 // ---------------------------------------------------------------------------

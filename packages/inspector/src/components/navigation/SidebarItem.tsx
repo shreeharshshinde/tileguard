@@ -5,8 +5,9 @@
  * Displays an icon, label, and optional badge.
  * Supports active and hover states using the --tg-* design tokens.
  */
-import type { LucideIcon } from 'lucide-react';
+
 import * as Tooltip from '@radix-ui/react-tooltip';
+import type { LucideIcon } from 'lucide-react';
 
 export interface SidebarItemProps {
   readonly id: string;
@@ -39,8 +40,8 @@ export function SidebarItem({
             isActive
               ? 'bg-[var(--tg-accent)]/15 text-[var(--tg-accent)]'
               : isUtility
-              ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-secondary)]'
-              : 'text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]',
+                ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-secondary)]'
+                : 'text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]',
           ].join(' ')}
         >
           {/* Active indicator bar */}

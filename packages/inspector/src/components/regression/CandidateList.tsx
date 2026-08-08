@@ -50,8 +50,7 @@ function confidenceBarColor(confidence: number): string {
 function featureLabel(candidate: RegressionCandidate): string {
   const fc = candidate.feature;
   const layer = fc.featureA?.layerName ?? fc.featureB?.layerName ?? 'unknown';
-  const id =
-    fc.featureA?.id ?? fc.featureB?.id ?? fc.featureA?.featureIndex;
+  const id = fc.featureA?.id ?? fc.featureB?.id ?? fc.featureA?.featureIndex;
   return id !== undefined ? `${layer} #${id}` : layer;
 }
 
@@ -67,11 +66,7 @@ export function CandidateList({
   if (candidates.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 p-6 text-center">
-        <span
-          className="text-2xl"
-          role="img"
-          aria-label="green check"
-        >
+        <span className="text-2xl" role="img" aria-label="green check">
           ✅
         </span>
         <p className="text-sm font-medium text-[var(--tg-text-primary)]">
@@ -85,7 +80,11 @@ export function CandidateList({
   }
 
   return (
-    <ul className="divide-y divide-[var(--tg-border)]" role="list" aria-label="Regression candidates">
+    <ul
+      className="divide-y divide-[var(--tg-border)]"
+      role="list"
+      aria-label="Regression candidates"
+    >
       {candidates.map((c, i) => {
         const isSelected = selectedIndex === i;
         const confidencePct = Math.round(c.confidence * 100);

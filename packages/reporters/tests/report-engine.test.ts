@@ -8,13 +8,6 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import {
-  createReportEngine,
-  createReporterRegistry,
-  renderHtml,
-  renderJson,
-  renderMarkdown,
-} from '../src/report/index.js';
 import type {
   ComparisonInput,
   EngineeringReport,
@@ -22,12 +15,21 @@ import type {
   RegressionInput,
   ReporterRegistry,
 } from '../src/report/index.js';
+import {
+  createReportEngine,
+  createReporterRegistry,
+  renderHtml,
+  renderJson,
+  renderMarkdown,
+} from '../src/report/index.js';
 
 // ---------------------------------------------------------------------------
 // Test fixtures
 // ---------------------------------------------------------------------------
 
-function makeComparisonInput(overrides: Partial<ComparisonInput> = {}): ComparisonInput {
+function makeComparisonInput(
+  overrides: Partial<ComparisonInput> = {},
+): ComparisonInput {
   return {
     sourceTile: 'before.pbf',
     targetTile: 'after.pbf',
@@ -37,10 +39,18 @@ function makeComparisonInput(overrides: Partial<ComparisonInput> = {}): Comparis
     diagnosticsA: { errors: 1, warnings: 2, info: 0 },
     diagnosticsB: { errors: 2, warnings: 1, info: 1 },
     newDiagnostics: [
-      { ruleId: 'tile/self-intersection', severity: 'error', message: 'Ring self-intersects at vertex 5' },
+      {
+        ruleId: 'tile/self-intersection',
+        severity: 'error',
+        message: 'Ring self-intersects at vertex 5',
+      },
     ],
     resolvedDiagnostics: [
-      { ruleId: 'tile/no-empty', severity: 'warning', message: 'Empty tile detected' },
+      {
+        ruleId: 'tile/no-empty',
+        severity: 'warning',
+        message: 'Empty tile detected',
+      },
     ],
     stats: {
       layersA: 3,
@@ -56,7 +66,9 @@ function makeComparisonInput(overrides: Partial<ComparisonInput> = {}): Comparis
   };
 }
 
-function makeRegressionInput(overrides: Partial<RegressionInput> = {}): RegressionInput {
+function makeRegressionInput(
+  overrides: Partial<RegressionInput> = {},
+): RegressionInput {
   return {
     isClean: false,
     totalFeatures: 16,
@@ -91,7 +103,11 @@ function makeRegressionInput(overrides: Partial<RegressionInput> = {}): Regressi
 
 function makeReport(): EngineeringReport {
   const engine = createReportEngine({ tileguardVersion: '1.0.0-test' });
-  const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'json');
+  const result = engine.generate(
+    makeComparisonInput(),
+    makeRegressionInput(),
+    'json',
+  );
   if (!result.ok) throw new Error(result.error.message);
   return result.value.report;
 }
@@ -154,7 +170,11 @@ describe('ReporterRegistry', () => {
 describe('ReportEngine', () => {
   it('returns ok result with valid inputs for markdown', () => {
     const engine = createReportEngine({ tileguardVersion: '0.5.0' });
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'markdown');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'markdown',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.format).toBe('markdown');
@@ -165,7 +185,11 @@ describe('ReportEngine', () => {
 
   it('returns ok result with valid inputs for html', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'html');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'html',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.format).toBe('html');
@@ -175,7 +199,11 @@ describe('ReportEngine', () => {
 
   it('returns ok result with valid inputs for json', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'json');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'json',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.format).toBe('json');
@@ -187,7 +215,11 @@ describe('ReportEngine', () => {
 
   it('returns MISSING_COMPARISON when comparison is null', () => {
     const engine = createReportEngine();
-    const result = engine.generate(null as any, makeRegressionInput(), 'markdown');
+    const result = engine.generate(
+      null as any,
+      makeRegressionInput(),
+      'markdown',
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.code).toBe('MISSING_COMPARISON');
@@ -196,7 +228,11 @@ describe('ReportEngine', () => {
 
   it('returns MISSING_REGRESSION when regression is null', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), null as any, 'markdown');
+    const result = engine.generate(
+      makeComparisonInput(),
+      null as any,
+      'markdown',
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.code).toBe('MISSING_REGRESSION');
@@ -205,7 +241,11 @@ describe('ReportEngine', () => {
 
   it('returns UNSUPPORTED_FORMAT for unknown format', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'xml');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'xml',
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.code).toBe('UNSUPPORTED_FORMAT');
@@ -217,7 +257,11 @@ describe('ReportEngine', () => {
     const registry = createReporterRegistry();
     registry.register('custom', () => 'CUSTOM_OUTPUT');
     const engine = createReportEngine({ registry });
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'custom');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'custom',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.content).toBe('CUSTOM_OUTPUT');
@@ -226,9 +270,15 @@ describe('ReportEngine', () => {
 
   it('returns SERIALIZATION_ERROR if renderer throws', () => {
     const registry = createReporterRegistry();
-    registry.register('broken', () => { throw new Error('renderer exploded'); });
+    registry.register('broken', () => {
+      throw new Error('renderer exploded');
+    });
     const engine = createReportEngine({ registry });
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'broken');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'broken',
+    );
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.code).toBe('SERIALIZATION_ERROR');
@@ -237,8 +287,15 @@ describe('ReportEngine', () => {
   });
 
   it('populates report metadata correctly', () => {
-    const engine = createReportEngine({ tileguardVersion: '1.2.3', totalDurationMs: 999 });
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'json');
+    const engine = createReportEngine({
+      tileguardVersion: '1.2.3',
+      totalDurationMs: 999,
+    });
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'json',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       const { metadata } = result.value.report;
@@ -252,7 +309,11 @@ describe('ReportEngine', () => {
 
   it('builds overview section from inputs', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'json');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'json',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       const { overview } = result.value.report;
@@ -267,7 +328,11 @@ describe('ReportEngine', () => {
 
   it('aggregates recommendations from candidates', () => {
     const engine = createReportEngine();
-    const result = engine.generate(makeComparisonInput(), makeRegressionInput(), 'json');
+    const result = engine.generate(
+      makeComparisonInput(),
+      makeRegressionInput(),
+      'json',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       const recs = result.value.report.recommendations.items;
@@ -278,8 +343,16 @@ describe('ReportEngine', () => {
 
   it('handles clean regression (no candidates)', () => {
     const engine = createReportEngine();
-    const regression = makeRegressionInput({ isClean: true, totalCandidates: 0, candidates: [] });
-    const result = engine.generate(makeComparisonInput(), regression, 'markdown');
+    const regression = makeRegressionInput({
+      isClean: true,
+      totalCandidates: 0,
+      candidates: [],
+    });
+    const result = engine.generate(
+      makeComparisonInput(),
+      regression,
+      'markdown',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.report.regression.isClean).toBe(true);
@@ -340,8 +413,16 @@ describe('renderMarkdown', () => {
 
   it('renders clean regression without candidate sections', () => {
     const engine = createReportEngine({ tileguardVersion: '1.0.0' });
-    const regression = makeRegressionInput({ isClean: true, totalCandidates: 0, candidates: [] });
-    const result = engine.generate(makeComparisonInput(), regression, 'markdown');
+    const regression = makeRegressionInput({
+      isClean: true,
+      totalCandidates: 0,
+      candidates: [],
+    });
+    const result = engine.generate(
+      makeComparisonInput(),
+      regression,
+      'markdown',
+    );
     expect(result.ok).toBe(true);
     if (result.ok) {
       const md = result.value.content;
@@ -419,7 +500,11 @@ describe('renderHtml', () => {
 
   it('renders clean regression with CLEAN badge', () => {
     const engine = createReportEngine({ tileguardVersion: '1.0.0' });
-    const regression = makeRegressionInput({ isClean: true, totalCandidates: 0, candidates: [] });
+    const regression = makeRegressionInput({
+      isClean: true,
+      totalCandidates: 0,
+      candidates: [],
+    });
     const result = engine.generate(makeComparisonInput(), regression, 'html');
     expect(result.ok).toBe(true);
     if (result.ok) {

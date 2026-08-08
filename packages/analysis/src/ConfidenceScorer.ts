@@ -17,9 +17,7 @@ import type {
   ConfidenceWeights,
   RegressionReason,
 } from './models/regression.js';
-import {
-  DEFAULT_CONFIDENCE_WEIGHTS,
-} from './models/regression.js';
+import { DEFAULT_CONFIDENCE_WEIGHTS } from './models/regression.js';
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -57,7 +55,10 @@ export function createConfidenceScorer(
   weights?: Partial<ConfidenceWeights>,
   ceiling = 100,
 ): ConfidenceScorer {
-  const _weights: ConfidenceWeights = { ...DEFAULT_CONFIDENCE_WEIGHTS, ...weights };
+  const _weights: ConfidenceWeights = {
+    ...DEFAULT_CONFIDENCE_WEIGHTS,
+    ...weights,
+  };
   const _ceiling = Math.max(1, ceiling);
 
   function rawScore(reasons: readonly RegressionReason[]): number {

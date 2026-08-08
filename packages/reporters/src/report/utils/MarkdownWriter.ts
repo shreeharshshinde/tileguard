@@ -82,7 +82,10 @@ export class MarkdownWriter {
    * @param headers Column header strings.
    * @param rows    Each inner array is one row; length must match headers.
    */
-  table(headers: readonly string[], rows: readonly (readonly string[])[]): this {
+  table(
+    headers: readonly string[],
+    rows: readonly (readonly string[])[],
+  ): this {
     const header = `| ${headers.join(' | ')} |`;
     const separator = `| ${headers.map(() => '---').join(' | ')} |`;
     this._lines.push(header, separator);
@@ -129,9 +132,19 @@ export class MarkdownWriter {
   // Badge helpers (GitHub Markdown)
   // ---------------------------------------------------------------------------
 
-  badge(label: string, message: string, color: 'green' | 'yellow' | 'red' | 'blue' | 'grey'): string {
+  badge(
+    label: string,
+    message: string,
+    color: 'green' | 'yellow' | 'red' | 'blue' | 'grey',
+  ): string {
     // Returns an inline Shields.io-style badge as plain text label
-    const colorMap = { green: '✅', yellow: '⚠️', red: '❌', blue: '🔵', grey: '⬜' };
+    const colorMap = {
+      green: '✅',
+      yellow: '⚠️',
+      red: '❌',
+      blue: '🔵',
+      grey: '⬜',
+    };
     return `${colorMap[color] ?? '⬜'} **${label}:** ${message}`;
   }
 

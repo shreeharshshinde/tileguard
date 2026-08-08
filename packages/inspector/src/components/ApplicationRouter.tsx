@@ -21,8 +21,8 @@
 import { useState } from 'react';
 import {
   createSession,
-  isActiveSession,
   type InspectorSession,
+  isActiveSession,
   updateSession,
 } from '../models/InspectorSession.js';
 import type { ApplicationState } from '../services/NavigationService.js';
@@ -41,8 +41,12 @@ export function ApplicationRouter(): JSX.Element {
 
   // Files to hand off to Workspace on session start
   const [pendingFile, setPendingFile] = useState<File | undefined>();
-  const [pendingComparisonA, setPendingComparisonA] = useState<File | undefined>();
-  const [pendingComparisonB, setPendingComparisonB] = useState<File | undefined>();
+  const [pendingComparisonA, setPendingComparisonA] = useState<
+    File | undefined
+  >();
+  const [pendingComparisonB, setPendingComparisonB] = useState<
+    File | undefined
+  >();
 
   // ── Home → Workspace (single tile) ───────────────────────────────────────
   const handleFileSelected = (file: File) => {
@@ -111,8 +115,12 @@ export function ApplicationRouter(): JSX.Element {
         <Workspace
           onGoHome={handleGoHome}
           {...(pendingFile !== undefined ? { initialFile: pendingFile } : {})}
-          {...(pendingComparisonA !== undefined ? { initialComparisonA: pendingComparisonA } : {})}
-          {...(pendingComparisonB !== undefined ? { initialComparisonB: pendingComparisonB } : {})}
+          {...(pendingComparisonA !== undefined
+            ? { initialComparisonA: pendingComparisonA }
+            : {})}
+          {...(pendingComparisonB !== undefined
+            ? { initialComparisonB: pendingComparisonB }
+            : {})}
         />
       )}
 

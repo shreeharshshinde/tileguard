@@ -8,7 +8,13 @@
  *   - Visual cues: green check for confirming, grey dash for refuting
  */
 
-import { Activity, AlertTriangle, Layers, Tags, TrendingUp } from 'lucide-react';
+import {
+  Activity,
+  AlertTriangle,
+  Layers,
+  Tags,
+  TrendingUp,
+} from 'lucide-react';
 import type { RegressionCandidate } from '../../analysis/models/regression.js';
 
 // ---------------------------------------------------------------------------
@@ -97,7 +103,9 @@ export function EvidencePanel({ candidate }: EvidencePanelProps): JSX.Element {
                         ? 'mt-0.5 text-[var(--tg-success)]'
                         : 'mt-0.5 text-[var(--tg-text-muted)]'
                     }
-                    aria-label={ev.confirms ? 'Confirms regression' : 'Does not confirm'}
+                    aria-label={
+                      ev.confirms ? 'Confirms regression' : 'Does not confirm'
+                    }
                   >
                     {ev.confirms ? '✓' : '–'}
                   </span>
@@ -110,9 +118,7 @@ export function EvidencePanel({ candidate }: EvidencePanelProps): JSX.Element {
                       {ev.label}
                     </p>
                     <div className="mt-0.5 flex flex-wrap gap-x-3 text-[10px] text-[var(--tg-text-muted)]">
-                      <span>
-                        {KIND_LABELS[ev.kind] ?? ev.kind}
-                      </span>
+                      <span>{KIND_LABELS[ev.kind] ?? ev.kind}</span>
                       {ev.measuredValue !== undefined && (
                         <span className="font-mono">
                           value: {String(ev.measuredValue)}

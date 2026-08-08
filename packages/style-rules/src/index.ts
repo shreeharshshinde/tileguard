@@ -57,70 +57,59 @@ export {
 
 // Models
 export type {
-  StyleDocument,
-  SpriteDescriptor,
-  StyleProjection,
-  StyleTerrain,
-  StyleFog,
-  StyleLight,
-  StyleTransition,
-  StyleImport,
-} from './models/index.js';
-
-export type {
-  StyleSource,
-  SourceType,
-  VectorSource,
-  GeoJsonSource,
-  RasterSource,
-  RasterDemSource,
-  ImageSource,
-  VideoSource,
-} from './models/index.js';
-
-export type {
-  StyleLayer,
-  LayerType,
-  PropertyValue,
-  LayerFilter,
-} from './models/index.js';
-
-export type {
-  StyleExpression,
-  ExpressionType,
   ExpressionArg,
   ExpressionLiteral,
+  ExpressionType,
+  GeoJsonSource,
+  ImageSource,
+  LayerFilter,
+  LayerType,
   PropertyReference,
-} from './models/index.js';
-
-export { isExpression, isLiteral } from './models/index.js';
-
-export type {
-  StyleAnalysis,
+  PropertyValue,
+  RasterDemSource,
+  RasterSource,
   ResolvedLayer,
+  SourceType,
+  SpriteDescriptor,
+  StyleAnalysis,
   StyleDiagnostic,
+  StyleDocument,
+  StyleExpression,
+  StyleFog,
+  StyleImport,
+  StyleLayer,
+  StyleLight,
+  StyleProjection,
+  StyleSource,
   StyleStatistics,
+  StyleTerrain,
+  StyleTransition,
+  VectorSource,
+  VideoSource,
 } from './models/index.js';
-
-// Parser
-export { parseStyleDocument, parseExpression, isExpressionArray, parseFilter } from './parser/index.js';
+export { isExpression, isLiteral } from './models/index.js';
 export type { ParseResult } from './parser/index.js';
+// Parser
+export {
+  isExpressionArray,
+  parseExpression,
+  parseFilter,
+  parseStyleDocument,
+} from './parser/index.js';
 
 // Resolver
-export { resolveLayers, resolveLayer } from './resolver/index.js';
-
-// Validator
-export { validateStyle } from './validator/index.js';
-
+export { resolveLayer, resolveLayers } from './resolver/index.js';
 // Services (public API)
 export {
-  parseStyle,
   analyzeStyle,
-  validateStyleAnalysis,
   getLayer,
   getSource,
   getStatistics,
+  parseStyle,
+  validateStyleAnalysis,
 } from './services/StyleAnalysisEngine.js';
+// Validator
+export { validateStyle } from './validator/index.js';
 
 // ── Plugin & Rules ────────────────────────────────────────────────────────
 

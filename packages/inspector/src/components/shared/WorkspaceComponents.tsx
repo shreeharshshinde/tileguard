@@ -95,7 +95,9 @@ export function PanelHeader({
       <div className="flex shrink-0 items-center gap-[var(--tg-space-sm)]">
         {subtitle !== undefined && (
           <span className="font-mono text-[10px] text-[var(--tg-text-muted)]">
-            {typeof subtitle === 'number' ? subtitle.toLocaleString() : subtitle}
+            {typeof subtitle === 'number'
+              ? subtitle.toLocaleString()
+              : subtitle}
           </span>
         )}
         {actions}
@@ -138,14 +140,22 @@ export function PanelSection({
 
 /** Thin horizontal rule between panel sections. */
 export function PanelDivider(): JSX.Element {
-  return <div className="mx-[var(--tg-space-md)] border-t border-[var(--tg-border)]" />;
+  return (
+    <div className="mx-[var(--tg-space-md)] border-t border-[var(--tg-border)]" />
+  );
 }
 
 // ---------------------------------------------------------------------------
 // WorkspaceBadge
 // ---------------------------------------------------------------------------
 
-export type BadgeVariant = 'error' | 'warning' | 'info' | 'success' | 'neutral' | 'accent';
+export type BadgeVariant =
+  | 'error'
+  | 'warning'
+  | 'info'
+  | 'success'
+  | 'neutral'
+  | 'accent';
 
 export interface WorkspaceBadgeProps {
   readonly label: string | number;
@@ -154,12 +164,17 @@ export interface WorkspaceBadgeProps {
 }
 
 const BADGE_CLASSES: Record<BadgeVariant, string> = {
-  error:   'bg-[var(--tg-error)]/15 text-[var(--tg-error)] border-[var(--tg-error)]/30',
-  warning: 'bg-[var(--tg-warning)]/15 text-[var(--tg-warning)] border-[var(--tg-warning)]/30',
-  info:    'bg-[var(--tg-info)]/15 text-[var(--tg-info)] border-[var(--tg-info)]/30',
-  success: 'bg-[var(--tg-success)]/15 text-[var(--tg-success)] border-[var(--tg-success)]/30',
-  neutral: 'bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)] border-[var(--tg-border)]',
-  accent:  'bg-[var(--tg-accent)]/15 text-[var(--tg-accent)] border-[var(--tg-accent)]/30',
+  error:
+    'bg-[var(--tg-error)]/15 text-[var(--tg-error)] border-[var(--tg-error)]/30',
+  warning:
+    'bg-[var(--tg-warning)]/15 text-[var(--tg-warning)] border-[var(--tg-warning)]/30',
+  info: 'bg-[var(--tg-info)]/15 text-[var(--tg-info)] border-[var(--tg-info)]/30',
+  success:
+    'bg-[var(--tg-success)]/15 text-[var(--tg-success)] border-[var(--tg-success)]/30',
+  neutral:
+    'bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)] border-[var(--tg-border)]',
+  accent:
+    'bg-[var(--tg-accent)]/15 text-[var(--tg-accent)] border-[var(--tg-accent)]/30',
 };
 
 /** Small inline badge for severity, counts, and status. */
@@ -233,8 +248,12 @@ export function ErrorWorkspace({
         />
       </div>
       <div className="max-w-sm">
-        <h2 className="text-sm font-semibold text-[var(--tg-text-primary)]">{title}</h2>
-        <p className="mt-1.5 text-xs text-[var(--tg-text-secondary)]">{message}</p>
+        <h2 className="text-sm font-semibold text-[var(--tg-text-primary)]">
+          {title}
+        </h2>
+        <p className="mt-1.5 text-xs text-[var(--tg-text-secondary)]">
+          {message}
+        </p>
       </div>
       {onRetry && (
         <button
@@ -361,10 +380,9 @@ export function WorkspaceToolbar({
         const Icon = action.icon;
         const base =
           'flex items-center gap-1.5 rounded px-2 py-1 text-xs font-medium transition-colors';
-        const cls =
-          action.active
-            ? `${base} bg-[var(--tg-accent)]/20 text-[var(--tg-accent)]`
-            : action.variant === 'danger'
+        const cls = action.active
+          ? `${base} bg-[var(--tg-accent)]/20 text-[var(--tg-accent)]`
+          : action.variant === 'danger'
             ? `${base} text-[var(--tg-error)] hover:bg-[var(--tg-error)]/10`
             : `${base} text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]`;
 

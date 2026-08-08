@@ -3,7 +3,10 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { parseExpression, isExpressionArray } from '../../src/parser/ExpressionParser.js';
+import {
+  isExpressionArray,
+  parseExpression,
+} from '../../src/parser/ExpressionParser.js';
 
 describe('ExpressionParser', () => {
   describe('isExpressionArray', () => {
@@ -63,7 +66,11 @@ describe('ExpressionParser', () => {
     });
 
     it('parses ["all", ...conditions]', () => {
-      const expr = parseExpression(['all', ['has', 'name'], ['==', ['get', 'class'], 'primary']]);
+      const expr = parseExpression([
+        'all',
+        ['has', 'name'],
+        ['==', ['get', 'class'], 'primary'],
+      ]);
       expect(expr!.operator).toBe('all');
       expect(expr!.args).toHaveLength(2);
       expect(expr!.args[0]!.operator).toBe('has');
@@ -71,13 +78,27 @@ describe('ExpressionParser', () => {
     });
 
     it('parses ["match", ["get", "type"], "road", "#ff0", "#000"]', () => {
-      const expr = parseExpression(['match', ['get', 'type'], 'road', '#ff0', '#000']);
+      const expr = parseExpression([
+        'match',
+        ['get', 'type'],
+        'road',
+        '#ff0',
+        '#000',
+      ]);
       expect(expr!.operator).toBe('match');
       expect(expr!.args).toHaveLength(4);
     });
 
     it('parses ["interpolate", ["linear"], ["zoom"], 10, 1, 20, 5]', () => {
-      const expr = parseExpression(['interpolate', ['linear'], ['zoom'], 10, 1, 20, 5]);
+      const expr = parseExpression([
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        10,
+        1,
+        20,
+        5,
+      ]);
       expect(expr!.operator).toBe('interpolate');
       expect(expr!.args[0]!.operator).toBe('unknown'); // "linear" is not a known operator but it's an array starting with a string
     });
@@ -94,7 +115,11 @@ describe('ExpressionParser', () => {
     });
 
     it('parses ["coalesce", ["get", "name_en"], ["get", "name"]]', () => {
-      const expr = parseExpression(['coalesce', ['get', 'name_en'], ['get', 'name']]);
+      const expr = parseExpression([
+        'coalesce',
+        ['get', 'name_en'],
+        ['get', 'name'],
+      ]);
       expect(expr!.operator).toBe('coalesce');
       expect(expr!.args).toHaveLength(2);
     });
@@ -151,7 +176,11 @@ describe('ExpressionParser', () => {
     });
 
     it('deeply nests sub-expressions', () => {
-      const expr = parseExpression(['all', ['==', ['get', 'type'], 'road'], ['>', ['get', 'importance'], 3]]);
+      const expr = parseExpression([
+        'all',
+        ['==', ['get', 'type'], 'road'],
+        ['>', ['get', 'importance'], 3],
+      ]);
       expect(expr!.operator).toBe('all');
       const first = expr!.args[0]!;
       expect(first.operator).toBe('==');

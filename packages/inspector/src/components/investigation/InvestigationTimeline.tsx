@@ -14,6 +14,7 @@
  * Used in the bottom Engineering Console and right-panel tabs.
  */
 import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   BarChart3,
@@ -25,11 +26,10 @@ import {
   TrendingDown,
   Zap,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import {
-  useInvestigationState,
   type TimelineEvent,
+  useInvestigationState,
 } from '../../context/InvestigationContext.js';
 
 // ---------------------------------------------------------------------------
@@ -106,9 +106,15 @@ function TimelineItem({
           className="h-3 w-3 shrink-0 text-[var(--tg-accent)]"
           aria-hidden="true"
         />
-        <span className="text-[var(--tg-text-muted)]">{formatTime(event.timestamp)}</span>
-        <span className="truncate text-[var(--tg-text-primary)]">{event.action}</span>
-        <span className="truncate text-[var(--tg-text-secondary)]">{event.detail}</span>
+        <span className="text-[var(--tg-text-muted)]">
+          {formatTime(event.timestamp)}
+        </span>
+        <span className="truncate text-[var(--tg-text-primary)]">
+          {event.action}
+        </span>
+        <span className="truncate text-[var(--tg-text-secondary)]">
+          {event.detail}
+        </span>
       </div>
     );
   }
@@ -187,7 +193,8 @@ export function InvestigationTimeline({
           No investigation events yet.
         </p>
         <p className="text-[10px] text-[var(--tg-text-muted)] opacity-60">
-          Events will appear as you explore features, run diagnostics, and compare tiles.
+          Events will appear as you explore features, run diagnostics, and
+          compare tiles.
         </p>
       </div>
     );
@@ -216,8 +223,8 @@ export function InvestigationTimeline({
       {/* Summary footer */}
       <div className="sticky bottom-0 border-t border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-3 py-1.5">
         <span className="text-[10px] text-[var(--tg-text-muted)]">
-          {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''} ·{' '}
-          {formatRelativeTime(filteredEvents[0]!.timestamp)} – now
+          {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''}{' '}
+          · {formatRelativeTime(filteredEvents[0]!.timestamp)} – now
         </span>
       </div>
     </div>

@@ -17,6 +17,7 @@
  */
 import { Command } from 'cmdk';
 import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   BarChart3,
@@ -37,7 +38,6 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInvestigationActions } from '../../context/InvestigationContext.js';
 import type { WorkspacePage } from '../../services/NavigationService.js';
@@ -113,7 +113,10 @@ export function CommandPalette({
       icon: Home,
       group: 'Navigation',
       shortcut: 'Ctrl+H',
-      action: () => { onGoHome(); onClose(); },
+      action: () => {
+        onGoHome();
+        onClose();
+      },
     },
     {
       id: 'nav-explore',
@@ -122,7 +125,10 @@ export function CommandPalette({
       icon: Crosshair,
       group: 'Navigation',
       shortcut: 'Ctrl+1',
-      action: () => { onNavigate('inspector'); onClose(); },
+      action: () => {
+        onNavigate('inspector');
+        onClose();
+      },
     },
     {
       id: 'nav-diagnostics',
@@ -131,7 +137,10 @@ export function CommandPalette({
       icon: Bug,
       group: 'Navigation',
       shortcut: 'Ctrl+2',
-      action: () => { onNavigate('diagnostics'); onClose(); },
+      action: () => {
+        onNavigate('diagnostics');
+        onClose();
+      },
     },
     {
       id: 'nav-statistics',
@@ -140,7 +149,10 @@ export function CommandPalette({
       icon: BarChart3,
       group: 'Navigation',
       shortcut: 'Ctrl+3',
-      action: () => { onNavigate('statistics'); onClose(); },
+      action: () => {
+        onNavigate('statistics');
+        onClose();
+      },
     },
     {
       id: 'nav-style',
@@ -149,7 +161,10 @@ export function CommandPalette({
       icon: Palette,
       group: 'Navigation',
       shortcut: 'Ctrl+4',
-      action: () => { onNavigate('style-explorer'); onClose(); },
+      action: () => {
+        onNavigate('style-explorer');
+        onClose();
+      },
     },
     {
       id: 'nav-compare',
@@ -158,7 +173,10 @@ export function CommandPalette({
       icon: GitCompare,
       group: 'Navigation',
       shortcut: 'Ctrl+5',
-      action: () => { onNavigate('compare'); onClose(); },
+      action: () => {
+        onNavigate('compare');
+        onClose();
+      },
     },
     {
       id: 'nav-regression',
@@ -167,7 +185,10 @@ export function CommandPalette({
       icon: Radar,
       group: 'Navigation',
       shortcut: 'Ctrl+6',
-      action: () => { onNavigate('regression'); onClose(); },
+      action: () => {
+        onNavigate('regression');
+        onClose();
+      },
     },
     {
       id: 'nav-reports',
@@ -176,20 +197,28 @@ export function CommandPalette({
       icon: FileOutput,
       group: 'Navigation',
       shortcut: 'Ctrl+7',
-      action: () => { onNavigate('reports'); onClose(); },
+      action: () => {
+        onNavigate('reports');
+        onClose();
+      },
     },
 
     // ── Actions ───────────────────────────────────────────────────────────
-    ...(onOpenFile
-      ? [{
-          id: 'action-load',
-          label: 'Load Tile',
-          description: 'Open a .pbf vector tile file',
-          icon: Shuffle,
-          group: 'Actions',
-          action: () => { onOpenFile(); onClose(); },
-        }]
-      : []) as CommandItem[],
+    ...((onOpenFile
+      ? [
+          {
+            id: 'action-load',
+            label: 'Load Tile',
+            description: 'Open a .pbf vector tile file',
+            icon: Shuffle,
+            group: 'Actions',
+            action: () => {
+              onOpenFile();
+              onClose();
+            },
+          },
+        ]
+      : []) as CommandItem[]),
     {
       id: 'action-settings',
       label: 'Open Settings',
@@ -197,30 +226,43 @@ export function CommandPalette({
       icon: Settings,
       group: 'Actions',
       shortcut: 'Ctrl+,',
-      action: () => { onOpenSettings(); onClose(); },
+      action: () => {
+        onOpenSettings();
+        onClose();
+      },
     },
-    ...(onOpenShortcuts
-      ? [{
-          id: 'action-shortcuts',
-          label: 'Show Keyboard Shortcuts',
-          description: 'View all available shortcuts',
-          icon: Keyboard,
-          group: 'Actions',
-          shortcut: '?',
-          action: () => { onOpenShortcuts(); onClose(); },
-        }]
-      : []) as CommandItem[],
-    ...(onTogglePresentationMode
-      ? [{
-          id: 'action-presentation',
-          label: 'Toggle Presentation Mode',
-          description: 'Optimise for projector display',
-          icon: Moon,
-          group: 'Actions',
-          shortcut: 'Ctrl+Shift+P',
-          action: () => { onTogglePresentationMode(); onClose(); },
-        }]
-      : []) as CommandItem[],
+    ...((onOpenShortcuts
+      ? [
+          {
+            id: 'action-shortcuts',
+            label: 'Show Keyboard Shortcuts',
+            description: 'View all available shortcuts',
+            icon: Keyboard,
+            group: 'Actions',
+            shortcut: '?',
+            action: () => {
+              onOpenShortcuts();
+              onClose();
+            },
+          },
+        ]
+      : []) as CommandItem[]),
+    ...((onTogglePresentationMode
+      ? [
+          {
+            id: 'action-presentation',
+            label: 'Toggle Presentation Mode',
+            description: 'Optimise for projector display',
+            icon: Moon,
+            group: 'Actions',
+            shortcut: 'Ctrl+Shift+P',
+            action: () => {
+              onTogglePresentationMode();
+              onClose();
+            },
+          },
+        ]
+      : []) as CommandItem[]),
     {
       id: 'action-reset-camera',
       label: 'Reset Camera',
@@ -228,7 +270,9 @@ export function CommandPalette({
       icon: Camera,
       group: 'Actions',
       shortcut: 'Space',
-      action: () => { onClose(); },
+      action: () => {
+        onClose();
+      },
     },
   ];
 

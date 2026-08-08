@@ -11,11 +11,14 @@
  */
 
 import { readFile } from 'node:fs/promises';
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
-import { createOutputFormatter } from '../output/OutputFormatter.js';
-import type { OutputFormat } from '../output/OutputFormatter.js';
-import { analyzeStyle } from '@tileguard/style-rules';
 import type { StyleAnalysis, StyleDiagnostic } from '@tileguard/style-rules';
+import { analyzeStyle } from '@tileguard/style-rules';
+import type { OutputFormat } from '../output/OutputFormatter.js';
+import { createOutputFormatter } from '../output/OutputFormatter.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -61,7 +64,8 @@ export async function runStyle(
   }
 
   // Determine exit code
-  const exitCode = analysis.errorCount > 0 ? 2 : analysis.warningCount > 0 ? 1 : 0;
+  const exitCode =
+    analysis.errorCount > 0 ? 2 : analysis.warningCount > 0 ? 1 : 0;
 
   if (args.format === 'json') {
     return {
@@ -130,14 +134,16 @@ function formatText(file: string, analysis: StyleAnalysis): string {
   sections.push(`  ${statusSymbol} ${statusText}\n`);
 
   // Overview
-  sections.push(fmt.summary('Overview', [
-    ['Version', analysis.document.version ?? 'missing'],
-    ['Name', analysis.document.name ?? '(unnamed)'],
-    ['Sources', stats.sourceCount],
-    ['Layers', stats.layerCount],
-    ['Expressions', stats.expressionCount],
-    ['Filters', stats.filterCount],
-  ]));
+  sections.push(
+    fmt.summary('Overview', [
+      ['Version', analysis.document.version ?? 'missing'],
+      ['Name', analysis.document.name ?? '(unnamed)'],
+      ['Sources', stats.sourceCount],
+      ['Layers', stats.layerCount],
+      ['Expressions', stats.expressionCount],
+      ['Filters', stats.filterCount],
+    ]),
+  );
 
   // Sources by type
   if (stats.sourceCount > 0) {
@@ -166,11 +172,13 @@ function formatText(file: string, analysis: StyleAnalysis): string {
 
   // Diagnostics
   if (analysis.diagnostics.length > 0) {
-    sections.push(fmt.summary('Diagnostics', [
-      ['Errors', analysis.errorCount],
-      ['Warnings', analysis.warningCount],
-      ['Info', analysis.infoCount],
-    ]));
+    sections.push(
+      fmt.summary('Diagnostics', [
+        ['Errors', analysis.errorCount],
+        ['Warnings', analysis.warningCount],
+        ['Info', analysis.infoCount],
+      ]),
+    );
 
     sections.push('\nFindings\n' + '─'.repeat(40) + '\n');
     for (const diag of analysis.diagnostics) {
@@ -187,9 +195,13 @@ function formatText(file: string, analysis: StyleAnalysis): string {
 
 function severityIcon(severity: string): string {
   switch (severity) {
-    case 'error': return '✗';
-    case 'warning': return '⚠';
-    case 'info': return 'ℹ';
-    default: return '·';
+    case 'error':
+      return '✗';
+    case 'warning':
+      return '⚠';
+    case 'info':
+      return 'ℹ';
+    default:
+      return '·';
   }
 }

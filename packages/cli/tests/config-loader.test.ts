@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { resolve } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('node:fs', async () => {
   const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
@@ -11,7 +11,10 @@ vi.mock('node:fs', async () => {
 });
 
 import { existsSync, readFileSync } from 'node:fs';
-import { loadYamlConfig, getDefaultConfig } from '../src/config/ConfigLoader.js';
+import {
+  getDefaultConfig,
+  loadYamlConfig,
+} from '../src/config/ConfigLoader.js';
 
 const mockExistsSync = vi.mocked(existsSync);
 const mockReadFileSync = vi.mocked(readFileSync);
@@ -140,7 +143,8 @@ describe('loadYamlConfig', () => {
   });
 
   it('ignores YAML comments', () => {
-    const yaml = '# This is a comment\nregression:\n  # inline\n  minConfidence: 0.75 # trailing\n';
+    const yaml =
+      '# This is a comment\nregression:\n  # inline\n  minConfidence: 0.75 # trailing\n';
     mockExistsSync.mockReturnValue(true);
     mockReadFileSync.mockReturnValue(yaml);
     const { config } = loadYamlConfig({ configPath: '/fake/tileguard.yml' });
@@ -148,10 +152,13 @@ describe('loadYamlConfig', () => {
   });
 
   it('ignores unknown keys without error', () => {
-    const yaml = 'unknownSection:\n  foo: bar\nregression:\n  minConfidence: 0.5\n';
+    const yaml =
+      'unknownSection:\n  foo: bar\nregression:\n  minConfidence: 0.5\n';
     mockExistsSync.mockReturnValue(true);
     mockReadFileSync.mockReturnValue(yaml);
-    expect(() => loadYamlConfig({ configPath: '/fake/tileguard.yml' })).not.toThrow();
+    expect(() =>
+      loadYamlConfig({ configPath: '/fake/tileguard.yml' }),
+    ).not.toThrow();
     const { config } = loadYamlConfig({ configPath: '/fake/tileguard.yml' });
     expect(config.regression.minConfidence).toBe(0.5);
   });

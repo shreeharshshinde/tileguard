@@ -48,7 +48,11 @@ export interface DemoManifest {
 // ---------------------------------------------------------------------------
 
 export type DemoLoadResult =
-  | { readonly kind: 'single'; readonly file: File; readonly dataset: DemoDataset }
+  | {
+      readonly kind: 'single';
+      readonly file: File;
+      readonly dataset: DemoDataset;
+    }
   | {
       readonly kind: 'comparison';
       readonly fileA: File;
@@ -67,7 +71,9 @@ async function fetchDemoFile(relativePath: string): Promise<File> {
   const url = `${DEMO_BASE}${relativePath}`;
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to fetch demo file "${url}": ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch demo file "${url}": ${response.status} ${response.statusText}`,
+    );
   }
   const blob = await response.blob();
   const fileName = relativePath.split('/').pop() ?? relativePath;
@@ -85,7 +91,9 @@ async function fetchDemoFile(relativePath: string): Promise<File> {
  * Fetches the file(s) associated with a demo dataset and returns them as
  * browser File objects, ready to pass to the existing tile-loading pipeline.
  */
-export async function loadDemoDataset(dataset: DemoDataset): Promise<DemoLoadResult> {
+export async function loadDemoDataset(
+  dataset: DemoDataset,
+): Promise<DemoLoadResult> {
   try {
     if (dataset.type === 'comparison' && dataset.paths !== undefined) {
       const [fileA, fileB] = await Promise.all([
@@ -100,11 +108,17 @@ export async function loadDemoDataset(dataset: DemoDataset): Promise<DemoLoadRes
       return { kind: 'single', file, dataset };
     }
 
-    return { kind: 'error', message: `Dataset "${dataset.id}" has no path configured.` };
+    return {
+      kind: 'error',
+      message: `Dataset "${dataset.id}" has no path configured.`,
+    };
   } catch (err) {
     return {
       kind: 'error',
-      message: err instanceof Error ? err.message : 'Unknown error loading demo dataset',
+      message:
+        err instanceof Error
+          ? err.message
+          : 'Unknown error loading demo dataset',
     };
   }
 }

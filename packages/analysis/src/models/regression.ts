@@ -23,11 +23,11 @@ import type { FeatureComparison } from './comparison.js';
  * High-level category of a regression.
  */
 export type RegressionKind =
-  | 'geometry'    // geometry-only change (positions/shape)
-  | 'attribute'   // property/attribute-only change
-  | 'layer'       // layer added or removed
-  | 'diagnostic'  // new diagnostic flagged on a feature
-  | 'mixed';      // combination of the above
+  | 'geometry' // geometry-only change (positions/shape)
+  | 'attribute' // property/attribute-only change
+  | 'layer' // layer added or removed
+  | 'diagnostic' // new diagnostic flagged on a feature
+  | 'mixed'; // combination of the above
 
 // ---------------------------------------------------------------------------
 // Reason — atomic evidence unit

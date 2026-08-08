@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { runVersion, getVersion } from '../src/commands/version.js';
+import { getVersion, runVersion } from '../src/commands/version.js';
 
 describe('version command', () => {
   it('getVersion() returns a semver string', () => {

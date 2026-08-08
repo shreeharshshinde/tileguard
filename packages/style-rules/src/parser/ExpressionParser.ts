@@ -22,37 +22,93 @@ import type {
 
 const KNOWN_OPERATORS = new Set<string>([
   // Data access
-  'get', 'has', 'at', 'in', 'index-of', 'length', 'slice',
+  'get',
+  'has',
+  'at',
+  'in',
+  'index-of',
+  'length',
+  'slice',
   // Feature
-  'feature-state', 'geometry-type', 'id', 'properties',
+  'feature-state',
+  'geometry-type',
+  'id',
+  'properties',
   // Lookup
   'literal',
   // Comparison
-  '==', '!=', '<', '>', '<=', '>=',
+  '==',
+  '!=',
+  '<',
+  '>',
+  '<=',
+  '>=',
   // Logical
-  'all', 'any', '!',
+  'all',
+  'any',
+  '!',
   // Decision
-  'match', 'case', 'coalesce', 'within',
+  'match',
+  'case',
+  'coalesce',
+  'within',
   // Ramp / Curve
-  'step', 'interpolate', 'interpolate-hcl', 'interpolate-lab',
+  'step',
+  'interpolate',
+  'interpolate-hcl',
+  'interpolate-lab',
   // String
-  'concat', 'downcase', 'upcase', 'resolved-locale', 'is-supported-script',
+  'concat',
+  'downcase',
+  'upcase',
+  'resolved-locale',
+  'is-supported-script',
   // Math
-  '+', '-', '*', '/', '%', '^',
-  'abs', 'ceil', 'floor', 'round', 'min', 'max', 'sqrt',
-  'log10', 'log2', 'ln', 'e', 'pi', 'sin', 'cos', 'tan',
-  'asin', 'acos', 'atan',
+  '+',
+  '-',
+  '*',
+  '/',
+  '%',
+  '^',
+  'abs',
+  'ceil',
+  'floor',
+  'round',
+  'min',
+  'max',
+  'sqrt',
+  'log10',
+  'log2',
+  'ln',
+  'e',
+  'pi',
+  'sin',
+  'cos',
+  'tan',
+  'asin',
+  'acos',
+  'atan',
   // Type
-  'typeof', 'to-string', 'to-number', 'to-boolean', 'to-color', 'to-rgba',
-  'number-format', 'image', 'format',
+  'typeof',
+  'to-string',
+  'to-number',
+  'to-boolean',
+  'to-color',
+  'to-rgba',
+  'number-format',
+  'image',
+  'format',
   // Color
-  'rgb', 'rgba',
+  'rgb',
+  'rgba',
   // Zoom
   'zoom',
   // Variable binding
-  'let', 'var',
+  'let',
+  'var',
   // Heatmap
-  'heatmap-density', 'line-progress',
+  'heatmap-density',
+  'line-progress',
 ]);
 
 // ---------------------------------------------------------------------------
@@ -65,9 +121,7 @@ const KNOWN_OPERATORS = new Set<string>([
  */
 export function isExpressionArray(value: unknown): value is unknown[] {
   return (
-    Array.isArray(value) &&
-    value.length >= 1 &&
-    typeof value[0] === 'string'
+    Array.isArray(value) && value.length >= 1 && typeof value[0] === 'string'
   );
 }
 

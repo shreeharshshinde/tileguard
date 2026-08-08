@@ -22,19 +22,25 @@
 import type { EngineeringReport } from '../models/EngineeringReport.js';
 import { escapeHtml, HtmlWriter } from '../utils/HtmlWriter.js';
 
-const STATUS_COLORS: Record<string, 'green' | 'yellow' | 'red' | 'orange' | 'blue' | 'grey'> = {
-  'identical': 'green',
-  'clean': 'green',
+const STATUS_COLORS: Record<
+  string,
+  'green' | 'yellow' | 'red' | 'orange' | 'blue' | 'grey'
+> = {
+  identical: 'green',
+  clean: 'green',
   'changes-detected': 'yellow',
   'regressions-found': 'red',
 };
 
-const RISK_COLORS: Record<string, 'green' | 'yellow' | 'red' | 'orange' | 'blue' | 'grey'> = {
-  'none': 'green',
-  'low': 'blue',
-  'medium': 'yellow',
-  'high': 'red',
-  'critical': 'red',
+const RISK_COLORS: Record<
+  string,
+  'green' | 'yellow' | 'red' | 'orange' | 'blue' | 'grey'
+> = {
+  none: 'green',
+  low: 'blue',
+  medium: 'yellow',
+  high: 'red',
+  critical: 'red',
 };
 
 export function renderHtml(report: EngineeringReport): string {
@@ -106,11 +112,30 @@ export function renderHtml(report: EngineeringReport): string {
   const m = executiveSummary.metrics;
   w.statGrid([
     { label: 'Layers Changed', value: m.layersChanged },
-    { label: 'Features Added', value: `+${m.featuresAdded.toLocaleString()}`, highlight: m.featuresAdded > 0 },
-    { label: 'Features Modified', value: `~${m.featuresModified.toLocaleString()}` },
-    { label: 'Features Removed', value: `-${m.featuresRemoved.toLocaleString()}`, highlight: m.featuresRemoved > 0 },
-    { label: 'Regression Candidates', value: m.regressionCandidates, highlight: m.regressionCandidates > 0 },
-    { label: 'New Diagnostics', value: m.newDiagnostics, highlight: m.newDiagnostics > 0 },
+    {
+      label: 'Features Added',
+      value: `+${m.featuresAdded.toLocaleString()}`,
+      highlight: m.featuresAdded > 0,
+    },
+    {
+      label: 'Features Modified',
+      value: `~${m.featuresModified.toLocaleString()}`,
+    },
+    {
+      label: 'Features Removed',
+      value: `-${m.featuresRemoved.toLocaleString()}`,
+      highlight: m.featuresRemoved > 0,
+    },
+    {
+      label: 'Regression Candidates',
+      value: m.regressionCandidates,
+      highlight: m.regressionCandidates > 0,
+    },
+    {
+      label: 'New Diagnostics',
+      value: m.newDiagnostics,
+      highlight: m.newDiagnostics > 0,
+    },
     {
       label: 'Overall Confidence',
       value: m.regressionCandidates > 0 ? `${m.overallConfidencePct}%` : 'N/A',
@@ -153,7 +178,10 @@ export function renderHtml(report: EngineeringReport): string {
     { label: 'Regression Candidates', value: overview.totalCandidates },
     {
       label: 'Overall Confidence',
-      value: overview.totalCandidates > 0 ? `${Math.round(overview.overallConfidence * 100)}%` : 'N/A',
+      value:
+        overview.totalCandidates > 0
+          ? `${Math.round(overview.overallConfidence * 100)}%`
+          : 'N/A',
     },
     { label: 'Dominant Kind', value: overview.dominantKind ?? 'N/A' },
   ]);
@@ -173,10 +201,12 @@ export function renderHtml(report: EngineeringReport): string {
   } else {
     w.table(
       ['Layer', 'Added (+)', 'Modified (~)', 'Removed (-)'],
-      layerImpact.map(l => [
+      layerImpact.map((l) => [
         escapeHtml(l.layerName),
         l.added > 0 ? w.badge(`+${l.added.toLocaleString()}`, 'green') : '—',
-        l.modified > 0 ? w.badge(`~${l.modified.toLocaleString()}`, 'yellow') : '—',
+        l.modified > 0
+          ? w.badge(`~${l.modified.toLocaleString()}`, 'yellow')
+          : '—',
         l.removed > 0 ? w.badge(`-${l.removed.toLocaleString()}`, 'red') : '—',
       ]),
     );
@@ -194,28 +224,35 @@ export function renderHtml(report: EngineeringReport): string {
   if (regressionHighlights.isClean) {
     w.p(
       `${w.badge('CLEAN', 'green')} No regression candidates found across ` +
-      `${regression.totalFeatures.toLocaleString()} features.`,
+        `${regression.totalFeatures.toLocaleString()} features.`,
     );
   } else {
     w.p(
       `${w.badge('REGRESSIONS FOUND', 'red')} ` +
-      `<strong>${regressionHighlights.totalCandidates}</strong> candidate(s) · ` +
-      `Overall confidence: <strong>${regressionHighlights.overallConfidencePct}%</strong>` +
-      (regressionHighlights.dominantKind
-        ? ` · Dominant pattern: ${w.badge(regressionHighlights.dominantKind, 'orange')}`
-        : ''),
+        `<strong>${regressionHighlights.totalCandidates}</strong> candidate(s) · ` +
+        `Overall confidence: <strong>${regressionHighlights.overallConfidencePct}%</strong>` +
+        (regressionHighlights.dominantKind
+          ? ` · Dominant pattern: ${w.badge(regressionHighlights.dominantKind, 'orange')}`
+          : ''),
     );
 
     w.h3('Top Candidates');
     for (const c of regressionHighlights.topCandidates) {
       const label = `${c.layerName}${c.featureId !== undefined ? ` #${c.featureId}` : ''}`;
-      w.candidateCard(c.rank, label, c.kind, c.confidencePct, c.topReason, c.evidenceLabels);
+      w.candidateCard(
+        c.rank,
+        label,
+        c.kind,
+        c.confidencePct,
+        c.topReason,
+        c.evidenceLabels,
+      );
     }
 
     if (regressionHighlights.remainingCandidates.length > 0) {
       w.p(
         `<em>${regressionHighlights.remainingCandidates.length} additional candidate(s) in ` +
-        `<a href="#appendix">Appendix F</a>.</em>`,
+          `<a href="#appendix">Appendix F</a>.</em>`,
       );
     }
   }
@@ -230,9 +267,16 @@ export function renderHtml(report: EngineeringReport): string {
   w.h2('Diagnostics');
 
   w.statGrid([
-    { label: '🆕 New', value: diagnosticsSummary.newCount, highlight: diagnosticsSummary.newCount > 0 },
+    {
+      label: '🆕 New',
+      value: diagnosticsSummary.newCount,
+      highlight: diagnosticsSummary.newCount > 0,
+    },
     { label: '✅ Resolved', value: diagnosticsSummary.resolvedCount },
-    { label: '⏳ Persistent (est.)', value: diagnosticsSummary.persistentCount },
+    {
+      label: '⏳ Persistent (est.)',
+      value: diagnosticsSummary.persistentCount,
+    },
     { label: 'Total (A)', value: diagnosticsSummary.totalA },
     { label: 'Total (B)', value: diagnosticsSummary.totalB },
   ]);
@@ -241,10 +285,17 @@ export function renderHtml(report: EngineeringReport): string {
     w.h3('Top Rules');
     w.table(
       ['Rule', 'Count', 'Severity'],
-      diagnosticsSummary.topRules.map(r => [
+      diagnosticsSummary.topRules.map((r) => [
         `<code>${escapeHtml(r.ruleId)}</code>`,
         String(r.count),
-        w.badge(r.severity, r.severity === 'error' ? 'red' : r.severity === 'warning' ? 'yellow' : 'blue'),
+        w.badge(
+          r.severity,
+          r.severity === 'error'
+            ? 'red'
+            : r.severity === 'warning'
+              ? 'yellow'
+              : 'blue',
+        ),
       ]),
     );
   }
@@ -255,8 +306,17 @@ export function renderHtml(report: EngineeringReport): string {
       ['Rule', 'Severity', 'Message'],
       diagnostics.newDiagnostics.map((d) => [
         `<code>${escapeHtml(d.ruleId)}</code>`,
-        w.badge(d.severity, d.severity === 'error' ? 'red' : d.severity === 'warning' ? 'yellow' : 'blue'),
-        escapeHtml(d.message.slice(0, 100) + (d.message.length > 100 ? '…' : '')),
+        w.badge(
+          d.severity,
+          d.severity === 'error'
+            ? 'red'
+            : d.severity === 'warning'
+              ? 'yellow'
+              : 'blue',
+        ),
+        escapeHtml(
+          d.message.slice(0, 100) + (d.message.length > 100 ? '…' : ''),
+        ),
       ]),
     );
   }
@@ -320,14 +380,24 @@ export function renderHtml(report: EngineeringReport): string {
   w.sectionOpen('recommendations');
   w.h2('Recommendations');
 
-  if (prioritizedRecommendations.length === 0 && recommendations.items.length === 0) {
+  if (
+    prioritizedRecommendations.length === 0 &&
+    recommendations.items.length === 0
+  ) {
     w.p('No recommendations generated.');
   } else if (prioritizedRecommendations.length > 0) {
     for (const r of prioritizedRecommendations) {
-      w.recommendationCard(r.priority, r.title, r.reason, r.affectedLayers, r.evidence, r.actions);
+      w.recommendationCard(
+        r.priority,
+        r.title,
+        r.reason,
+        r.affectedLayers,
+        r.evidence,
+        r.actions,
+      );
     }
   } else {
-    w.ol(recommendations.items.map(i => escapeHtml(i)));
+    w.ol(recommendations.items.map((i) => escapeHtml(i)));
   }
 
   w.sectionClose();
@@ -350,21 +420,43 @@ export function renderHtml(report: EngineeringReport): string {
   w.h3('Layer Changes');
   w.table(
     ['Added', 'Removed', 'Modified'],
-    [[
-      String(comparison.layers.added),
-      String(comparison.layers.removed),
-      String(comparison.layers.modified),
-    ]],
+    [
+      [
+        String(comparison.layers.added),
+        String(comparison.layers.removed),
+        String(comparison.layers.modified),
+      ],
+    ],
   );
 
   w.h3('Statistics Delta');
   w.table(
     ['Metric', 'Before (A)', 'After (B)', 'Δ'],
     [
-      ['Layers', String(comparison.stats.layersA), String(comparison.stats.layersB), rawDelta(comparison.stats.layersB - comparison.stats.layersA)],
-      ['Features', String(comparison.stats.featuresA), String(comparison.stats.featuresB), rawDelta(comparison.stats.featuresB - comparison.stats.featuresA)],
-      ['Vertices', String(comparison.stats.verticesA), String(comparison.stats.verticesB), rawDelta(comparison.stats.verticesB - comparison.stats.verticesA)],
-      ['Diagnostics', String(comparison.stats.diagnosticsA), String(comparison.stats.diagnosticsB), rawDelta(comparison.stats.diagnosticsB - comparison.stats.diagnosticsA)],
+      [
+        'Layers',
+        String(comparison.stats.layersA),
+        String(comparison.stats.layersB),
+        rawDelta(comparison.stats.layersB - comparison.stats.layersA),
+      ],
+      [
+        'Features',
+        String(comparison.stats.featuresA),
+        String(comparison.stats.featuresB),
+        rawDelta(comparison.stats.featuresB - comparison.stats.featuresA),
+      ],
+      [
+        'Vertices',
+        String(comparison.stats.verticesA),
+        String(comparison.stats.verticesB),
+        rawDelta(comparison.stats.verticesB - comparison.stats.verticesA),
+      ],
+      [
+        'Diagnostics',
+        String(comparison.stats.diagnosticsA),
+        String(comparison.stats.diagnosticsB),
+        rawDelta(comparison.stats.diagnosticsB - comparison.stats.diagnosticsA),
+      ],
     ],
   );
 
@@ -383,16 +475,23 @@ export function renderHtml(report: EngineeringReport): string {
     w.detailsOpen(`A — Added Features (${total.toLocaleString()})`);
     w.table(
       ['Layer', 'Count', 'Examples'],
-      appendix.addedByLayer.map(g => [
+      appendix.addedByLayer.map((g) => [
         escapeHtml(g.layerName),
         g.count.toLocaleString(),
-        g.examples.slice(0, 5).map(e => escapeHtml(e)).join(', ') || '—',
+        g.examples
+          .slice(0, 5)
+          .map((e) => escapeHtml(e))
+          .join(', ') || '—',
       ]),
     );
     w.detailsClose();
   } else if (comparison.features.added > 0) {
-    w.detailsOpen(`A — Added Features (${comparison.features.added.toLocaleString()})`);
-    w.p('<em>Per-layer breakdown not available. Provide <code>layerStats</code> in ComparisonInput for detail.</em>');
+    w.detailsOpen(
+      `A — Added Features (${comparison.features.added.toLocaleString()})`,
+    );
+    w.p(
+      '<em>Per-layer breakdown not available. Provide <code>layerStats</code> in ComparisonInput for detail.</em>',
+    );
     w.detailsClose();
   }
 
@@ -402,15 +501,20 @@ export function renderHtml(report: EngineeringReport): string {
     w.detailsOpen(`B — Modified Features (${total.toLocaleString()})`);
     w.table(
       ['Layer', 'Count', 'Examples'],
-      appendix.modifiedByLayer.map(g => [
+      appendix.modifiedByLayer.map((g) => [
         escapeHtml(g.layerName),
         g.count.toLocaleString(),
-        g.examples.slice(0, 5).map(e => escapeHtml(e)).join(', ') || '—',
+        g.examples
+          .slice(0, 5)
+          .map((e) => escapeHtml(e))
+          .join(', ') || '—',
       ]),
     );
     w.detailsClose();
   } else if (comparison.features.modified > 0) {
-    w.detailsOpen(`B — Modified Features (${comparison.features.modified.toLocaleString()})`);
+    w.detailsOpen(
+      `B — Modified Features (${comparison.features.modified.toLocaleString()})`,
+    );
     w.p('<em>Per-layer breakdown not available.</em>');
     w.detailsClose();
   }
@@ -421,10 +525,13 @@ export function renderHtml(report: EngineeringReport): string {
     w.detailsOpen(`C — Removed Features (${total.toLocaleString()})`);
     w.table(
       ['Layer', 'Count', 'Examples'],
-      appendix.removedByLayer.map(g => [
+      appendix.removedByLayer.map((g) => [
         escapeHtml(g.layerName),
         g.count.toLocaleString(),
-        g.examples.slice(0, 5).map(e => escapeHtml(e)).join(', ') || '—',
+        g.examples
+          .slice(0, 5)
+          .map((e) => escapeHtml(e))
+          .join(', ') || '—',
       ]),
     );
     w.detailsClose();
@@ -432,13 +539,24 @@ export function renderHtml(report: EngineeringReport): string {
 
   // D — All new diagnostics
   if (appendix.allNewDiagnostics.length > 0) {
-    w.detailsOpen(`D — All New Diagnostics (${appendix.allNewDiagnostics.length})`);
+    w.detailsOpen(
+      `D — All New Diagnostics (${appendix.allNewDiagnostics.length})`,
+    );
     w.table(
       ['Rule', 'Severity', 'Message'],
-      appendix.allNewDiagnostics.map(d => [
+      appendix.allNewDiagnostics.map((d) => [
         `<code>${escapeHtml(d.ruleId)}</code>`,
-        w.badge(d.severity, d.severity === 'error' ? 'red' : d.severity === 'warning' ? 'yellow' : 'blue'),
-        escapeHtml(d.message.slice(0, 120) + (d.message.length > 120 ? '…' : '')),
+        w.badge(
+          d.severity,
+          d.severity === 'error'
+            ? 'red'
+            : d.severity === 'warning'
+              ? 'yellow'
+              : 'blue',
+        ),
+        escapeHtml(
+          d.message.slice(0, 120) + (d.message.length > 120 ? '…' : ''),
+        ),
       ]),
     );
     w.detailsClose();
@@ -449,17 +567,39 @@ export function renderHtml(report: EngineeringReport): string {
   w.table(
     ['Metric', 'Before', 'After', 'Δ'],
     [
-      ['Layers', String(statistics.layersA), String(statistics.layersB), rawDelta(statistics.layersB - statistics.layersA)],
-      ['Features', String(statistics.featuresA), String(statistics.featuresB), rawDelta(statistics.featuresB - statistics.featuresA)],
-      ['Vertices', String(statistics.verticesA), String(statistics.verticesB), rawDelta(statistics.verticesB - statistics.verticesA)],
-      ['Diagnostics', String(statistics.diagnosticsA), String(statistics.diagnosticsB), rawDelta(statistics.diagnosticsB - statistics.diagnosticsA)],
+      [
+        'Layers',
+        String(statistics.layersA),
+        String(statistics.layersB),
+        rawDelta(statistics.layersB - statistics.layersA),
+      ],
+      [
+        'Features',
+        String(statistics.featuresA),
+        String(statistics.featuresB),
+        rawDelta(statistics.featuresB - statistics.featuresA),
+      ],
+      [
+        'Vertices',
+        String(statistics.verticesA),
+        String(statistics.verticesB),
+        rawDelta(statistics.verticesB - statistics.verticesA),
+      ],
+      [
+        'Diagnostics',
+        String(statistics.diagnosticsA),
+        String(statistics.diagnosticsB),
+        rawDelta(statistics.diagnosticsB - statistics.diagnosticsA),
+      ],
     ],
   );
   w.detailsClose();
 
   // F — All regression candidates
   if (appendix.allCandidates.length > 0) {
-    w.detailsOpen(`F — All Regression Candidates (${appendix.allCandidates.length})`);
+    w.detailsOpen(
+      `F — All Regression Candidates (${appendix.allCandidates.length})`,
+    );
     w.table(
       ['#', 'Layer', 'Feature', 'Kind', 'Confidence', 'Top Reason'],
       appendix.allCandidates.map((c, i) => [
@@ -468,7 +608,9 @@ export function renderHtml(report: EngineeringReport): string {
         c.featureId !== undefined ? String(c.featureId) : '—',
         escapeHtml(c.kind),
         `${Math.round(c.confidence * 100)}%`,
-        escapeHtml(c.topReason.slice(0, 60) + (c.topReason.length > 60 ? '…' : '')),
+        escapeHtml(
+          c.topReason.slice(0, 60) + (c.topReason.length > 60 ? '…' : ''),
+        ),
       ]),
     );
     w.detailsClose();

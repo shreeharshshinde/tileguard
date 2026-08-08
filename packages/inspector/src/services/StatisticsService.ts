@@ -7,11 +7,11 @@
  * Boundary: Zero imports from renderer/, overlay/, viewport/, or DOM APIs.
  */
 
+import type { LayerStatistics, TileStatistics } from '@tileguard/analysis';
+import { EMPTY_TILE_STATISTICS } from '@tileguard/analysis';
 import type { DiagnosticProvider } from '../providers/DiagnosticProvider.js';
 import type { FeatureProvider } from '../providers/FeatureProvider.js';
 import type { LayerProvider } from '../providers/LayerProvider.js';
-import type { TileStatistics, LayerStatistics } from '@tileguard/analysis';
-import { EMPTY_TILE_STATISTICS } from '@tileguard/analysis';
 
 // ---------------------------------------------------------------------------
 // Public types (re-export for backward compatibility)

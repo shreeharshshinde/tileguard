@@ -119,11 +119,14 @@ function parseSimpleYaml(content: string): Record<string, unknown> {
         const existing = result[currentSection]![lastKey];
         if (Array.isArray(existing)) {
           existing.push(parseValue(arrayMatch[1]!));
-        } else if (existing === '' || existing === undefined || existing === null) {
+        } else if (
+          existing === '' ||
+          existing === undefined ||
+          existing === null
+        ) {
           result[currentSection]![lastKey] = [parseValue(arrayMatch[1]!)];
         }
       }
-      continue;
     }
   }
 
@@ -174,7 +177,9 @@ export interface LoadYamlConfigResult {
  * Load tileguard.yml configuration.
  * Returns defaults if no config file is found (not an error).
  */
-export function loadYamlConfig(options: LoadYamlConfigOptions = {}): LoadYamlConfigResult {
+export function loadYamlConfig(
+  options: LoadYamlConfigOptions = {},
+): LoadYamlConfigResult {
   // Explicit path
   if (options.configPath) {
     const abs = resolve(options.configPath);
@@ -202,8 +207,12 @@ export function loadYamlConfig(options: LoadYamlConfigOptions = {}): LoadYamlCon
 function mergeWithDefaults(yamlContent: string): TileguardYamlConfig {
   const parsed = parseSimpleYaml(yamlContent);
 
-  const comparison = parsed['comparison'] as Record<string, unknown> | undefined;
-  const regression = parsed['regression'] as Record<string, unknown> | undefined;
+  const comparison = parsed['comparison'] as
+    | Record<string, unknown>
+    | undefined;
+  const regression = parsed['regression'] as
+    | Record<string, unknown>
+    | undefined;
   const report = parsed['report'] as Record<string, unknown> | undefined;
   const output = parsed['output'] as Record<string, unknown> | undefined;
 
@@ -214,9 +223,10 @@ function mergeWithDefaults(yamlContent: string): TileguardYamlConfig {
         : DEFAULT_CONFIG.comparison.stableProperties,
     },
     regression: {
-      minConfidence: typeof regression?.['minConfidence'] === 'number'
-        ? (regression['minConfidence'] as number)
-        : DEFAULT_CONFIG.regression.minConfidence,
+      minConfidence:
+        typeof regression?.['minConfidence'] === 'number'
+          ? (regression['minConfidence'] as number)
+          : DEFAULT_CONFIG.regression.minConfidence,
     },
     report: {
       format: isReportFormat(report?.['format'])
@@ -224,9 +234,10 @@ function mergeWithDefaults(yamlContent: string): TileguardYamlConfig {
         : DEFAULT_CONFIG.report.format,
     },
     output: {
-      directory: typeof output?.['directory'] === 'string'
-        ? (output['directory'] as string)
-        : DEFAULT_CONFIG.output.directory,
+      directory:
+        typeof output?.['directory'] === 'string'
+          ? (output['directory'] as string)
+          : DEFAULT_CONFIG.output.directory,
     },
   };
 }

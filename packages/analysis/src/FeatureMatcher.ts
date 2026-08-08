@@ -33,7 +33,10 @@
  * Boundary: Zero imports from renderer/, overlay/, viewport/, or DOM APIs.
  */
 
-import type { FeatureComparison, FeatureSnapshot } from './models/comparison.js';
+import type {
+  FeatureComparison,
+  FeatureSnapshot,
+} from './models/comparison.js';
 
 // ---------------------------------------------------------------------------
 // Stable property names treated as external identifiers (Priority 2)

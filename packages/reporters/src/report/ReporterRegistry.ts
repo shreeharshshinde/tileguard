@@ -5,10 +5,13 @@
  * Extensible: call register() to add new formats (future plugins).
  */
 
-import type { EngineeringReport, ReportFormat } from './models/EngineeringReport.js';
+import type {
+  EngineeringReport,
+  ReportFormat,
+} from './models/EngineeringReport.js';
 import { renderHtml } from './reporters/HtmlReporter.js';
-import { renderMarkdown } from './reporters/MarkdownReporter.js';
 import { renderJson } from './reporters/JsonReporter.js';
+import { renderMarkdown } from './reporters/MarkdownReporter.js';
 
 // ---------------------------------------------------------------------------
 // Types

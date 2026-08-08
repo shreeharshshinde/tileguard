@@ -22,25 +22,25 @@
  */
 
 import { Command } from 'commander';
+import { runAnalyze } from './commands/analyze.js';
 import { runCheck } from './commands/check.js';
+import { runCompare } from './commands/compare.js';
+import { runDoctor } from './commands/doctor.js';
 import { runInit } from './commands/init.js';
+import { runReport } from './commands/report.js';
 import {
   runRulesDocs,
   runRulesExplain,
   runRulesList,
 } from './commands/rules.js';
-import { runCompare } from './commands/compare.js';
-import { runAnalyze } from './commands/analyze.js';
-import { runReport } from './commands/report.js';
 import { runStats } from './commands/stats.js';
-import { runDoctor } from './commands/doctor.js';
-import { runVersion } from './commands/version.js';
 import { runStyle } from './commands/style.js';
-import { createLogger } from './logging/Logger.js';
-import type { LogLevel } from './logging/Logger.js';
+import { runVersion } from './commands/version.js';
 import { loadYamlConfig } from './config/ConfigLoader.js';
-import { runCommand } from './runner/CommandRunner.js';
+import type { LogLevel } from './logging/Logger.js';
+import { createLogger } from './logging/Logger.js';
 import type { CommandContext } from './runner/CommandRunner.js';
+import { runCommand } from './runner/CommandRunner.js';
 
 /**
  * Presents the result of any command to the terminal, then exits the process.
@@ -52,7 +52,11 @@ import type { CommandContext } from './runner/CommandRunner.js';
  * This is the single location in the package where streams are written to and
  * where `process.exit` is called.
  */
-function present(result: { exitCode: number; message?: string; output?: string }): never {
+function present(result: {
+  exitCode: number;
+  message?: string;
+  output?: string;
+}): never {
   if (result.message !== undefined) {
     process.stderr.write(`${result.message}\n`);
   }
@@ -136,10 +140,23 @@ rules
   });
 
 // ── Shared context builder ────────────────────────────────────────────────
-function buildContext(flags: { verbose?: boolean; debug?: boolean; quiet?: boolean; config?: string }): CommandContext {
-  const level: LogLevel = flags.debug ? 'debug' : flags.verbose ? 'verbose' : flags.quiet ? 'quiet' : 'normal';
+function buildContext(flags: {
+  verbose?: boolean;
+  debug?: boolean;
+  quiet?: boolean;
+  config?: string;
+}): CommandContext {
+  const level: LogLevel = flags.debug
+    ? 'debug'
+    : flags.verbose
+      ? 'verbose'
+      : flags.quiet
+        ? 'quiet'
+        : 'normal';
   const logger = createLogger({ level });
-  const { config } = loadYamlConfig(flags.config ? { configPath: flags.config } : {});
+  const { config } = loadYamlConfig(
+    flags.config ? { configPath: flags.config } : {},
+  );
   return { logger, config, cwd: process.cwd() };
 }
 
@@ -159,7 +176,12 @@ program
     const ctx = buildContext(flags);
     const result = await runCommand({
       name: 'compare',
-      args: { before, after, format: flags.json ? 'json' : 'text', output: flags.output },
+      args: {
+        before,
+        after,
+        format: flags.json ? 'json' : 'text',
+        output: flags.output,
+      },
       ctx,
       fn: runCompare,
     });
@@ -182,7 +204,12 @@ program
     const ctx = buildContext(flags);
     const result = await runCommand({
       name: 'analyze',
-      args: { before, after, format: flags.json ? 'json' : 'text', output: flags.output },
+      args: {
+        before,
+        after,
+        format: flags.json ? 'json' : 'text',
+        output: flags.output,
+      },
       ctx,
       fn: runAnalyze,
     });
@@ -195,7 +222,11 @@ program
   .description('Generate an engineering report (Markdown / HTML / JSON)')
   .argument('<before>', 'Path to the baseline tile')
   .argument('<after>', 'Path to the updated tile')
-  .option('-f, --format <format>', 'Report format: markdown | html | json', 'markdown')
+  .option(
+    '-f, --format <format>',
+    'Report format: markdown | html | json',
+    'markdown',
+  )
   .option('-o, --output <path>', 'Write report to file')
   .option('-v, --verbose', 'Verbose output')
   .option('--debug', 'Debug output')
@@ -205,7 +236,12 @@ program
     const ctx = buildContext(flags);
     const result = await runCommand({
       name: 'report',
-      args: { before, after, format: flags.format ?? 'markdown', output: flags.output },
+      args: {
+        before,
+        after,
+        format: flags.format ?? 'markdown',
+        output: flags.output,
+      },
       ctx,
       fn: runReport,
     });
@@ -236,7 +272,9 @@ program
 // ── doctor ────────────────────────────────────────────────────────────────
 program
   .command('doctor')
-  .description('Health check: verify configuration, rules, parser, and reporters')
+  .description(
+    'Health check: verify configuration, rules, parser, and reporters',
+  )
   .option('-v, --verbose', 'Verbose output')
   .option('--debug', 'Debug output')
   .option('-c, --config <path>', 'Path to tileguard.yml')
@@ -254,7 +292,9 @@ program
 // ── style ─────────────────────────────────────────────────────────────────
 program
   .command('style')
-  .description('Analyze a MapLibre style specification: parse, validate, report')
+  .description(
+    'Analyze a MapLibre style specification: parse, validate, report',
+  )
   .argument('<file>', 'Path to a style.json file')
   .option('--json', 'Output as JSON')
   .option('-v, --verbose', 'Verbose output')

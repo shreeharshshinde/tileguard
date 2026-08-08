@@ -11,9 +11,16 @@
  * (never imports reporters formats directly — that's the engine's job).
  */
 
-import { Braces, Check, Copy, Download, FileCode, FileText } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
 import { createReportEngine } from '@tileguard/reporters';
+import {
+  Braces,
+  Check,
+  Copy,
+  Download,
+  FileCode,
+  FileText,
+} from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import type { RegressionAnalysis } from '../../analysis/models/regression.js';
 import type { TileComparison } from '../../comparison/models.js';
 import { buildReportInputs } from '../../report/report-adapter.js';
@@ -25,9 +32,27 @@ import { buildReportInputs } from '../../report/report-adapter.js';
 type ReportFormat = 'markdown' | 'html' | 'json';
 
 const FORMAT_TABS = [
-  { id: 'markdown' as ReportFormat, label: 'Markdown', Icon: FileText, ext: 'md',   mime: 'text/markdown' },
-  { id: 'html'     as ReportFormat, label: 'HTML',     Icon: FileCode, ext: 'html', mime: 'text/html' },
-  { id: 'json'     as ReportFormat, label: 'JSON',     Icon: Braces,   ext: 'json', mime: 'application/json' },
+  {
+    id: 'markdown' as ReportFormat,
+    label: 'Markdown',
+    Icon: FileText,
+    ext: 'md',
+    mime: 'text/markdown',
+  },
+  {
+    id: 'html' as ReportFormat,
+    label: 'HTML',
+    Icon: FileCode,
+    ext: 'html',
+    mime: 'text/html',
+  },
+  {
+    id: 'json' as ReportFormat,
+    label: 'JSON',
+    Icon: Braces,
+    ext: 'json',
+    mime: 'application/json',
+  },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -43,14 +68,20 @@ interface ReportPageProps {
 // Component
 // ---------------------------------------------------------------------------
 
-export function ReportPage({ comparison, regression }: ReportPageProps): JSX.Element {
+export function ReportPage({
+  comparison,
+  regression,
+}: ReportPageProps): JSX.Element {
   const [format, setFormat] = useState<ReportFormat>('markdown');
   const [copied, setCopied] = useState(false);
 
   // Generate report whenever comparison, regression, or format changes
   const result = useMemo(() => {
     if (!comparison || !regression) return null;
-    const { comparisonInput, regressionInput } = buildReportInputs(comparison, regression);
+    const { comparisonInput, regressionInput } = buildReportInputs(
+      comparison,
+      regression,
+    );
     return createReportEngine({ tileguardVersion: '0.4.5' }).generate(
       comparisonInput,
       regressionInput,
@@ -87,7 +118,10 @@ export function ReportPage({ comparison, regression }: ReportPageProps): JSX.Ele
   if (!comparison || !regression) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-        <FileText className="h-10 w-10 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <FileText
+          className="h-10 w-10 text-[var(--tg-text-muted)]"
+          aria-hidden="true"
+        />
         <p className="text-sm font-semibold text-[var(--tg-text-primary)]">
           Engineering Report
         </p>
@@ -137,9 +171,14 @@ export function ReportPage({ comparison, regression }: ReportPageProps): JSX.Ele
           className="flex items-center gap-1.5 rounded px-2.5 py-1.5 text-xs font-medium text-[var(--tg-text-secondary)] transition-colors hover:bg-[var(--tg-bg-hover)] disabled:opacity-40"
           aria-label="Copy to clipboard"
         >
-          {copied
-            ? <Check className="h-3.5 w-3.5 text-[var(--tg-success)]" aria-hidden="true" />
-            : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+          {copied ? (
+            <Check
+              className="h-3.5 w-3.5 text-[var(--tg-success)]"
+              aria-hidden="true"
+            />
+          ) : (
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
           {copied ? 'Copied!' : 'Copy'}
         </button>
 

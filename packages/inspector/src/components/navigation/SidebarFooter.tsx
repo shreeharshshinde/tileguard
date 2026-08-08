@@ -24,7 +24,9 @@ export function SidebarFooter(): JSX.Element {
             <p className="text-xs font-bold tracking-tight text-[var(--tg-text-primary)]">
               TileGuard
             </p>
-            <p className="font-mono text-[9px] text-[var(--tg-text-muted)]">v1.0.0</p>
+            <p className="font-mono text-[9px] text-[var(--tg-text-muted)]">
+              v1.0.0
+            </p>
           </div>
         </div>
         <button

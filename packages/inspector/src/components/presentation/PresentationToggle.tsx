@@ -16,7 +16,9 @@ interface PresentationToggleProps {
   readonly className?: string;
 }
 
-export function PresentationToggle({ className = '' }: PresentationToggleProps): JSX.Element {
+export function PresentationToggle({
+  className = '',
+}: PresentationToggleProps): JSX.Element {
   const service = getPresentationService();
   const [active, setActive] = useState(service.isActive());
 
@@ -39,8 +41,14 @@ export function PresentationToggle({ className = '' }: PresentationToggleProps):
           : 'text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]'
       } ${className}`}
       aria-pressed={active}
-      aria-label={active ? 'Disable presentation mode (Ctrl+Shift+P)' : 'Enable presentation mode (Ctrl+Shift+P)'}
-      title={active ? 'Exit Presentation Mode' : 'Presentation Mode (Ctrl+Shift+P)'}
+      aria-label={
+        active
+          ? 'Disable presentation mode (Ctrl+Shift+P)'
+          : 'Enable presentation mode (Ctrl+Shift+P)'
+      }
+      title={
+        active ? 'Exit Presentation Mode' : 'Presentation Mode (Ctrl+Shift+P)'
+      }
     >
       {active ? (
         <MonitorOff className="h-4 w-4" aria-hidden="true" />

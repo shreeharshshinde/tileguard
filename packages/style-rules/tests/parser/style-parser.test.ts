@@ -70,7 +70,9 @@ describe('StyleParser', () => {
     });
 
     it('parses sprite as string', () => {
-      const { document } = parseStyleDocument({ sprite: 'https://example.com/sprite' });
+      const { document } = parseStyleDocument({
+        sprite: 'https://example.com/sprite',
+      });
       expect(document!.sprite).toBe('https://example.com/sprite');
     });
 
@@ -82,8 +84,12 @@ describe('StyleParser', () => {
     });
 
     it('parses glyphs', () => {
-      const { document } = parseStyleDocument({ glyphs: 'https://example.com/{fontstack}/{range}.pbf' });
-      expect(document!.glyphs).toBe('https://example.com/{fontstack}/{range}.pbf');
+      const { document } = parseStyleDocument({
+        glyphs: 'https://example.com/{fontstack}/{range}.pbf',
+      });
+      expect(document!.glyphs).toBe(
+        'https://example.com/{fontstack}/{range}.pbf',
+      );
     });
 
     it('parses metadata', () => {
@@ -112,29 +118,39 @@ describe('StyleParser', () => {
     });
 
     it('parses projection', () => {
-      const { document } = parseStyleDocument({ projection: { type: 'globe' } });
+      const { document } = parseStyleDocument({
+        projection: { type: 'globe' },
+      });
       expect(document!.projection).toEqual({ type: 'globe' });
     });
 
     it('parses terrain', () => {
-      const { document } = parseStyleDocument({ terrain: { source: 'dem', exaggeration: 1.5 } });
+      const { document } = parseStyleDocument({
+        terrain: { source: 'dem', exaggeration: 1.5 },
+      });
       expect(document!.terrain).toEqual({ source: 'dem', exaggeration: 1.5 });
     });
 
     it('parses fog', () => {
-      const { document } = parseStyleDocument({ fog: { color: '#fff', range: [0, 10] } });
+      const { document } = parseStyleDocument({
+        fog: { color: '#fff', range: [0, 10] },
+      });
       expect(document!.fog!.color).toBe('#fff');
       expect(document!.fog!.range).toEqual([0, 10]);
     });
 
     it('parses light', () => {
-      const { document } = parseStyleDocument({ light: { anchor: 'map', intensity: 0.5 } });
+      const { document } = parseStyleDocument({
+        light: { anchor: 'map', intensity: 0.5 },
+      });
       expect(document!.light!.anchor).toBe('map');
       expect(document!.light!.intensity).toBe(0.5);
     });
 
     it('parses transition', () => {
-      const { document } = parseStyleDocument({ transition: { duration: 300, delay: 0 } });
+      const { document } = parseStyleDocument({
+        transition: { duration: 300, delay: 0 },
+      });
       expect(document!.transition).toEqual({ duration: 300, delay: 0 });
     });
 
@@ -155,7 +171,9 @@ describe('StyleParser', () => {
   describe('source parsing', () => {
     it('parses a vector source', () => {
       const { document } = parseStyleDocument({
-        sources: { tiles: { type: 'vector', url: 'https://example.com/tiles.json' } },
+        sources: {
+          tiles: { type: 'vector', url: 'https://example.com/tiles.json' },
+        },
       });
       const source = document!.sources.get('tiles');
       expect(source).toBeDefined();
@@ -168,7 +186,13 @@ describe('StyleParser', () => {
 
     it('parses a geojson source', () => {
       const { document } = parseStyleDocument({
-        sources: { points: { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, cluster: true } },
+        sources: {
+          points: {
+            type: 'geojson',
+            data: { type: 'FeatureCollection', features: [] },
+            cluster: true,
+          },
+        },
       });
       const source = document!.sources.get('points');
       expect(source!.type).toBe('geojson');
@@ -201,7 +225,18 @@ describe('StyleParser', () => {
 
     it('parses an image source', () => {
       const { document } = parseStyleDocument({
-        sources: { img: { type: 'image', url: 'https://example.com/img.png', coordinates: [[0, 1], [1, 1], [1, 0], [0, 0]] } },
+        sources: {
+          img: {
+            type: 'image',
+            url: 'https://example.com/img.png',
+            coordinates: [
+              [0, 1],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          },
+        },
       });
       const source = document!.sources.get('img');
       expect(source!.type).toBe('image');
@@ -209,7 +244,9 @@ describe('StyleParser', () => {
 
     it('parses a video source', () => {
       const { document } = parseStyleDocument({
-        sources: { vid: { type: 'video', urls: ['https://example.com/v.mp4'] } },
+        sources: {
+          vid: { type: 'video', urls: ['https://example.com/v.mp4'] },
+        },
       });
       const source = document!.sources.get('vid');
       expect(source!.type).toBe('video');
@@ -245,7 +282,13 @@ describe('StyleParser', () => {
   describe('layer parsing', () => {
     it('parses a background layer', () => {
       const { document } = parseStyleDocument({
-        layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#fff' } }],
+        layers: [
+          {
+            id: 'bg',
+            type: 'background',
+            paint: { 'background-color': '#fff' },
+          },
+        ],
       });
       const layer = document!.layers[0]!;
       expect(layer.id).toBe('bg');
@@ -256,7 +299,14 @@ describe('StyleParser', () => {
 
     it('parses a fill layer with source', () => {
       const { document } = parseStyleDocument({
-        layers: [{ id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water' }],
+        layers: [
+          {
+            id: 'water',
+            type: 'fill',
+            source: 'openmaptiles',
+            'source-layer': 'water',
+          },
+        ],
       });
       const layer = document!.layers[0]!;
       expect(layer.source).toBe('openmaptiles');
@@ -274,7 +324,13 @@ describe('StyleParser', () => {
 
     it('parses layout properties', () => {
       const { document } = parseStyleDocument({
-        layers: [{ id: 'labels', type: 'symbol', layout: { 'text-field': '{name}', 'text-size': 14 } }],
+        layers: [
+          {
+            id: 'labels',
+            type: 'symbol',
+            layout: { 'text-field': '{name}', 'text-size': 14 },
+          },
+        ],
       });
       const layer = document!.layers[0]!;
       expect(layer.layout.get('text-field')!.raw).toBe('{name}');
@@ -283,7 +339,15 @@ describe('StyleParser', () => {
 
     it('parses paint properties with expressions', () => {
       const { document } = parseStyleDocument({
-        layers: [{ id: 'roads', type: 'line', paint: { 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 20, 5] } }],
+        layers: [
+          {
+            id: 'roads',
+            type: 'line',
+            paint: {
+              'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 20, 5],
+            },
+          },
+        ],
       });
       const layer = document!.layers[0]!;
       const lineWidth = layer.paint.get('line-width')!;
@@ -293,7 +357,13 @@ describe('StyleParser', () => {
 
     it('parses layer filter', () => {
       const { document } = parseStyleDocument({
-        layers: [{ id: 'roads', type: 'line', filter: ['==', ['get', 'class'], 'motorway'] }],
+        layers: [
+          {
+            id: 'roads',
+            type: 'line',
+            filter: ['==', ['get', 'class'], 'motorway'],
+          },
+        ],
       });
       const layer = document!.layers[0]!;
       expect(layer.filter).toBeDefined();

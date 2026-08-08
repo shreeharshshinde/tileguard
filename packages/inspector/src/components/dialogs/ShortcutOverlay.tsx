@@ -70,7 +70,9 @@ export interface ShortcutOverlayProps {
   readonly onClose: () => void;
 }
 
-export function ShortcutOverlay({ onClose }: ShortcutOverlayProps): JSX.Element {
+export function ShortcutOverlay({
+  onClose,
+}: ShortcutOverlayProps): JSX.Element {
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -127,7 +129,10 @@ export function ShortcutOverlay({ onClose }: ShortcutOverlayProps): JSX.Element 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--tg-border)] px-4 py-3">
           <div className="flex items-center gap-2">
-            <Keyboard className="h-4 w-4 text-[var(--tg-accent)]" aria-hidden="true" />
+            <Keyboard
+              className="h-4 w-4 text-[var(--tg-accent)]"
+              aria-hidden="true"
+            />
             <span className="text-sm font-semibold text-[var(--tg-text-primary)]">
               Keyboard Shortcuts
             </span>
@@ -145,7 +150,10 @@ export function ShortcutOverlay({ onClose }: ShortcutOverlayProps): JSX.Element 
         {/* Search */}
         <div className="border-b border-[var(--tg-border)] px-4 py-2">
           <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 shrink-0 text-[var(--tg-text-muted)]" aria-hidden="true" />
+            <Search
+              className="h-4 w-4 shrink-0 text-[var(--tg-text-muted)]"
+              aria-hidden="true"
+            />
             <input
               ref={searchRef}
               type="text"

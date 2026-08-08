@@ -8,16 +8,20 @@
 import { AlertCircle, Loader2, PlayCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
-  loadDemoDataset,
-  loadDemoManifest,
   type DemoDataset,
   type DemoManifest,
+  loadDemoDataset,
+  loadDemoManifest,
 } from '../../services/DemoLoader.js';
 import { DemoCard } from './DemoCard.js';
 
 interface DemoCatalogProps {
   readonly onLoadSingleDemo: (file: File, dataset: DemoDataset) => void;
-  readonly onLoadComparisonDemo: (fileA: File, fileB: File, dataset: DemoDataset) => void;
+  readonly onLoadComparisonDemo: (
+    fileA: File,
+    fileB: File,
+    dataset: DemoDataset,
+  ) => void;
 }
 
 type ManifestState =
@@ -25,8 +29,13 @@ type ManifestState =
   | { status: 'loaded'; manifest: DemoManifest }
   | { status: 'error'; message: string };
 
-export function DemoCatalog({ onLoadSingleDemo, onLoadComparisonDemo }: DemoCatalogProps): JSX.Element {
-  const [manifestState, setManifestState] = useState<ManifestState>({ status: 'loading' });
+export function DemoCatalog({
+  onLoadSingleDemo,
+  onLoadComparisonDemo,
+}: DemoCatalogProps): JSX.Element {
+  const [manifestState, setManifestState] = useState<ManifestState>({
+    status: 'loading',
+  });
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -40,7 +49,10 @@ export function DemoCatalog({ onLoadSingleDemo, onLoadComparisonDemo }: DemoCata
         if (!cancelled) {
           setManifestState({
             status: 'error',
-            message: err instanceof Error ? err.message : 'Failed to load demo catalog',
+            message:
+              err instanceof Error
+                ? err.message
+                : 'Failed to load demo catalog',
           });
         }
       });
@@ -93,7 +105,10 @@ export function DemoCatalog({ onLoadSingleDemo, onLoadComparisonDemo }: DemoCata
   return (
     <section aria-labelledby="demo-catalog-heading">
       <div className="mb-[var(--tg-space-md)] flex items-center gap-[var(--tg-space-sm)]">
-        <PlayCircle className="h-4 w-4 text-[var(--tg-accent)]" aria-hidden="true" />
+        <PlayCircle
+          className="h-4 w-4 text-[var(--tg-accent)]"
+          aria-hidden="true"
+        />
         <h2
           id="demo-catalog-heading"
           className="text-sm font-semibold text-[var(--tg-text-primary)]"
@@ -118,7 +133,9 @@ export function DemoCatalog({ onLoadSingleDemo, onLoadComparisonDemo }: DemoCata
             key={dataset.id}
             dataset={dataset}
             isLoading={loadingId === dataset.id}
-            onLoad={(d) => { void handleLoad(d); }}
+            onLoad={(d) => {
+              void handleLoad(d);
+            }}
           />
         ))}
       </div>

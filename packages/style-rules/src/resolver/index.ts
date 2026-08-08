@@ -2,4 +2,4 @@
  * @tileguard/style-rules — Resolver barrel export
  */
 
-export { resolveLayers, resolveLayer } from './SemanticResolver.js';
+export { resolveLayer, resolveLayers } from './SemanticResolver.js';

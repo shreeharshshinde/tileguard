@@ -40,8 +40,14 @@ interface DemoCardProps {
   readonly onLoad: (dataset: DemoDataset) => void;
 }
 
-export function DemoCard({ dataset, isLoading, onLoad }: DemoCardProps): JSX.Element {
-  const stepStyle = STEP_STYLES[dataset.demoStep] ?? 'border-[var(--tg-border)] text-[var(--tg-text-secondary)]';
+export function DemoCard({
+  dataset,
+  isLoading,
+  onLoad,
+}: DemoCardProps): JSX.Element {
+  const stepStyle =
+    STEP_STYLES[dataset.demoStep] ??
+    'border-[var(--tg-border)] text-[var(--tg-text-secondary)]';
 
   return (
     <article
@@ -51,7 +57,10 @@ export function DemoCard({ dataset, isLoading, onLoad }: DemoCardProps): JSX.Ele
       {/* Header row */}
       <div className="flex items-start justify-between gap-[var(--tg-space-sm)]">
         <div className="flex items-center gap-[var(--tg-space-sm)]">
-          <Layers className="h-4 w-4 shrink-0 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+          <Layers
+            className="h-4 w-4 shrink-0 text-[var(--tg-text-secondary)]"
+            aria-hidden="true"
+          />
           <h3 className="text-sm font-semibold text-[var(--tg-text-primary)] leading-tight">
             {dataset.title}
           </h3>
@@ -87,13 +96,31 @@ export function DemoCard({ dataset, isLoading, onLoad }: DemoCardProps): JSX.Ele
       {/* Expected diagnostics summary */}
       {dataset.expectedDiagnostics !== undefined && (
         <div className="mt-[var(--tg-space-sm)] flex gap-3 text-[10px] font-mono text-[var(--tg-text-muted)]">
-          <span className={dataset.expectedDiagnostics.errors > 0 ? 'text-[var(--tg-error)]' : ''}>
+          <span
+            className={
+              dataset.expectedDiagnostics.errors > 0
+                ? 'text-[var(--tg-error)]'
+                : ''
+            }
+          >
             {dataset.expectedDiagnostics.errors}E
           </span>
-          <span className={dataset.expectedDiagnostics.warnings > 0 ? 'text-[var(--tg-warning)]' : ''}>
+          <span
+            className={
+              dataset.expectedDiagnostics.warnings > 0
+                ? 'text-[var(--tg-warning)]'
+                : ''
+            }
+          >
             {dataset.expectedDiagnostics.warnings}W
           </span>
-          <span className={dataset.expectedDiagnostics.info > 0 ? 'text-[var(--tg-info)]' : ''}>
+          <span
+            className={
+              dataset.expectedDiagnostics.info > 0
+                ? 'text-[var(--tg-info)]'
+                : ''
+            }
+          >
             {dataset.expectedDiagnostics.info}I
           </span>
         </div>

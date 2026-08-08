@@ -8,14 +8,14 @@
  * Boundary: Zero imports from renderer/, overlay/, viewport/, or DOM APIs.
  */
 
+import type { LayerStatistics, TileStatistics } from '@tileguard/analysis';
 import {
   createComparisonEngine,
-  type TileComparison,
-  type TileSnapshot,
   type FeatureSnapshot,
   type LayerSnapshot,
+  type TileComparison,
+  type TileSnapshot,
 } from '@tileguard/analysis';
-import type { TileStatistics, LayerStatistics } from '@tileguard/analysis';
 import type { InspectorStore } from '../store/inspector-store.js';
 
 // ---------------------------------------------------------------------------
@@ -99,9 +99,9 @@ class ComparisonServiceImpl implements ComparisonService {
             geometryType: f.geometryType,
             properties: Object.freeze({ ...f.properties }),
             geometry: Object.freeze(
-              (f.geometry as readonly (readonly { x: number; y: number }[])[]).map(
-                (ring) => Object.freeze([...ring]),
-              ),
+              (
+                f.geometry as readonly (readonly { x: number; y: number }[])[]
+              ).map((ring) => Object.freeze([...ring])),
             ),
           }),
         );
@@ -110,7 +110,9 @@ class ComparisonServiceImpl implements ComparisonService {
 
     // Build statistics
     const diagsByLayer = new Map<string, number>();
-    let diagErrors = 0, diagWarnings = 0, diagInfo = 0;
+    let diagErrors = 0,
+      diagWarnings = 0,
+      diagInfo = 0;
     for (const d of diagnostics) {
       const loc = d.location as { layer?: string } | undefined;
       if (loc?.layer) {
@@ -121,7 +123,9 @@ class ComparisonServiceImpl implements ComparisonService {
       else diagInfo++;
     }
 
-    let totalPoint = 0, totalLine = 0, totalPolygon = 0;
+    let totalPoint = 0,
+      totalLine = 0,
+      totalPolygon = 0;
     for (const ls of layerSnapshots) {
       totalPoint += ls.geometryCounts.point;
       totalLine += ls.geometryCounts.line;
@@ -140,8 +144,16 @@ class ComparisonServiceImpl implements ComparisonService {
     const statistics: TileStatistics = Object.freeze({
       totalLayers: layerSnapshots.length,
       totalFeatures: featureSnapshots.length,
-      geometryCounts: Object.freeze({ point: totalPoint, line: totalLine, polygon: totalPolygon }),
-      diagnostics: Object.freeze({ errors: diagErrors, warnings: diagWarnings, info: diagInfo }),
+      geometryCounts: Object.freeze({
+        point: totalPoint,
+        line: totalLine,
+        polygon: totalPolygon,
+      }),
+      diagnostics: Object.freeze({
+        errors: diagErrors,
+        warnings: diagWarnings,
+        info: diagInfo,
+      }),
       layers: Object.freeze(layerStats),
     });
 

@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import { createLogger } from '../src/logging/Logger.js';
 import { getDefaultConfig } from '../src/config/ConfigLoader.js';
+import { createLogger } from '../src/logging/Logger.js';
 import type { CommandContext } from '../src/runner/CommandRunner.js';
 
 // Mock the analysis adapter
@@ -21,7 +21,12 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
       vertexCount: 5,
     })),
     diagnostics: [],
-    stats: { layerCount: 1, featureCount: 10, vertexCount: 50, diagnosticCount: 0 },
+    stats: {
+      layerCount: 1,
+      featureCount: 10,
+      vertexCount: 50,
+      diagnosticCount: 0,
+    },
   })),
   compareTiles: vi.fn().mockImplementation((a, b) => ({
     snapshotA: a,
@@ -40,10 +45,14 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
       newDiagnostics: [],
       resolvedDiagnostics: [],
       stats: {
-        layersA: 1, layersB: 1,
-        featuresA: 10, featuresB: 11,
-        verticesA: 50, verticesB: 55,
-        diagnosticsA: 0, diagnosticsB: 0,
+        layersA: 1,
+        layersB: 1,
+        featuresA: 10,
+        featuresB: 11,
+        verticesA: 50,
+        verticesB: 55,
+        diagnosticsA: 0,
+        diagnosticsB: 0,
       },
     },
   })),

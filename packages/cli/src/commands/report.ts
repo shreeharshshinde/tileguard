@@ -10,12 +10,15 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createReportEngine } from '@tileguard/reporters';
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
 import {
   analyzeRegression,
   compareTiles,
   loadTileSnapshot,
 } from '../analysis/AnalysisAdapter.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args

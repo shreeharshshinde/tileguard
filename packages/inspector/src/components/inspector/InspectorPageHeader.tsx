@@ -9,15 +9,17 @@
  */
 
 import { Crosshair, FileCode2 } from 'lucide-react';
-import { useLifecycle } from '../../hooks/use-store.js';
 import { useStatistics } from '../../hooks/use-statistics-settings.js';
+import { useLifecycle } from '../../hooks/use-store.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
 
 interface InspectorPageHeaderProps {
   readonly store: InspectorStore;
 }
 
-export function InspectorPageHeader({ store }: InspectorPageHeaderProps): JSX.Element {
+export function InspectorPageHeader({
+  store,
+}: InspectorPageHeaderProps): JSX.Element {
   const lifecycle = useLifecycle(store);
   const stats = useStatistics(store);
   const loaded = lifecycle.status === 'loaded';
@@ -41,7 +43,10 @@ export function InspectorPageHeader({ store }: InspectorPageHeaderProps): JSX.El
         {/* File info */}
         {loaded && (
           <div className="flex items-center gap-[var(--tg-space-sm)]">
-            <FileCode2 className="h-4 w-4 text-[var(--tg-text-muted)]" aria-hidden="true" />
+            <FileCode2
+              className="h-4 w-4 text-[var(--tg-text-muted)]"
+              aria-hidden="true"
+            />
             <span
               className="max-w-xs truncate text-xs font-medium text-[var(--tg-text-primary)]"
               title={lifecycle.filePath}
@@ -62,7 +67,10 @@ export function InspectorPageHeader({ store }: InspectorPageHeaderProps): JSX.El
                 {stats.totalLayers === 1 ? 'layer' : 'layers'}
               </span>
             </div>
-            <div className="h-3 w-px bg-[var(--tg-border)]" aria-hidden="true" />
+            <div
+              className="h-3 w-px bg-[var(--tg-border)]"
+              aria-hidden="true"
+            />
             <div className="flex items-center gap-1">
               <span className="font-bold text-[var(--tg-accent)] tabular-nums">
                 {stats.totalFeatures.toLocaleString()}

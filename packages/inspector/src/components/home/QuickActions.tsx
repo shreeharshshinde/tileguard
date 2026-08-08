@@ -23,55 +23,105 @@ const container = {
 
 const card = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.24, ease: 'easeOut' as const } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.24, ease: 'easeOut' as const },
+  },
 };
 
 // ---------------------------------------------------------------------------
 // TileDropZone
 // ---------------------------------------------------------------------------
 
-function TileDropZone({ onFileSelected }: { onFileSelected: (f: File) => void }): JSX.Element {
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
-    accept: { '*/*': ['.pbf', '.mvt'] },
-    maxFiles: 1,
-    onDropAccepted: (files) => { const f = files[0]; if (f) onFileSelected(f); },
-    onDropRejected: () => {
-      toast.error('Invalid file type', { description: 'Drop a .pbf or .mvt vector tile.', duration: 4000 });
-    },
-  });
+function TileDropZone({
+  onFileSelected,
+}: {
+  onFileSelected: (f: File) => void;
+}): JSX.Element {
+  const { getRootProps, getInputProps, isDragActive, isDragReject } =
+    useDropzone({
+      accept: { '*/*': ['.pbf', '.mvt'] },
+      maxFiles: 1,
+      onDropAccepted: (files) => {
+        const f = files[0];
+        if (f) onFileSelected(f);
+      },
+      onDropRejected: () => {
+        toast.error('Invalid file type', {
+          description: 'Drop a .pbf or .mvt vector tile.',
+          duration: 4000,
+        });
+      },
+    });
 
   const state = isDragReject ? 'reject' : isDragActive ? 'active' : 'idle';
 
   const borderCls = {
     reject: 'border-[var(--tg-error)]/70 bg-[var(--tg-error)]/6',
-    active: 'border-[var(--tg-accent)] bg-[var(--tg-accent)]/8 shadow-[0_0_0_4px_rgba(59,130,246,0.12)]',
-    idle:   'border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] hover:border-[var(--tg-accent)]/50 hover:bg-[var(--tg-bg-hover)]',
+    active:
+      'border-[var(--tg-accent)] bg-[var(--tg-accent)]/8 shadow-[0_0_0_4px_rgba(59,130,246,0.12)]',
+    idle: 'border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] hover:border-[var(--tg-accent)]/50 hover:bg-[var(--tg-bg-hover)]',
   }[state];
 
   const iconColor = {
     reject: 'text-[var(--tg-error)]',
     active: 'text-[var(--tg-accent)]',
-    idle:   'text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)]',
+    idle: 'text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)]',
   }[state];
 
-  const { onClick, onKeyDown, onFocus, onBlur, onDragEnter, onDragLeave, onDragOver, onDrop, tabIndex, role, ...rest } = getRootProps();
+  const {
+    onClick,
+    onKeyDown,
+    onFocus,
+    onBlur,
+    onDragEnter,
+    onDragLeave,
+    onDragOver,
+    onDrop,
+    tabIndex,
+    role,
+    ...rest
+  } = getRootProps();
 
   return (
-    <motion.div variants={card} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }} className="col-span-2 sm:col-span-1">
+    <motion.div
+      variants={card}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      className="col-span-2 sm:col-span-1"
+    >
       <div
-        onClick={onClick} onKeyDown={onKeyDown} onFocus={onFocus} onBlur={onBlur}
-        onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDragOver={onDragOver} onDrop={onDrop}
-        tabIndex={tabIndex} role={role} {...rest}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onDragEnter={onDragEnter}
+        onDragLeave={onDragLeave}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        tabIndex={tabIndex}
+        role={role}
+        {...rest}
         className={`group flex cursor-pointer flex-col gap-3 rounded-xl border-2 border-dashed p-6 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] ${borderCls}`}
         aria-label="Load a vector tile — click or drag and drop"
       >
         <input {...getInputProps()} />
-        <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tg-bg-surface)] transition-colors ${isDragActive ? 'bg-[var(--tg-accent)]/15' : ''}`}>
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tg-bg-surface)] transition-colors ${isDragActive ? 'bg-[var(--tg-accent)]/15' : ''}`}
+        >
           <motion.div
-            animate={isDragActive ? { scale: 1.25, rotate: -8 } : { scale: 1, rotate: 0 }}
+            animate={
+              isDragActive
+                ? { scale: 1.25, rotate: -8 }
+                : { scale: 1, rotate: 0 }
+            }
             transition={{ type: 'spring', stiffness: 300, damping: 18 }}
           >
-            <Upload className={`h-5 w-5 transition-colors ${iconColor}`} aria-hidden="true" />
+            <Upload
+              className={`h-5 w-5 transition-colors ${iconColor}`}
+              aria-hidden="true"
+            />
           </motion.div>
         </div>
         <div>
@@ -81,7 +131,9 @@ function TileDropZone({ onFileSelected }: { onFileSelected: (f: File) => void })
           <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
             Drag &amp; drop or click to browse
           </p>
-          <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">.pbf · .mvt</p>
+          <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">
+            .pbf · .mvt
+          </p>
         </div>
       </div>
     </motion.div>
@@ -92,7 +144,10 @@ function TileDropZone({ onFileSelected }: { onFileSelected: (f: File) => void })
 // QuickActions
 // ---------------------------------------------------------------------------
 
-export function QuickActions({ onFileSelected, onOpenDemo }: QuickActionsProps): JSX.Element {
+export function QuickActions({
+  onFileSelected,
+  onOpenDemo,
+}: QuickActionsProps): JSX.Element {
   const styleInputRef = useRef<HTMLInputElement>(null);
 
   const handleStyleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,8 +180,12 @@ export function QuickActions({ onFileSelected, onOpenDemo }: QuickActionsProps):
         <p className="text-sm font-semibold text-[var(--tg-text-primary)] group-hover:text-[var(--tg-accent)]">
           {label}
         </p>
-        <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">{description}</p>
-        <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">{sub}</p>
+        <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
+          {description}
+        </p>
+        <p className="mt-1 font-mono text-[10px] text-[var(--tg-text-muted)]">
+          {sub}
+        </p>
       </div>
     </motion.button>
   );
@@ -135,10 +194,16 @@ export function QuickActions({ onFileSelected, onOpenDemo }: QuickActionsProps):
     <Tooltip.Provider>
       <section aria-labelledby="quick-actions-heading">
         <div className="mb-4 flex items-center gap-2">
-          <h2 id="quick-actions-heading" className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
+          <h2
+            id="quick-actions-heading"
+            className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]"
+          >
             Quick Start
           </h2>
-          <div className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
+          <div
+            className="h-px flex-1 bg-[var(--tg-border)]"
+            aria-hidden="true"
+          />
         </div>
 
         <motion.div

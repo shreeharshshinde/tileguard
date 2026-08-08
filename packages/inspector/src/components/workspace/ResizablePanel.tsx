@@ -72,7 +72,10 @@ export function ResizablePanel({
       const containerLeft = containerRef.current.getBoundingClientRect().left;
       const sidebarOffset = leftCollapsed ? 0 : 200; // sidebar width
       const rawWidth = e.clientX - containerLeft - sidebarOffset;
-      const clamped = Math.max(minPanelWidth, Math.min(maxPanelWidth, rawWidth));
+      const clamped = Math.max(
+        minPanelWidth,
+        Math.min(maxPanelWidth, rawWidth),
+      );
       onLeftResize?.(clamped);
     },
     [leftCollapsed, minPanelWidth, maxPanelWidth, onLeftResize],
@@ -96,7 +99,10 @@ export function ResizablePanel({
       if (!isResizingRight.current || !containerRef.current) return;
       const containerRight = containerRef.current.getBoundingClientRect().right;
       const rawWidth = containerRight - e.clientX;
-      const clamped = Math.max(minPanelWidth, Math.min(maxPanelWidth, rawWidth));
+      const clamped = Math.max(
+        minPanelWidth,
+        Math.min(maxPanelWidth, rawWidth),
+      );
       onRightResize?.(clamped);
     },
     [minPanelWidth, maxPanelWidth, onRightResize],
@@ -139,7 +145,9 @@ export function ResizablePanel({
       )}
 
       {/* Center: canvas / main content */}
-      <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">{center}</div>
+      <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+        {center}
+      </div>
 
       {/* Right panel */}
       {right && !rightCollapsed && (

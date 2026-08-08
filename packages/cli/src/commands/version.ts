@@ -7,8 +7,8 @@
  *   tileguard version [--json]
  */
 
-import type { CliCommandResult } from '../runner/CommandRunner.js';
 import type { OutputFormat } from '../output/OutputFormatter.js';
+import type { CliCommandResult } from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Constants

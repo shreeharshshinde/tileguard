@@ -16,7 +16,16 @@
         "warnings": 0,
         "info": 0
       },
-      "expectedLayers": ["water", "landuse", "park", "building", "road", "transit", "admin", "place_label"],
+      "expectedLayers": [
+        "water",
+        "landuse",
+        "park",
+        "building",
+        "road",
+        "transit",
+        "admin",
+        "place_label"
+      ],
       "demoStep": "Inspector",
       "speakerNote": "Open this tile first. Show the Feature Explorer on the left — layers, feature counts. Click a road feature to open the Feature Inspector panel on the right. Zoom in to see individual vertices."
     },

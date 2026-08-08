@@ -31,7 +31,11 @@ const list = {
 
 const row = {
   hidden: { opacity: 0, x: -8 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.2, ease: 'easeOut' as const } },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.2, ease: 'easeOut' as const },
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -114,10 +118,7 @@ export function RecentSessions({
 
   return (
     <Tooltip.Provider>
-      <section
-        aria-labelledby="recent-sessions-heading"
-        className="mb-10"
-      >
+      <section aria-labelledby="recent-sessions-heading" className="mb-10">
         {/* Section header */}
         <div className="mb-3 flex items-center gap-2">
           <Clock

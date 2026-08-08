@@ -12,12 +12,15 @@
  * Adding a new validation category means creating a new file and calling it here.
  */
 
+import type {
+  ResolvedLayer,
+  StyleDiagnostic,
+} from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
-import type { StyleDiagnostic, ResolvedLayer } from '../models/StyleAnalysis.js';
-import { validateStructure } from './StructureValidator.js';
-import { validateSources } from './SourceValidator.js';
-import { validateLayers } from './LayerValidator.js';
 import { validateExpressions } from './ExpressionValidator.js';
+import { validateLayers } from './LayerValidator.js';
+import { validateSources } from './SourceValidator.js';
+import { validateStructure } from './StructureValidator.js';
 
 // ---------------------------------------------------------------------------
 // Public API

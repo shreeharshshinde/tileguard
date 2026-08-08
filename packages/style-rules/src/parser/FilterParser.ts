@@ -11,7 +11,11 @@
  * expression-syntax equivalents so downstream analysis works uniformly.
  */
 
-import type { StyleExpression, ExpressionArg, ExpressionLiteral } from '../models/StyleExpression.js';
+import type {
+  ExpressionArg,
+  ExpressionLiteral,
+  StyleExpression,
+} from '../models/StyleExpression.js';
 import { isExpressionArray, parseExpression } from './ExpressionParser.js';
 
 // ---------------------------------------------------------------------------
@@ -71,7 +75,9 @@ function isLegacyFilter(arr: unknown[]): boolean {
 
   if (LEGACY_MEMBERSHIP_OPS.has(op)) {
     // Legacy ["in", "prop", v1, v2, ...] — 2nd element is a string
-    return arr.length >= 3 && typeof arr[1] === 'string' && !Array.isArray(arr[1]);
+    return (
+      arr.length >= 3 && typeof arr[1] === 'string' && !Array.isArray(arr[1])
+    );
   }
 
   if (op === 'none') {
@@ -80,7 +86,9 @@ function isLegacyFilter(arr: unknown[]): boolean {
 
   if (LEGACY_COMPARISON_OPS.has(op)) {
     // Legacy: ["==", "prop", value] — 2nd element is a string, not an array
-    return arr.length === 3 && typeof arr[1] === 'string' && !Array.isArray(arr[1]);
+    return (
+      arr.length === 3 && typeof arr[1] === 'string' && !Array.isArray(arr[1])
+    );
   }
 
   if (LEGACY_COMBINING_OPS.has(op)) {
@@ -211,13 +219,14 @@ function convertLegacyMembership(op: string, arr: unknown[]): StyleExpression {
   const getExpr = convertLegacyProperty(property);
   const matchExpr: StyleExpression = {
     operator: 'match',
-    args: [
-      getExpr,
-      makeLiteral(values),
-      makeLiteral(true),
-      makeLiteral(false),
+    args: [getExpr, makeLiteral(values), makeLiteral(true), makeLiteral(false)],
+    raw: [
+      'match',
+      property === '$type' ? ['geometry-type'] : ['get', property],
+      values,
+      true,
+      false,
     ],
-    raw: ['match', property === '$type' ? ['geometry-type'] : ['get', property], values, true, false],
   };
 
   if (op === '!in') {

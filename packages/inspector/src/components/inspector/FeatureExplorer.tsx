@@ -23,13 +23,13 @@
 
 import { Crosshair, Hash, Layers, Search, X } from 'lucide-react';
 import { type ChangeEvent, useMemo, useState } from 'react';
+import type { Inspector } from '../../create-inspector.js';
 import {
   useLayers,
   useLifecycle,
   useSearch,
   useSelectedFeature,
 } from '../../hooks/use-store.js';
-import type { Inspector } from '../../create-inspector.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
 
 interface FeatureExplorerProps {
@@ -50,7 +50,12 @@ interface LayerRowProps {
   readonly onSelect: () => void;
 }
 
-function LayerRow({ name, featureCount, isSelected, onSelect }: LayerRowProps): JSX.Element {
+function LayerRow({
+  name,
+  featureCount,
+  isSelected,
+  onSelect,
+}: LayerRowProps): JSX.Element {
   return (
     <button
       type="button"
@@ -68,7 +73,9 @@ function LayerRow({ name, featureCount, isSelected, onSelect }: LayerRowProps): 
           className="h-3.5 w-3.5 shrink-0 opacity-60"
           aria-hidden="true"
         />
-        <span className="truncate font-medium text-[var(--tg-text-primary)]">{name}</span>
+        <span className="truncate font-medium text-[var(--tg-text-primary)]">
+          {name}
+        </span>
       </div>
       <span className="ml-[var(--tg-space-sm)] shrink-0 font-mono text-[10px] text-[var(--tg-text-muted)]">
         {featureCount.toLocaleString()}
@@ -86,7 +93,10 @@ interface SelectionInfoProps {
   readonly inspector: Inspector | null;
 }
 
-function SelectionInfo({ store, inspector }: SelectionInfoProps): JSX.Element | null {
+function SelectionInfo({
+  store,
+  inspector,
+}: SelectionInfoProps): JSX.Element | null {
   const feature = useSelectedFeature(store);
 
   if (feature === null) {
@@ -180,12 +190,17 @@ export function FeatureExplorer({
       {/* Search */}
       <div className="shrink-0 border-b border-[var(--tg-border)] p-[var(--tg-space-sm)]">
         <label className="flex items-center gap-[var(--tg-space-sm)] rounded-[var(--tg-border-radius)] bg-[var(--tg-bg-surface)] px-[var(--tg-space-sm)] py-1">
-          <Search className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]" aria-hidden="true" />
+          <Search
+            className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]"
+            aria-hidden="true"
+          />
           <input
             type="search"
             placeholder="Search features…"
             value={searchQuery}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              onSearchChange(e.target.value)
+            }
             className="w-full bg-transparent text-xs text-[var(--tg-text-primary)] placeholder-[var(--tg-text-muted)] outline-none"
             aria-label="Search features"
           />
@@ -206,7 +221,8 @@ export function FeatureExplorer({
       {search.results.length > 0 && (
         <div className="shrink-0 border-b border-[var(--tg-border)]">
           <div className="px-[var(--tg-space-md)] py-[var(--tg-space-sm)] text-[10px] font-medium text-[var(--tg-text-muted)]">
-            {search.results.length} result{search.results.length !== 1 ? 's' : ''}
+            {search.results.length} result
+            {search.results.length !== 1 ? 's' : ''}
           </div>
           <ul className="max-h-32 overflow-y-auto">
             {search.results.slice(0, 20).map((result, i) => (

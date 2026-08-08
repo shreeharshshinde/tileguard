@@ -15,6 +15,7 @@
  */
 import { Command } from 'cmdk';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   Box,
@@ -27,7 +28,6 @@ import {
   Tag,
   X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInspectorContext } from '../../context/InspectorContext.js';
 import { useInvestigationActions } from '../../context/InvestigationContext.js';
@@ -41,7 +41,13 @@ export interface SearchResultItem {
   readonly id: string;
   readonly label: string;
   readonly description: string;
-  readonly category: 'feature' | 'layer' | 'diagnostic' | 'style' | 'source' | 'property';
+  readonly category:
+    | 'feature'
+    | 'layer'
+    | 'diagnostic'
+    | 'style'
+    | 'source'
+    | 'property';
   readonly icon: LucideIcon;
   readonly action: () => void;
 }
@@ -120,7 +126,11 @@ export function GlobalSearch({
         }
 
         // Search individual features
-        for (let fi = 0; fi < layer.features.length && items.length < 50; fi++) {
+        for (
+          let fi = 0;
+          fi < layer.features.length && items.length < 50;
+          fi++
+        ) {
           const feature = layer.features[fi];
           if (!feature) continue;
 
@@ -288,7 +298,8 @@ export function GlobalSearch({
                 <div className="py-8 text-center">
                   <Search className="mx-auto mb-2 h-8 w-8 text-[var(--tg-text-muted)] opacity-40" />
                   <p className="text-xs text-[var(--tg-text-muted)]">
-                    Type to search across features, layers, diagnostics, and styles
+                    Type to search across features, layers, diagnostics, and
+                    styles
                   </p>
                   <p className="mt-1 text-[10px] text-[var(--tg-text-muted)] opacity-60">
                     Ctrl+/ to open · Esc to close
@@ -338,8 +349,8 @@ export function GlobalSearch({
             {results.length > 0 && (
               <div className="border-t border-[var(--tg-border)] px-4 py-2">
                 <span className="text-[10px] text-[var(--tg-text-muted)]">
-                  {results.length} result{results.length !== 1 ? 's' : ''} ·{' '}
-                  ↑↓ navigate · Enter select · Esc close
+                  {results.length} result{results.length !== 1 ? 's' : ''} · ↑↓
+                  navigate · Enter select · Esc close
                 </span>
               </div>
             )}

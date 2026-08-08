@@ -9,7 +9,6 @@
 import type { Diagnostic } from '@tileguard/core';
 import { createFeatureMatcher } from './FeatureMatcher.js';
 import { createGeometryDiffer } from './GeometryDiffer.js';
-import { createPropertyDiffer } from './PropertyDiffer.js';
 import type {
   ComparisonSummary,
   DiagnosticComparison,
@@ -20,6 +19,7 @@ import type {
   TileComparison,
   TileSnapshot,
 } from './models/comparison.js';
+import { createPropertyDiffer } from './PropertyDiffer.js';
 
 // ---------------------------------------------------------------------------
 // Public interface
@@ -41,7 +41,10 @@ export function createComparisonEngine(): ComparisonEngine {
 // Compare implementation
 // ---------------------------------------------------------------------------
 
-function compare(snapshotA: TileSnapshot, snapshotB: TileSnapshot): TileComparison {
+function compare(
+  snapshotA: TileSnapshot,
+  snapshotB: TileSnapshot,
+): TileComparison {
   const geomDiffer = createGeometryDiffer();
   const propDiffer = createPropertyDiffer();
   const matcher = createFeatureMatcher();
@@ -88,7 +91,11 @@ function compare(snapshotA: TileSnapshot, snapshotB: TileSnapshot): TileComparis
   const statisticsDelta = computeStatisticsDelta(snapshotA, snapshotB);
 
   // Summary
-  const summary = buildSummary(comparisons, layerComparisons, diagnosticComparison);
+  const summary = buildSummary(
+    comparisons,
+    layerComparisons,
+    diagnosticComparison,
+  );
 
   return Object.freeze({
     snapshotA,
@@ -135,29 +142,33 @@ function compareLayers(
     const lB = layersB.get(name);
 
     if (lA && !lB) {
-      result.push(Object.freeze({
-        name,
-        kind: 'removed' as const,
-        featureCountA: lA.featureCount,
-        featureCountB: 0,
-        featureCountDelta: -lA.featureCount,
-        diagnosticCountA: diagCountA.get(name) ?? 0,
-        diagnosticCountB: 0,
-        geometryCountsA: { ...lA.geometryCounts },
-        geometryCountsB: { point: 0, line: 0, polygon: 0 },
-      }));
+      result.push(
+        Object.freeze({
+          name,
+          kind: 'removed' as const,
+          featureCountA: lA.featureCount,
+          featureCountB: 0,
+          featureCountDelta: -lA.featureCount,
+          diagnosticCountA: diagCountA.get(name) ?? 0,
+          diagnosticCountB: 0,
+          geometryCountsA: { ...lA.geometryCounts },
+          geometryCountsB: { point: 0, line: 0, polygon: 0 },
+        }),
+      );
     } else if (!lA && lB) {
-      result.push(Object.freeze({
-        name,
-        kind: 'added' as const,
-        featureCountA: 0,
-        featureCountB: lB.featureCount,
-        featureCountDelta: lB.featureCount,
-        diagnosticCountA: 0,
-        diagnosticCountB: diagCountB.get(name) ?? 0,
-        geometryCountsA: { point: 0, line: 0, polygon: 0 },
-        geometryCountsB: { ...lB.geometryCounts },
-      }));
+      result.push(
+        Object.freeze({
+          name,
+          kind: 'added' as const,
+          featureCountA: 0,
+          featureCountB: lB.featureCount,
+          featureCountDelta: lB.featureCount,
+          diagnosticCountA: 0,
+          diagnosticCountB: diagCountB.get(name) ?? 0,
+          geometryCountsA: { point: 0, line: 0, polygon: 0 },
+          geometryCountsB: { ...lB.geometryCounts },
+        }),
+      );
     } else if (lA && lB) {
       const featureDelta = lB.featureCount - lA.featureCount;
       const dA = diagCountA.get(name) ?? 0;
@@ -169,17 +180,19 @@ function compareLayers(
         lA.geometryCounts.line !== lB.geometryCounts.line ||
         lA.geometryCounts.polygon !== lB.geometryCounts.polygon;
 
-      result.push(Object.freeze({
-        name,
-        kind: changed ? ('modified' as const) : ('unchanged' as const),
-        featureCountA: lA.featureCount,
-        featureCountB: lB.featureCount,
-        featureCountDelta: featureDelta,
-        diagnosticCountA: dA,
-        diagnosticCountB: dB,
-        geometryCountsA: { ...lA.geometryCounts },
-        geometryCountsB: { ...lB.geometryCounts },
-      }));
+      result.push(
+        Object.freeze({
+          name,
+          kind: changed ? ('modified' as const) : ('unchanged' as const),
+          featureCountA: lA.featureCount,
+          featureCountB: lB.featureCount,
+          featureCountDelta: featureDelta,
+          diagnosticCountA: dA,
+          diagnosticCountB: dB,
+          geometryCountsA: { ...lA.geometryCounts },
+          geometryCountsB: { ...lB.geometryCounts },
+        }),
+      );
     }
   }
 
@@ -207,9 +220,12 @@ function compareDiagnostics(
   diagsA: readonly Diagnostic[],
   diagsB: readonly Diagnostic[],
 ): DiagnosticComparison {
-  let errorsA = 0, errorsB = 0;
-  let warningsA = 0, warningsB = 0;
-  let infoA = 0, infoB = 0;
+  let errorsA = 0,
+    errorsB = 0;
+  let warningsA = 0,
+    warningsB = 0;
+  let infoA = 0,
+    infoB = 0;
 
   for (const d of diagsA) {
     if (d.severity === 'error') errorsA++;
@@ -225,13 +241,23 @@ function compareDiagnostics(
   const fpA = new Set(diagsA.map(diagnosticFingerprint));
   const fpB = new Set(diagsB.map(diagnosticFingerprint));
 
-  const newDiagnostics = diagsB.filter((d) => !fpA.has(diagnosticFingerprint(d)));
-  const resolvedDiagnostics = diagsA.filter((d) => !fpB.has(diagnosticFingerprint(d)));
+  const newDiagnostics = diagsB.filter(
+    (d) => !fpA.has(diagnosticFingerprint(d)),
+  );
+  const resolvedDiagnostics = diagsA.filter(
+    (d) => !fpB.has(diagnosticFingerprint(d)),
+  );
 
   return Object.freeze({
-    errorsA, errorsB, errorsDelta: errorsB - errorsA,
-    warningsA, warningsB, warningsDelta: warningsB - warningsA,
-    infoA, infoB, infoDelta: infoB - infoA,
+    errorsA,
+    errorsB,
+    errorsDelta: errorsB - errorsA,
+    warningsA,
+    warningsB,
+    warningsDelta: warningsB - warningsA,
+    infoA,
+    infoB,
+    infoDelta: infoB - infoA,
     newDiagnostics: Object.freeze(newDiagnostics),
     resolvedDiagnostics: Object.freeze(resolvedDiagnostics),
   });
@@ -260,8 +286,10 @@ function computeStatisticsDelta(
 
   const verticesA = countVerticesInFeatures(snapshotA.features);
   const verticesB = countVerticesInFeatures(snapshotB.features);
-  const totalDiagsA = sA.diagnostics.errors + sA.diagnostics.warnings + sA.diagnostics.info;
-  const totalDiagsB = sB.diagnostics.errors + sB.diagnostics.warnings + sB.diagnostics.info;
+  const totalDiagsA =
+    sA.diagnostics.errors + sA.diagnostics.warnings + sA.diagnostics.info;
+  const totalDiagsB =
+    sB.diagnostics.errors + sB.diagnostics.warnings + sB.diagnostics.info;
 
   return Object.freeze({
     layersA: sA.totalLayers,
@@ -290,7 +318,10 @@ function buildSummary(
   layers: readonly LayerComparison[],
   diagnostics: DiagnosticComparison,
 ): ComparisonSummary {
-  let added = 0, removed = 0, modified = 0, unchanged = 0;
+  let added = 0,
+    removed = 0,
+    modified = 0,
+    unchanged = 0;
 
   for (const fc of comparisons) {
     if (fc.kind === 'added') added++;

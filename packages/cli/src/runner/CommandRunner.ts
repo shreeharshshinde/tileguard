@@ -10,8 +10,8 @@
  * Commands register as thin functions; the runner handles lifecycle.
  */
 
-import type { Logger } from '../logging/Logger.js';
 import type { TileguardYamlConfig } from '../config/ConfigLoader.js';
+import type { Logger } from '../logging/Logger.js';
 
 // ---------------------------------------------------------------------------
 // Exit codes (expanded from 0/1/2 to 0/1/2/3)

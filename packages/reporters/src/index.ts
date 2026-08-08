@@ -24,35 +24,6 @@ export type {
 // JSON reporter — structured output for CI and tools
 export { createJsonReporter, jsonReporter } from './json-reporter.js';
 export type {
-  TextReporterOptions,
-  WriteFn as TextWriteFn,
-} from './text-reporter.js';
-// Text reporter — the default, human-readable terminal output
-export { createTextReporter, textReporter } from './text-reporter.js';
-
-// Engineering Report Engine (Milestone 7.3 — Engineering Report UX)
-export {
-  buildAppendix,
-  buildDiagnosticsSummary,
-  buildExecutiveSummary,
-  buildKeyFindings,
-  buildLayerImpact,
-  buildPrioritizedRecommendations,
-  buildRegressionHighlights,
-  buildStatisticsDashboard,
-  createReportEngine,
-  createReporterRegistry,
-  defaultRegistry,
-  escapeHtml,
-  flattenRecommendations,
-  HtmlWriter,
-  JSON_SCHEMA_VERSION,
-  MarkdownWriter,
-  renderHtml,
-  renderJson,
-  renderMarkdown,
-} from './report/index.js';
-export type {
   AppendixFeatureGroup,
   ComparisonInput,
   DiagnosticCounts,
@@ -79,12 +50,40 @@ export type {
   ReportEngine,
   ReportEngineOptions,
   ReportError,
+  ReporterRegistry,
   ReportFormat,
   ReportOutput,
   ReportResult,
-  ReporterRegistry,
   ReportStatus,
   StatisticsDashboard,
   StatsDelta,
   TopDiagnosticRule,
 } from './report/index.js';
+// Engineering Report Engine (Milestone 7.3 — Engineering Report UX)
+export {
+  buildAppendix,
+  buildDiagnosticsSummary,
+  buildExecutiveSummary,
+  buildKeyFindings,
+  buildLayerImpact,
+  buildPrioritizedRecommendations,
+  buildRegressionHighlights,
+  buildStatisticsDashboard,
+  createReportEngine,
+  createReporterRegistry,
+  defaultRegistry,
+  escapeHtml,
+  flattenRecommendations,
+  HtmlWriter,
+  JSON_SCHEMA_VERSION,
+  MarkdownWriter,
+  renderHtml,
+  renderJson,
+  renderMarkdown,
+} from './report/index.js';
+export type {
+  TextReporterOptions,
+  WriteFn as TextWriteFn,
+} from './text-reporter.js';
+// Text reporter — the default, human-readable terminal output
+export { createTextReporter, textReporter } from './text-reporter.js';

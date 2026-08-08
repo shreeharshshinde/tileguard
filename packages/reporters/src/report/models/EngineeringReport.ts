@@ -142,7 +142,11 @@ export interface ReportMetadata {
 // ---------------------------------------------------------------------------
 
 /** Overall health signal for the report. */
-export type ReportStatus = 'identical' | 'changes-detected' | 'regressions-found' | 'clean';
+export type ReportStatus =
+  | 'identical'
+  | 'changes-detected'
+  | 'regressions-found'
+  | 'clean';
 
 /** Risk level derived from regression confidence. */
 export type RegressionRisk = 'none' | 'low' | 'medium' | 'high' | 'critical';
@@ -429,8 +433,14 @@ export interface ReportOutput {
 }
 
 export interface ReportError {
-  readonly code: 'MISSING_COMPARISON' | 'MISSING_REGRESSION' | 'UNSUPPORTED_FORMAT' | 'SERIALIZATION_ERROR';
+  readonly code:
+    | 'MISSING_COMPARISON'
+    | 'MISSING_REGRESSION'
+    | 'UNSUPPORTED_FORMAT'
+    | 'SERIALIZATION_ERROR';
   readonly message: string;
 }
 
-export type ReportResult = { ok: true; value: ReportOutput } | { ok: false; error: ReportError };
+export type ReportResult =
+  | { ok: true; value: ReportOutput }
+  | { ok: false; error: ReportError };

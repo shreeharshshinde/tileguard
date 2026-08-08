@@ -15,7 +15,9 @@ interface WelcomeActionsProps {
   readonly onFileSelected: (file: File) => void;
 }
 
-export function WelcomeActions({ onFileSelected }: WelcomeActionsProps): JSX.Element {
+export function WelcomeActions({
+  onFileSelected,
+}: WelcomeActionsProps): JSX.Element {
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const choose = () => inputRef.current?.click();

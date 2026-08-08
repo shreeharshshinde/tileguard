@@ -15,7 +15,11 @@ const container = {
 
 const up = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.32, ease: 'easeOut' as const } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: 'easeOut' as const },
+  },
 };
 
 const logoAnim = {
@@ -23,7 +27,12 @@ const logoAnim = {
   show: {
     opacity: 1,
     scale: 1,
-    transition: { type: 'spring' as const, stiffness: 260, damping: 20, delay: 0.04 },
+    transition: {
+      type: 'spring' as const,
+      stiffness: 260,
+      damping: 20,
+      delay: 0.04,
+    },
   },
 };
 
@@ -73,7 +82,10 @@ export function HomeHeader(): JSX.Element {
             variants={logoAnim}
             className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--tg-accent)]/12 ring-2 ring-[var(--tg-accent)]/25"
           >
-            <Shield className="h-7 w-7 text-[var(--tg-accent)]" aria-hidden="true" />
+            <Shield
+              className="h-7 w-7 text-[var(--tg-accent)]"
+              aria-hidden="true"
+            />
           </motion.div>
           <h1 className="text-5xl font-bold tracking-tight text-[var(--tg-text-primary)]">
             TileGuard
@@ -92,8 +104,8 @@ export function HomeHeader(): JSX.Element {
           variants={up}
           className="mx-auto mb-6 max-w-md text-sm text-[var(--tg-text-muted)]"
         >
-          The same engineering discipline ESLint brings to JavaScript,
-          applied to vector tiles and MapLibre style specifications.
+          The same engineering discipline ESLint brings to JavaScript, applied
+          to vector tiles and MapLibre style specifications.
         </motion.p>
 
         {/* Badge row */}
@@ -102,14 +114,20 @@ export function HomeHeader(): JSX.Element {
           className="mb-8 flex flex-wrap items-center justify-center gap-2"
         >
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tg-accent)]/30 bg-[var(--tg-accent)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[var(--tg-accent)]">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--tg-accent)]" aria-hidden="true" />
+            <span
+              className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--tg-accent)]"
+              aria-hidden="true"
+            />
             Engineering Workstation
           </span>
           <span className="rounded-full border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-2.5 py-1 font-mono text-[10px] text-[var(--tg-text-muted)]">
             v1.0.0
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-[var(--tg-success)]/30 bg-[var(--tg-success)]/8 px-2.5 py-1 text-[11px] font-medium text-[var(--tg-success)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--tg-success)]" aria-hidden="true" />
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-[var(--tg-success)]"
+              aria-hidden="true"
+            />
             MIT License
           </span>
           <span className="rounded-full border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-2.5 py-1 text-[11px] text-[var(--tg-text-muted)]">

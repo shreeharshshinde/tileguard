@@ -7,8 +7,11 @@
  *   - Terrain source references
  */
 
+import type {
+  ResolvedLayer,
+  StyleDiagnostic,
+} from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
-import type { StyleDiagnostic, ResolvedLayer } from '../models/StyleAnalysis.js';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -31,11 +34,18 @@ export function validateSources(
 // Checks
 // ---------------------------------------------------------------------------
 
-function validateSourcesPresent(doc: StyleDocument, diags: StyleDiagnostic[]): void {
-  if (doc.sources.size === 0 && doc.layers.some((l) => l.type !== 'background')) {
+function validateSourcesPresent(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
+  if (
+    doc.sources.size === 0 &&
+    doc.layers.some((l) => l.type !== 'background')
+  ) {
     diags.push({
       severity: 'warning',
-      message: 'Style has no sources declared, but contains layers that require sources.',
+      message:
+        'Style has no sources declared, but contains layers that require sources.',
       path: 'sources',
       code: 'no-sources',
       suggestion: 'Add at least one source to the "sources" object.',
@@ -43,7 +53,10 @@ function validateSourcesPresent(doc: StyleDocument, diags: StyleDiagnostic[]): v
   }
 }
 
-function validateUnusedSources(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateUnusedSources(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   const referencedSources = new Set<string>();
   for (const layer of doc.layers) {
     if (layer.source !== undefined) {
@@ -63,13 +76,17 @@ function validateUnusedSources(doc: StyleDocument, diags: StyleDiagnostic[]): vo
         message: `Source "${sourceId}" is declared but not referenced by any layer.`,
         path: `sources.${sourceId}`,
         code: 'unused-source',
-        suggestion: 'Remove the unused source or add a layer that references it.',
+        suggestion:
+          'Remove the unused source or add a layer that references it.',
       });
     }
   }
 }
 
-function validateTerrainSource(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateTerrainSource(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   if (doc.terrain && !doc.sources.has(doc.terrain.source)) {
     diags.push({
       severity: 'error',

@@ -7,14 +7,17 @@
  *   tileguard analyze before.pbf after.pbf [--json] [--output file]
  */
 
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
 import {
   analyzeRegression,
   compareTiles,
   loadTileSnapshot,
 } from '../analysis/AnalysisAdapter.js';
-import { createOutputFormatter } from '../output/OutputFormatter.js';
 import type { OutputFormat } from '../output/OutputFormatter.js';
+import { createOutputFormatter } from '../output/OutputFormatter.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -57,27 +60,32 @@ export async function runAnalyze(
 
   // Format output
   if (args.format === 'json') {
-    const jsonOutput = JSON.stringify({
-      comparison: {
-        isIdentical: comparison.isIdentical,
-        features: comparison.features,
-        layers: comparison.layers,
-      },
-      regression: {
-        isClean: regression.isClean,
-        totalCandidates: regression.totalCandidates,
-        overallConfidence: regression.overallConfidence,
-        dominantKind: regression.dominantKind,
-        candidates: regression.candidates.map((c) => ({
-          layerName: c.layerName,
-          featureId: c.featureId,
-          kind: c.kind,
-          confidence: c.confidence,
-          reason: c.reason,
-          evidence: c.evidence,
-        })),
-      },
-    }, null, 2) + '\n';
+    const jsonOutput =
+      JSON.stringify(
+        {
+          comparison: {
+            isIdentical: comparison.isIdentical,
+            features: comparison.features,
+            layers: comparison.layers,
+          },
+          regression: {
+            isClean: regression.isClean,
+            totalCandidates: regression.totalCandidates,
+            overallConfidence: regression.overallConfidence,
+            dominantKind: regression.dominantKind,
+            candidates: regression.candidates.map((c) => ({
+              layerName: c.layerName,
+              featureId: c.featureId,
+              kind: c.kind,
+              confidence: c.confidence,
+              reason: c.reason,
+              evidence: c.evidence,
+            })),
+          },
+        },
+        null,
+        2,
+      ) + '\n';
 
     if (args.output) {
       const { writeFileSync } = await import('node:fs');
@@ -97,26 +105,35 @@ export async function runAnalyze(
 
   sections.push(fmt.heading('TileGuard Analysis'));
 
-  sections.push(fmt.summary('Comparison', [
-    ['Status', comparison.isIdentical ? 'IDENTICAL' : 'CHANGED'],
-    ['Features added', comparison.features.added],
-    ['Features removed', comparison.features.removed],
-    ['Features modified', comparison.features.modified],
-  ]));
+  sections.push(
+    fmt.summary('Comparison', [
+      ['Status', comparison.isIdentical ? 'IDENTICAL' : 'CHANGED'],
+      ['Features added', comparison.features.added],
+      ['Features removed', comparison.features.removed],
+      ['Features modified', comparison.features.modified],
+    ]),
+  );
 
-  sections.push(fmt.summary('Regression Analysis', [
-    ['Status', regression.isClean ? 'CLEAN' : 'REGRESSIONS FOUND'],
-    ['Candidates', regression.totalCandidates],
-    ['Overall confidence', regression.totalCandidates > 0 ? `${Math.round(regression.overallConfidence * 100)}%` : 'N/A'],
-    ['Dominant kind', regression.dominantKind ?? 'N/A'],
-  ]));
+  sections.push(
+    fmt.summary('Regression Analysis', [
+      ['Status', regression.isClean ? 'CLEAN' : 'REGRESSIONS FOUND'],
+      ['Candidates', regression.totalCandidates],
+      [
+        'Overall confidence',
+        regression.totalCandidates > 0
+          ? `${Math.round(regression.overallConfidence * 100)}%`
+          : 'N/A',
+      ],
+      ['Dominant kind', regression.dominantKind ?? 'N/A'],
+    ]),
+  );
 
   if (regression.candidates.length > 0) {
     sections.push('\nRegression Candidates\n' + '─'.repeat(40) + '\n');
     for (const c of regression.candidates) {
       sections.push(
         `  ${c.kind.padEnd(22)} ${c.layerName.padEnd(15)} ` +
-        `${Math.round(c.confidence * 100)}%  ${c.reason}\n`,
+          `${Math.round(c.confidence * 100)}%  ${c.reason}\n`,
       );
     }
   }

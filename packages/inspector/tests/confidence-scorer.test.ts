@@ -64,7 +64,11 @@ describe('ConfidenceScorer', () => {
   describe('multiple reasons', () => {
     it('sums all weights before dividing by ceiling', () => {
       const scorer = createConfidenceScorer();
-      const result = scorer.score([reason('r1', 40), reason('r2', 20), reason('r3', 10)]);
+      const result = scorer.score([
+        reason('r1', 40),
+        reason('r2', 20),
+        reason('r3', 10),
+      ]);
       // (40+20+10) / 100 = 0.7
       expect(result).toBeCloseTo(0.7);
     });

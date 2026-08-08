@@ -27,8 +27,8 @@ import {
   Center,
   Crosshair,
   DownloadIcon,
-  Search,
   RotateCcw,
+  Search,
 } from 'lucide-react';
 import type { Inspector } from '../../create-inspector.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
@@ -109,7 +109,10 @@ export function ExplorePage({
         actions={toolbarActions}
         rightSlot={
           <div className="flex items-center gap-1">
-            <Search className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden />
+            <Search
+              className="h-3.5 w-3.5 text-[var(--tg-text-muted)]"
+              aria-hidden
+            />
             <input
               type="search"
               placeholder="Quick search…"
@@ -207,7 +210,9 @@ function ResizeHandle({
     onResize?.(next);
   };
 
-  const onPointerUp = () => { dragging = false; };
+  const onPointerUp = () => {
+    dragging = false;
+  };
 
   const pos = side === 'right' ? 'right-0' : 'left-0';
 

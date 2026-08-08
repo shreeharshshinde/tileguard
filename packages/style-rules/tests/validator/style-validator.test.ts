@@ -3,9 +3,9 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { validateStyle } from '../../src/validator/StyleValidator.js';
 import { parseStyleDocument } from '../../src/parser/StyleParser.js';
 import { resolveLayers } from '../../src/resolver/SemanticResolver.js';
+import { validateStyle } from '../../src/validator/StyleValidator.js';
 
 function validate(input: unknown) {
   const { document } = parseStyleDocument(input);
@@ -26,19 +26,35 @@ describe('StyleValidator', () => {
     });
 
     it('passes for version 8', () => {
-      const diags = validate({ version: 8, sources: {}, layers: [{ id: 'bg', type: 'background' }] });
-      expect(diags.filter((d) => d.code === 'missing-version' || d.code === 'invalid-version')).toHaveLength(0);
+      const diags = validate({
+        version: 8,
+        sources: {},
+        layers: [{ id: 'bg', type: 'background' }],
+      });
+      expect(
+        diags.filter(
+          (d) => d.code === 'missing-version' || d.code === 'invalid-version',
+        ),
+      ).toHaveLength(0);
     });
   });
 
   describe('source validation', () => {
     it('warns when no sources declared but layers need them', () => {
-      const diags = validate({ version: 8, sources: {}, layers: [{ id: 'l', type: 'fill' }] });
+      const diags = validate({
+        version: 8,
+        sources: {},
+        layers: [{ id: 'l', type: 'fill' }],
+      });
       expect(diags.some((d) => d.code === 'no-sources')).toBe(true);
     });
 
     it('no warning when only background layers', () => {
-      const diags = validate({ version: 8, sources: {}, layers: [{ id: 'bg', type: 'background' }] });
+      const diags = validate({
+        version: 8,
+        sources: {},
+        layers: [{ id: 'bg', type: 'background' }],
+      });
       expect(diags.some((d) => d.code === 'no-sources')).toBe(false);
     });
   });
@@ -50,7 +66,11 @@ describe('StyleValidator', () => {
     });
 
     it('reports missing layer ID', () => {
-      const diags = validate({ version: 8, sources: {}, layers: [{ type: 'background' }] });
+      const diags = validate({
+        version: 8,
+        sources: {},
+        layers: [{ type: 'background' }],
+      });
       expect(diags.some((d) => d.code === 'missing-layer-id')).toBe(true);
     });
 
@@ -83,7 +103,9 @@ describe('StyleValidator', () => {
         sources: { existing: { type: 'vector' } },
         layers: [{ id: 'l', type: 'fill', source: 'missing' }],
       });
-      expect(diags.some((d) => d.code === 'unknown-source-reference')).toBe(true);
+      expect(diags.some((d) => d.code === 'unknown-source-reference')).toBe(
+        true,
+      );
     });
 
     it('reports missing source property for fill layers', () => {
@@ -92,7 +114,9 @@ describe('StyleValidator', () => {
         sources: { s: { type: 'vector' } },
         layers: [{ id: 'l', type: 'fill' }],
       });
-      expect(diags.some((d) => d.code === 'missing-source-property')).toBe(true);
+      expect(diags.some((d) => d.code === 'missing-source-property')).toBe(
+        true,
+      );
     });
 
     it('does not report missing source for background layers', () => {
@@ -101,7 +125,9 @@ describe('StyleValidator', () => {
         sources: {},
         layers: [{ id: 'bg', type: 'background' }],
       });
-      expect(diags.some((d) => d.code === 'missing-source-property')).toBe(false);
+      expect(diags.some((d) => d.code === 'missing-source-property')).toBe(
+        false,
+      );
     });
   });
 
@@ -119,7 +145,9 @@ describe('StyleValidator', () => {
       const diags = validate({
         version: 8,
         sources: { tiles: { type: 'vector' } },
-        layers: [{ id: 'l', type: 'fill', source: 'tiles', 'source-layer': 'water' }],
+        layers: [
+          { id: 'l', type: 'fill', source: 'tiles', 'source-layer': 'water' },
+        ],
       });
       expect(diags.some((d) => d.code === 'missing-source-layer')).toBe(false);
     });
@@ -167,10 +195,19 @@ describe('StyleValidator', () => {
     it('reports unused sources', () => {
       const diags = validate({
         version: 8,
-        sources: { used: { type: 'vector' }, unused: { type: 'geojson', data: {} } },
-        layers: [{ id: 'l', type: 'fill', source: 'used', 'source-layer': 'x' }],
+        sources: {
+          used: { type: 'vector' },
+          unused: { type: 'geojson', data: {} },
+        },
+        layers: [
+          { id: 'l', type: 'fill', source: 'used', 'source-layer': 'x' },
+        ],
       });
-      expect(diags.some((d) => d.code === 'unused-source' && d.message.includes('unused'))).toBe(true);
+      expect(
+        diags.some(
+          (d) => d.code === 'unused-source' && d.message.includes('unused'),
+        ),
+      ).toBe(true);
     });
 
     it('does not flag terrain source as unused', () => {
@@ -180,7 +217,11 @@ describe('StyleValidator', () => {
         sources: { dem: { type: 'raster-dem' } },
         layers: [{ id: 'bg', type: 'background' }],
       });
-      expect(diags.some((d) => d.code === 'unused-source' && d.message.includes('dem'))).toBe(false);
+      expect(
+        diags.some(
+          (d) => d.code === 'unused-source' && d.message.includes('dem'),
+        ),
+      ).toBe(false);
     });
   });
 
@@ -203,7 +244,12 @@ describe('StyleValidator', () => {
         sources: { tiles: { type: 'vector', url: 'https://example.com' } },
         layers: [
           { id: 'bg', type: 'background' },
-          { id: 'water', type: 'fill', source: 'tiles', 'source-layer': 'water' },
+          {
+            id: 'water',
+            type: 'fill',
+            source: 'tiles',
+            'source-layer': 'water',
+          },
         ],
       });
       const errors = diags.filter((d) => d.severity === 'error');

@@ -1,17 +1,7 @@
 /**
  * @tileguard/inspector — Shared Workspace Components (Phase 3)
  */
-export {
-  EmptyWorkspace,
-  ErrorWorkspace,
-  LoadingWorkspace,
-  PanelDivider,
-  PanelHeader,
-  PanelSection,
-  WorkspaceBadge,
-  WorkspacePanel,
-  WorkspaceToolbar,
-} from './WorkspaceComponents.js';
+
 export type {
   BadgeVariant,
   EmptyWorkspaceAction,
@@ -24,4 +14,15 @@ export type {
   WorkspacePanelProps,
   WorkspaceToolbarAction,
   WorkspaceToolbarProps,
+} from './WorkspaceComponents.js';
+export {
+  EmptyWorkspace,
+  ErrorWorkspace,
+  LoadingWorkspace,
+  PanelDivider,
+  PanelHeader,
+  PanelSection,
+  WorkspaceBadge,
+  WorkspacePanel,
+  WorkspaceToolbar,
 } from './WorkspaceComponents.js';

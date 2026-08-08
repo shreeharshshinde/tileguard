@@ -1,9 +1,16 @@
-import { describe, it, expect } from 'vitest';
-import { runCommand, type CommandContext, type CommandFn, type ExitCode } from '../src/runner/CommandRunner.js';
-import { createLogger } from '../src/logging/Logger.js';
+import { describe, expect, it } from 'vitest';
 import { getDefaultConfig } from '../src/config/ConfigLoader.js';
+import { createLogger } from '../src/logging/Logger.js';
+import {
+  type CommandContext,
+  type CommandFn,
+  type ExitCode,
+  runCommand,
+} from '../src/runner/CommandRunner.js';
 
-function createMockContext(level: 'quiet' | 'normal' | 'verbose' | 'debug' = 'normal'): {
+function createMockContext(
+  level: 'quiet' | 'normal' | 'verbose' | 'debug' = 'normal',
+): {
   ctx: CommandContext;
   output: string[];
 } {
@@ -76,7 +83,9 @@ describe('runCommand', () => {
     const fn: CommandFn = async () => {
       // Simulate some work
       const start = Date.now();
-      while (Date.now() - start < 5) { /* busy wait */ }
+      while (Date.now() - start < 5) {
+        /* busy wait */
+      }
       return { exitCode: 0 };
     };
 
@@ -103,7 +112,9 @@ describe('runCommand', () => {
 
     await runCommand({ name: 'debug-test', args: {}, ctx, fn });
     const debugLines = output.filter((l) => l.includes('[debug]'));
-    const hasStack = debugLines.some((l) => l.includes('Error') || l.includes('at '));
+    const hasStack = debugLines.some(
+      (l) => l.includes('Error') || l.includes('at '),
+    );
     expect(hasStack).toBe(true);
   });
 
@@ -151,7 +162,12 @@ describe('runCommand', () => {
       return { exitCode: 0 };
     };
 
-    await runCommand({ name: 'passthrough', args: { file: 'test.pbf' }, ctx, fn });
+    await runCommand({
+      name: 'passthrough',
+      args: { file: 'test.pbf' },
+      ctx,
+      fn,
+    });
     expect(receivedArgs).toEqual({ file: 'test.pbf' });
     expect(receivedCtx).toBe(ctx);
   });
@@ -172,7 +188,10 @@ describe('ExitCode type', () => {
 
   it('exit code 2 represents validation errors', async () => {
     const { ctx } = createMockContext();
-    const fn: CommandFn = async () => ({ exitCode: 2 as ExitCode, message: 'errors found' });
+    const fn: CommandFn = async () => ({
+      exitCode: 2 as ExitCode,
+      message: 'errors found',
+    });
     const result = await runCommand({ name: 'err', args: {}, ctx, fn });
     expect(result.exitCode).toBe(2);
   });

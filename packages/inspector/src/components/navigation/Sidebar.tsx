@@ -29,6 +29,8 @@
  * Width is fixed at 200px (wider than the old 80px icon-only bar) to
  * show both icon and label.
  */
+
+import * as Tooltip from '@radix-ui/react-tooltip';
 import {
   AlertTriangle,
   BarChart3,
@@ -41,11 +43,10 @@ import {
   Radar,
   Settings,
 } from 'lucide-react';
-import * as Tooltip from '@radix-ui/react-tooltip';
 import type { NavTab } from '../SidebarNav.js';
+import { SidebarFooter } from './SidebarFooter.js';
 import { SidebarItem } from './SidebarItem.js';
 import { SidebarSection } from './SidebarSection.js';
-import { SidebarFooter } from './SidebarFooter.js';
 import { SidebarWorkspaceCard } from './SidebarWorkspaceCard.js';
 
 export interface SidebarProps {

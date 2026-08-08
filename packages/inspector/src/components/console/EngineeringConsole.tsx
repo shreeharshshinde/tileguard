@@ -15,6 +15,7 @@
  * Future plugins can register their own tabs here.
  */
 import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   ChevronDown,
@@ -25,7 +26,6 @@ import {
   ScrollText,
   X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { memo, useCallback, useState } from 'react';
 import { useInspectorContext } from '../../context/InspectorContext.js';
 import { useInvestigationState } from '../../context/InvestigationContext.js';
@@ -35,7 +35,12 @@ import { InvestigationTimeline } from '../investigation/InvestigationTimeline.js
 // Types
 // ---------------------------------------------------------------------------
 
-export type ConsoleTab = 'logs' | 'diagnostics' | 'timeline' | 'performance' | 'tasks';
+export type ConsoleTab =
+  | 'logs'
+  | 'diagnostics'
+  | 'timeline'
+  | 'performance'
+  | 'tasks';
 
 export interface EngineeringConsoleProps {
   /** Whether the console is expanded. */
@@ -107,13 +112,22 @@ function DiagnosticsPanel(): JSX.Element {
       {/* Summary bar */}
       <div className="flex items-center gap-4 border-b border-[var(--tg-border)] px-3 py-2">
         <span className="text-xs">
-          <span className="font-medium text-[var(--tg-error)]">{errorCount}</span> errors
+          <span className="font-medium text-[var(--tg-error)]">
+            {errorCount}
+          </span>{' '}
+          errors
         </span>
         <span className="text-xs">
-          <span className="font-medium text-[var(--tg-warning)]">{warnCount}</span> warnings
+          <span className="font-medium text-[var(--tg-warning)]">
+            {warnCount}
+          </span>{' '}
+          warnings
         </span>
         <span className="text-xs">
-          <span className="font-medium text-[var(--tg-info,var(--tg-accent))]">{infoCount}</span> info
+          <span className="font-medium text-[var(--tg-info,var(--tg-accent))]">
+            {infoCount}
+          </span>{' '}
+          info
         </span>
         <span className="ml-auto text-[10px] text-[var(--tg-text-muted)]">
           {diagnostics.length} total
@@ -132,8 +146,8 @@ function DiagnosticsPanel(): JSX.Element {
                 d.severity === 'error'
                   ? 'bg-[var(--tg-error)]'
                   : d.severity === 'warning'
-                  ? 'bg-[var(--tg-warning)]'
-                  : 'bg-[var(--tg-accent)]',
+                    ? 'bg-[var(--tg-warning)]'
+                    : 'bg-[var(--tg-accent)]',
               ].join(' ')}
             />
             <div className="min-w-0 flex-1">
@@ -200,7 +214,8 @@ function TasksPanel(): JSX.Element {
     <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
       <ListChecks className="h-6 w-6 text-[var(--tg-text-muted)] opacity-40" />
       <p className="text-xs text-[var(--tg-text-muted)]">
-        No active tasks. Tasks appear during tile loading, comparison, and analysis.
+        No active tasks. Tasks appear during tile loading, comparison, and
+        analysis.
       </p>
     </div>
   );
@@ -217,7 +232,9 @@ export function EngineeringConsole({
   fps,
   fileName,
 }: EngineeringConsoleProps): JSX.Element {
-  const [activeTab, setActiveTab] = useState<ConsoleTab>(initialTab ?? 'diagnostics');
+  const [activeTab, setActiveTab] = useState<ConsoleTab>(
+    initialTab ?? 'diagnostics',
+  );
   const { timeline } = useInvestigationState();
 
   // Collapsed bar
@@ -302,7 +319,9 @@ export function EngineeringConsole({
       <div className="flex-1 overflow-hidden" role="tabpanel">
         {activeTab === 'logs' && <LogsPanel />}
         {activeTab === 'diagnostics' && <DiagnosticsPanel />}
-        {activeTab === 'timeline' && <InvestigationTimeline compact maxHeight={160} />}
+        {activeTab === 'timeline' && (
+          <InvestigationTimeline compact maxHeight={160} />
+        )}
         {activeTab === 'performance' && <PerformancePanel fps={fps} />}
         {activeTab === 'tasks' && <TasksPanel />}
       </div>

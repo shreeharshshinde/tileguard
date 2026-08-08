@@ -55,38 +55,38 @@ export function WorkspaceFooter({
       {/* Tile stats */}
       {loaded && stats.totalLayers > 0 && (
         <>
-          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">·</span>
-          <span>
-            {stats.totalLayers}{' '}
-            {stats.totalLayers === 1 ? 'layer' : 'layers'}
+          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+            ·
           </span>
-          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">·</span>
+          <span>
+            {stats.totalLayers} {stats.totalLayers === 1 ? 'layer' : 'layers'}
+          </span>
+          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+            ·
+          </span>
           <span>{stats.totalFeatures.toLocaleString()} features</span>
           {stats.diagnostics.errors +
             stats.diagnostics.warnings +
             stats.diagnostics.info >
             0 && (
-              <>
-                <span
-                  className="text-[var(--tg-text-muted)]"
-                  aria-hidden="true"
-                >
-                  ·
-                </span>
-                <span
-                  className={
-                    stats.diagnostics.errors > 0
-                      ? 'text-[var(--tg-error)]'
-                      : 'text-[var(--tg-warning)]'
-                  }
-                >
-                  {stats.diagnostics.errors +
-                    stats.diagnostics.warnings +
-                    stats.diagnostics.info}{' '}
-                  diag.
-                </span>
-              </>
-            )}
+            <>
+              <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+                ·
+              </span>
+              <span
+                className={
+                  stats.diagnostics.errors > 0
+                    ? 'text-[var(--tg-error)]'
+                    : 'text-[var(--tg-warning)]'
+                }
+              >
+                {stats.diagnostics.errors +
+                  stats.diagnostics.warnings +
+                  stats.diagnostics.info}{' '}
+                diag.
+              </span>
+            </>
+          )}
         </>
       )}
 
@@ -119,7 +119,9 @@ export function WorkspaceFooter({
           <span className="text-[var(--tg-accent)]">
             {selected.layerName} #{selected.id ?? selected.featureIndex}
           </span>
-          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">·</span>
+          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+            ·
+          </span>
         </>
       )}
 
@@ -129,7 +131,9 @@ export function WorkspaceFooter({
       {/* FPS — hidden in presentation mode */}
       {fps > 0 && (
         <span data-fps-counter="" className="flex items-center gap-1">
-          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">·</span>
+          <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+            ·
+          </span>
           <span
             className={
               fps < 30

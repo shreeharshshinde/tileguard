@@ -52,7 +52,9 @@ export function EmptyState({
       </div>
 
       <div className="max-w-sm">
-        <h2 className="text-sm font-semibold text-[var(--tg-text-primary)]">{title}</h2>
+        <h2 className="text-sm font-semibold text-[var(--tg-text-primary)]">
+          {title}
+        </h2>
         {description && (
           <p className="mt-1.5 text-xs text-[var(--tg-text-secondary)]">
             {description}

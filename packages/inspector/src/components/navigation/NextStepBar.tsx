@@ -11,20 +11,24 @@
  * The component reads metadata from NavigationService and renders buttons
  * that navigate to the target page.
  */
+
+import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
   BarChart3,
   Bug,
+  ChevronRight,
   Crosshair,
   FileText,
   GitCompare,
+  Play,
   Radar,
   Upload,
-  Play,
-  ChevronRight,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import type { NextStep, WorkspacePage } from '../../services/NavigationService.js';
+import type {
+  NextStep,
+  WorkspacePage,
+} from '../../services/NavigationService.js';
 import { getNavigationService } from '../../services/NavigationService.js';
 
 // Map icon string names to Lucide icon components
@@ -66,7 +70,10 @@ export function NextStepBar({
       <span className="shrink-0 text-[10px] font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
         Next
       </span>
-      <span className="h-3 w-px shrink-0 bg-[var(--tg-border)]" aria-hidden="true" />
+      <span
+        className="h-3 w-px shrink-0 bg-[var(--tg-border)]"
+        aria-hidden="true"
+      />
       <div className="flex min-w-0 flex-wrap items-center gap-1.5">
         {steps.map((step, index) => {
           const IconComponent = step.icon ? ICON_MAP[step.icon] : ChevronRight;

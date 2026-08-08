@@ -25,7 +25,10 @@ export interface JsonReportOptions {
 /** Current JSON schema version. Increment on breaking changes. */
 export const JSON_SCHEMA_VERSION = 2;
 
-export function renderJson(report: EngineeringReport, options: JsonReportOptions = {}): string {
+export function renderJson(
+  report: EngineeringReport,
+  options: JsonReportOptions = {},
+): string {
   const indent = options.indent ?? 2;
   const includeSchemaRef = options.includeSchemaRef ?? true;
 

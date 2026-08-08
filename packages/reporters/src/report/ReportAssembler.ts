@@ -63,15 +63,19 @@ export function buildExecutiveSummary(
     targetTile: comparison.targetTile,
     generatedAt,
     metrics: {
-      layersChanged: comparison.layers.added + comparison.layers.removed + comparison.layers.modified,
+      layersChanged:
+        comparison.layers.added +
+        comparison.layers.removed +
+        comparison.layers.modified,
       featuresAdded: comparison.features.added,
       featuresModified: comparison.features.modified,
       featuresRemoved: comparison.features.removed,
       regressionCandidates: regression.totalCandidates,
       newDiagnostics: comparison.newDiagnostics.length,
-      overallConfidencePct: regression.totalCandidates > 0
-        ? Math.round(regression.overallConfidence * 100)
-        : 0,
+      overallConfidencePct:
+        regression.totalCandidates > 0
+          ? Math.round(regression.overallConfidence * 100)
+          : 0,
     },
   };
 }
@@ -149,7 +153,8 @@ export function buildKeyFindings(
   if (regression.candidates.length > 0) {
     const top = regression.candidates[0]!;
     const pct = Math.round(top.confidence * 100);
-    const sev: FindingSeverity = pct >= 80 ? 'critical' : pct >= 60 ? 'high' : 'medium';
+    const sev: FindingSeverity =
+      pct >= 80 ? 'critical' : pct >= 60 ? 'high' : 'medium';
     findings.push({
       rank: findings.length + 1,
       severity: sev,
@@ -176,16 +181,18 @@ export function buildKeyFindings(
 
   // Finding: new diagnostics
   if (comparison.newDiagnostics.length > 0) {
-    const hasErrors = comparison.newDiagnostics.some(d => d.severity === 'error');
+    const hasErrors = comparison.newDiagnostics.some(
+      (d) => d.severity === 'error',
+    );
     findings.push({
       rank: findings.length + 1,
       severity: hasErrors ? 'critical' : 'high',
       title: `${comparison.newDiagnostics.length} new diagnostic(s) introduced`,
       description: comparison.newDiagnostics
         .slice(0, 3)
-        .map(d => `${d.ruleId}: ${d.message}`)
+        .map((d) => `${d.ruleId}: ${d.message}`)
         .join('; '),
-      references: comparison.newDiagnostics.map(d => d.ruleId),
+      references: comparison.newDiagnostics.map((d) => d.ruleId),
     });
   }
 
@@ -214,7 +221,7 @@ export function buildLayerImpact(
 ): LayerImpactEntry[] {
   // Prefer explicit per-layer data from the caller
   if (comparison.layerStats && comparison.layerStats.length > 0) {
-    return comparison.layerStats.map(ls => ({
+    return comparison.layerStats.map((ls) => ({
       layerName: ls.layerName,
       added: ls.added,
       modified: ls.modified,
@@ -235,9 +242,13 @@ export function buildLayerImpact(
         ...existing,
         modified: existing.modified + 1,
         netChange: existing.netChange,
-        topExamples: existing.topExamples.length < 5
-          ? [...existing.topExamples, c.featureId !== undefined ? String(c.featureId) : '']
-          : existing.topExamples,
+        topExamples:
+          existing.topExamples.length < 5
+            ? [
+                ...existing.topExamples,
+                c.featureId !== undefined ? String(c.featureId) : '',
+              ]
+            : existing.topExamples,
       });
     } else {
       layerMap.set(c.layerName, {
@@ -254,19 +265,22 @@ export function buildLayerImpact(
 
   // If still empty, create a single aggregate entry
   if (layerMap.size === 0) {
-    return [{
-      layerName: '(all layers)',
-      added: comparison.features.added,
-      modified: comparison.features.modified,
-      removed: comparison.features.removed,
-      unchanged: comparison.features.unchanged,
-      topExamples: [],
-      netChange: comparison.features.added - comparison.features.removed,
-    }];
+    return [
+      {
+        layerName: '(all layers)',
+        added: comparison.features.added,
+        modified: comparison.features.modified,
+        removed: comparison.features.removed,
+        unchanged: comparison.features.unchanged,
+        topExamples: [],
+        netChange: comparison.features.added - comparison.features.removed,
+      },
+    ];
   }
 
-  return [...layerMap.values()].sort((a, b) =>
-    (b.modified + b.added + b.removed) - (a.modified + a.added + a.removed),
+  return [...layerMap.values()].sort(
+    (a, b) =>
+      b.modified + b.added + b.removed - (a.modified + a.added + a.removed),
   );
 }
 
@@ -274,7 +288,9 @@ export function buildLayerImpact(
 // Regression Highlights
 // ---------------------------------------------------------------------------
 
-export function buildRegressionHighlights(regression: RegressionInput): RegressionHighlightSection {
+export function buildRegressionHighlights(
+  regression: RegressionInput,
+): RegressionHighlightSection {
   const top = regression.candidates.slice(0, TOP_CANDIDATES_LIMIT);
   const remaining = regression.candidates.slice(TOP_CANDIDATES_LIMIT);
 
@@ -293,9 +309,10 @@ export function buildRegressionHighlights(regression: RegressionInput): Regressi
     remainingCandidates: remaining,
     isClean: regression.isClean,
     totalCandidates: regression.totalCandidates,
-    overallConfidencePct: regression.totalCandidates > 0
-      ? Math.round(regression.overallConfidence * 100)
-      : 0,
+    overallConfidencePct:
+      regression.totalCandidates > 0
+        ? Math.round(regression.overallConfidence * 100)
+        : 0,
     dominantKind: regression.dominantKind,
   };
 }
@@ -304,19 +321,36 @@ export function buildRegressionHighlights(regression: RegressionInput): Regressi
 // Diagnostics Summary
 // ---------------------------------------------------------------------------
 
-export function buildDiagnosticsSummary(comparison: ComparisonInput): DiagnosticsSummarySection {
-  const totalA = comparison.diagnosticsA.errors + comparison.diagnosticsA.warnings + comparison.diagnosticsA.info;
-  const totalB = comparison.diagnosticsB.errors + comparison.diagnosticsB.warnings + comparison.diagnosticsB.info;
+export function buildDiagnosticsSummary(
+  comparison: ComparisonInput,
+): DiagnosticsSummarySection {
+  const totalA =
+    comparison.diagnosticsA.errors +
+    comparison.diagnosticsA.warnings +
+    comparison.diagnosticsA.info;
+  const totalB =
+    comparison.diagnosticsB.errors +
+    comparison.diagnosticsB.warnings +
+    comparison.diagnosticsB.info;
 
   // Persistent = minimum overlap (conservative estimate)
-  const persistentCount = Math.max(0, Math.min(totalA, totalB) - comparison.newDiagnostics.length);
+  const persistentCount = Math.max(
+    0,
+    Math.min(totalA, totalB) - comparison.newDiagnostics.length,
+  );
 
   // Build top-rules frequency table from new diagnostics
-  const ruleFreq = new Map<string, { count: number; severity: 'error' | 'warning' | 'info' }>();
+  const ruleFreq = new Map<
+    string,
+    { count: number; severity: 'error' | 'warning' | 'info' }
+  >();
   for (const d of comparison.newDiagnostics) {
     const existing = ruleFreq.get(d.ruleId);
     if (existing) {
-      ruleFreq.set(d.ruleId, { count: existing.count + 1, severity: existing.severity });
+      ruleFreq.set(d.ruleId, {
+        count: existing.count + 1,
+        severity: existing.severity,
+      });
     } else {
       ruleFreq.set(d.ruleId, { count: 1, severity: d.severity });
     }
@@ -343,7 +377,9 @@ export function buildDiagnosticsSummary(comparison: ComparisonInput): Diagnostic
 // Statistics Dashboard
 // ---------------------------------------------------------------------------
 
-export function buildStatisticsDashboard(comparison: ComparisonInput): StatisticsDashboard {
+export function buildStatisticsDashboard(
+  comparison: ComparisonInput,
+): StatisticsDashboard {
   const { stats } = comparison;
   return {
     layersA: stats.layersA,
@@ -382,24 +418,35 @@ export function buildPrioritizedRecommendations(
         reason: top.topReason,
         affectedLayers: [top.layerName],
         evidence: top.evidenceLabels,
-        actions: top.recommendations.length > 0
-          ? top.recommendations
-          : ['Inspect affected features in the tile viewer', 'Compare geometry with source data'],
+        actions:
+          top.recommendations.length > 0
+            ? top.recommendations
+            : [
+                'Inspect affected features in the tile viewer',
+                'Compare geometry with source data',
+              ],
       });
     }
   }
 
   // HIGH: new error-severity diagnostics
-  const errorDiags = comparison.newDiagnostics.filter(d => d.severity === 'error');
+  const errorDiags = comparison.newDiagnostics.filter(
+    (d) => d.severity === 'error',
+  );
   if (errorDiags.length > 0) {
-    const layers = [...new Set(errorDiags.map(d => d.layer ?? 'unknown').filter(Boolean))];
+    const layers = [
+      ...new Set(errorDiags.map((d) => d.layer ?? 'unknown').filter(Boolean)),
+    ];
     recs.push({
       priority: 'HIGH',
       title: `Fix ${errorDiags.length} new error diagnostic(s)`,
-      reason: `Error-severity diagnostics were introduced: ${errorDiags.map(d => d.ruleId).join(', ')}`,
+      reason: `Error-severity diagnostics were introduced: ${errorDiags.map((d) => d.ruleId).join(', ')}`,
       affectedLayers: layers,
-      evidence: errorDiags.map(d => `${d.ruleId}: ${d.message}`),
-      actions: ['Review and fix rule violations before merging', 'Run tileguard check locally'],
+      evidence: errorDiags.map((d) => `${d.ruleId}: ${d.message}`),
+      actions: [
+        'Review and fix rule violations before merging',
+        'Run tileguard check locally',
+      ],
     });
   }
 
@@ -410,8 +457,13 @@ export function buildPrioritizedRecommendations(
       title: `Verify ${comparison.features.removed} removed feature(s)`,
       reason: `Features were removed from the tile — confirm this is intentional.`,
       affectedLayers: [],
-      evidence: [`${comparison.features.removed} feature(s) absent in target tile`],
-      actions: ['Review source data for accidental deletions', 'Check data pipeline filters'],
+      evidence: [
+        `${comparison.features.removed} feature(s) absent in target tile`,
+      ],
+      actions: [
+        'Review source data for accidental deletions',
+        'Check data pipeline filters',
+      ],
     });
   }
 
@@ -426,21 +478,24 @@ export function buildPrioritizedRecommendations(
       reason: c.topReason,
       affectedLayers: [c.layerName],
       evidence: c.evidenceLabels,
-      actions: c.recommendations.length > 0
-        ? c.recommendations
-        : ['Inspect feature in tile viewer'],
+      actions:
+        c.recommendations.length > 0
+          ? c.recommendations
+          : ['Inspect feature in tile viewer'],
     });
   }
 
   // LOW: warning diagnostics
-  const warnDiags = comparison.newDiagnostics.filter(d => d.severity === 'warning');
+  const warnDiags = comparison.newDiagnostics.filter(
+    (d) => d.severity === 'warning',
+  );
   if (warnDiags.length > 0) {
     recs.push({
       priority: 'LOW',
       title: `Review ${warnDiags.length} new warning(s)`,
-      reason: `Warning-severity diagnostics introduced: ${warnDiags.map(d => d.ruleId).join(', ')}`,
+      reason: `Warning-severity diagnostics introduced: ${warnDiags.map((d) => d.ruleId).join(', ')}`,
       affectedLayers: [],
-      evidence: warnDiags.map(d => d.message),
+      evidence: warnDiags.map((d) => d.message),
       actions: ['Consider fixing before the next release'],
     });
   }
@@ -477,7 +532,10 @@ export function buildAppendix(
 ): ReportAppendix {
   // Build grouped entries from layerStats if available
   const addedByLayer = groupFromLayerStats(comparison.layerStats, 'added');
-  const modifiedByLayer = groupFromLayerStats(comparison.layerStats, 'modified');
+  const modifiedByLayer = groupFromLayerStats(
+    comparison.layerStats,
+    'modified',
+  );
   const removedByLayer = groupFromLayerStats(comparison.layerStats, 'removed');
 
   return {
@@ -497,8 +555,8 @@ function groupFromLayerStats(
   if (!layerStats || layerStats.length === 0) return [];
 
   return layerStats
-    .filter(ls => ls[field] > 0)
-    .map(ls => ({
+    .filter((ls) => ls[field] > 0)
+    .map((ls) => ({
       layerName: ls.layerName,
       count: ls[field],
       examples: ls.topExamples ?? [],

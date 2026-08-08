@@ -26,9 +26,15 @@ interface WelcomeViewProps {
 /** Quick-start guide shown in the right sidebar. */
 function QuickStartGuide(): JSX.Element {
   return (
-    <section aria-labelledby="quickstart-heading" className="mb-[var(--tg-space-xl)]">
+    <section
+      aria-labelledby="quickstart-heading"
+      className="mb-[var(--tg-space-xl)]"
+    >
       <div className="mb-[var(--tg-space-md)] flex items-center gap-[var(--tg-space-sm)]">
-        <BookOpen className="h-4 w-4 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+        <BookOpen
+          className="h-4 w-4 text-[var(--tg-text-secondary)]"
+          aria-hidden="true"
+        />
         <h2
           id="quickstart-heading"
           className="text-sm font-semibold text-[var(--tg-text-primary)]"
@@ -38,23 +44,34 @@ function QuickStartGuide(): JSX.Element {
       </div>
       <ol className="space-y-[var(--tg-space-lg)] text-xs text-[var(--tg-text-secondary)]">
         <li>
-          <strong className="block text-[var(--tg-text-primary)]">1 · Open a demo</strong>
-          Click any demo card on the left for an instant one-click load. No file picker.
+          <strong className="block text-[var(--tg-text-primary)]">
+            1 · Open a demo
+          </strong>
+          Click any demo card on the left for an instant one-click load. No file
+          picker.
         </li>
         <li>
-          <strong className="block text-[var(--tg-text-primary)]">2 · Explore the canvas</strong>
+          <strong className="block text-[var(--tg-text-primary)]">
+            2 · Explore the canvas
+          </strong>
           Drag to pan, scroll to zoom, hover to highlight features.
         </li>
         <li>
-          <strong className="block text-[var(--tg-text-primary)]">3 · Inspect features</strong>
+          <strong className="block text-[var(--tg-text-primary)]">
+            3 · Inspect features
+          </strong>
           Click any feature to open the Feature Inspector on the right panel.
         </li>
         <li>
-          <strong className="block text-[var(--tg-text-primary)]">4 · Run diagnostics</strong>
+          <strong className="block text-[var(--tg-text-primary)]">
+            4 · Run diagnostics
+          </strong>
           Switch to the Diagnostics tab to see errors and rule explanations.
         </li>
         <li>
-          <strong className="block text-[var(--tg-text-primary)]">5 · Compare tiles</strong>
+          <strong className="block text-[var(--tg-text-primary)]">
+            5 · Compare tiles
+          </strong>
           Use the Compare tab to diff two tile versions side by side.
         </li>
       </ol>
@@ -82,7 +99,10 @@ function KeyboardShortcuts(): JSX.Element {
   return (
     <section aria-labelledby="shortcuts-heading">
       <div className="mb-[var(--tg-space-md)] flex items-center gap-[var(--tg-space-sm)]">
-        <Keyboard className="h-4 w-4 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+        <Keyboard
+          className="h-4 w-4 text-[var(--tg-text-secondary)]"
+          aria-hidden="true"
+        />
         <h2
           id="shortcuts-heading"
           className="text-sm font-semibold text-[var(--tg-text-primary)]"
@@ -92,11 +112,16 @@ function KeyboardShortcuts(): JSX.Element {
       </div>
       <dl className="space-y-1">
         {shortcuts.map(([key, desc]) => (
-          <div key={key} className="flex items-center justify-between gap-[var(--tg-space-sm)]">
+          <div
+            key={key}
+            className="flex items-center justify-between gap-[var(--tg-space-sm)]"
+          >
             <kbd className="rounded bg-[var(--tg-bg-surface)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--tg-text-secondary)]">
               {key}
             </kbd>
-            <span className="text-right text-[10px] text-[var(--tg-text-muted)]">{desc}</span>
+            <span className="text-right text-[10px] text-[var(--tg-text-muted)]">
+              {desc}
+            </span>
           </div>
         ))}
       </dl>
@@ -105,13 +130,20 @@ function KeyboardShortcuts(): JSX.Element {
 }
 
 /** The redesigned welcome page with demo catalog. */
-export function WelcomeView({ onFileSelected, onComparisonSelected }: WelcomeViewProps): JSX.Element {
+export function WelcomeView({
+  onFileSelected,
+  onComparisonSelected,
+}: WelcomeViewProps): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLoadSingle = (file: File, _dataset: DemoDataset) => {
     onFileSelected(file);
   };
 
-  const handleLoadComparison = (fileA: File, fileB: File, _dataset: DemoDataset) => {
+  const handleLoadComparison = (
+    fileA: File,
+    fileB: File,
+    _dataset: DemoDataset,
+  ) => {
     if (onComparisonSelected !== undefined) {
       onComparisonSelected(fileA, fileB);
     } else {
@@ -132,7 +164,8 @@ export function WelcomeView({ onFileSelected, onComparisonSelected }: WelcomeVie
               aria-hidden="true"
             />
             <h1 className="text-2xl font-semibold text-[var(--tg-text-primary)]">
-              TileGuard <span className="text-[var(--tg-accent)]">Inspector</span>
+              TileGuard{' '}
+              <span className="text-[var(--tg-accent)]">Inspector</span>
             </h1>
           </div>
           <p className="mt-[var(--tg-space-sm)] text-sm text-[var(--tg-text-secondary)]">
@@ -148,22 +181,37 @@ export function WelcomeView({ onFileSelected, onComparisonSelected }: WelcomeVie
 
         {/* Divider */}
         <div className="my-[var(--tg-space-2xl)] flex items-center gap-[var(--tg-space-md)]">
-          <span className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
-          <span className="text-xs text-[var(--tg-text-muted)]">or open your own file</span>
-          <span className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
+          <span
+            className="h-px flex-1 bg-[var(--tg-border)]"
+            aria-hidden="true"
+          />
+          <span className="text-xs text-[var(--tg-text-muted)]">
+            or open your own file
+          </span>
+          <span
+            className="h-px flex-1 bg-[var(--tg-border)]"
+            aria-hidden="true"
+          />
         </div>
 
         {/* File open actions */}
         <WelcomeActions onFileSelected={onFileSelected} />
 
         {/* Recent files */}
-        <RecentFiles onOpenFilePicker={() => document.getElementById('__welcome-file-trigger')?.click()} />
+        <RecentFiles
+          onOpenFilePicker={() =>
+            document.getElementById('__welcome-file-trigger')?.click()
+          }
+        />
       </div>
 
       {/* ── Right sidebar ───────────────────────────────────────────── */}
       <aside className="overflow-y-auto border-l border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] px-[var(--tg-space-xl)] py-[var(--tg-space-xl)]">
         <QuickStartGuide />
-        <div className="my-[var(--tg-space-xl)] h-px bg-[var(--tg-border)]" aria-hidden="true" />
+        <div
+          className="my-[var(--tg-space-xl)] h-px bg-[var(--tg-border)]"
+          aria-hidden="true"
+        />
         <KeyboardShortcuts />
       </aside>
     </main>

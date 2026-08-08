@@ -15,7 +15,9 @@ interface RecentFilesProps {
   readonly onOpenFilePicker: () => void;
 }
 
-export function RecentFiles({ onOpenFilePicker }: RecentFilesProps): JSX.Element | null {
+export function RecentFiles({
+  onOpenFilePicker,
+}: RecentFilesProps): JSX.Element | null {
   const lastFilePath = getWorkspaceService().getLayout().lastFilePath;
 
   if (lastFilePath === null) return null;
@@ -23,9 +25,15 @@ export function RecentFiles({ onOpenFilePicker }: RecentFilesProps): JSX.Element
   const fileName = lastFilePath.split('/').pop() ?? lastFilePath;
 
   return (
-    <section aria-labelledby="recent-files-heading" className="mt-[var(--tg-space-xl)]">
+    <section
+      aria-labelledby="recent-files-heading"
+      className="mt-[var(--tg-space-xl)]"
+    >
       <div className="mb-[var(--tg-space-sm)] flex items-center gap-[var(--tg-space-sm)]">
-        <Clock className="h-4 w-4 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+        <Clock
+          className="h-4 w-4 text-[var(--tg-text-secondary)]"
+          aria-hidden="true"
+        />
         <h2
           id="recent-files-heading"
           className="text-sm font-semibold text-[var(--tg-text-primary)]"
@@ -45,7 +53,10 @@ export function RecentFiles({ onOpenFilePicker }: RecentFilesProps): JSX.Element
           aria-hidden="true"
         />
         <div className="min-w-0">
-          <p className="truncate text-xs font-medium text-[var(--tg-text-primary)]" title={lastFilePath}>
+          <p
+            className="truncate text-xs font-medium text-[var(--tg-text-primary)]"
+            title={lastFilePath}
+          >
             {fileName}
           </p>
           <p className="text-[10px] text-[var(--tg-text-muted)]">

@@ -18,10 +18,10 @@ import {
   Settings as SettingsIcon,
   Shield,
 } from 'lucide-react';
-import { getNavigationService } from '../../services/NavigationService.js';
 import type { WorkspacePage } from '../../services/NavigationService.js';
-import { PresentationToggle } from '../presentation/PresentationToggle.js';
+import { getNavigationService } from '../../services/NavigationService.js';
 import { InvestigationBreadcrumb } from '../investigation/InvestigationBreadcrumb.js';
+import { PresentationToggle } from '../presentation/PresentationToggle.js';
 
 export interface WorkspaceHeaderProps {
   /** The currently active workspace page, used to derive page identity. */
@@ -67,11 +67,16 @@ export function WorkspaceHeader({
             className="h-4 w-4 text-[var(--tg-accent)]"
             aria-hidden="true"
           />
-          <span className="hidden text-[var(--tg-text-muted)] sm:inline">TileGuard</span>
+          <span className="hidden text-[var(--tg-text-muted)] sm:inline">
+            TileGuard
+          </span>
         </div>
 
         {/* Separator */}
-        <span className="h-4 w-px shrink-0 bg-[var(--tg-border)]" aria-hidden="true" />
+        <span
+          className="h-4 w-px shrink-0 bg-[var(--tg-border)]"
+          aria-hidden="true"
+        />
 
         {/* Back button */}
         {canGoBack && (

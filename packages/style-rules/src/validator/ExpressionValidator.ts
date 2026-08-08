@@ -6,7 +6,10 @@
  *   - (Future: type checking, arity validation, etc.)
  */
 
-import type { StyleDiagnostic, ResolvedLayer } from '../models/StyleAnalysis.js';
+import type {
+  ResolvedLayer,
+  StyleDiagnostic,
+} from '../models/StyleAnalysis.js';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -37,7 +40,8 @@ function validateUnknownOperators(
         message: `Layer "${resolved.layer.id}" contains an unrecognized expression operator.`,
         path: `layers[${resolved.layer.index}]`,
         code: 'unknown-expression-operator',
-        suggestion: 'Check the expression syntax for typos or unsupported operators.',
+        suggestion:
+          'Check the expression syntax for typos or unsupported operators.',
       });
     }
   }

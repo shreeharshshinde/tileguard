@@ -31,99 +31,177 @@ import { createComparisonService } from '../../inspector/src/comparison/Comparis
 
 function makeSnapshotA(): TileSnapshot {
   const factory = createSnapshotFactory();
-  return factory.createSnapshot('before.pbf', [
-    {
-      name: 'roads',
-      extent: 4096,
-      features: [
-        {
-          id: 1,
-          geometryType: 'LineString',
-          properties: { name: 'Main St', highway: 'primary' },
-          geometry: [[{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 50 }]],
-        },
-        {
-          id: 2,
-          geometryType: 'LineString',
-          properties: { name: 'Oak Ave', highway: 'secondary' },
-          geometry: [[{ x: 50, y: 50 }, { x: 150, y: 50 }, { x: 250, y: 100 }]],
-        },
-        {
-          id: 3,
-          geometryType: 'LineString',
-          properties: { name: 'Park Rd', highway: 'tertiary' },
-          geometry: [[{ x: 0, y: 200 }, { x: 100, y: 200 }]],
-        },
-      ],
-    },
-    {
-      name: 'buildings',
-      extent: 4096,
-      features: [
-        {
-          id: 10,
-          geometryType: 'Polygon',
-          properties: { building: 'yes', height: 20 },
-          geometry: [[{ x: 10, y: 10 }, { x: 50, y: 10 }, { x: 50, y: 50 }, { x: 10, y: 50 }, { x: 10, y: 10 }]],
-        },
-        {
-          id: 11,
-          geometryType: 'Polygon',
-          properties: { building: 'yes', height: 30 },
-          geometry: [[{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }]],
-        },
-      ],
-    },
-  ], []);
+  return factory.createSnapshot(
+    'before.pbf',
+    [
+      {
+        name: 'roads',
+        extent: 4096,
+        features: [
+          {
+            id: 1,
+            geometryType: 'LineString',
+            properties: { name: 'Main St', highway: 'primary' },
+            geometry: [
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 0 },
+                { x: 200, y: 50 },
+              ],
+            ],
+          },
+          {
+            id: 2,
+            geometryType: 'LineString',
+            properties: { name: 'Oak Ave', highway: 'secondary' },
+            geometry: [
+              [
+                { x: 50, y: 50 },
+                { x: 150, y: 50 },
+                { x: 250, y: 100 },
+              ],
+            ],
+          },
+          {
+            id: 3,
+            geometryType: 'LineString',
+            properties: { name: 'Park Rd', highway: 'tertiary' },
+            geometry: [
+              [
+                { x: 0, y: 200 },
+                { x: 100, y: 200 },
+              ],
+            ],
+          },
+        ],
+      },
+      {
+        name: 'buildings',
+        extent: 4096,
+        features: [
+          {
+            id: 10,
+            geometryType: 'Polygon',
+            properties: { building: 'yes', height: 20 },
+            geometry: [
+              [
+                { x: 10, y: 10 },
+                { x: 50, y: 10 },
+                { x: 50, y: 50 },
+                { x: 10, y: 50 },
+                { x: 10, y: 10 },
+              ],
+            ],
+          },
+          {
+            id: 11,
+            geometryType: 'Polygon',
+            properties: { building: 'yes', height: 30 },
+            geometry: [
+              [
+                { x: 100, y: 100 },
+                { x: 200, y: 100 },
+                { x: 200, y: 200 },
+                { x: 100, y: 200 },
+                { x: 100, y: 100 },
+              ],
+            ],
+          },
+        ],
+      },
+    ],
+    [],
+  );
 }
 
 function makeSnapshotB(): TileSnapshot {
   const factory = createSnapshotFactory();
-  return factory.createSnapshot('after.pbf', [
-    {
-      name: 'roads',
-      extent: 4096,
-      features: [
-        {
-          id: 1,
-          geometryType: 'LineString',
-          properties: { name: 'Main St', highway: 'primary' },
-          geometry: [[{ x: 0, y: 0 }, { x: 100, y: 10 }, { x: 200, y: 50 }, { x: 300, y: 60 }]],
-        },
-        {
-          id: 2,
-          geometryType: 'LineString',
-          properties: { name: 'Oak Avenue', highway: 'secondary', lanes: 2 },
-          geometry: [[{ x: 50, y: 50 }, { x: 150, y: 50 }, { x: 250, y: 100 }]],
-        },
-        // Feature 3 removed
-      ],
-    },
-    {
-      name: 'buildings',
-      extent: 4096,
-      features: [
-        {
-          id: 10,
-          geometryType: 'Polygon',
-          properties: { building: 'yes', height: 20 },
-          geometry: [[{ x: 10, y: 10 }, { x: 50, y: 10 }, { x: 50, y: 50 }, { x: 10, y: 50 }, { x: 10, y: 10 }]],
-        },
-        {
-          id: 11,
-          geometryType: 'Polygon',
-          properties: { building: 'yes', height: 45 },
-          geometry: [[{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }]],
-        },
-        {
-          id: 12,
-          geometryType: 'Polygon',
-          properties: { building: 'yes', height: 15 },
-          geometry: [[{ x: 300, y: 300 }, { x: 400, y: 300 }, { x: 400, y: 400 }, { x: 300, y: 400 }, { x: 300, y: 300 }]],
-        },
-      ],
-    },
-  ], []);
+  return factory.createSnapshot(
+    'after.pbf',
+    [
+      {
+        name: 'roads',
+        extent: 4096,
+        features: [
+          {
+            id: 1,
+            geometryType: 'LineString',
+            properties: { name: 'Main St', highway: 'primary' },
+            geometry: [
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 10 },
+                { x: 200, y: 50 },
+                { x: 300, y: 60 },
+              ],
+            ],
+          },
+          {
+            id: 2,
+            geometryType: 'LineString',
+            properties: { name: 'Oak Avenue', highway: 'secondary', lanes: 2 },
+            geometry: [
+              [
+                { x: 50, y: 50 },
+                { x: 150, y: 50 },
+                { x: 250, y: 100 },
+              ],
+            ],
+          },
+          // Feature 3 removed
+        ],
+      },
+      {
+        name: 'buildings',
+        extent: 4096,
+        features: [
+          {
+            id: 10,
+            geometryType: 'Polygon',
+            properties: { building: 'yes', height: 20 },
+            geometry: [
+              [
+                { x: 10, y: 10 },
+                { x: 50, y: 10 },
+                { x: 50, y: 50 },
+                { x: 10, y: 50 },
+                { x: 10, y: 10 },
+              ],
+            ],
+          },
+          {
+            id: 11,
+            geometryType: 'Polygon',
+            properties: { building: 'yes', height: 45 },
+            geometry: [
+              [
+                { x: 100, y: 100 },
+                { x: 200, y: 100 },
+                { x: 200, y: 200 },
+                { x: 100, y: 200 },
+                { x: 100, y: 100 },
+              ],
+            ],
+          },
+          {
+            id: 12,
+            geometryType: 'Polygon',
+            properties: { building: 'yes', height: 15 },
+            geometry: [
+              [
+                { x: 300, y: 300 },
+                { x: 400, y: 300 },
+                { x: 400, y: 400 },
+                { x: 300, y: 400 },
+                { x: 300, y: 300 },
+              ],
+            ],
+          },
+        ],
+      },
+    ],
+    [],
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -152,7 +230,9 @@ describe('Cross-package parity: Comparison', () => {
 
   it('feature classifications are identical', () => {
     for (let i = 0; i < directResult.features.length; i++) {
-      expect(directResult.features[i]!.kind).toBe(serviceResult.features[i]!.kind);
+      expect(directResult.features[i]!.kind).toBe(
+        serviceResult.features[i]!.kind,
+      );
     }
   });
 
@@ -169,26 +249,40 @@ describe('Cross-package parity: Comparison', () => {
   });
 
   it('isIdentical flag matches', () => {
-    expect(directResult.summary.isIdentical).toBe(serviceResult.summary.isIdentical);
+    expect(directResult.summary.isIdentical).toBe(
+      serviceResult.summary.isIdentical,
+    );
   });
 
   it('both detect removed features', () => {
-    const directRemoved = directResult.features.filter((f) => f.kind === 'removed').length;
-    const serviceRemoved = serviceResult.features.filter((f) => f.kind === 'removed').length;
+    const directRemoved = directResult.features.filter(
+      (f) => f.kind === 'removed',
+    ).length;
+    const serviceRemoved = serviceResult.features.filter(
+      (f) => f.kind === 'removed',
+    ).length;
     expect(directRemoved).toBe(serviceRemoved);
     expect(directRemoved).toBeGreaterThan(0);
   });
 
   it('both detect added features', () => {
-    const directAdded = directResult.features.filter((f) => f.kind === 'added').length;
-    const serviceAdded = serviceResult.features.filter((f) => f.kind === 'added').length;
+    const directAdded = directResult.features.filter(
+      (f) => f.kind === 'added',
+    ).length;
+    const serviceAdded = serviceResult.features.filter(
+      (f) => f.kind === 'added',
+    ).length;
     expect(directAdded).toBe(serviceAdded);
     expect(directAdded).toBeGreaterThan(0);
   });
 
   it('both detect modified features', () => {
-    const directModified = directResult.features.filter((f) => f.kind === 'modified').length;
-    const serviceModified = serviceResult.features.filter((f) => f.kind === 'modified').length;
+    const directModified = directResult.features.filter(
+      (f) => f.kind === 'modified',
+    ).length;
+    const serviceModified = serviceResult.features.filter(
+      (f) => f.kind === 'modified',
+    ).length;
     expect(directModified).toBe(serviceModified);
   });
 });
@@ -217,7 +311,9 @@ describe('Cross-package parity: Regression', () => {
   });
 
   it('candidate count is deterministic', () => {
-    expect(analysisResult.candidates.length).toBe(analysisResult2.candidates.length);
+    expect(analysisResult.candidates.length).toBe(
+      analysisResult2.candidates.length,
+    );
   });
 
   it('candidate confidence scores are deterministic', () => {
@@ -241,9 +337,13 @@ describe('Cross-package parity: Regression', () => {
   });
 
   it('evidence is deterministic', () => {
-    expect(analysisResult.evidence.length).toBe(analysisResult2.evidence.length);
+    expect(analysisResult.evidence.length).toBe(
+      analysisResult2.evidence.length,
+    );
     for (let i = 0; i < analysisResult.evidence.length; i++) {
-      expect(analysisResult.evidence[i]!.label).toBe(analysisResult2.evidence[i]!.label);
+      expect(analysisResult.evidence[i]!.label).toBe(
+        analysisResult2.evidence[i]!.label,
+      );
     }
   });
 });
@@ -270,7 +370,9 @@ describe('Cross-package parity: SnapshotFactory', () => {
   it('features are correctly attributed to layers', () => {
     const snap = makeSnapshotA();
     const roadFeatures = snap.features.filter((f) => f.layerName === 'roads');
-    const buildingFeatures = snap.features.filter((f) => f.layerName === 'buildings');
+    const buildingFeatures = snap.features.filter(
+      (f) => f.layerName === 'buildings',
+    );
     expect(roadFeatures.length).toBe(3);
     expect(buildingFeatures.length).toBe(2);
   });

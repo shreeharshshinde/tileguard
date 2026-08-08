@@ -17,6 +17,8 @@
  *
  * Also exports preset action builders for common workflows.
  */
+
+import type { LucideIcon } from 'lucide-react';
 import {
   ArrowRight,
   BarChart3,
@@ -28,7 +30,6 @@ import {
   GitCompare,
   MapPin,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useCallback } from 'react';
 import { useInvestigationActions } from '../../context/InvestigationContext.js';
 import type { WorkspacePage } from '../../services/NavigationService.js';
@@ -71,7 +72,11 @@ export function InvestigationActions({
       : 'flex flex-wrap items-center gap-1';
 
   return (
-    <div className={containerClass} role="toolbar" aria-label="Investigation actions">
+    <div
+      className={containerClass}
+      role="toolbar"
+      aria-label="Investigation actions"
+    >
       {actions.map((item) => {
         const Icon = item.icon;
         const variant = item.variant ?? 'default';
@@ -82,16 +87,16 @@ export function InvestigationActions({
               variant === 'primary'
                 ? 'bg-[var(--tg-accent)] text-white hover:bg-[var(--tg-accent)]/90'
                 : variant === 'subtle'
-                ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]'
-                : 'bg-[var(--tg-bg-hover)] text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-surface)] hover:text-[var(--tg-text-primary)]',
+                  ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]'
+                  : 'bg-[var(--tg-bg-hover)] text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-surface)] hover:text-[var(--tg-text-primary)]',
             ].join(' ')
           : [
               'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium transition-colors',
               variant === 'primary'
                 ? 'bg-[var(--tg-accent)] text-white hover:bg-[var(--tg-accent)]/90'
                 : variant === 'subtle'
-                ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]'
-                : 'bg-[var(--tg-bg-hover)] text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-surface)] hover:text-[var(--tg-text-primary)]',
+                  ? 'text-[var(--tg-text-muted)] hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)]'
+                  : 'bg-[var(--tg-bg-hover)] text-[var(--tg-text-secondary)] hover:bg-[var(--tg-bg-surface)] hover:text-[var(--tg-text-primary)]',
             ].join(' ');
 
         return (
@@ -102,7 +107,10 @@ export function InvestigationActions({
             className={buttonClass}
             title={item.label}
           >
-            <Icon className={compact ? 'h-2.5 w-2.5' : 'h-3 w-3'} aria-hidden="true" />
+            <Icon
+              className={compact ? 'h-2.5 w-2.5' : 'h-3 w-3'}
+              aria-hidden="true"
+            />
             <span>{item.label}</span>
           </button>
         );
@@ -128,7 +136,11 @@ export function buildDiagnosticActions(options: {
 }): ActionItem[] {
   const items: ActionItem[] = [];
 
-  if (options.layerName !== undefined && options.featureIndex !== undefined && options.onSelectFeature) {
+  if (
+    options.layerName !== undefined &&
+    options.featureIndex !== undefined &&
+    options.onSelectFeature
+  ) {
     items.push({
       id: 'jump-feature',
       label: 'Jump to Feature',
@@ -171,7 +183,11 @@ export function buildDiagnosticActions(options: {
  * Provides: Highlight, Compare, Copy JSON, Copy Coordinates.
  */
 export function buildFeatureActions(options: {
-  feature: { layerName: string; featureIndex: number; properties: Record<string, unknown> };
+  feature: {
+    layerName: string;
+    featureIndex: number;
+    properties: Record<string, unknown>;
+  };
   onNavigate?: ((page: WorkspacePage) => void) | undefined;
   onHighlight?: (() => void) | undefined;
 }): ActionItem[] {

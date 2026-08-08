@@ -4,8 +4,8 @@
 
 import { describe, expect, it } from 'vitest';
 import { runDoctor } from '../src/commands/doctor.js';
-import { createLogger } from '../src/logging/Logger.js';
 import { getDefaultConfig } from '../src/config/ConfigLoader.js';
+import { createLogger } from '../src/logging/Logger.js';
 import type { CommandContext } from '../src/runner/CommandRunner.js';
 
 function makeCtx(cwd = process.cwd()): CommandContext {

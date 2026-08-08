@@ -15,13 +15,13 @@
  * Collapse state is also owned by Workspace so it applies consistently across tabs.
  */
 
-import { useState } from 'react';
 import type { Diagnostic } from '@tileguard/core';
+import { useState } from 'react';
 import type { Inspector } from '../../create-inspector.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
-import { TileHealthHeader } from './TileHealthHeader.js';
 import { DiagnosticPanel } from './DiagnosticPanel.js';
 import { RuleDetailsPanel } from './RuleDetailsPanel.js';
+import { TileHealthHeader } from './TileHealthHeader.js';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -54,7 +54,8 @@ export function useDiagnosticsState(
   store: InspectorStore,
   inspector: Inspector | null,
 ): DiagnosticsState {
-  const [selectedDiagnostic, setSelectedDiagnostic] = useState<Diagnostic | null>(null);
+  const [selectedDiagnostic, setSelectedDiagnostic] =
+    useState<Diagnostic | null>(null);
 
   const handleSelectDiagnostic = (index: number) => {
     if (store.lifecycle.status === 'loaded') {
@@ -111,6 +112,8 @@ interface DiagnosticsPageHeaderProps {
   readonly store: InspectorStore;
 }
 
-export function DiagnosticsPageHeader({ store }: DiagnosticsPageHeaderProps): JSX.Element {
+export function DiagnosticsPageHeader({
+  store,
+}: DiagnosticsPageHeaderProps): JSX.Element {
   return <TileHealthHeader store={store} />;
 }

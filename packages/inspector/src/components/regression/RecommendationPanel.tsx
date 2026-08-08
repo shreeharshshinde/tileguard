@@ -88,8 +88,8 @@ export function RecommendationPanel({
           aria-hidden="true"
         />
         <p className="text-[10px] text-[var(--tg-text-muted)]">
-          These are investigation starting points, not automated fixes.
-          Confirm each finding by inspecting the source data.
+          These are investigation starting points, not automated fixes. Confirm
+          each finding by inspecting the source data.
         </p>
       </div>
     </div>

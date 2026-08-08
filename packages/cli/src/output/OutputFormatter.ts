@@ -23,9 +23,16 @@ export interface OutputFormatter {
   /** Format a key-value summary block. */
   summary(title: string, entries: readonly [string, string | number][]): string;
   /** Format a table with headers and rows. */
-  table(headers: readonly string[], rows: readonly (readonly string[])[]): string;
+  table(
+    headers: readonly string[],
+    rows: readonly (readonly string[])[],
+  ): string;
   /** Format a simple status line. */
-  status(label: string, value: string | number, color?: 'green' | 'yellow' | 'red'): string;
+  status(
+    label: string,
+    value: string | number,
+    color?: 'green' | 'yellow' | 'red',
+  ): string;
   /** Format a section heading. */
   heading(text: string): string;
   /** Format a separator line. */

@@ -239,7 +239,9 @@ export class HtmlWriter {
   /** Meta bar with multiple labelled items. */
   metaBar(items: readonly { label: string; value: string }[]): this {
     const inner = items
-      .map(i => `<span><strong>${esc(i.label)}</strong> ${esc(i.value)}</span>`)
+      .map(
+        (i) => `<span><strong>${esc(i.label)}</strong> ${esc(i.value)}</span>`,
+      )
       .join('');
     this._body.push(`<div class="meta-bar">${inner}</div>`);
     return this;
@@ -292,15 +294,21 @@ export class HtmlWriter {
   // Stat grid
   // ---------------------------------------------------------------------------
 
-  statGrid(stats: readonly { label: string; value: string | number; highlight?: boolean }[]): this {
+  statGrid(
+    stats: readonly {
+      label: string;
+      value: string | number;
+      highlight?: boolean;
+    }[],
+  ): this {
     this._body.push('<div class="stat-grid">');
     for (const s of stats) {
       const cls = s.highlight ? 'stat-card highlight' : 'stat-card';
       this._body.push(
         `<div class="${cls}">` +
-        `<div class="label">${esc(s.label)}</div>` +
-        `<div class="value">${esc(String(s.value))}</div>` +
-        `</div>`,
+          `<div class="label">${esc(s.label)}</div>` +
+          `<div class="value">${esc(String(s.value))}</div>` +
+          `</div>`,
       );
     }
     this._body.push('</div>');
@@ -311,7 +319,10 @@ export class HtmlWriter {
   // Tables
   // ---------------------------------------------------------------------------
 
-  table(headers: readonly string[], rows: readonly (readonly string[])[]): this {
+  table(
+    headers: readonly string[],
+    rows: readonly (readonly string[])[],
+  ): this {
     this._body.push('<table><thead><tr>');
     for (const h of headers) {
       this._body.push(`<th>${esc(h)}</th>`);
@@ -392,8 +403,14 @@ export class HtmlWriter {
     topReason: string,
     evidenceLabels: readonly string[],
   ): this {
-    const barColor = confidencePct >= 80 ? '#dc3545' : confidencePct >= 50 ? '#ffc107' : '#4361ee';
-    const confBadge = confidencePct >= 80 ? 'red' : confidencePct >= 50 ? 'yellow' : 'blue';
+    const barColor =
+      confidencePct >= 80
+        ? '#dc3545'
+        : confidencePct >= 50
+          ? '#ffc107'
+          : '#4361ee';
+    const confBadge =
+      confidencePct >= 80 ? 'red' : confidencePct >= 50 ? 'yellow' : 'blue';
 
     this._body.push(
       `<div class="candidate">`,
@@ -426,7 +443,8 @@ export class HtmlWriter {
     evidence: readonly string[],
     actions: readonly string[],
   ): this {
-    const color: BadgeColor = priority === 'HIGH' ? 'red' : priority === 'MEDIUM' ? 'yellow' : 'blue';
+    const color: BadgeColor =
+      priority === 'HIGH' ? 'red' : priority === 'MEDIUM' ? 'yellow' : 'blue';
     this._body.push(
       `<div class="rec">`,
       `<div class="rec-header">`,
@@ -438,16 +456,20 @@ export class HtmlWriter {
     if (affectedLayers.length > 0) {
       this._body.push(
         `<p style="font-size:.8rem;margin-bottom:.4rem">` +
-        `<strong>Affected layers:</strong> ${affectedLayers.map(l => `<code>${esc(l)}</code>`).join(', ')}` +
-        `</p>`,
+          `<strong>Affected layers:</strong> ${affectedLayers.map((l) => `<code>${esc(l)}</code>`).join(', ')}` +
+          `</p>`,
       );
     }
     if (evidence.length > 0) {
-      this._body.push(`<p style="font-size:.78rem;font-weight:600;margin-bottom:.2rem">Evidence:</p>`);
+      this._body.push(
+        `<p style="font-size:.78rem;font-weight:600;margin-bottom:.2rem">Evidence:</p>`,
+      );
       this.evidenceList(evidence);
     }
     if (actions.length > 0) {
-      this._body.push(`<p style="font-size:.78rem;font-weight:600;margin-bottom:.2rem">Actions:</p>`);
+      this._body.push(
+        `<p style="font-size:.78rem;font-weight:600;margin-bottom:.2rem">Actions:</p>`,
+      );
       this._body.push('<ol>');
       for (const a of actions) {
         this._body.push(`<li>${esc(a)}</li>`);
@@ -541,7 +563,7 @@ function buildSidebar(
   links: Array<{ id: string; label: string }>,
 ): string {
   const linkHtml = links
-    .map(l => `<a href="#${esc(l.id)}">${esc(l.label)}</a>`)
+    .map((l) => `<a href="#${esc(l.id)}">${esc(l.label)}</a>`)
     .join('\n');
 
   return `<aside class="sidebar">
@@ -560,11 +582,16 @@ type BadgeColor = 'green' | 'yellow' | 'red' | 'orange' | 'blue' | 'grey';
 
 function severityToColor(severity: string): BadgeColor {
   switch (severity) {
-    case 'critical': return 'red';
-    case 'high': return 'red';
-    case 'medium': return 'yellow';
-    case 'low': return 'orange';
-    default: return 'blue';
+    case 'critical':
+      return 'red';
+    case 'high':
+      return 'red';
+    case 'medium':
+      return 'yellow';
+    case 'low':
+      return 'orange';
+    default:
+      return 'blue';
   }
 }
 

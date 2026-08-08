@@ -17,7 +17,11 @@
  */
 
 import type { Diagnostic } from '@tileguard/core';
+import type { ReportResult } from '@tileguard/reporters';
+import { createReportEngine } from '@tileguard/reporters';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
+import type { RegressionAnalysis } from './analysis/models/regression.js';
+import { createRegressionEngine } from './analysis/RegressionEngine.js';
 import {
   type CameraAnimator,
   createCameraAnimator,
@@ -25,11 +29,6 @@ import {
 } from './animation/CameraAnimator.js';
 import { createComparisonService } from './comparison/ComparisonService.js';
 import type { TileComparison, TileSnapshot } from './comparison/models.js';
-import { createRegressionEngine } from './analysis/RegressionEngine.js';
-import type { RegressionAnalysis } from './analysis/models/regression.js';
-import { buildReportInputs } from './report/report-adapter.js';
-import { createReportEngine } from '@tileguard/reporters';
-import type { ReportResult } from '@tileguard/reporters';
 import { createBoundsFromPoints } from './geometry/bounds.js';
 import type { BoundingBox, ScreenPoint } from './geometry/index.js';
 import { createHitTester } from './hittest/hit-tester.js';
@@ -51,6 +50,7 @@ import {
   type RenderCoordinator,
 } from './render/render-coordinator.js';
 import type { CanvasRenderer, Renderer } from './renderer/canvas-renderer.js';
+import { buildReportInputs } from './report/report-adapter.js';
 import {
   createExportService,
   type ExportFormat,
@@ -397,7 +397,10 @@ class InspectorImpl implements Inspector {
     regression: RegressionAnalysis,
     format: 'markdown' | 'html' | 'json',
   ): ReportResult {
-    const { comparisonInput, regressionInput } = buildReportInputs(comparison, regression);
+    const { comparisonInput, regressionInput } = buildReportInputs(
+      comparison,
+      regression,
+    );
     return createReportEngine({ tileguardVersion: '0.4.5' }).generate(
       comparisonInput,
       regressionInput,

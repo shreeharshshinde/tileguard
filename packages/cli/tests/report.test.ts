@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import { createLogger } from '../src/logging/Logger.js';
 import { getDefaultConfig } from '../src/config/ConfigLoader.js';
+import { createLogger } from '../src/logging/Logger.js';
 import type { CommandContext } from '../src/runner/CommandRunner.js';
 
 // Mock the analysis adapter
@@ -13,11 +13,20 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
     filePath,
     layers: [{ name: 'roads', featureCount: 10, extent: 4096 }],
     features: Array.from({ length: 10 }, (_, i) => ({
-      layerName: 'roads', featureIndex: i, id: i,
-      geometryType: 'LineString', properties: { name: `road_${i}` }, vertexCount: 5,
+      layerName: 'roads',
+      featureIndex: i,
+      id: i,
+      geometryType: 'LineString',
+      properties: { name: `road_${i}` },
+      vertexCount: 5,
     })),
     diagnostics: [],
-    stats: { layerCount: 1, featureCount: 10, vertexCount: 50, diagnosticCount: 0 },
+    stats: {
+      layerCount: 1,
+      featureCount: 10,
+      vertexCount: 50,
+      diagnosticCount: 0,
+    },
   })),
   compareTiles: vi.fn().mockImplementation((a, b) => ({
     snapshotA: a,
@@ -36,10 +45,14 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
       newDiagnostics: [],
       resolvedDiagnostics: [],
       stats: {
-        layersA: 1, layersB: 1,
-        featuresA: 10, featuresB: 11,
-        verticesA: 50, verticesB: 55,
-        diagnosticsA: 0, diagnosticsB: 0,
+        layersA: 1,
+        layersB: 1,
+        featuresA: 10,
+        featuresB: 11,
+        verticesA: 50,
+        verticesB: 55,
+        diagnosticsA: 0,
+        diagnosticsB: 0,
       },
     },
   })),
@@ -62,7 +75,7 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
 
 // Mock fs.writeFileSync to avoid writing files during tests
 vi.mock('node:fs', async (importOriginal) => {
-  const actual = await importOriginal() as any;
+  const actual = (await importOriginal()) as any;
   return {
     ...actual,
     writeFileSync: vi.fn(),
@@ -161,7 +174,12 @@ describe('report command', () => {
   it('writes to file when --output is provided', async () => {
     const { writeFileSync } = await import('node:fs');
     const result = await runReport(
-      { before: 'a.pbf', after: 'b.pbf', format: 'markdown', output: '/tmp/report.md' },
+      {
+        before: 'a.pbf',
+        after: 'b.pbf',
+        format: 'markdown',
+        output: '/tmp/report.md',
+      },
       makeCtx(),
     );
     expect(writeFileSync).toHaveBeenCalled();
@@ -170,7 +188,12 @@ describe('report command', () => {
 
   it('output not written to stdout when --output is provided', async () => {
     const result = await runReport(
-      { before: 'a.pbf', after: 'b.pbf', format: 'markdown', output: '/tmp/report.md' },
+      {
+        before: 'a.pbf',
+        after: 'b.pbf',
+        format: 'markdown',
+        output: '/tmp/report.md',
+      },
       makeCtx(),
     );
     expect(result.output).toBeUndefined();

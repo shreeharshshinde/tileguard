@@ -22,7 +22,10 @@
 
 import { describe, expect, it } from 'vitest';
 import { createEvidenceBuilder } from '../src/analysis/EvidenceBuilder.js';
-import type { FeatureComparison, TileComparison } from '../src/comparison/models.js';
+import type {
+  FeatureComparison,
+  TileComparison,
+} from '../src/comparison/models.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -55,26 +58,60 @@ function makeFeature(
 
 function makeComparison(features: FeatureComparison[]): TileComparison {
   return {
-    snapshotA: { filePath: 'a.pbf', statistics: {} as never, layers: [], diagnostics: [], features: [] },
-    snapshotB: { filePath: 'b.pbf', statistics: {} as never, layers: [], diagnostics: [], features: [] },
+    snapshotA: {
+      filePath: 'a.pbf',
+      statistics: {} as never,
+      layers: [],
+      diagnostics: [],
+      features: [],
+    },
+    snapshotB: {
+      filePath: 'b.pbf',
+      statistics: {} as never,
+      layers: [],
+      diagnostics: [],
+      features: [],
+    },
     summary: {
-      addedFeatures: 0, removedFeatures: 0, modifiedFeatures: 0,
-      unchangedFeatures: 0, addedLayers: 0, removedLayers: 0,
-      modifiedLayers: 0, newDiagnostics: 0, resolvedDiagnostics: 0, isIdentical: true,
+      addedFeatures: 0,
+      removedFeatures: 0,
+      modifiedFeatures: 0,
+      unchangedFeatures: 0,
+      addedLayers: 0,
+      removedLayers: 0,
+      modifiedLayers: 0,
+      newDiagnostics: 0,
+      resolvedDiagnostics: 0,
+      isIdentical: true,
     },
     layers: [],
     features,
     diagnostics: {
-      errorsA: 0, errorsB: 0, errorsDelta: 0,
-      warningsA: 0, warningsB: 0, warningsDelta: 0,
-      infoA: 0, infoB: 0, infoDelta: 0,
-      newDiagnostics: [], resolvedDiagnostics: [],
+      errorsA: 0,
+      errorsB: 0,
+      errorsDelta: 0,
+      warningsA: 0,
+      warningsB: 0,
+      warningsDelta: 0,
+      infoA: 0,
+      infoB: 0,
+      infoDelta: 0,
+      newDiagnostics: [],
+      resolvedDiagnostics: [],
     },
     statistics: {
-      layersA: 1, layersB: 1, layersDelta: 0,
-      featuresA: 1, featuresB: 1, featuresDelta: 0,
-      verticesA: 1, verticesB: 1, verticesDelta: 0,
-      diagnosticsA: 0, diagnosticsB: 0, diagnosticsDelta: 0,
+      layersA: 1,
+      layersB: 1,
+      layersDelta: 0,
+      featuresA: 1,
+      featuresB: 1,
+      featuresDelta: 0,
+      verticesA: 1,
+      verticesB: 1,
+      verticesDelta: 0,
+      diagnosticsA: 0,
+      diagnosticsB: 0,
+      diagnosticsDelta: 0,
       geometryCountsA: { point: 1, line: 0, polygon: 0 },
       geometryCountsB: { point: 1, line: 0, polygon: 0 },
     },
@@ -83,7 +120,13 @@ function makeComparison(features: FeatureComparison[]): TileComparison {
 
 function unchangedFC(): FeatureComparison {
   const f = makeFeature('roads', 0, 'LineString', makeGeo());
-  return { kind: 'unchanged', featureA: f, featureB: f, changes: null, matchPriority: 1 };
+  return {
+    kind: 'unchanged',
+    featureA: f,
+    featureB: f,
+    changes: null,
+    matchPriority: 1,
+  };
 }
 
 function addedFC(): FeatureComparison {
@@ -106,23 +149,39 @@ function removedFC(): FeatureComparison {
   };
 }
 
-function modifiedGeoFC(geoA: Geo, geoB: Geo, typeA = 'LineString', typeB = 'LineString'): FeatureComparison {
+function modifiedGeoFC(
+  geoA: Geo,
+  geoB: Geo,
+  typeA = 'LineString',
+  typeB = 'LineString',
+): FeatureComparison {
   return {
     kind: 'modified',
     featureA: makeFeature('roads', 0, typeA, geoA),
     featureB: makeFeature('roads', 0, typeB, geoB),
-    changes: { geometryChanged: true, propertiesChanged: false, diagnosticsChanged: false },
+    changes: {
+      geometryChanged: true,
+      propertiesChanged: false,
+      diagnosticsChanged: false,
+    },
     matchPriority: 1,
   };
 }
 
-function modifiedPropFC(propsA: Record<string, unknown>, propsB: Record<string, unknown>): FeatureComparison {
+function modifiedPropFC(
+  propsA: Record<string, unknown>,
+  propsB: Record<string, unknown>,
+): FeatureComparison {
   const geo = makeGeo();
   return {
     kind: 'modified',
     featureA: makeFeature('roads', 0, 'Point', geo, propsA),
     featureB: makeFeature('roads', 0, 'Point', geo, propsB),
-    changes: { geometryChanged: false, propertiesChanged: true, diagnosticsChanged: false },
+    changes: {
+      geometryChanged: false,
+      propertiesChanged: true,
+      diagnosticsChanged: false,
+    },
     matchPriority: 2,
   };
 }
@@ -181,7 +240,10 @@ describe('EvidenceBuilder', () => {
       // shift geoB far from geoA
       const geoA = makeGeo([{ x: 0, y: 0 }]);
       const geoB = makeGeo([{ x: 200, y: 200 }]); // shift > 50 threshold
-      const result = builder.buildForFeature(modifiedGeoFC(geoA, geoB), makeComparison([]));
+      const result = builder.buildForFeature(
+        modifiedGeoFC(geoA, geoB),
+        makeComparison([]),
+      );
       const codes = result.reasons.map((r) => r.code);
       expect(codes).toContain('centroid-shift-large');
     });
@@ -189,30 +251,56 @@ describe('EvidenceBuilder', () => {
     it('small centroid shift → centroid-shift-small reason (not large)', () => {
       const geoA = makeGeo([{ x: 0, y: 0 }]);
       const geoB = makeGeo([{ x: 10, y: 10 }]); // shift ~14 < 50
-      const result = builder.buildForFeature(modifiedGeoFC(geoA, geoB), makeComparison([]));
+      const result = builder.buildForFeature(
+        modifiedGeoFC(geoA, geoB),
+        makeComparison([]),
+      );
       const codes = result.reasons.map((r) => r.code);
       expect(codes).toContain('centroid-shift-small');
       expect(codes).not.toContain('centroid-shift-large');
     });
 
     it('geometry type change → geometry-type-changed reason', () => {
-      const geo = makeGeo([{ x: 0, y: 0 }, { x: 10, y: 10 }]);
-      const result = builder.buildForFeature(modifiedGeoFC(geo, geo, 'LineString', 'Polygon'), makeComparison([]));
+      const geo = makeGeo([
+        { x: 0, y: 0 },
+        { x: 10, y: 10 },
+      ]);
+      const result = builder.buildForFeature(
+        modifiedGeoFC(geo, geo, 'LineString', 'Polygon'),
+        makeComparison([]),
+      );
       const codes = result.reasons.map((r) => r.code);
       expect(codes).toContain('geometry-type-changed');
     });
 
     it('same geometry type change → no geometry-type-changed reason', () => {
       const geo = makeGeo([{ x: 0, y: 0 }]);
-      const result = builder.buildForFeature(modifiedGeoFC(geo, geo, 'Point', 'Point'), makeComparison([]));
+      const result = builder.buildForFeature(
+        modifiedGeoFC(geo, geo, 'Point', 'Point'),
+        makeComparison([]),
+      );
       const codes = result.reasons.map((r) => r.code);
       expect(codes).not.toContain('geometry-type-changed');
     });
 
     it('large polygon area change → area-changed-large reason', () => {
       // geoA is a small polygon, geoB is much larger
-      const geoA: Geo = [[{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }, { x: 0, y: 10 }]];
-      const geoB: Geo = [[{ x: 0, y: 0 }, { x: 1000, y: 0 }, { x: 1000, y: 1000 }, { x: 0, y: 1000 }]];
+      const geoA: Geo = [
+        [
+          { x: 0, y: 0 },
+          { x: 10, y: 0 },
+          { x: 10, y: 10 },
+          { x: 0, y: 10 },
+        ],
+      ];
+      const geoB: Geo = [
+        [
+          { x: 0, y: 0 },
+          { x: 1000, y: 0 },
+          { x: 1000, y: 1000 },
+          { x: 0, y: 1000 },
+        ],
+      ];
       const fc = modifiedGeoFC(geoA, geoB, 'Polygon', 'Polygon');
       const result = builder.buildForFeature(fc, makeComparison([]));
       const codes = result.reasons.map((r) => r.code);
@@ -222,8 +310,13 @@ describe('EvidenceBuilder', () => {
     it('geometry evidence confirms the regression', () => {
       const geoA = makeGeo([{ x: 0, y: 0 }]);
       const geoB = makeGeo([{ x: 200, y: 200 }]);
-      const result = builder.buildForFeature(modifiedGeoFC(geoA, geoB), makeComparison([]));
-      const confirmingEvidence = result.evidence.filter((e) => e.kind === 'geometry' && e.confirms);
+      const result = builder.buildForFeature(
+        modifiedGeoFC(geoA, geoB),
+        makeComparison([]),
+      );
+      const confirmingEvidence = result.evidence.filter(
+        (e) => e.kind === 'geometry' && e.confirms,
+      );
       expect(confirmingEvidence.length).toBeGreaterThan(0);
     });
   });
@@ -235,7 +328,9 @@ describe('EvidenceBuilder', () => {
         makeComparison([]),
       );
       const codes = result.reasons.map((r) => r.code);
-      expect(codes.some((c) => c.startsWith('property-high-signal-'))).toBe(true);
+      expect(codes.some((c) => c.startsWith('property-high-signal-'))).toBe(
+        true,
+      );
     });
 
     it('high-signal property reason has high or critical severity', () => {
@@ -243,7 +338,9 @@ describe('EvidenceBuilder', () => {
         modifiedPropFC({ class: 'motorway' }, { class: 'primary' }),
         makeComparison([]),
       );
-      const highSignal = result.reasons.find((r) => r.code.startsWith('property-high-signal-'))!;
+      const highSignal = result.reasons.find((r) =>
+        r.code.startsWith('property-high-signal-'),
+      )!;
       expect(['high', 'critical']).toContain(highSignal.severity);
     });
 
@@ -253,7 +350,9 @@ describe('EvidenceBuilder', () => {
         makeComparison([]),
       );
       const codes = result.reasons.map((r) => r.code);
-      expect(codes.some((c) => c.startsWith('property-high-signal-'))).toBe(false);
+      expect(codes.some((c) => c.startsWith('property-high-signal-'))).toBe(
+        false,
+      );
     });
 
     it('added property → evidence entry with kind=property', () => {
@@ -282,13 +381,24 @@ describe('EvidenceBuilder', () => {
         kind: 'modified',
         featureA: makeFeature('roads', 0, 'Point', geo),
         featureB: makeFeature('roads', 0, 'Point', geo),
-        changes: { geometryChanged: false, propertiesChanged: false, diagnosticsChanged: true },
+        changes: {
+          geometryChanged: false,
+          propertiesChanged: false,
+          diagnosticsChanged: true,
+        },
         matchPriority: 1,
       };
       const comparison = makeComparison([fc]);
       // inject a new diagnostic
-      (comparison.diagnostics as { newDiagnostics: readonly unknown[] }).newDiagnostics = [
-        { ruleId: 'tile/self-intersection', severity: 'error', message: 'self-intersection in roads', artifact: 'b.pbf' },
+      (
+        comparison.diagnostics as { newDiagnostics: readonly unknown[] }
+      ).newDiagnostics = [
+        {
+          ruleId: 'tile/self-intersection',
+          severity: 'error',
+          message: 'self-intersection in roads',
+          artifact: 'b.pbf',
+        },
       ];
       const result = builder.buildForFeature(fc, comparison);
       const codes = result.reasons.map((r) => r.code);
@@ -298,13 +408,28 @@ describe('EvidenceBuilder', () => {
 
   describe('statistics evidence', () => {
     it('vertex count change → statistics-changed reason', () => {
-      const geoA: Geo = [[{ x: 0, y: 0 }, { x: 1, y: 1 }]];
-      const geoB: Geo = [[{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }]];
+      const geoA: Geo = [
+        [
+          { x: 0, y: 0 },
+          { x: 1, y: 1 },
+        ],
+      ];
+      const geoB: Geo = [
+        [
+          { x: 0, y: 0 },
+          { x: 1, y: 1 },
+          { x: 2, y: 2 },
+        ],
+      ];
       const fc: FeatureComparison = {
         kind: 'modified',
         featureA: makeFeature('roads', 0, 'LineString', geoA),
         featureB: makeFeature('roads', 0, 'LineString', geoB),
-        changes: { geometryChanged: true, propertiesChanged: false, diagnosticsChanged: false },
+        changes: {
+          geometryChanged: true,
+          propertiesChanged: false,
+          diagnosticsChanged: false,
+        },
         matchPriority: 1,
       };
       const result = builder.buildForFeature(fc, makeComparison([]));
@@ -334,7 +459,11 @@ describe('EvidenceBuilder', () => {
         kind: 'modified',
         featureA: makeFeature('roads', 0, 'Point', geo),
         featureB: makeFeature('roads', 0, 'Point', geo),
-        changes: { geometryChanged: false, propertiesChanged: false, diagnosticsChanged: false },
+        changes: {
+          geometryChanged: false,
+          propertiesChanged: false,
+          diagnosticsChanged: false,
+        },
         matchPriority: 1,
       };
       const result = builder.buildForFeature(fc, makeComparison([]));

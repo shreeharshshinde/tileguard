@@ -7,10 +7,16 @@
  *   tileguard compare before.pbf after.pbf [--json] [--output file]
  */
 
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
-import { loadTileSnapshot, compareTiles } from '../analysis/AnalysisAdapter.js';
-import { createOutputFormatter, formatDelta } from '../output/OutputFormatter.js';
+import { compareTiles, loadTileSnapshot } from '../analysis/AnalysisAdapter.js';
 import type { OutputFormat } from '../output/OutputFormatter.js';
+import {
+  createOutputFormatter,
+  formatDelta,
+} from '../output/OutputFormatter.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -49,12 +55,17 @@ export async function runCompare(
 
   // Format output
   if (args.format === 'json') {
-    const jsonOutput = JSON.stringify({
-      isIdentical: comparison.isIdentical,
-      features: comparison.features,
-      layers: comparison.layers,
-      stats: comparison.asReportInput.stats,
-    }, null, 2) + '\n';
+    const jsonOutput =
+      JSON.stringify(
+        {
+          isIdentical: comparison.isIdentical,
+          features: comparison.features,
+          layers: comparison.layers,
+          stats: comparison.asReportInput.stats,
+        },
+        null,
+        2,
+      ) + '\n';
 
     if (args.output) {
       const { writeFileSync } = await import('node:fs');
@@ -70,32 +81,52 @@ export async function runCompare(
   const sections: string[] = [];
 
   sections.push(fmt.heading('TileGuard Comparison'));
-  sections.push(fmt.summary('Files', [
-    ['Before', args.before],
-    ['After', args.after],
-    ['Status', comparison.isIdentical ? 'IDENTICAL' : 'CHANGED'],
-  ]));
+  sections.push(
+    fmt.summary('Files', [
+      ['Before', args.before],
+      ['After', args.after],
+      ['Status', comparison.isIdentical ? 'IDENTICAL' : 'CHANGED'],
+    ]),
+  );
 
-  sections.push(fmt.summary('Feature Changes', [
-    ['Added', comparison.features.added],
-    ['Removed', comparison.features.removed],
-    ['Modified', comparison.features.modified],
-    ['Unchanged', comparison.features.unchanged],
-  ]));
+  sections.push(
+    fmt.summary('Feature Changes', [
+      ['Added', comparison.features.added],
+      ['Removed', comparison.features.removed],
+      ['Modified', comparison.features.modified],
+      ['Unchanged', comparison.features.unchanged],
+    ]),
+  );
 
-  sections.push(fmt.summary('Layer Changes', [
-    ['Added', comparison.layers.added],
-    ['Removed', comparison.layers.removed],
-    ['Modified', comparison.layers.modified],
-  ]));
+  sections.push(
+    fmt.summary('Layer Changes', [
+      ['Added', comparison.layers.added],
+      ['Removed', comparison.layers.removed],
+      ['Modified', comparison.layers.modified],
+    ]),
+  );
 
   const s = comparison.asReportInput.stats;
-  sections.push(fmt.summary('Statistics Delta', [
-    ['Layers', `${s.layersA} → ${s.layersB} (${formatDelta(s.layersB - s.layersA)})`],
-    ['Features', `${s.featuresA} → ${s.featuresB} (${formatDelta(s.featuresB - s.featuresA)})`],
-    ['Vertices', `${s.verticesA} → ${s.verticesB} (${formatDelta(s.verticesB - s.verticesA)})`],
-    ['Diagnostics', `${s.diagnosticsA} → ${s.diagnosticsB} (${formatDelta(s.diagnosticsB - s.diagnosticsA)})`],
-  ]));
+  sections.push(
+    fmt.summary('Statistics Delta', [
+      [
+        'Layers',
+        `${s.layersA} → ${s.layersB} (${formatDelta(s.layersB - s.layersA)})`,
+      ],
+      [
+        'Features',
+        `${s.featuresA} → ${s.featuresB} (${formatDelta(s.featuresB - s.featuresA)})`,
+      ],
+      [
+        'Vertices',
+        `${s.verticesA} → ${s.verticesB} (${formatDelta(s.verticesB - s.verticesA)})`,
+      ],
+      [
+        'Diagnostics',
+        `${s.diagnosticsA} → ${s.diagnosticsB} (${formatDelta(s.diagnosticsB - s.diagnosticsA)})`,
+      ],
+    ]),
+  );
 
   const output = fmt.envelope(sections);
 

@@ -9,21 +9,37 @@
  *   - Missing source property for rendering layers
  */
 
+import type {
+  ResolvedLayer,
+  StyleDiagnostic,
+} from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
-import type { StyleDiagnostic, ResolvedLayer } from '../models/StyleAnalysis.js';
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const VALID_LAYER_TYPES = new Set([
-  'background', 'fill', 'line', 'symbol', 'circle',
-  'heatmap', 'hillshade', 'raster', 'fill-extrusion',
+  'background',
+  'fill',
+  'line',
+  'symbol',
+  'circle',
+  'heatmap',
+  'hillshade',
+  'raster',
+  'fill-extrusion',
 ]);
 
 const LAYERS_REQUIRING_SOURCE = new Set([
-  'fill', 'line', 'symbol', 'circle', 'heatmap',
-  'hillshade', 'raster', 'fill-extrusion',
+  'fill',
+  'line',
+  'symbol',
+  'circle',
+  'heatmap',
+  'hillshade',
+  'raster',
+  'fill-extrusion',
 ]);
 
 // ---------------------------------------------------------------------------
@@ -63,7 +79,11 @@ function validateLayerSourceReferences(
           path: `layers[${layer.index}].source`,
           code: 'missing-source-property',
           suggestion: `Add a "source" property referencing a declared source.`,
-          location: { jsonPath: `layers[${layer.index}].source`, layerId: layer.id, layerIndex: layer.index },
+          location: {
+            jsonPath: `layers[${layer.index}].source`,
+            layerId: layer.id,
+            layerIndex: layer.index,
+          },
         });
       } else if (resolved.source === undefined) {
         diags.push({
@@ -72,7 +92,11 @@ function validateLayerSourceReferences(
           path: `layers[${layer.index}].source`,
           code: 'unknown-source-reference',
           suggestion: `Add "${layer.source}" to the "sources" object or fix the reference.`,
-          location: { jsonPath: `layers[${layer.index}].source`, layerId: layer.id, layerIndex: layer.index },
+          location: {
+            jsonPath: `layers[${layer.index}].source`,
+            layerId: layer.id,
+            layerIndex: layer.index,
+          },
         });
       }
     }
@@ -92,14 +116,22 @@ function validateSourceLayerProperty(
         message: `Layer "${layer.id}" uses vector source "${layer.source}" but has no "source-layer" property.`,
         path: `layers[${layer.index}].source-layer`,
         code: 'missing-source-layer',
-        suggestion: 'Add a "source-layer" property to specify which source layer to render.',
-        location: { jsonPath: `layers[${layer.index}].source-layer`, layerId: layer.id, layerIndex: layer.index },
+        suggestion:
+          'Add a "source-layer" property to specify which source layer to render.',
+        location: {
+          jsonPath: `layers[${layer.index}].source-layer`,
+          layerId: layer.id,
+          layerIndex: layer.index,
+        },
       });
     }
   }
 }
 
-function validateZoomRanges(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateZoomRanges(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   for (const layer of doc.layers) {
     if (
       layer.minzoom !== undefined &&
@@ -112,13 +144,20 @@ function validateZoomRanges(doc: StyleDocument, diags: StyleDiagnostic[]): void 
         path: `layers[${layer.index}].minzoom`,
         code: 'invalid-zoom-range',
         suggestion: 'Swap minzoom and maxzoom or remove one of them.',
-        location: { jsonPath: `layers[${layer.index}].minzoom`, layerId: layer.id, layerIndex: layer.index },
+        location: {
+          jsonPath: `layers[${layer.index}].minzoom`,
+          layerId: layer.id,
+          layerIndex: layer.index,
+        },
       });
     }
   }
 }
 
-function validateLayerTypes(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateLayerTypes(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   for (const layer of doc.layers) {
     if (!VALID_LAYER_TYPES.has(layer.type) && layer.type !== 'unknown') {
       diags.push({
@@ -127,7 +166,11 @@ function validateLayerTypes(doc: StyleDocument, diags: StyleDiagnostic[]): void 
         path: `layers[${layer.index}].type`,
         code: 'unknown-layer-type',
         suggestion: `Use one of: ${[...VALID_LAYER_TYPES].join(', ')}.`,
-        location: { jsonPath: `layers[${layer.index}].type`, layerId: layer.id, layerIndex: layer.index },
+        location: {
+          jsonPath: `layers[${layer.index}].type`,
+          layerId: layer.id,
+          layerIndex: layer.index,
+        },
       });
     }
   }

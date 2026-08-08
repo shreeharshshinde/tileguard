@@ -9,8 +9,8 @@
  */
 
 import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
-import type { InspectorStore } from '../../store/inspector-store.js';
 import { useGroupedDiagnostics, useLifecycle } from '../../hooks/use-store.js';
+import type { InspectorStore } from '../../store/inspector-store.js';
 
 interface TileHealthHeaderProps {
   readonly store: InspectorStore;
@@ -24,7 +24,13 @@ interface HealthBadgeProps {
   readonly icon: JSX.Element;
 }
 
-function HealthBadge({ count, label, colourClass, bgClass, icon }: HealthBadgeProps): JSX.Element {
+function HealthBadge({
+  count,
+  label,
+  colourClass,
+  bgClass,
+  icon,
+}: HealthBadgeProps): JSX.Element {
   return (
     <div
       className={`flex items-center gap-[var(--tg-space-sm)] rounded-[var(--tg-border-radius)] px-[var(--tg-space-md)] py-[var(--tg-space-sm)] ${bgClass}`}
@@ -44,7 +50,9 @@ function HealthBadge({ count, label, colourClass, bgClass, icon }: HealthBadgePr
   );
 }
 
-export function TileHealthHeader({ store }: TileHealthHeaderProps): JSX.Element {
+export function TileHealthHeader({
+  store,
+}: TileHealthHeaderProps): JSX.Element {
   const lifecycle = useLifecycle(store);
   const grouped = useGroupedDiagnostics(store);
 
@@ -141,9 +149,15 @@ export function TileHealthHeader({ store }: TileHealthHeaderProps): JSX.Element 
 
         {/* Overall verdict */}
         {loaded && !isHealthy && (
-          <div className={`text-right text-xs ${isError ? 'text-[var(--tg-error)]' : 'text-[var(--tg-warning)]'}`}>
-            <p className="font-semibold">{isError ? '✗ Not passing' : '⚠ Warnings'}</p>
-            <p className="text-[10px] opacity-70">{total} total finding{total !== 1 ? 's' : ''}</p>
+          <div
+            className={`text-right text-xs ${isError ? 'text-[var(--tg-error)]' : 'text-[var(--tg-warning)]'}`}
+          >
+            <p className="font-semibold">
+              {isError ? '✗ Not passing' : '⚠ Warnings'}
+            </p>
+            <p className="text-[10px] opacity-70">
+              {total} total finding{total !== 1 ? 's' : ''}
+            </p>
           </div>
         )}
       </div>

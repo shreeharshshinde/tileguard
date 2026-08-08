@@ -22,11 +22,11 @@
 
 import { AlertTriangle, GitMerge, Layers, Search, Shuffle } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
 import type {
   RegressionAnalysis,
   RegressionKind,
 } from '../../analysis/models/regression.js';
+import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
 import type { TileComparison } from '../../comparison/models.js';
 import { CandidateList } from './CandidateList.js';
 import { EvidencePanel } from './EvidencePanel.js';
@@ -93,14 +93,17 @@ function SummarySection({
               : `${summary.totalCandidates} Candidate${summary.totalCandidates !== 1 ? 's' : ''} Found`}
           </p>
           <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
-            {summary.totalFeatures} feature{summary.totalFeatures !== 1 ? 's' : ''} analysed
+            {summary.totalFeatures} feature
+            {summary.totalFeatures !== 1 ? 's' : ''} analysed
             {summary.dominantKind && ` · dominant: ${summary.dominantKind}`}
           </p>
         </div>
 
         {!summary.isClean && (
           <div className="flex flex-col items-end gap-1">
-            <span className="text-[10px] text-[var(--tg-text-muted)]">confidence</span>
+            <span className="text-[10px] text-[var(--tg-text-muted)]">
+              confidence
+            </span>
             <div className="flex items-center gap-2">
               <div
                 className="h-1.5 w-20 overflow-hidden rounded-full bg-[var(--tg-bg-primary)]"
@@ -157,7 +160,9 @@ function FeatureDetailSection({
     <div className="rounded-md border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] p-3 text-xs">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="mb-1 font-semibold text-[var(--tg-text-secondary)]">Before (A)</p>
+          <p className="mb-1 font-semibold text-[var(--tg-text-secondary)]">
+            Before (A)
+          </p>
           {featureA ? (
             <dl className="space-y-0.5 text-[10px] text-[var(--tg-text-muted)]">
               <div className="flex gap-1">
@@ -170,7 +175,9 @@ function FeatureDetailSection({
               </div>
               <div className="flex gap-1">
                 <dt>ID:</dt>
-                <dd className="font-mono">{featureA.id !== undefined ? String(featureA.id) : '—'}</dd>
+                <dd className="font-mono">
+                  {featureA.id !== undefined ? String(featureA.id) : '—'}
+                </dd>
               </div>
               <div className="flex gap-1">
                 <dt>Index:</dt>
@@ -178,12 +185,16 @@ function FeatureDetailSection({
               </div>
             </dl>
           ) : (
-            <p className="text-[10px] italic text-[var(--tg-text-muted)]">Not present</p>
+            <p className="text-[10px] italic text-[var(--tg-text-muted)]">
+              Not present
+            </p>
           )}
         </div>
 
         <div>
-          <p className="mb-1 font-semibold text-[var(--tg-text-secondary)]">After (B)</p>
+          <p className="mb-1 font-semibold text-[var(--tg-text-secondary)]">
+            After (B)
+          </p>
           {featureB ? (
             <dl className="space-y-0.5 text-[10px] text-[var(--tg-text-muted)]">
               <div className="flex gap-1">
@@ -196,7 +207,9 @@ function FeatureDetailSection({
               </div>
               <div className="flex gap-1">
                 <dt>ID:</dt>
-                <dd className="font-mono">{featureB.id !== undefined ? String(featureB.id) : '—'}</dd>
+                <dd className="font-mono">
+                  {featureB.id !== undefined ? String(featureB.id) : '—'}
+                </dd>
               </div>
               <div className="flex gap-1">
                 <dt>Index:</dt>
@@ -204,16 +217,22 @@ function FeatureDetailSection({
               </div>
             </dl>
           ) : (
-            <p className="text-[10px] italic text-[var(--tg-text-muted)]">Not present</p>
+            <p className="text-[10px] italic text-[var(--tg-text-muted)]">
+              Not present
+            </p>
           )}
         </div>
       </div>
 
       <div className="mt-2 flex items-center gap-1.5">
         <span className="text-[var(--tg-text-muted)]">Change:</span>
-        <span className="font-mono font-semibold text-[var(--tg-accent)]">{fc.kind}</span>
+        <span className="font-mono font-semibold text-[var(--tg-accent)]">
+          {fc.kind}
+        </span>
         {fc.matchPriority !== null && (
-          <span className="text-[var(--tg-text-muted)]">· match priority {fc.matchPriority}</span>
+          <span className="text-[var(--tg-text-muted)]">
+            · match priority {fc.matchPriority}
+          </span>
         )}
       </div>
     </div>
@@ -228,7 +247,9 @@ export function RegressionPage({
   comparison,
   onSelectFeature,
 }: RegressionPageProps): JSX.Element {
-  const [selectedCandidateIndex, setSelectedCandidateIndex] = useState<number | null>(null);
+  const [selectedCandidateIndex, setSelectedCandidateIndex] = useState<
+    number | null
+  >(null);
 
   const analysis = useMemo<RegressionAnalysis | null>(() => {
     if (!comparison) return null;
@@ -245,7 +266,8 @@ export function RegressionPage({
     if (analysis && onSelectFeature) {
       const c = analysis.candidates[index];
       if (c) {
-        const layer = c.feature.featureA?.layerName ?? c.feature.featureB?.layerName;
+        const layer =
+          c.feature.featureA?.layerName ?? c.feature.featureB?.layerName;
         const featureIndex =
           c.feature.featureA?.featureIndex ?? c.feature.featureB?.featureIndex;
         if (layer !== undefined && featureIndex !== undefined) {
@@ -259,13 +281,16 @@ export function RegressionPage({
   if (!comparison || !analysis) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-        <Search className="h-10 w-10 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <Search
+          className="h-10 w-10 text-[var(--tg-text-muted)]"
+          aria-hidden="true"
+        />
         <p className="text-sm font-semibold text-[var(--tg-text-primary)]">
           Regression Investigation
         </p>
         <p className="max-w-xs text-xs text-[var(--tg-text-muted)]">
-          Run a tile comparison first, then switch here to investigate likely root
-          causes ranked by confidence.
+          Run a tile comparison first, then switch here to investigate likely
+          root causes ranked by confidence.
         </p>
       </div>
     );

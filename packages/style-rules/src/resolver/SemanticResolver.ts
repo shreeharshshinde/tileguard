@@ -11,16 +11,16 @@
  * This is the bridge between parsing and analysis.
  */
 
+import type { ResolvedLayer } from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
-import type { StyleSource } from '../models/StyleSource.js';
-import type { StyleLayer, PropertyValue } from '../models/StyleLayer.js';
 import type {
-  StyleExpression,
   ExpressionArg,
   PropertyReference,
+  StyleExpression,
 } from '../models/StyleExpression.js';
-import type { ResolvedLayer } from '../models/StyleAnalysis.js';
 import { isExpression } from '../models/StyleExpression.js';
+import type { PropertyValue, StyleLayer } from '../models/StyleLayer.js';
+import type { StyleSource } from '../models/StyleSource.js';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -30,7 +30,9 @@ import { isExpression } from '../models/StyleExpression.js';
  * Resolve all layers in the document, linking each to its source and
  * extracting property references and expression operators.
  */
-export function resolveLayers(document: StyleDocument): readonly ResolvedLayer[] {
+export function resolveLayers(
+  document: StyleDocument,
+): readonly ResolvedLayer[] {
   const resolved: ResolvedLayer[] = [];
 
   for (const layer of document.layers) {
@@ -48,7 +50,8 @@ export function resolveLayer(
   sources: ReadonlyMap<string, StyleSource>,
 ): ResolvedLayer {
   // Resolve source
-  const source = layer.source !== undefined ? sources.get(layer.source) : undefined;
+  const source =
+    layer.source !== undefined ? sources.get(layer.source) : undefined;
 
   // Extract property references from filter + paint + layout
   const propertyRefs: PropertyReference[] = [];
@@ -63,10 +66,19 @@ export function resolveLayer(
     collectPropertyReferences(expr, basePath, propertyRefs);
     collectOperators(expr, operatorSet);
     collectSemanticMetadata(expr, {
-      onZoom: () => { referencesZoom = true; },
-      onGeometryType: () => { referencesGeometryType = true; },
-      onFeatureState: (key) => { referencesFeatureState = true; featureStateKeys.add(key); },
-      onFeatureId: () => { referencesFeatureId = true; },
+      onZoom: () => {
+        referencesZoom = true;
+      },
+      onGeometryType: () => {
+        referencesGeometryType = true;
+      },
+      onFeatureState: (key) => {
+        referencesFeatureState = true;
+        featureStateKeys.add(key);
+      },
+      onFeatureId: () => {
+        referencesFeatureId = true;
+      },
     });
   }
 
@@ -78,14 +90,20 @@ export function resolveLayer(
   // From paint properties
   for (const [key, propValue] of layer.paint) {
     if (propValue.expression) {
-      processExpression(propValue.expression, `layers[${layer.index}].paint.${key}`);
+      processExpression(
+        propValue.expression,
+        `layers[${layer.index}].paint.${key}`,
+      );
     }
   }
 
   // From layout properties
   for (const [key, propValue] of layer.layout) {
     if (propValue.expression) {
-      processExpression(propValue.expression, `layers[${layer.index}].layout.${key}`);
+      processExpression(
+        propValue.expression,
+        `layers[${layer.index}].layout.${key}`,
+      );
     }
   }
 
@@ -180,7 +198,10 @@ interface SemanticCallbacks {
 /**
  * Walk an expression tree and call semantic callbacks for special references.
  */
-function collectSemanticMetadata(expr: StyleExpression, callbacks: SemanticCallbacks): void {
+function collectSemanticMetadata(
+  expr: StyleExpression,
+  callbacks: SemanticCallbacks,
+): void {
   if (expr.operator === 'zoom') {
     callbacks.onZoom();
   }

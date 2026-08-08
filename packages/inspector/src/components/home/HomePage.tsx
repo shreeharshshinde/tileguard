@@ -15,9 +15,10 @@
  * The entire page scrolls. Max-width 1200px, centred.
  * Right rail is sticky on larger viewports.
  */
-import { BookOpen, ExternalLink, Clock, File, FolderOpen } from 'lucide-react';
+
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { motion } from 'framer-motion';
+import { BookOpen, Clock, ExternalLink, File, FolderOpen } from 'lucide-react';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 import { getWorkspaceService } from '../../services/WorkspaceService.js';
@@ -44,7 +45,11 @@ function SectionGap(): JSX.Element {
 // Right rail — Recent sessions
 // ---------------------------------------------------------------------------
 
-function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX.Element {
+function RecentRail({
+  onOpenFilePicker,
+}: {
+  onOpenFilePicker: () => void;
+}): JSX.Element {
   const layout = getWorkspaceService().getLayout();
   const lastFile = layout.lastFilePath;
 
@@ -61,7 +66,10 @@ function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX
   return (
     <div className="rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]">
       <div className="flex items-center gap-2 border-b border-[var(--tg-border)] px-4 py-3">
-        <Clock className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <Clock
+          className="h-3.5 w-3.5 text-[var(--tg-text-muted)]"
+          aria-hidden="true"
+        />
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
           Recent Sessions
         </h2>
@@ -78,7 +86,10 @@ function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX
                 aria-label={`Reload ${lastFile} (Ctrl+click to copy path)`}
               >
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--tg-bg-surface)]">
-                  <File className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+                  <File
+                    className="h-3.5 w-3.5 text-[var(--tg-text-muted)]"
+                    aria-hidden="true"
+                  />
                 </div>
                 <span className="min-w-0 flex-1 truncate font-mono text-xs text-[var(--tg-text-secondary)]">
                   {lastFile.split('/').pop() ?? lastFile}
@@ -87,11 +98,14 @@ function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX
             </Tooltip.Trigger>
             <Tooltip.Portal>
               <Tooltip.Content
-                side="right" sideOffset={8}
+                side="right"
+                sideOffset={8}
                 className="z-50 max-w-[18rem] rounded-lg border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-3 py-2 font-mono text-[11px] text-[var(--tg-text-secondary)] shadow-xl"
               >
                 {lastFile}
-                <div className="mt-1 font-sans text-[10px] text-[var(--tg-text-muted)]">Ctrl+click to copy</div>
+                <div className="mt-1 font-sans text-[10px] text-[var(--tg-text-muted)]">
+                  Ctrl+click to copy
+                </div>
                 <Tooltip.Arrow className="fill-[var(--tg-border)]" />
               </Tooltip.Content>
             </Tooltip.Portal>
@@ -102,8 +116,13 @@ function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX
             animate={{ opacity: 1 }}
             className="flex flex-col items-center gap-2 py-5 text-center"
           >
-            <FolderOpen className="h-6 w-6 text-[var(--tg-text-muted)]" aria-hidden="true" />
-            <p className="text-xs text-[var(--tg-text-muted)]">No recent sessions</p>
+            <FolderOpen
+              className="h-6 w-6 text-[var(--tg-text-muted)]"
+              aria-hidden="true"
+            />
+            <p className="text-xs text-[var(--tg-text-muted)]">
+              No recent sessions
+            </p>
             <button
               type="button"
               onClick={onOpenFilePicker}
@@ -124,16 +143,28 @@ function RecentRail({ onOpenFilePicker }: { onOpenFilePicker: () => void }): JSX
 
 function DocsRail(): JSX.Element {
   const links = [
-    { label: 'Architecture', href: 'https://github.com/shreeharshshinde/tileguard/docs/architecture' },
-    { label: 'Rule Reference', href: 'https://github.com/shreeharshshinde/tileguard/docs/rules' },
-    { label: 'Contributing', href: 'https://github.com/shreeharshshinde/tileguard/CONTRIBUTING.md' },
+    {
+      label: 'Architecture',
+      href: 'https://github.com/shreeharshshinde/tileguard/docs/architecture',
+    },
+    {
+      label: 'Rule Reference',
+      href: 'https://github.com/shreeharshshinde/tileguard/docs/rules',
+    },
+    {
+      label: 'Contributing',
+      href: 'https://github.com/shreeharshshinde/tileguard/CONTRIBUTING.md',
+    },
     { label: 'GitHub', href: 'https://github.com/shreeharshshinde/tileguard' },
   ];
 
   return (
     <div className="rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]">
       <div className="flex items-center gap-2 border-b border-[var(--tg-border)] px-4 py-3">
-        <BookOpen className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+        <BookOpen
+          className="h-3.5 w-3.5 text-[var(--tg-text-muted)]"
+          aria-hidden="true"
+        />
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--tg-text-muted)]">
           Documentation
         </h2>
@@ -148,7 +179,10 @@ function DocsRail(): JSX.Element {
             className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-[var(--tg-text-secondary)] transition hover:bg-[var(--tg-bg-hover)] hover:text-[var(--tg-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)]"
           >
             {label}
-            <ExternalLink className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]" aria-hidden="true" />
+            <ExternalLink
+              className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]"
+              aria-hidden="true"
+            />
           </a>
         ))}
       </div>
@@ -163,14 +197,19 @@ function DocsRail(): JSX.Element {
 function AboutRail(): JSX.Element {
   return (
     <div className="rounded-xl border border-[var(--tg-border)] bg-gradient-to-br from-[var(--tg-accent)]/6 to-transparent p-4">
-      <p className="mb-1 text-sm font-semibold text-[var(--tg-text-primary)]">TileGuard Inspector</p>
+      <p className="mb-1 text-sm font-semibold text-[var(--tg-text-primary)]">
+        TileGuard Inspector
+      </p>
       <p className="mb-3 text-xs leading-relaxed text-[var(--tg-text-secondary)]">
-        The ESLint of geospatial — rule-based quality gates for vector tiles and MapLibre style specs.
+        The ESLint of geospatial — rule-based quality gates for vector tiles and
+        MapLibre style specs.
       </p>
       <div className="space-y-1.5 text-[11px] text-[var(--tg-text-muted)]">
         <div className="flex justify-between">
           <span>Version</span>
-          <span className="font-mono text-[var(--tg-text-secondary)]">1.0.0</span>
+          <span className="font-mono text-[var(--tg-text-secondary)]">
+            1.0.0
+          </span>
         </div>
         <div className="flex justify-between">
           <span>License</span>
@@ -211,7 +250,6 @@ export function HomePage({
         aria-label="TileGuard Home"
       >
         <div className="mx-auto max-w-[1200px] px-6 py-8 lg:px-10">
-
           {/* ── Hero ────────────────────────────────────────────── */}
           <HomeHeader />
 
@@ -219,10 +257,8 @@ export function HomePage({
 
           {/* ── Two-column layout ───────────────────────────────── */}
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
-
             {/* ── Left: main content ─────────────────────────── */}
             <div className="min-w-0 flex-1 space-y-8">
-
               {/* Quick Start */}
               <QuickActions
                 onFileSelected={onFileSelected}
@@ -241,11 +277,16 @@ export function HomePage({
                   >
                     Demo Gallery
                   </h2>
-                  <div className="h-px flex-1 bg-[var(--tg-border)]" aria-hidden="true" />
+                  <div
+                    className="h-px flex-1 bg-[var(--tg-border)]"
+                    aria-hidden="true"
+                  />
                 </div>
                 <DemoGallery
                   onFileSelected={onFileSelected}
-                  {...(onComparisonSelected !== undefined ? { onComparisonSelected } : {})}
+                  {...(onComparisonSelected !== undefined
+                    ? { onComparisonSelected }
+                    : {})}
                   galleryRef={galleryRef as React.RefObject<HTMLElement>}
                   hideSectionHeader
                 />

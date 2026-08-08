@@ -3,48 +3,43 @@
  */
 
 export type {
-  StyleDocument,
-  SpriteDescriptor,
-  StyleProjection,
-  StyleTerrain,
-  StyleFog,
-  StyleLight,
-  StyleTransition,
-  StyleImport,
-} from './StyleDocument.js';
-
-export type {
-  StyleSource,
-  SourceType,
-  VectorSource,
-  GeoJsonSource,
-  RasterSource,
-  RasterDemSource,
-  ImageSource,
-  VideoSource,
-} from './StyleSource.js';
-
-export type {
-  StyleLayer,
-  LayerType,
-  PropertyValue,
-  LayerFilter,
-} from './StyleLayer.js';
-
-export type {
-  StyleExpression,
-  ExpressionType,
-  ExpressionArg,
-  ExpressionLiteral,
-  PropertyReference,
-} from './StyleExpression.js';
-
-export { isExpression, isLiteral } from './StyleExpression.js';
-
-export type {
-  StyleAnalysis,
   ResolvedLayer,
+  StyleAnalysis,
   StyleDiagnostic,
   StyleDiagnosticLocation,
   StyleStatistics,
 } from './StyleAnalysis.js';
+export type {
+  SpriteDescriptor,
+  StyleDocument,
+  StyleFog,
+  StyleImport,
+  StyleLight,
+  StyleProjection,
+  StyleTerrain,
+  StyleTransition,
+} from './StyleDocument.js';
+export type {
+  ExpressionArg,
+  ExpressionLiteral,
+  ExpressionType,
+  PropertyReference,
+  StyleExpression,
+} from './StyleExpression.js';
+export { isExpression, isLiteral } from './StyleExpression.js';
+export type {
+  LayerFilter,
+  LayerType,
+  PropertyValue,
+  StyleLayer,
+} from './StyleLayer.js';
+export type {
+  GeoJsonSource,
+  ImageSource,
+  RasterDemSource,
+  RasterSource,
+  SourceType,
+  StyleSource,
+  VectorSource,
+  VideoSource,
+} from './StyleSource.js';

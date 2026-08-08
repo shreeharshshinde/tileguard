@@ -13,6 +13,7 @@
  * Renders as a subtle inline bar or card depending on placement.
  */
 import { motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   ArrowRight,
   BarChart3,
@@ -22,7 +23,6 @@ import {
   Radar,
   Sparkles,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import { useInspectorContext } from '../../context/InspectorContext.js';
 import { useInvestigationState } from '../../context/InvestigationContext.js';
@@ -84,7 +84,8 @@ function computeRecommendations(
       recs.push({
         id: 'view-statistics',
         label: 'View statistics',
-        description: 'See feature counts, layer composition, and property distributions',
+        description:
+          'See feature counts, layer composition, and property distributions',
         icon: BarChart3,
         targetPage: 'statistics',
         priority: 70,
@@ -211,7 +212,8 @@ export function ContextRecommendations({
     const hasDiagnostics =
       lifecycle.status === 'loaded' && lifecycle.diagnostics.length > 0;
     const hasComparison = investigationState.comparison.isActive;
-    const hasRegressionSelection = investigationState.regressionSelection !== null;
+    const hasRegressionSelection =
+      investigationState.regressionSelection !== null;
     const hasSelectedFeature = investigationState.selectedFeature !== null;
 
     return computeRecommendations(
@@ -229,7 +231,10 @@ export function ContextRecommendations({
   if (compact) {
     return (
       <div className="flex items-center gap-2 px-3 py-1.5">
-        <Lightbulb className="h-3 w-3 shrink-0 text-[var(--tg-warning)]" aria-hidden="true" />
+        <Lightbulb
+          className="h-3 w-3 shrink-0 text-[var(--tg-warning)]"
+          aria-hidden="true"
+        />
         {recommendations.map((rec) => (
           <button
             key={rec.id}
@@ -254,7 +259,10 @@ export function ContextRecommendations({
       className="rounded-lg border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] p-3"
     >
       <div className="mb-2 flex items-center gap-1.5">
-        <Lightbulb className="h-3.5 w-3.5 text-[var(--tg-warning)]" aria-hidden="true" />
+        <Lightbulb
+          className="h-3.5 w-3.5 text-[var(--tg-warning)]"
+          aria-hidden="true"
+        />
         <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--tg-text-muted)]">
           Suggested Next Steps
         </span>

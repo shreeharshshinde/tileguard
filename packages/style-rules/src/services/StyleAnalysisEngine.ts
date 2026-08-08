@@ -13,20 +13,23 @@
  *   getStatistics()    — Compute statistics from a parsed document
  */
 
-import type { StyleDocument } from '../models/StyleDocument.js';
-import type { StyleSource } from '../models/StyleSource.js';
 import type {
-  StyleAnalysis,
   ResolvedLayer,
+  StyleAnalysis,
   StyleDiagnostic,
   StyleStatistics,
 } from '../models/StyleAnalysis.js';
+import type { StyleDocument } from '../models/StyleDocument.js';
+import type {
+  ExpressionArg,
+  StyleExpression,
+} from '../models/StyleExpression.js';
+import { isExpression } from '../models/StyleExpression.js';
 import type { StyleLayer } from '../models/StyleLayer.js';
-import type { StyleExpression, ExpressionArg } from '../models/StyleExpression.js';
+import type { StyleSource } from '../models/StyleSource.js';
 import { parseStyleDocument } from '../parser/StyleParser.js';
 import { resolveLayers } from '../resolver/SemanticResolver.js';
 import { validateStyle as runValidation } from '../validator/StyleValidator.js';
-import { isExpression } from '../models/StyleExpression.js';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -79,7 +82,9 @@ export function analyzeStyle(input: unknown): {
   const statistics = computeStatistics(document, resolved);
 
   const errorCount = diagnostics.filter((d) => d.severity === 'error').length;
-  const warningCount = diagnostics.filter((d) => d.severity === 'warning').length;
+  const warningCount = diagnostics.filter(
+    (d) => d.severity === 'warning',
+  ).length;
   const infoCount = diagnostics.filter((d) => d.severity === 'info').length;
 
   const analysis: StyleAnalysis = {
@@ -167,7 +172,10 @@ function computeStatistics(
     if (layer.filter?.expression) {
       filterCount++;
       expressionCount += countExpressions(layer.filter.expression);
-      maxDepth = Math.max(maxDepth, measureExpressionDepth(layer.filter.expression));
+      maxDepth = Math.max(
+        maxDepth,
+        measureExpressionDepth(layer.filter.expression),
+      );
       layerHasExpressions = true;
     }
 
@@ -176,7 +184,10 @@ function computeStatistics(
       paintPropertyCount++;
       if (propValue.expression) {
         expressionCount += countExpressions(propValue.expression);
-        maxDepth = Math.max(maxDepth, measureExpressionDepth(propValue.expression));
+        maxDepth = Math.max(
+          maxDepth,
+          measureExpressionDepth(propValue.expression),
+        );
         layerHasExpressions = true;
       }
     }
@@ -186,7 +197,10 @@ function computeStatistics(
       layoutPropertyCount++;
       if (propValue.expression) {
         expressionCount += countExpressions(propValue.expression);
-        maxDepth = Math.max(maxDepth, measureExpressionDepth(propValue.expression));
+        maxDepth = Math.max(
+          maxDepth,
+          measureExpressionDepth(propValue.expression),
+        );
         layerHasExpressions = true;
       }
     }

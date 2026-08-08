@@ -7,10 +7,16 @@
  *   tileguard stats tile.pbf [--json]
  */
 
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
-import { loadTileSnapshot, getSnapshotStats } from '../analysis/AnalysisAdapter.js';
-import { createOutputFormatter } from '../output/OutputFormatter.js';
+import {
+  getSnapshotStats,
+  loadTileSnapshot,
+} from '../analysis/AnalysisAdapter.js';
 import type { OutputFormat } from '../output/OutputFormatter.js';
+import { createOutputFormatter } from '../output/OutputFormatter.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -43,7 +49,9 @@ export async function runStats(
 
   // Layer details
   const layerDetails = snapshot.layers.map((l) => {
-    const layerFeatures = snapshot.features.filter((f) => f.layerName === l.name);
+    const layerFeatures = snapshot.features.filter(
+      (f) => f.layerName === l.name,
+    );
     let vertices = 0;
     for (const f of layerFeatures) {
       for (const ring of f.geometry) {
@@ -59,16 +67,21 @@ export async function runStats(
   });
 
   if (args.format === 'json') {
-    const jsonOutput = JSON.stringify({
-      file: args.file,
-      layers: stats.layerCount,
-      features: stats.featureCount,
-      vertices: stats.vertexCount,
-      diagnostics: stats.diagnosticCount,
-      geometry: geometryCounts,
-      severity: severityCounts,
-      layerDetails,
-    }, null, 2) + '\n';
+    const jsonOutput =
+      JSON.stringify(
+        {
+          file: args.file,
+          layers: stats.layerCount,
+          features: stats.featureCount,
+          vertices: stats.vertexCount,
+          diagnostics: stats.diagnosticCount,
+          geometry: geometryCounts,
+          severity: severityCounts,
+          layerDetails,
+        },
+        null,
+        2,
+      ) + '\n';
 
     return { exitCode: 0, output: jsonOutput };
   }
@@ -79,30 +92,41 @@ export async function runStats(
 
   sections.push(fmt.heading(`TileGuard Stats — ${args.file}`));
 
-  sections.push(fmt.summary('Overview', [
-    ['Layers', stats.layerCount],
-    ['Features', stats.featureCount],
-    ['Vertices', stats.vertexCount],
-    ['Diagnostics', stats.diagnosticCount],
-  ]));
+  sections.push(
+    fmt.summary('Overview', [
+      ['Layers', stats.layerCount],
+      ['Features', stats.featureCount],
+      ['Vertices', stats.vertexCount],
+      ['Diagnostics', stats.diagnosticCount],
+    ]),
+  );
 
-  sections.push(fmt.summary('Geometry', [
-    ['Points', geometryCounts.point],
-    ['Lines', geometryCounts.line],
-    ['Polygons', geometryCounts.polygon],
-  ]));
+  sections.push(
+    fmt.summary('Geometry', [
+      ['Points', geometryCounts.point],
+      ['Lines', geometryCounts.line],
+      ['Polygons', geometryCounts.polygon],
+    ]),
+  );
 
   if (stats.diagnosticCount > 0) {
-    sections.push(fmt.summary('Diagnostic Severity', [
-      ['Errors', severityCounts.errors],
-      ['Warnings', severityCounts.warnings],
-      ['Info', severityCounts.info],
-    ]));
+    sections.push(
+      fmt.summary('Diagnostic Severity', [
+        ['Errors', severityCounts.errors],
+        ['Warnings', severityCounts.warnings],
+        ['Info', severityCounts.info],
+      ]),
+    );
   }
 
   sections.push('\nLayers\n' + '─'.repeat(40) + '\n');
   const headers = ['Name', 'Features', 'Vertices', 'Extent'];
-  const rows = layerDetails.map((l) => [l.name, String(l.features), String(l.vertices), String(l.extent)]);
+  const rows = layerDetails.map((l) => [
+    l.name,
+    String(l.features),
+    String(l.vertices),
+    String(l.extent),
+  ]);
   sections.push(fmt.table(headers, rows));
 
   // Rule summary

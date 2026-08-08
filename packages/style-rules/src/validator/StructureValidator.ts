@@ -8,8 +8,8 @@
  *   - Duplicate source IDs (structural duplicate detection)
  */
 
-import type { StyleDocument } from '../models/StyleDocument.js';
 import type { StyleDiagnostic } from '../models/StyleAnalysis.js';
+import type { StyleDocument } from '../models/StyleDocument.js';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -52,7 +52,10 @@ function validateVersion(doc: StyleDocument, diags: StyleDiagnostic[]): void {
   }
 }
 
-function validateLayersPresent(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateLayersPresent(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   if (doc.layers.length === 0) {
     diags.push({
       severity: 'warning',
@@ -78,7 +81,10 @@ function validateLayerIds(doc: StyleDocument, diags: StyleDiagnostic[]): void {
   }
 }
 
-function validateDuplicateLayerIds(doc: StyleDocument, diags: StyleDiagnostic[]): void {
+function validateDuplicateLayerIds(
+  doc: StyleDocument,
+  diags: StyleDiagnostic[],
+): void {
   const seen = new Map<string, number>();
   for (const layer of doc.layers) {
     if (layer.id.startsWith('<unnamed-')) continue;

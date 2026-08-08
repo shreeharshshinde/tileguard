@@ -69,11 +69,20 @@ export function ReturnHomeDialog({
 
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
-      if (focusable.length === 0) { e.preventDefault(); return; }
+      if (focusable.length === 0) {
+        e.preventDefault();
+        return;
+      }
       if (e.shiftKey) {
-        if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
       } else {
-        if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
       }
     };
 

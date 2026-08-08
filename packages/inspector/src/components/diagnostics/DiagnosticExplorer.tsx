@@ -9,6 +9,8 @@
  *   - Rule-ID / message text search
  *   - Grouped, scrollable diagnostic list with inline severity icons
  */
+
+import type { Diagnostic } from '@tileguard/core';
 import {
   AlertCircle,
   AlertTriangle,
@@ -19,7 +21,6 @@ import {
   X,
 } from 'lucide-react';
 import { type ChangeEvent, useMemo, useState } from 'react';
-import type { Diagnostic } from '@tileguard/core';
 import type { Inspector } from '../../create-inspector.js';
 import { useDiagnostics, useLifecycle } from '../../hooks/use-store.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
@@ -54,10 +55,10 @@ function SeverityTab({
   onSelect: () => void;
 }): JSX.Element {
   const colorMap: Record<SeverityFilter, string> = {
-    all:     'text-[var(--tg-text-secondary)]',
-    error:   'text-[var(--tg-error)]',
+    all: 'text-[var(--tg-text-secondary)]',
+    error: 'text-[var(--tg-error)]',
     warning: 'text-[var(--tg-warning)]',
-    info:    'text-[var(--tg-info)]',
+    info: 'text-[var(--tg-info)]',
   };
   return (
     <button
@@ -70,10 +71,10 @@ function SeverityTab({
         active ? 'border-b-2 border-current font-semibold' : 'opacity-60',
       ].join(' ')}
     >
-      {severity === 'all' ? 'All' : severity.charAt(0).toUpperCase() + severity.slice(1)}
-      {count > 0 && (
-        <span className="font-mono text-[9px]">({count})</span>
-      )}
+      {severity === 'all'
+        ? 'All'
+        : severity.charAt(0).toUpperCase() + severity.slice(1)}
+      {count > 0 && <span className="font-mono text-[9px]">({count})</span>}
     </button>
   );
 }
@@ -94,11 +95,14 @@ function DiagnosticRow({
   onSelect: () => void;
 }): JSX.Element {
   const sev = diagnostic.severity;
-  const Icon = sev === 'error' ? AlertCircle : sev === 'warning' ? AlertTriangle : Info;
+  const Icon =
+    sev === 'error' ? AlertCircle : sev === 'warning' ? AlertTriangle : Info;
   const iconColor =
-    sev === 'error' ? 'text-[var(--tg-error)]'
-    : sev === 'warning' ? 'text-[var(--tg-warning)]'
-    : 'text-[var(--tg-info)]';
+    sev === 'error'
+      ? 'text-[var(--tg-error)]'
+      : sev === 'warning'
+        ? 'text-[var(--tg-warning)]'
+        : 'text-[var(--tg-info)]';
 
   return (
     <button
@@ -110,7 +114,10 @@ function DiagnosticRow({
         isSelected ? 'bg-[var(--tg-bg-hover)]' : '',
       ].join(' ')}
     >
-      <Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${iconColor}`} aria-hidden />
+      <Icon
+        className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${iconColor}`}
+        aria-hidden
+      />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1">
           <code className="truncate text-[10px] font-mono text-[var(--tg-text-secondary)]">
@@ -123,12 +130,16 @@ function DiagnosticRow({
         <p className="mt-0.5 text-[10px] text-[var(--tg-text-primary)] line-clamp-2">
           {diagnostic.message}
         </p>
-        {diagnostic.location && (diagnostic.location.layer ?? diagnostic.location.featureIndex !== undefined) && (
-          <p className="mt-0.5 font-mono text-[9px] text-[var(--tg-text-muted)]">
-            {diagnostic.location.layer ?? ''}
-            {diagnostic.location.featureIndex !== undefined ? ` #${diagnostic.location.featureIndex}` : ''}
-          </p>
-        )}
+        {diagnostic.location &&
+          (diagnostic.location.layer ??
+            diagnostic.location.featureIndex !== undefined) && (
+            <p className="mt-0.5 font-mono text-[9px] text-[var(--tg-text-muted)]">
+              {diagnostic.location.layer ?? ''}
+              {diagnostic.location.featureIndex !== undefined
+                ? ` #${diagnostic.location.featureIndex}`
+                : ''}
+            </p>
+          )}
       </div>
     </button>
   );
@@ -151,21 +162,35 @@ export function DiagnosticExplorer({
 
   const loaded = lifecycle.status === 'loaded';
 
-  const counts = useMemo(() => ({
-    error:   diagnostics.filter(d => d.severity === 'error').length,
-    warning: diagnostics.filter(d => d.severity === 'warning').length,
-    info:    diagnostics.filter(d => d.severity === 'info').length,
-  }), [diagnostics]);
+  const counts = useMemo(
+    () => ({
+      error: diagnostics.filter((d) => d.severity === 'error').length,
+      warning: diagnostics.filter((d) => d.severity === 'warning').length,
+      info: diagnostics.filter((d) => d.severity === 'info').length,
+    }),
+    [diagnostics],
+  );
 
-  const filtered = useMemo(() =>
-    diagnostics.reduce<Array<{ diag: Diagnostic; globalIndex: number }>>((acc, d, i) => {
-      if (severityFilter !== 'all' && d.severity !== severityFilter) return acc;
-      const q = searchQuery.toLowerCase();
-      if (q && !d.ruleId.toLowerCase().includes(q) && !d.message.toLowerCase().includes(q)) return acc;
-      acc.push({ diag: d, globalIndex: i });
-      return acc;
-    }, []),
-  [diagnostics, severityFilter, searchQuery]);
+  const filtered = useMemo(
+    () =>
+      diagnostics.reduce<Array<{ diag: Diagnostic; globalIndex: number }>>(
+        (acc, d, i) => {
+          if (severityFilter !== 'all' && d.severity !== severityFilter)
+            return acc;
+          const q = searchQuery.toLowerCase();
+          if (
+            q &&
+            !d.ruleId.toLowerCase().includes(q) &&
+            !d.message.toLowerCase().includes(q)
+          )
+            return acc;
+          acc.push({ diag: d, globalIndex: i });
+          return acc;
+        },
+        [],
+      ),
+    [diagnostics, severityFilter, searchQuery],
+  );
 
   if (!loaded) {
     return (
@@ -180,11 +205,17 @@ export function DiagnosticExplorer({
   return (
     <WorkspacePanel
       label="Diagnostic Explorer"
-      header={<PanelHeader title="Diagnostic Explorer" subtitle={diagnostics.length} icon={ShieldAlert} />}
+      header={
+        <PanelHeader
+          title="Diagnostic Explorer"
+          subtitle={diagnostics.length}
+          icon={ShieldAlert}
+        />
+      }
     >
       {/* Severity tabs */}
       <div className="flex border-b border-[var(--tg-border)] px-1">
-        {(['all', 'error', 'warning', 'info'] as SeverityFilter[]).map(s => (
+        {(['all', 'error', 'warning', 'info'] as SeverityFilter[]).map((s) => (
           <SeverityTab
             key={s}
             severity={s}
@@ -198,17 +229,26 @@ export function DiagnosticExplorer({
       {/* Search */}
       <div className="border-b border-[var(--tg-border)] p-[var(--tg-space-sm)]">
         <label className="flex items-center gap-2 rounded bg-[var(--tg-bg-surface)] px-2 py-1">
-          <Search className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]" aria-hidden />
+          <Search
+            className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]"
+            aria-hidden
+          />
           <input
             type="search"
             placeholder="Filter by rule or message…"
             value={searchQuery}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchQuery(e.target.value)
+            }
             className="w-full bg-transparent text-xs text-[var(--tg-text-primary)] placeholder-[var(--tg-text-muted)] outline-none"
             aria-label="Filter diagnostics"
           />
           {searchQuery && (
-            <button type="button" onClick={() => setSearchQuery('')} aria-label="Clear filter">
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear filter"
+            >
               <X className="h-3 w-3 text-[var(--tg-text-muted)]" />
             </button>
           )}
@@ -219,8 +259,13 @@ export function DiagnosticExplorer({
       {filtered.length === 0 ? (
         diagnostics.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 py-8">
-            <CheckCircle className="h-8 w-8 text-[var(--tg-success)]" aria-hidden />
-            <p className="text-xs font-medium text-[var(--tg-success)]">Tile is clean — no diagnostics</p>
+            <CheckCircle
+              className="h-8 w-8 text-[var(--tg-success)]"
+              aria-hidden
+            />
+            <p className="text-xs font-medium text-[var(--tg-success)]">
+              Tile is clean — no diagnostics
+            </p>
           </div>
         ) : (
           <p className="px-[var(--tg-space-md)] py-[var(--tg-space-md)] text-xs text-[var(--tg-text-muted)]">
@@ -228,7 +273,9 @@ export function DiagnosticExplorer({
           </p>
         )
       ) : (
-        <PanelSection title={`${filtered.length} result${filtered.length !== 1 ? 's' : ''}`}>
+        <PanelSection
+          title={`${filtered.length} result${filtered.length !== 1 ? 's' : ''}`}
+        >
           {filtered.map(({ diag, globalIndex }) => (
             <DiagnosticRow
               key={globalIndex}

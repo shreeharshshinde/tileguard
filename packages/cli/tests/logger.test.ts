@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createLogger, type LogLevel } from '../src/logging/Logger.js';
 
 describe('createLogger', () => {

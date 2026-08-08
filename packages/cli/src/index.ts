@@ -13,46 +13,70 @@
  * console.log(result.exitCode); // 0 | 1 | 2
  */
 
+export type {
+  CliComparisonResult,
+  CliRegressionResult,
+  CliTileSnapshot,
+} from './analysis/AnalysisAdapter.js';
+// ── Analysis adapter ──────────────────────────────────────────────────────
+export {
+  analyzeRegression,
+  compareTiles,
+  loadTileSnapshot,
+} from './analysis/AnalysisAdapter.js';
+export { runAnalyze } from './commands/analyze.js';
 // ── Command functions — pure, embeddable, never call process.exit() ───────
 export { runCheck } from './commands/check.js';
+export { runCompare } from './commands/compare.js';
+export { runDoctor } from './commands/doctor.js';
 export { runInit } from './commands/init.js';
+export { runReport } from './commands/report.js';
 export {
   runRulesDocs,
   runRulesExplain,
   runRulesList,
 } from './commands/rules.js';
-export { runCompare } from './commands/compare.js';
-export { runAnalyze } from './commands/analyze.js';
-export { runReport } from './commands/report.js';
 export { runStats } from './commands/stats.js';
-export { runDoctor } from './commands/doctor.js';
-export { runVersion, getVersion } from './commands/version.js';
-
+export { getVersion, runVersion } from './commands/version.js';
+export type {
+  LoadYamlConfigOptions,
+  LoadYamlConfigResult,
+  TileguardYamlConfig,
+} from './config/ConfigLoader.js';
+export { getDefaultConfig, loadYamlConfig } from './config/ConfigLoader.js';
 // ── Error classes ─────────────────────────────────────────────────────────
 export { CliUsageError } from './errors.js';
 export { toRunResult, toUsageResult } from './exit.js';
-
 // ── Lower-level utilities — exported for testing and programmatic use ─────
 export { expandSources } from './expand-sources.js';
+export type {
+  CreateLoggerOptions,
+  Logger,
+  LogLevel,
+} from './logging/Logger.js';
+// ── Infrastructure ────────────────────────────────────────────────────────
+export { createLogger } from './logging/Logger.js';
 export { mergeConfig } from './merge-config.js';
+export type {
+  OutputFormat,
+  OutputFormatter,
+} from './output/OutputFormatter.js';
+export {
+  createOutputFormatter,
+  formatDelta,
+  formatDuration,
+} from './output/OutputFormatter.js';
 export {
   DEFAULT_REPORTER_ID,
   resolveReporterById,
 } from './resolve-reporter.js';
-
-// ── Infrastructure ────────────────────────────────────────────────────────
-export { createLogger } from './logging/Logger.js';
-export type { Logger, LogLevel, CreateLoggerOptions } from './logging/Logger.js';
-export { loadYamlConfig, getDefaultConfig } from './config/ConfigLoader.js';
-export type { TileguardYamlConfig, LoadYamlConfigOptions, LoadYamlConfigResult } from './config/ConfigLoader.js';
-export { createOutputFormatter, formatDelta, formatDuration } from './output/OutputFormatter.js';
-export type { OutputFormat, OutputFormatter } from './output/OutputFormatter.js';
+export type {
+  CliCommandResult,
+  CommandContext,
+  CommandFn,
+  ExitCode,
+} from './runner/CommandRunner.js';
 export { runCommand } from './runner/CommandRunner.js';
-export type { CliCommandResult, CommandContext, CommandFn, ExitCode } from './runner/CommandRunner.js';
-
-// ── Analysis adapter ──────────────────────────────────────────────────────
-export { loadTileSnapshot, compareTiles, analyzeRegression } from './analysis/AnalysisAdapter.js';
-export type { CliTileSnapshot, CliComparisonResult, CliRegressionResult } from './analysis/AnalysisAdapter.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────
 export type {

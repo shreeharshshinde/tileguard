@@ -12,6 +12,7 @@
  *   - Link to rule documentation (future)
  */
 
+import type { Diagnostic } from '@tileguard/core';
 import {
   AlertTriangle,
   BookOpen,
@@ -21,7 +22,6 @@ import {
   MapPin,
   XCircle,
 } from 'lucide-react';
-import type { Diagnostic } from '@tileguard/core';
 
 // ---------------------------------------------------------------------------
 // Rule knowledge base — friendly descriptions for known rule IDs
@@ -115,14 +115,15 @@ const RULE_KB: Record<string, RuleKnowledge> = {
   'style/zoom-range': {
     title: 'Invalid Zoom Range',
     explanation:
-      'A layer\'s minzoom is greater than its maxzoom. The layer will never be visible at any zoom level.',
+      "A layer's minzoom is greater than its maxzoom. The layer will never be visible at any zoom level.",
     category: 'Style Integrity',
   },
 };
 
 const FALLBACK_RULE: RuleKnowledge = {
   title: 'Validation Rule',
-  explanation: 'This diagnostic was produced by a TileGuard validation rule. Refer to your tileguard.config.ts for rule configuration details.',
+  explanation:
+    'This diagnostic was produced by a TileGuard validation rule. Refer to your tileguard.config.ts for rule configuration details.',
   category: 'Validation',
 };
 
@@ -136,9 +137,16 @@ function SeverityIcon({
   severity: 'error' | 'warning' | 'info';
 }): JSX.Element {
   if (severity === 'error')
-    return <XCircle className="h-4 w-4 text-[var(--tg-error)]" aria-hidden="true" />;
+    return (
+      <XCircle className="h-4 w-4 text-[var(--tg-error)]" aria-hidden="true" />
+    );
   if (severity === 'warning')
-    return <AlertTriangle className="h-4 w-4 text-[var(--tg-warning)]" aria-hidden="true" />;
+    return (
+      <AlertTriangle
+        className="h-4 w-4 text-[var(--tg-warning)]"
+        aria-hidden="true"
+      />
+    );
   return <Info className="h-4 w-4 text-[var(--tg-info)]" aria-hidden="true" />;
 }
 
@@ -154,7 +162,9 @@ interface RuleDetailsPanelProps {
 // Component
 // ---------------------------------------------------------------------------
 
-export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Element {
+export function RuleDetailsPanel({
+  diagnostic,
+}: RuleDetailsPanelProps): JSX.Element {
   if (diagnostic === null) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-[var(--tg-space-md)] p-[var(--tg-space-xl)] text-center">
@@ -163,7 +173,9 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
           aria-hidden="true"
         />
         <p className="text-xs text-[var(--tg-text-muted)]">
-          Select a diagnostic to see<br />rule details and a suggested fix.
+          Select a diagnostic to see
+          <br />
+          rule details and a suggested fix.
         </p>
       </div>
     );
@@ -171,11 +183,13 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
 
   const ruleId = diagnostic.ruleId ?? 'unknown';
   const knowledge = RULE_KB[ruleId] ?? FALLBACK_RULE;
-  const loc = diagnostic.location as {
-    layer?: string;
-    featureIndex?: number;
-    featureId?: number | string;
-  } | undefined;
+  const loc = diagnostic.location as
+    | {
+        layer?: string;
+        featureIndex?: number;
+        featureId?: number | string;
+      }
+    | undefined;
 
   const severityColour =
     diagnostic.severity === 'error'
@@ -217,13 +231,18 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
 
         {/* Diagnostic message */}
         <div className="rounded-[var(--tg-border-radius)] bg-[var(--tg-bg-surface)] p-[var(--tg-space-sm)]">
-          <p className="text-xs text-[var(--tg-text-primary)]">{diagnostic.message}</p>
+          <p className="text-xs text-[var(--tg-text-primary)]">
+            {diagnostic.message}
+          </p>
         </div>
 
         {/* Explanation */}
         <div>
           <div className="mb-[var(--tg-space-sm)] flex items-center gap-[var(--tg-space-sm)]">
-            <BookOpen className="h-3.5 w-3.5 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+            <BookOpen
+              className="h-3.5 w-3.5 text-[var(--tg-text-secondary)]"
+              aria-hidden="true"
+            />
             <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--tg-text-secondary)]">
               Explanation
             </span>
@@ -237,7 +256,10 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
         {diagnostic.suggestion !== undefined && (
           <div>
             <div className="mb-[var(--tg-space-sm)] flex items-center gap-[var(--tg-space-sm)]">
-              <Lightbulb className="h-3.5 w-3.5 text-[var(--tg-warning)]" aria-hidden="true" />
+              <Lightbulb
+                className="h-3.5 w-3.5 text-[var(--tg-warning)]"
+                aria-hidden="true"
+              />
               <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--tg-text-secondary)]">
                 Suggested Fix
               </span>
@@ -254,7 +276,10 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
         {(loc?.layer !== undefined || loc?.featureIndex !== undefined) && (
           <div>
             <div className="mb-[var(--tg-space-sm)] flex items-center gap-[var(--tg-space-sm)]">
-              <MapPin className="h-3.5 w-3.5 text-[var(--tg-text-secondary)]" aria-hidden="true" />
+              <MapPin
+                className="h-3.5 w-3.5 text-[var(--tg-text-secondary)]"
+                aria-hidden="true"
+              />
               <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--tg-text-secondary)]">
                 Location
               </span>
@@ -263,19 +288,25 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
               {loc?.layer !== undefined && (
                 <div className="flex justify-between">
                   <dt className="text-[var(--tg-text-muted)]">Layer</dt>
-                  <dd className="font-mono text-[var(--tg-text-primary)]">{loc.layer}</dd>
+                  <dd className="font-mono text-[var(--tg-text-primary)]">
+                    {loc.layer}
+                  </dd>
                 </div>
               )}
               {loc?.featureIndex !== undefined && (
                 <div className="flex justify-between">
                   <dt className="text-[var(--tg-text-muted)]">Feature</dt>
-                  <dd className="font-mono text-[var(--tg-text-primary)]">#{loc.featureIndex}</dd>
+                  <dd className="font-mono text-[var(--tg-text-primary)]">
+                    #{loc.featureIndex}
+                  </dd>
                 </div>
               )}
               {loc?.featureId !== undefined && (
                 <div className="flex justify-between">
                   <dt className="text-[var(--tg-text-muted)]">ID</dt>
-                  <dd className="font-mono text-[var(--tg-text-primary)]">{String(loc.featureId)}</dd>
+                  <dd className="font-mono text-[var(--tg-text-primary)]">
+                    {String(loc.featureId)}
+                  </dd>
                 </div>
               )}
             </dl>
@@ -284,7 +315,10 @@ export function RuleDetailsPanel({ diagnostic }: RuleDetailsPanelProps): JSX.Ele
 
         {/* Category */}
         <div className="flex items-center gap-[var(--tg-space-sm)]">
-          <CheckCircle2 className="h-3.5 w-3.5 text-[var(--tg-text-muted)]" aria-hidden="true" />
+          <CheckCircle2
+            className="h-3.5 w-3.5 text-[var(--tg-text-muted)]"
+            aria-hidden="true"
+          />
           <span className="text-[10px] text-[var(--tg-text-muted)]">
             Category: {knowledge.category}
           </span>

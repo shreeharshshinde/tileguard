@@ -30,6 +30,9 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Toaster } from 'sonner';
+import type { RegressionAnalysis } from '../analysis/models/regression.js';
+import { createRegressionEngine } from '../analysis/RegressionEngine.js';
 import {
   createComparisonService,
   type TileComparison,
@@ -54,39 +57,36 @@ import {
   type PerformanceProfiler,
 } from '../performance/PerformanceProfiler.js';
 import { decodeBrowserTile } from '../services/browser-tile-loader.js';
+import { getPresentationService } from '../services/PresentationService.js';
 import {
   createShortcutService,
   type ShortcutAction,
 } from '../services/ShortcutService.js';
-import { getPresentationService } from '../services/PresentationService.js';
 import type { ViewportState } from '../viewport/viewport.js';
-import { createRegressionEngine } from '../analysis/RegressionEngine.js';
-import type { RegressionAnalysis } from '../analysis/models/regression.js';
+import { ApplicationRouter } from './ApplicationRouter.js';
 import { CanvasView } from './CanvasView.js';
 import { ComparisonPage } from './comparison/ComparisonPage.js';
-import { RegressionPage } from './regression/RegressionPage.js';
-import { ReportPage } from './report/ReportPage.js';
-import { StyleExplorerPage } from './style/StyleExplorerPage.js';
 import {
-  DiagnosticsPageHeader,
   DiagnosticsLeftPanel,
+  DiagnosticsPageHeader,
   DiagnosticsRightPanel,
   useDiagnosticsState,
 } from './diagnostics/DiagnosticsPage.js';
+import { FeaturePanel } from './feature/FeaturePanel.js';
 import { FeatureExplorer } from './inspector/FeatureExplorer.js';
 import { InspectorPageHeader } from './inspector/InspectorPageHeader.js';
-import { PresentationToggle } from './presentation/PresentationToggle.js';
-import { FeaturePanel } from './feature/FeaturePanel.js';
 import type { LoadingStep } from './loading/LoadingOverlay.js';
 import { LoadingOverlay } from './loading/LoadingOverlay.js';
+import { PresentationToggle } from './presentation/PresentationToggle.js';
 import { DeveloperOverlay } from './profiler/DeveloperOverlay.js';
+import { RegressionPage } from './regression/RegressionPage.js';
+import { ReportPage } from './report/ReportPage.js';
 import { type NavTab, SidebarNav } from './SidebarNav.js';
 import { SettingsPanel } from './settings/SettingsPanel.js';
 import { StatisticsPanel } from './statistics/StatisticsPanel.js';
+import { StyleExplorerPage } from './style/StyleExplorerPage.js';
 import { Toolbar } from './Toolbar.js';
 import { WelcomeView } from './WelcomeView.js';
-import { ApplicationRouter } from './ApplicationRouter.js';
-import { Toaster } from 'sonner';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton profiler (shared across renders)
@@ -212,24 +212,24 @@ function Footer({
             stats.diagnostics.warnings +
             stats.diagnostics.info >
             0 && (
-              <>
-                <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
-                  ·
-                </span>
-                <span
-                  className={
-                    stats.diagnostics.errors > 0
-                      ? 'text-[var(--tg-error)]'
-                      : 'text-[var(--tg-warning)]'
-                  }
-                >
-                  {stats.diagnostics.errors +
-                    stats.diagnostics.warnings +
-                    stats.diagnostics.info}{' '}
-                  diag.
-                </span>
-              </>
-            )}
+            <>
+              <span className="text-[var(--tg-text-muted)]" aria-hidden="true">
+                ·
+              </span>
+              <span
+                className={
+                  stats.diagnostics.errors > 0
+                    ? 'text-[var(--tg-error)]'
+                    : 'text-[var(--tg-warning)]'
+                }
+              >
+                {stats.diagnostics.errors +
+                  stats.diagnostics.warnings +
+                  stats.diagnostics.info}{' '}
+                diag.
+              </span>
+            </>
+          )}
         </>
       )}
 
@@ -544,7 +544,8 @@ function Workspace(): JSX.Element {
   // ── Left panel content ────────────────────────────────────────────────────
   const leftPanel = useMemo<JSX.Element | null>(() => {
     if (activeTab === 'statistics') return <StatisticsPanel store={store} />;
-    if (activeTab === 'settings') return <SettingsPanel inspector={inspector} />;
+    if (activeTab === 'settings')
+      return <SettingsPanel inspector={inspector} />;
     if (activeTab === 'diagnostics')
       return (
         <DiagnosticsLeftPanel
@@ -562,7 +563,14 @@ function Workspace(): JSX.Element {
         onSearchChange={search.setQuery}
       />
     );
-  }, [activeTab, store, inspector, search.query, search.setQuery, diagnostics.handleSelectDiagnostic]);
+  }, [
+    activeTab,
+    store,
+    inspector,
+    search.query,
+    search.setQuery,
+    diagnostics.handleSelectDiagnostic,
+  ]);
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--tg-bg-primary)] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
@@ -615,9 +623,7 @@ function Workspace(): JSX.Element {
         ) : activeTab === 'regression' ? (
           /* ── Regression Investigation view ─────────────────────────────── */
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <RegressionPage
-              comparison={comparison}
-            />
+            <RegressionPage comparison={comparison} />
           </div>
         ) : activeTab === 'reports' ? (
           /* ── Report Generation view ────────────────────────────────────── */
@@ -636,7 +642,9 @@ function Workspace(): JSX.Element {
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
             {/* Page identity header — varies by active canvas tab */}
             {activeTab === 'inspector' && <InspectorPageHeader store={store} />}
-            {activeTab === 'diagnostics' && <DiagnosticsPageHeader store={store} />}
+            {activeTab === 'diagnostics' && (
+              <DiagnosticsPageHeader store={store} />
+            )}
             <Toolbar
               leftCollapsed={leftCollapsed}
               rightCollapsed={rightCollapsed}
@@ -717,7 +725,11 @@ function Workspace(): JSX.Element {
               {!rightCollapsed && (
                 <aside
                   className="w-[var(--tg-sidebar-width)] shrink-0 border-l border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] overflow-hidden flex flex-col"
-                  aria-label={activeTab === 'diagnostics' ? 'Rule Details' : 'Feature Inspector'}
+                  aria-label={
+                    activeTab === 'diagnostics'
+                      ? 'Rule Details'
+                      : 'Feature Inspector'
+                  }
                 >
                   {activeTab === 'diagnostics' ? (
                     <DiagnosticsRightPanel

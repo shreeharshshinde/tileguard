@@ -25,8 +25,8 @@ import {
   HIGH_SIGNAL_PROPERTIES,
   LOW_SIGNAL_PROPERTIES,
   type RegressionEvidence,
-  type RegressionRecommendation,
   type RegressionReason,
+  type RegressionRecommendation,
   type TimelineStep,
 } from './models/regression.js';
 
@@ -105,7 +105,12 @@ function buildForFeature(
     });
     timelineSteps.push({ label: 'Feature added to tile B' });
     const recs = buildRecommendations(evidence, reasons);
-    return { reasons, evidence, timeline: timelineSteps, recommendations: recs };
+    return {
+      reasons,
+      evidence,
+      timeline: timelineSteps,
+      recommendations: recs,
+    };
   }
 
   if (fc.kind === 'removed') {
@@ -123,7 +128,12 @@ function buildForFeature(
     });
     timelineSteps.push({ label: 'Feature removed from tile B' });
     const recs = buildRecommendations(evidence, reasons);
-    return { reasons, evidence, timeline: timelineSteps, recommendations: recs };
+    return {
+      reasons,
+      evidence,
+      timeline: timelineSteps,
+      recommendations: recs,
+    };
   }
 
   // ── Modified feature ─────────────────────────────────────────────────────
@@ -288,8 +298,12 @@ function buildPropertyEvidence(
 
   for (const entry of diff.entries) {
     const key = entry.kind === 'added' ? entry.key : entry.key;
-    const isHighSignal = (HIGH_SIGNAL_PROPERTIES as readonly string[]).includes(key);
-    const isLowSignal = (LOW_SIGNAL_PROPERTIES as readonly string[]).includes(key);
+    const isHighSignal = (HIGH_SIGNAL_PROPERTIES as readonly string[]).includes(
+      key,
+    );
+    const isLowSignal = (LOW_SIGNAL_PROPERTIES as readonly string[]).includes(
+      key,
+    );
 
     if (isHighSignal) {
       highSignalChanged = true;
@@ -297,7 +311,7 @@ function buildPropertyEvidence(
       const valueA = entry.kind === 'modified' ? entry.valueA : undefined;
       const valueB =
         entry.kind === 'added' || entry.kind === 'modified'
-          ? entry.valueB ?? entry.valueA
+          ? (entry.valueB ?? entry.valueA)
           : undefined;
       reasons.push({
         code: `property-high-signal-${key}`,
@@ -314,7 +328,10 @@ function buildPropertyEvidence(
       });
       timeline.push({
         label: `Property "${key}" changed`,
-        detail: entry.kind === 'modified' ? `${String(valueA)} → ${String(valueB)}` : entry.kind,
+        detail:
+          entry.kind === 'modified'
+            ? `${String(valueA)} → ${String(valueB)}`
+            : entry.kind,
       });
     } else if (!isLowSignal) {
       lowSignalOnly = false;
@@ -433,21 +450,34 @@ function buildRecommendations(
   const recs: RegressionRecommendation[] = [];
   let priority = 0;
 
-  const hasGeometryEvidence = evidence.some((e) => e.kind === 'geometry' && e.confirms);
-  const hasPropertyEvidence = evidence.some((e) => e.kind === 'property' && e.confirms);
-  const hasDiagnosticEvidence = evidence.some((e) => e.kind === 'diagnostic' && e.confirms);
-  const hasStatisticsEvidence = evidence.some((e) => e.kind === 'statistics' && e.confirms);
+  const hasGeometryEvidence = evidence.some(
+    (e) => e.kind === 'geometry' && e.confirms,
+  );
+  const hasPropertyEvidence = evidence.some(
+    (e) => e.kind === 'property' && e.confirms,
+  );
+  const hasDiagnosticEvidence = evidence.some(
+    (e) => e.kind === 'diagnostic' && e.confirms,
+  );
+  const hasStatisticsEvidence = evidence.some(
+    (e) => e.kind === 'statistics' && e.confirms,
+  );
 
   const hasTypeChange = reasons.some((r) => r.code === 'geometry-type-changed');
-  const hasLargeCentroidShift = reasons.some((r) => r.code === 'centroid-shift-large');
-  const hasHighSignalProp = reasons.some((r) => r.code.startsWith('property-high-signal-'));
+  const hasLargeCentroidShift = reasons.some(
+    (r) => r.code === 'centroid-shift-large',
+  );
+  const hasHighSignalProp = reasons.some((r) =>
+    r.code.startsWith('property-high-signal-'),
+  );
   const isAdded = reasons.some((r) => r.code === 'feature-added');
   const isRemoved = reasons.some((r) => r.code === 'feature-removed');
 
   if (isAdded || isRemoved) {
     recs.push({
       action: 'Review tile generation pipeline',
-      rationale: 'A feature was added or removed, indicating a change in source data or tile generation.',
+      rationale:
+        'A feature was added or removed, indicating a change in source data or tile generation.',
       evidenceIndices: evidence.map((_, i) => i),
       priority: priority++,
     });
@@ -456,7 +486,8 @@ function buildRecommendations(
   if (hasTypeChange) {
     recs.push({
       action: 'Inspect source geometry type in upstream data',
-      rationale: 'The geometry type changed, which can silently break style expressions or rendering rules.',
+      rationale:
+        'The geometry type changed, which can silently break style expressions or rendering rules.',
       evidenceIndices: evidence.map((_, i) => i).slice(0, 2),
       priority: priority++,
     });
@@ -465,7 +496,8 @@ function buildRecommendations(
   if (hasLargeCentroidShift) {
     recs.push({
       action: 'Verify geometry coordinates in source data',
-      rationale: 'A large centroid shift suggests the geometry was re-projected, resampled, or incorrectly encoded.',
+      rationale:
+        'A large centroid shift suggests the geometry was re-projected, resampled, or incorrectly encoded.',
       evidenceIndices: evidence.map((_, i) => i).slice(0, 3),
       priority: priority++,
     });
@@ -474,7 +506,8 @@ function buildRecommendations(
   if (hasGeometryEvidence && !hasTypeChange && !hasLargeCentroidShift) {
     recs.push({
       action: 'Compare raw coordinates between tile versions',
-      rationale: 'Geometry coordinates changed. Review the tile generation output for this specific feature.',
+      rationale:
+        'Geometry coordinates changed. Review the tile generation output for this specific feature.',
       evidenceIndices: evidence.reduce<number[]>((acc, e, i) => {
         if (e.kind === 'geometry') acc.push(i);
         return acc;
@@ -486,7 +519,8 @@ function buildRecommendations(
   if (hasHighSignalProp) {
     recs.push({
       action: 'Review attribute data for changed high-signal properties',
-      rationale: 'High-signal properties (class, type, highway, etc.) directly control rendering. Changes here are likely to cause visual regressions.',
+      rationale:
+        'High-signal properties (class, type, highway, etc.) directly control rendering. Changes here are likely to cause visual regressions.',
       evidenceIndices: evidence.reduce<number[]>((acc, e, i) => {
         if (e.kind === 'property') acc.push(i);
         return acc;
@@ -496,7 +530,8 @@ function buildRecommendations(
   } else if (hasPropertyEvidence) {
     recs.push({
       action: 'Compare feature attributes between tile versions',
-      rationale: 'Feature properties changed. Verify attribute correctness in the source data.',
+      rationale:
+        'Feature properties changed. Verify attribute correctness in the source data.',
       evidenceIndices: evidence.reduce<number[]>((acc, e, i) => {
         if (e.kind === 'property') acc.push(i);
         return acc;
@@ -508,7 +543,8 @@ function buildRecommendations(
   if (hasDiagnosticEvidence) {
     recs.push({
       action: 'Investigate new TileGuard diagnostics introduced in tile B',
-      rationale: 'New rule violations were detected. These may explain the visual regression.',
+      rationale:
+        'New rule violations were detected. These may explain the visual regression.',
       evidenceIndices: evidence.reduce<number[]>((acc, e, i) => {
         if (e.kind === 'diagnostic') acc.push(i);
         return acc;
@@ -520,7 +556,8 @@ function buildRecommendations(
   if (hasStatisticsEvidence) {
     recs.push({
       action: 'Check tile encoder for vertex simplification changes',
-      rationale: 'Vertex or ring counts differ, which may indicate a change in tolerance or simplification settings.',
+      rationale:
+        'Vertex or ring counts differ, which may indicate a change in tolerance or simplification settings.',
       evidenceIndices: evidence.reduce<number[]>((acc, e, i) => {
         if (e.kind === 'statistics') acc.push(i);
         return acc;
@@ -532,7 +569,8 @@ function buildRecommendations(
   if (recs.length === 0) {
     recs.push({
       action: 'Inspect the feature manually using the comparison explorer',
-      rationale: 'Automated analysis did not isolate a specific cause. Side-by-side inspection may reveal the issue.',
+      rationale:
+        'Automated analysis did not isolate a specific cause. Side-by-side inspection may reveal the issue.',
       evidenceIndices: [],
       priority: 0,
     });
@@ -545,9 +583,7 @@ function buildRecommendations(
 // Helpers — geometry diff extraction
 // ---------------------------------------------------------------------------
 
-function computeGeometryDiff(
-  fc: FeatureComparison,
-): {
+function computeGeometryDiff(fc: FeatureComparison): {
   changed: boolean;
   typeChanged: boolean;
   typeA: string;
@@ -592,7 +628,10 @@ function computeGeometryDiff(
   };
 }
 
-type RingArray = readonly (readonly { readonly x: number; readonly y: number }[])[];
+type RingArray = readonly (readonly {
+  readonly x: number;
+  readonly y: number;
+}[])[];
 
 function countVertices(geo: RingArray): number {
   let n = 0;
@@ -614,9 +653,12 @@ function computeCentroid(geo: RingArray): { x: number; y: number } {
   return n > 0 ? { x: sx / n, y: sy / n } : { x: 0, y: 0 };
 }
 
-function computeBounds(
-  geo: RingArray,
-): { minX: number; minY: number; maxX: number; maxY: number } {
+function computeBounds(geo: RingArray): {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+} {
   let minX = Number.POSITIVE_INFINITY;
   let minY = Number.POSITIVE_INFINITY;
   let maxX = Number.NEGATIVE_INFINITY;
@@ -639,22 +681,35 @@ function computeApproxArea(bounds: {
   maxX: number;
   maxY: number;
 }): number {
-  return Math.max(0, bounds.maxX - bounds.minX) * Math.max(0, bounds.maxY - bounds.minY);
+  return (
+    Math.max(0, bounds.maxX - bounds.minX) *
+    Math.max(0, bounds.maxY - bounds.minY)
+  );
 }
 
 // ---------------------------------------------------------------------------
 // Helpers — property diff extraction
 // ---------------------------------------------------------------------------
 
-function computePropertyDiff(
-  fc: FeatureComparison,
-): { entries: Array<{ kind: string; key: string; valueA?: unknown; valueB?: unknown }> } | null {
+function computePropertyDiff(fc: FeatureComparison): {
+  entries: Array<{
+    kind: string;
+    key: string;
+    valueA?: unknown;
+    valueB?: unknown;
+  }>;
+} | null {
   if (!fc.featureA || !fc.featureB) return null;
   if (!fc.changes?.propertiesChanged) return null;
 
   const propsA = fc.featureA.properties;
   const propsB = fc.featureB.properties;
-  const entries: Array<{ kind: 'added' | 'removed' | 'modified'; key: string; valueA?: unknown; valueB?: unknown }> = [];
+  const entries: Array<{
+    kind: 'added' | 'removed' | 'modified';
+    key: string;
+    valueA?: unknown;
+    valueB?: unknown;
+  }> = [];
 
   // Added / modified
   for (const [key, valueB] of Object.entries(propsB)) {
@@ -683,5 +738,8 @@ function diagnosticMatchesLayer(d: Diagnostic, layerName: string): boolean {
   // Best-effort: check if the diagnostic message or location references the layer
   const msg = d.message.toLowerCase();
   const loc = JSON.stringify(d.location ?? '').toLowerCase();
-  return msg.includes(layerName.toLowerCase()) || loc.includes(layerName.toLowerCase());
+  return (
+    msg.includes(layerName.toLowerCase()) ||
+    loc.includes(layerName.toLowerCase())
+  );
 }

@@ -24,7 +24,10 @@
 
 import { describe, expect, it } from 'vitest';
 import { createRegressionEngine } from '../src/analysis/RegressionEngine.js';
-import type { FeatureComparison, TileComparison } from '../src/comparison/models.js';
+import type {
+  FeatureComparison,
+  TileComparison,
+} from '../src/comparison/models.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -45,31 +48,72 @@ function makeFeature(
   properties: Record<string, unknown> = {},
   id?: number,
 ) {
-  return { layerName, featureIndex, id, geometryType, properties, geometry } as const;
+  return {
+    layerName,
+    featureIndex,
+    id,
+    geometryType,
+    properties,
+    geometry,
+  } as const;
 }
 
 function makeComparison(features: FeatureComparison[]): TileComparison {
   return {
-    snapshotA: { filePath: 'a.pbf', statistics: {} as never, layers: [], diagnostics: [], features: [] },
-    snapshotB: { filePath: 'b.pbf', statistics: {} as never, layers: [], diagnostics: [], features: [] },
+    snapshotA: {
+      filePath: 'a.pbf',
+      statistics: {} as never,
+      layers: [],
+      diagnostics: [],
+      features: [],
+    },
+    snapshotB: {
+      filePath: 'b.pbf',
+      statistics: {} as never,
+      layers: [],
+      diagnostics: [],
+      features: [],
+    },
     summary: {
-      addedFeatures: 0, removedFeatures: 0, modifiedFeatures: 0,
-      unchangedFeatures: features.length, addedLayers: 0, removedLayers: 0,
-      modifiedLayers: 0, newDiagnostics: 0, resolvedDiagnostics: 0, isIdentical: true,
+      addedFeatures: 0,
+      removedFeatures: 0,
+      modifiedFeatures: 0,
+      unchangedFeatures: features.length,
+      addedLayers: 0,
+      removedLayers: 0,
+      modifiedLayers: 0,
+      newDiagnostics: 0,
+      resolvedDiagnostics: 0,
+      isIdentical: true,
     },
     layers: [],
     features,
     diagnostics: {
-      errorsA: 0, errorsB: 0, errorsDelta: 0,
-      warningsA: 0, warningsB: 0, warningsDelta: 0,
-      infoA: 0, infoB: 0, infoDelta: 0,
-      newDiagnostics: [], resolvedDiagnostics: [],
+      errorsA: 0,
+      errorsB: 0,
+      errorsDelta: 0,
+      warningsA: 0,
+      warningsB: 0,
+      warningsDelta: 0,
+      infoA: 0,
+      infoB: 0,
+      infoDelta: 0,
+      newDiagnostics: [],
+      resolvedDiagnostics: [],
     },
     statistics: {
-      layersA: 1, layersB: 1, layersDelta: 0,
-      featuresA: 1, featuresB: 1, featuresDelta: 0,
-      verticesA: 1, verticesB: 1, verticesDelta: 0,
-      diagnosticsA: 0, diagnosticsB: 0, diagnosticsDelta: 0,
+      layersA: 1,
+      layersB: 1,
+      layersDelta: 0,
+      featuresA: 1,
+      featuresB: 1,
+      featuresDelta: 0,
+      verticesA: 1,
+      verticesB: 1,
+      verticesDelta: 0,
+      diagnosticsA: 0,
+      diagnosticsB: 0,
+      diagnosticsDelta: 0,
       geometryCountsA: { point: 1, line: 0, polygon: 0 },
       geometryCountsB: { point: 1, line: 0, polygon: 0 },
     },
@@ -79,15 +123,23 @@ function makeComparison(features: FeatureComparison[]): TileComparison {
 /** FC: unchanged */
 function unchangedFC(layer = 'roads', idx = 0): FeatureComparison {
   const f = makeFeature(layer, idx, 'Point', makeGeo());
-  return { kind: 'unchanged', featureA: f, featureB: f, changes: null, matchPriority: 1 };
+  return {
+    kind: 'unchanged',
+    featureA: f,
+    featureB: f,
+    changes: null,
+    matchPriority: 1,
+  };
 }
 
 /** FC: added */
 function addedFC(layer = 'roads', idx = 0): FeatureComparison {
   return {
-    kind: 'added', featureA: null,
+    kind: 'added',
+    featureA: null,
     featureB: makeFeature(layer, idx, 'Point', makeGeo()),
-    changes: null, matchPriority: null,
+    changes: null,
+    matchPriority: null,
   };
 }
 
@@ -97,7 +149,8 @@ function removedFC(layer = 'roads', idx = 0): FeatureComparison {
     kind: 'removed',
     featureA: makeFeature(layer, idx, 'Point', makeGeo()),
     featureB: null,
-    changes: null, matchPriority: null,
+    changes: null,
+    matchPriority: null,
   };
 }
 
@@ -107,7 +160,11 @@ function largeGeoShiftFC(layer = 'roads', idx = 0): FeatureComparison {
     kind: 'modified',
     featureA: makeFeature(layer, idx, 'Point', makeGeo([{ x: 0, y: 0 }])),
     featureB: makeFeature(layer, idx, 'Point', makeGeo([{ x: 500, y: 500 }])),
-    changes: { geometryChanged: true, propertiesChanged: false, diagnosticsChanged: false },
+    changes: {
+      geometryChanged: true,
+      propertiesChanged: false,
+      diagnosticsChanged: false,
+    },
     matchPriority: 1,
   };
 }
@@ -119,7 +176,11 @@ function highSignalPropFC(layer = 'roads', idx = 0): FeatureComparison {
     kind: 'modified',
     featureA: makeFeature(layer, idx, 'Point', geo, { class: 'motorway' }),
     featureB: makeFeature(layer, idx, 'Point', geo, { class: 'primary' }),
-    changes: { geometryChanged: false, propertiesChanged: true, diagnosticsChanged: false },
+    changes: {
+      geometryChanged: false,
+      propertiesChanged: true,
+      diagnosticsChanged: false,
+    },
     matchPriority: 2,
   };
 }
@@ -131,7 +192,11 @@ function lowSignalPropFC(layer = 'roads', idx = 0): FeatureComparison {
     kind: 'modified',
     featureA: makeFeature(layer, idx, 'Point', geo, { name: 'Old' }),
     featureB: makeFeature(layer, idx, 'Point', geo, { name: 'New' }),
-    changes: { geometryChanged: false, propertiesChanged: true, diagnosticsChanged: false },
+    changes: {
+      geometryChanged: false,
+      propertiesChanged: true,
+      diagnosticsChanged: false,
+    },
     matchPriority: 2,
   };
 }
@@ -143,12 +208,19 @@ function diagOnlyFC(layer = 'roads', idx = 0): FeatureComparison {
     kind: 'modified',
     featureA: makeFeature(layer, idx, 'Point', geo),
     featureB: makeFeature(layer, idx, 'Point', geo),
-    changes: { geometryChanged: false, propertiesChanged: false, diagnosticsChanged: true },
+    changes: {
+      geometryChanged: false,
+      propertiesChanged: false,
+      diagnosticsChanged: true,
+    },
     matchPriority: 1,
   };
 }
 
-function withNewDiagnostic(comparison: TileComparison, layer: string): TileComparison {
+function withNewDiagnostic(
+  comparison: TileComparison,
+  layer: string,
+): TileComparison {
   const diag = {
     ruleId: 'tile/self-intersection',
     severity: 'error',
@@ -265,8 +337,14 @@ describe('RegressionEngine', () => {
       const fc: FeatureComparison = {
         kind: 'modified',
         featureA: makeFeature('roads', 0, 'Point', geo, { class: 'motorway' }),
-        featureB: makeFeature('roads', 0, 'Point', largeShiftGeo, { class: 'primary' }),
-        changes: { geometryChanged: true, propertiesChanged: true, diagnosticsChanged: false },
+        featureB: makeFeature('roads', 0, 'Point', largeShiftGeo, {
+          class: 'primary',
+        }),
+        changes: {
+          geometryChanged: true,
+          propertiesChanged: true,
+          diagnosticsChanged: false,
+        },
         matchPriority: 1,
       };
       const comparison = makeComparison([fc]);
@@ -345,13 +423,22 @@ describe('RegressionEngine', () => {
     it('topConfidence matches first candidate confidence', () => {
       const comparison = makeComparison([largeGeoShiftFC()]);
       const result = engine.analyze(comparison);
-      expect(result.summary.topConfidence).toBe(result.candidates[0]!.confidence);
+      expect(result.summary.topConfidence).toBe(
+        result.candidates[0]!.confidence,
+      );
     });
 
     it('kindCounts sum equals candidates.length', () => {
-      const comparison = makeComparison([largeGeoShiftFC(), addedFC(), highSignalPropFC()]);
+      const comparison = makeComparison([
+        largeGeoShiftFC(),
+        addedFC(),
+        highSignalPropFC(),
+      ]);
       const result = engine.analyze(comparison);
-      const total = Object.values(result.summary.kindCounts).reduce((a, b) => a + b, 0);
+      const total = Object.values(result.summary.kindCounts).reduce(
+        (a, b) => a + b,
+        0,
+      );
       expect(total).toBe(result.candidates.length);
     });
 
@@ -364,9 +451,14 @@ describe('RegressionEngine', () => {
 
   describe('evidence deduplication', () => {
     it('top-level evidence array has no duplicates', () => {
-      const comparison = makeComparison([largeGeoShiftFC('roads', 0), largeGeoShiftFC('water', 1)]);
+      const comparison = makeComparison([
+        largeGeoShiftFC('roads', 0),
+        largeGeoShiftFC('water', 1),
+      ]);
       const result = engine.analyze(comparison);
-      const keys = result.evidence.map((e) => `${e.kind}:${e.label}:${String(e.measuredValue)}`);
+      const keys = result.evidence.map(
+        (e) => `${e.kind}:${e.label}:${String(e.measuredValue)}`,
+      );
       const unique = new Set(keys);
       expect(unique.size).toBe(keys.length);
     });
@@ -398,7 +490,9 @@ describe('RegressionEngine', () => {
       expect(first.candidates.length).toBe(second.candidates.length);
       expect(first.confidence).toBe(second.confidence);
       for (let i = 0; i < first.candidates.length; i++) {
-        expect(first.candidates[i]!.confidence).toBe(second.candidates[i]!.confidence);
+        expect(first.candidates[i]!.confidence).toBe(
+          second.candidates[i]!.confidence,
+        );
         expect(first.candidates[i]!.kind).toBe(second.candidates[i]!.kind);
       }
     });

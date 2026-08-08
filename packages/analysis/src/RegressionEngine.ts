@@ -22,9 +22,9 @@
  * Boundary: imports only from comparison/models and analysis/*.
  */
 
-import type { TileComparison } from './models/comparison.js';
 import { createConfidenceScorer } from './ConfidenceScorer.js';
 import { createEvidenceBuilder } from './EvidenceBuilder.js';
+import type { TileComparison } from './models/comparison.js';
 import type {
   ConfidenceWeights,
   RegressionAnalysis,
@@ -169,7 +169,9 @@ function classifyKind(
 
   const hasDiagnostic = codes.has('new-diagnostic');
 
-  const activeKinds = [hasGeometry, hasProperty, hasDiagnostic].filter(Boolean).length;
+  const activeKinds = [hasGeometry, hasProperty, hasDiagnostic].filter(
+    Boolean,
+  ).length;
   if (activeKinds > 1) return 'mixed';
   if (hasGeometry) return 'geometry';
   if (hasDiagnostic) return 'diagnostic';
@@ -205,7 +207,10 @@ function buildSummary(
   if (candidates.length > 0) {
     dominantKind = candidates[0]!.kind;
     let maxCount = 0;
-    for (const [kind, count] of Object.entries(kindCounts) as [RegressionKind, number][]) {
+    for (const [kind, count] of Object.entries(kindCounts) as [
+      RegressionKind,
+      number,
+    ][]) {
       if (count > maxCount) {
         maxCount = count;
         dominantKind = kind;
@@ -227,9 +232,7 @@ function buildSummary(
 // Evidence deduplication
 // ---------------------------------------------------------------------------
 
-function deduplicateEvidence(
-  candidates: readonly RegressionCandidate[],
-) {
+function deduplicateEvidence(candidates: readonly RegressionCandidate[]) {
   const seen = new Set<string>();
   const result = [];
 

@@ -14,13 +14,21 @@ describe('FilterParser', () => {
     });
 
     it('parses ["all", ["has", "name"], ["!=", ["get", "class"], "minor"]]', () => {
-      const expr = parseFilter(['all', ['has', 'name'], ['!=', ['get', 'class'], 'minor']]);
+      const expr = parseFilter([
+        'all',
+        ['has', 'name'],
+        ['!=', ['get', 'class'], 'minor'],
+      ]);
       expect(expr!.operator).toBe('all');
       expect(expr!.args).toHaveLength(2);
     });
 
     it('parses ["any", condition1, condition2]', () => {
-      const expr = parseFilter(['any', ['==', ['get', 'type'], 'a'], ['==', ['get', 'type'], 'b']]);
+      const expr = parseFilter([
+        'any',
+        ['==', ['get', 'type'], 'a'],
+        ['==', ['get', 'type'], 'b'],
+      ]);
       expect(expr!.operator).toBe('any');
     });
 
@@ -94,7 +102,11 @@ describe('FilterParser', () => {
     });
 
     it('converts legacy ["all", ["==", "type", "road"], ["has", "name"]]', () => {
-      const expr = parseFilter(['all', ['==', 'type', 'road'], ['has', 'name']]);
+      const expr = parseFilter([
+        'all',
+        ['==', 'type', 'road'],
+        ['has', 'name'],
+      ]);
       expect(expr!.operator).toBe('all');
       expect(expr!.args).toHaveLength(2);
     });

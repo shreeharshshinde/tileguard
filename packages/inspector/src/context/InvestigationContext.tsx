@@ -110,7 +110,10 @@ type InvestigationAction =
   | { type: 'SET_CAMERA'; payload: CameraPosition }
   | { type: 'SET_COMPARISON'; payload: Partial<ComparisonState> }
   | { type: 'SET_REGRESSION_SELECTION'; payload: string | null }
-  | { type: 'ADD_TIMELINE_EVENT'; payload: Omit<TimelineEvent, 'id' | 'timestamp'> }
+  | {
+      type: 'ADD_TIMELINE_EVENT';
+      payload: Omit<TimelineEvent, 'id' | 'timestamp'>;
+    }
   | { type: 'SET_DATASET_NAME'; payload: string | null }
   | { type: 'RESET' };
 
@@ -269,9 +272,10 @@ function investigationReducer(
     case 'ADD_TIMELINE_EVENT':
       return {
         ...state,
-        timeline: [...state.timeline, createTimelineEvent(action.payload)].slice(
-          -MAX_TIMELINE_EVENTS,
-        ),
+        timeline: [
+          ...state.timeline,
+          createTimelineEvent(action.payload),
+        ].slice(-MAX_TIMELINE_EVENTS),
       };
 
     case 'SET_DATASET_NAME':
@@ -308,7 +312,9 @@ interface InvestigationContextValue {
   readonly actions: InvestigationActions;
 }
 
-const InvestigationContext = createContext<InvestigationContextValue | null>(null);
+const InvestigationContext = createContext<InvestigationContextValue | null>(
+  null,
+);
 
 // ---------------------------------------------------------------------------
 // Provider
@@ -325,15 +331,20 @@ export function InvestigationProvider({
     () => ({
       selectFeature: (payload) => dispatch({ type: 'SELECT_FEATURE', payload }),
       hoverFeature: (payload) => dispatch({ type: 'HOVER_FEATURE', payload }),
-      setActiveLayer: (payload) => dispatch({ type: 'SET_ACTIVE_LAYER', payload }),
-      setActiveDiagnostic: (payload) => dispatch({ type: 'SET_ACTIVE_DIAGNOSTIC', payload }),
-      setStyleLayer: (payload) => dispatch({ type: 'SET_STYLE_LAYER', payload }),
+      setActiveLayer: (payload) =>
+        dispatch({ type: 'SET_ACTIVE_LAYER', payload }),
+      setActiveDiagnostic: (payload) =>
+        dispatch({ type: 'SET_ACTIVE_DIAGNOSTIC', payload }),
+      setStyleLayer: (payload) =>
+        dispatch({ type: 'SET_STYLE_LAYER', payload }),
       setCamera: (payload) => dispatch({ type: 'SET_CAMERA', payload }),
       setComparison: (payload) => dispatch({ type: 'SET_COMPARISON', payload }),
       setRegressionSelection: (payload) =>
         dispatch({ type: 'SET_REGRESSION_SELECTION', payload }),
-      addTimelineEvent: (payload) => dispatch({ type: 'ADD_TIMELINE_EVENT', payload }),
-      setDatasetName: (payload) => dispatch({ type: 'SET_DATASET_NAME', payload }),
+      addTimelineEvent: (payload) =>
+        dispatch({ type: 'ADD_TIMELINE_EVENT', payload }),
+      setDatasetName: (payload) =>
+        dispatch({ type: 'SET_DATASET_NAME', payload }),
       reset: () => dispatch({ type: 'RESET' }),
     }),
     [],

@@ -16,6 +16,7 @@
  *   - Backdrop click closes the overlay
  */
 import { AnimatePresence, motion } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import {
   Code,
   Keyboard,
@@ -25,10 +26,9 @@ import {
   ScanLine,
   X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { Inspector } from '../../create-inspector.js';
 import { useInspectorContext } from '../../context/InspectorContext.js';
+import type { Inspector } from '../../create-inspector.js';
 import { useSettings } from '../../hooks/use-statistics-settings.js';
 import { SliderSetting } from './SliderSetting.js';
 import { ToggleSetting } from './ToggleSetting.js';
@@ -60,7 +60,9 @@ export interface SettingsOverlayProps {
   readonly onClose: () => void;
 }
 
-export function SettingsOverlay({ onClose }: SettingsOverlayProps): JSX.Element {
+export function SettingsOverlay({
+  onClose,
+}: SettingsOverlayProps): JSX.Element {
   const { inspector } = useInspectorContext();
   const settings = useSettings();
   const [activeTab, setActiveTab] = useState('appearance');
@@ -130,12 +132,16 @@ export function SettingsOverlay({ onClose }: SettingsOverlayProps): JSX.Element 
     return () => container.removeEventListener('keydown', handleTab);
   }, []);
 
-  const rowClass = 'flex items-center justify-between gap-4 py-3 border-b border-[var(--tg-border)] last:border-0';
+  const rowClass =
+    'flex items-center justify-between gap-4 py-3 border-b border-[var(--tg-border)] last:border-0';
   const labelClass = 'text-sm font-medium text-[var(--tg-text-primary)]';
   const descClass = 'mt-0.5 text-xs text-[var(--tg-text-muted)]';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-stretch justify-end" aria-modal="true">
+    <div
+      className="fixed inset-0 z-50 flex items-stretch justify-end"
+      aria-modal="true"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/40"
@@ -156,7 +162,9 @@ export function SettingsOverlay({ onClose }: SettingsOverlayProps): JSX.Element 
       >
         {/* Header */}
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-[var(--tg-border)] px-4">
-          <span className="text-sm font-semibold text-[var(--tg-text-primary)]">Settings</span>
+          <span className="text-sm font-semibold text-[var(--tg-text-primary)]">
+            Settings
+          </span>
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -304,8 +312,8 @@ export function SettingsOverlay({ onClose }: SettingsOverlayProps): JSX.Element 
                           sev === 'error'
                             ? 'text-[var(--tg-error)]'
                             : sev === 'warning'
-                            ? 'text-[var(--tg-warning)]'
-                            : 'text-[var(--tg-info)]',
+                              ? 'text-[var(--tg-warning)]'
+                              : 'text-[var(--tg-info)]',
                         ].join(' ')}
                       >
                         {sev.charAt(0).toUpperCase() + sev.slice(1)} and above
@@ -367,7 +375,9 @@ export function SettingsOverlay({ onClose }: SettingsOverlayProps): JSX.Element 
                   key={key}
                   className="flex items-center justify-between rounded-md px-2 py-2 transition hover:bg-[var(--tg-bg-hover)]"
                 >
-                  <span className="text-xs text-[var(--tg-text-secondary)]">{desc}</span>
+                  <span className="text-xs text-[var(--tg-text-secondary)]">
+                    {desc}
+                  </span>
                   <kbd className="rounded bg-[var(--tg-bg-surface)] px-2 py-0.5 font-mono text-[10px] text-[var(--tg-text-primary)] ring-1 ring-[var(--tg-border)]">
                     {key}
                   </kbd>

@@ -11,7 +11,7 @@ import type {
   LayerSnapshot,
   TileSnapshot,
 } from './models/comparison.js';
-import type { TileStatistics, LayerStatistics } from './models/statistics.js';
+import type { LayerStatistics, TileStatistics } from './models/statistics.js';
 
 // ---------------------------------------------------------------------------
 // Input types (callers provide these)
@@ -27,7 +27,10 @@ export interface RawFeatureData {
   readonly id?: number | string;
   readonly geometryType: string;
   readonly properties: Readonly<Record<string, unknown>>;
-  readonly geometry: readonly (readonly { readonly x: number; readonly y: number }[])[];
+  readonly geometry: readonly (readonly {
+    readonly x: number;
+    readonly y: number;
+  }[])[];
 }
 
 // ---------------------------------------------------------------------------
@@ -94,7 +97,9 @@ function createSnapshot(
 
   // Build statistics
   const diagsByLayer = new Map<string, number>();
-  let diagErrors = 0, diagWarnings = 0, diagInfo = 0;
+  let diagErrors = 0,
+    diagWarnings = 0,
+    diagInfo = 0;
   for (const d of diagnostics) {
     const loc = d.location as { layer?: string } | undefined;
     if (loc?.layer) {
@@ -105,7 +110,9 @@ function createSnapshot(
     else diagInfo++;
   }
 
-  let totalPoint = 0, totalLine = 0, totalPolygon = 0;
+  let totalPoint = 0,
+    totalLine = 0,
+    totalPolygon = 0;
   for (const ls of layerSnapshots) {
     totalPoint += ls.geometryCounts.point;
     totalLine += ls.geometryCounts.line;
@@ -124,8 +131,16 @@ function createSnapshot(
   const statistics: TileStatistics = Object.freeze({
     totalLayers: layerSnapshots.length,
     totalFeatures: featureSnapshots.length,
-    geometryCounts: Object.freeze({ point: totalPoint, line: totalLine, polygon: totalPolygon }),
-    diagnostics: Object.freeze({ errors: diagErrors, warnings: diagWarnings, info: diagInfo }),
+    geometryCounts: Object.freeze({
+      point: totalPoint,
+      line: totalLine,
+      polygon: totalPolygon,
+    }),
+    diagnostics: Object.freeze({
+      errors: diagErrors,
+      warnings: diagWarnings,
+      info: diagInfo,
+    }),
     layers: Object.freeze(layerStats),
   });
 

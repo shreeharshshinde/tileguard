@@ -10,7 +10,10 @@
 
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Check result
@@ -60,7 +63,8 @@ export async function runDoctor(
   let hasWarning = false;
 
   for (const check of checks) {
-    const icon = check.status === 'ok' ? '✓' : check.status === 'warn' ? '⚠' : '✗';
+    const icon =
+      check.status === 'ok' ? '✓' : check.status === 'warn' ? '⚠' : '✗';
     lines.push(`  ${icon} ${check.label}`);
     if (check.detail) {
       lines.push(`    ${check.detail}`);
@@ -150,7 +154,8 @@ async function checkRuleLoading(): Promise<CheckResult> {
     return {
       label: 'Rule Loading',
       status: 'fail',
-      detail: err instanceof Error ? err.message : 'Failed to load rule packages',
+      detail:
+        err instanceof Error ? err.message : 'Failed to load rule packages',
     };
   }
 }

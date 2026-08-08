@@ -236,7 +236,8 @@ const PAGE_META: Record<WorkspacePage, PageMeta> = {
   },
   'style-explorer': {
     title: 'Style Explorer',
-    subtitle: 'Validate MapLibre style specifications and layer configurations.',
+    subtitle:
+      'Validate MapLibre style specifications and layer configurations.',
     breadcrumb: ['Home', 'Workspace', 'Style'],
     nextSteps: [
       {
@@ -354,12 +355,14 @@ class NavigationServiceImpl implements NavigationService {
 
   getPageMeta(page?: WorkspacePage): PageMeta {
     const target = page ?? this._page;
-    return PAGE_META[target] ?? {
-      title: target,
-      subtitle: '',
-      breadcrumb: ['Home', 'Workspace', target],
-      nextSteps: [],
-    };
+    return (
+      PAGE_META[target] ?? {
+        title: target,
+        subtitle: '',
+        breadcrumb: ['Home', 'Workspace', target],
+        nextSteps: [],
+      }
+    );
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────

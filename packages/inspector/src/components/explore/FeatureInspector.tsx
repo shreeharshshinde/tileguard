@@ -26,8 +26,8 @@ import {
 import { memo, useState } from 'react';
 import type { Inspector } from '../../create-inspector.js';
 import { useSelectedFeature } from '../../hooks/use-store.js';
-import type { InspectorStore } from '../../store/inspector-store.js';
 import type { ResolvedFeature } from '../../providers/FeatureProvider.js';
+import type { InspectorStore } from '../../store/inspector-store.js';
 import {
   EmptyWorkspace,
   PanelDivider,
@@ -56,7 +56,10 @@ const FeatureSummary = memo(function FeatureSummary({
     <div className="px-[var(--tg-space-md)] py-[var(--tg-space-sm)]">
       {/* Layer + ID */}
       <div className="flex items-center gap-2 mb-[var(--tg-space-sm)]">
-        <Layers className="h-3.5 w-3.5 shrink-0 text-[var(--tg-accent)]" aria-hidden />
+        <Layers
+          className="h-3.5 w-3.5 shrink-0 text-[var(--tg-accent)]"
+          aria-hidden
+        />
         <span className="text-xs font-semibold text-[var(--tg-text-primary)] truncate">
           {feature.layerName}
         </span>
@@ -71,25 +74,33 @@ const FeatureSummary = memo(function FeatureSummary({
           <Hash className="h-3 w-3 shrink-0" aria-hidden />
           <span>Type</span>
         </div>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{feature.geometryType}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {feature.geometryType}
+        </span>
 
         <div className="flex items-center gap-1 text-[var(--tg-text-muted)]">
           <Table className="h-3 w-3 shrink-0" aria-hidden />
           <span>Properties</span>
         </div>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{propCount}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {propCount}
+        </span>
 
         <div className="flex items-center gap-1 text-[var(--tg-text-muted)]">
           <MapPin className="h-3 w-3 shrink-0" aria-hidden />
           <span>Vertices</span>
         </div>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{vertexCount.toLocaleString()}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {vertexCount.toLocaleString()}
+        </span>
 
         <div className="flex items-center gap-1 text-[var(--tg-text-muted)]">
           <Box className="h-3 w-3 shrink-0" aria-hidden />
           <span>Rings</span>
         </div>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{ringCount}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {ringCount}
+        </span>
       </div>
     </div>
   );
@@ -180,10 +191,10 @@ const PropertyInspector = memo(function PropertyInspector({
                   {value === null
                     ? 'null'
                     : value === undefined
-                    ? 'undefined'
-                    : typeof value === 'string'
-                    ? `"${value}"`
-                    : String(value)}
+                      ? 'undefined'
+                      : typeof value === 'string'
+                        ? `"${value}"`
+                        : String(value)}
                 </span>
               </td>
             </tr>
@@ -228,22 +239,34 @@ const GeometryInspector = memo(function GeometryInspector({
     <div className="px-[var(--tg-space-md)] py-[var(--tg-space-sm)]">
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
         <span className="text-[var(--tg-text-muted)]">Type</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{feature.geometryType}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {feature.geometryType}
+        </span>
 
         <span className="text-[var(--tg-text-muted)]">Rings</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{rings.length}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {rings.length}
+        </span>
 
         <span className="text-[var(--tg-text-muted)]">Vertices</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{totalVertices.toLocaleString()}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {totalVertices.toLocaleString()}
+        </span>
 
         <span className="text-[var(--tg-text-muted)]">Centroid</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">({cx}, {cy})</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          ({cx}, {cy})
+        </span>
 
         <span className="text-[var(--tg-text-muted)]">Bounds X</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{minX.toFixed(0)} – {maxX.toFixed(0)}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {minX.toFixed(0)} – {maxX.toFixed(0)}
+        </span>
 
         <span className="text-[var(--tg-text-muted)]">Bounds Y</span>
-        <span className="font-mono text-[var(--tg-text-secondary)]">{minY.toFixed(0)} – {maxY.toFixed(0)}</span>
+        <span className="font-mono text-[var(--tg-text-secondary)]">
+          {minY.toFixed(0)} – {maxY.toFixed(0)}
+        </span>
       </div>
     </div>
   );
@@ -282,10 +305,15 @@ function CoordinateViewer({ geometry }: CoordinateViewerProps): JSX.Element {
       </button>
       {expanded && (
         <div className="max-h-32 overflow-y-auto border-t border-[var(--tg-border)] bg-[var(--tg-bg-surface)]">
-          <table className="w-full text-[9px] font-mono" aria-label="Coordinates">
+          <table
+            className="w-full text-[9px] font-mono"
+            aria-label="Coordinates"
+          >
             <thead>
               <tr className="text-[var(--tg-text-muted)]">
-                <th className="py-0.5 pl-[var(--tg-space-md)] text-left font-medium">#</th>
+                <th className="py-0.5 pl-[var(--tg-space-md)] text-left font-medium">
+                  #
+                </th>
                 <th className="py-0.5 text-left font-medium">X</th>
                 <th className="py-0.5 text-left font-medium">Y</th>
               </tr>
@@ -293,14 +321,23 @@ function CoordinateViewer({ geometry }: CoordinateViewerProps): JSX.Element {
             <tbody>
               {preview.map((pt, i) => (
                 <tr key={i} className="border-t border-[var(--tg-border)]/30">
-                  <td className="py-0.5 pl-[var(--tg-space-md)] text-[var(--tg-text-muted)]">{i}</td>
-                  <td className="py-0.5 text-[var(--tg-text-secondary)]">{pt.x.toFixed(2)}</td>
-                  <td className="py-0.5 pr-[var(--tg-space-md)] text-[var(--tg-text-secondary)]">{pt.y.toFixed(2)}</td>
+                  <td className="py-0.5 pl-[var(--tg-space-md)] text-[var(--tg-text-muted)]">
+                    {i}
+                  </td>
+                  <td className="py-0.5 text-[var(--tg-text-secondary)]">
+                    {pt.x.toFixed(2)}
+                  </td>
+                  <td className="py-0.5 pr-[var(--tg-space-md)] text-[var(--tg-text-secondary)]">
+                    {pt.y.toFixed(2)}
+                  </td>
                 </tr>
               ))}
               {firstRing.length > 8 && (
                 <tr>
-                  <td colSpan={3} className="py-0.5 pl-[var(--tg-space-md)] text-[var(--tg-text-muted)] italic">
+                  <td
+                    colSpan={3}
+                    className="py-0.5 pl-[var(--tg-space-md)] text-[var(--tg-text-muted)] italic"
+                  >
                     …and {firstRing.length - 8} more
                   </td>
                 </tr>
@@ -322,7 +359,12 @@ export interface FeatureInspectorProps {
   readonly inspector: Inspector | null;
 }
 
-type InspectorTab = 'summary' | 'properties' | 'geometry' | 'coordinates' | 'json';
+type InspectorTab =
+  | 'summary'
+  | 'properties'
+  | 'geometry'
+  | 'coordinates'
+  | 'json';
 
 const TAB_LABELS: { key: InspectorTab; label: string }[] = [
   { key: 'summary', label: 'Summary' },
@@ -397,9 +439,7 @@ export function FeatureInspector({
           <PropertyInspector properties={feature.properties} />
         )}
 
-        {activeTab === 'geometry' && (
-          <GeometryInspector feature={feature} />
-        )}
+        {activeTab === 'geometry' && <GeometryInspector feature={feature} />}
 
         {activeTab === 'coordinates' && (
           <CoordinateViewer geometry={feature.geometry} />

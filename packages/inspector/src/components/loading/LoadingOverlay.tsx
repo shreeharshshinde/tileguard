@@ -27,9 +27,21 @@ interface StepDef {
 
 const STEPS: StepDef[] = [
   { id: 'loading', label: 'Reading PBF', detail: 'Fetching the tile binary' },
-  { id: 'parsing', label: 'Decoding geometry', detail: 'Building the spatial index' },
-  { id: 'statistics', label: 'Computing statistics', detail: 'Counting features and layers' },
-  { id: 'diagnostics', label: 'Running diagnostics', detail: 'Applying quality rules' },
+  {
+    id: 'parsing',
+    label: 'Decoding geometry',
+    detail: 'Building the spatial index',
+  },
+  {
+    id: 'statistics',
+    label: 'Computing statistics',
+    detail: 'Counting features and layers',
+  },
+  {
+    id: 'diagnostics',
+    label: 'Running diagnostics',
+    detail: 'Applying quality rules',
+  },
   { id: 'ready', label: 'Workspace ready', detail: 'All checks passed' },
 ];
 
@@ -139,8 +151,8 @@ export function LoadingOverlay({
                           isDone
                             ? 'text-[var(--tg-text-secondary)]'
                             : isActive
-                            ? 'font-medium text-[var(--tg-text-primary)]'
-                            : 'text-[var(--tg-text-muted)]',
+                              ? 'font-medium text-[var(--tg-text-primary)]'
+                              : 'text-[var(--tg-text-muted)]',
                         ].join(' ')}
                       >
                         {step.label}

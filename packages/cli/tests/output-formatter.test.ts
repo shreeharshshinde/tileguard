@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   createOutputFormatter,
   formatDelta,
@@ -59,10 +59,14 @@ describe('createOutputFormatter — text', () => {
       ['Short', 1],
       ['Much Longer Key', 2],
     ]);
-    const lines = result.split('\n').filter((l) => l.includes('Short') || l.includes('Much'));
+    const lines = result
+      .split('\n')
+      .filter((l) => l.includes('Short') || l.includes('Much'));
     const shortLine = lines.find((l) => l.includes('Short'))!;
     const longLine = lines.find((l) => l.includes('Much'))!;
-    expect(shortLine.indexOf('1')).toBeGreaterThanOrEqual(longLine.indexOf('2') - 1);
+    expect(shortLine.indexOf('1')).toBeGreaterThanOrEqual(
+      longLine.indexOf('2') - 1,
+    );
   });
 
   it('table produces aligned columns with separator', () => {

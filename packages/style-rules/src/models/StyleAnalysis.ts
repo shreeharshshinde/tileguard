@@ -8,9 +8,9 @@
 
 import type { Diagnostic, Severity } from '@tileguard/core';
 import type { StyleDocument } from './StyleDocument.js';
+import type { PropertyReference } from './StyleExpression.js';
 import type { StyleLayer } from './StyleLayer.js';
 import type { StyleSource } from './StyleSource.js';
-import type { PropertyReference } from './StyleExpression.js';
 
 // ---------------------------------------------------------------------------
 // Resolved Relationships

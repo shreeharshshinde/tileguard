@@ -20,6 +20,8 @@
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { RegressionAnalysis } from '../../analysis/models/regression.js';
+import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
 import {
   createComparisonService,
   type TileComparison,
@@ -37,59 +39,56 @@ import {
 import { useProfiler } from '../../hooks/useProfiler.js';
 import { useWorkspace } from '../../hooks/useWorkspace.js';
 import {
-  tileLoadedToast,
-  tileLoadErrorToast,
   comparisonCompleteToast,
+  tileLoadErrorToast,
+  tileLoadedToast,
 } from '../../lib/toast.js';
 import {
   createPerformanceProfiler,
   type PerformanceProfiler,
 } from '../../performance/PerformanceProfiler.js';
 import { decodeBrowserTile } from '../../services/browser-tile-loader.js';
+import { getNavigationService } from '../../services/NavigationService.js';
+import { getPresentationService } from '../../services/PresentationService.js';
 import {
   createShortcutService,
   type ShortcutAction,
 } from '../../services/ShortcutService.js';
-import { getPresentationService } from '../../services/PresentationService.js';
-import { getNavigationService } from '../../services/NavigationService.js';
 import type { ViewportState } from '../../viewport/viewport.js';
-import { createRegressionEngine } from '../../analysis/RegressionEngine.js';
-import type { RegressionAnalysis } from '../../analysis/models/regression.js';
 
 // ── Components ───────────────────────────────────────────────────────────────
 import { CanvasView } from '../CanvasView.js';
+import { GlobalSearch } from '../command/GlobalSearch.js';
 import { ComparisonPage } from '../comparison/ComparisonPage.js';
-import { RegressionPage } from '../regression/RegressionPage.js';
-import { ReportPage } from '../report/ReportPage.js';
+import { EngineeringConsole } from '../console/EngineeringConsole.js';
 
 // Phase 3 workspaces
 import { DiagnosticExplorer } from '../diagnostics/DiagnosticExplorer.js';
+import { useDiagnosticsState } from '../diagnostics/DiagnosticsPage.js';
 import { RuleInspector } from '../diagnostics/RuleInspector.js';
 import { TileHealthHeader } from '../diagnostics/TileHealthHeader.js';
-import { useDiagnosticsState } from '../diagnostics/DiagnosticsPage.js';
-import { InspectorPageHeader } from '../inspector/InspectorPageHeader.js';
-import { LayerExplorer } from '../explore/LayerExplorer.js';
+import { CommandPalette } from '../dialogs/CommandPalette.js';
+import { HelpOverlay } from '../dialogs/HelpOverlay.js';
+import { ShortcutOverlay } from '../dialogs/ShortcutOverlay.js';
 import { FeatureInspector } from '../explore/FeatureInspector.js';
-import { StatisticsDashboard } from '../statistics/StatisticsDashboard.js';
-import { StylePage } from '../style/StylePage.js';
-
+import { LayerExplorer } from '../explore/LayerExplorer.js';
+import { InspectorPageHeader } from '../inspector/InspectorPageHeader.js';
 // Shell
 import type { LoadingStep } from '../loading/LoadingOverlay.js';
 import { LoadingOverlay } from '../loading/LoadingOverlay.js';
+import { NextStepBar } from '../navigation/NextStepBar.js';
 import { DeveloperOverlay } from '../profiler/DeveloperOverlay.js';
+import { RegressionPage } from '../regression/RegressionPage.js';
+import { ReportPage } from '../report/ReportPage.js';
 import type { NavTab } from '../SidebarNav.js';
 import { SettingsOverlay } from '../settings/SettingsOverlay.js';
+import { StatisticsDashboard } from '../statistics/StatisticsDashboard.js';
+import { StylePage } from '../style/StylePage.js';
 import { Toolbar } from '../Toolbar.js';
-import { CommandPalette } from '../dialogs/CommandPalette.js';
-import { ShortcutOverlay } from '../dialogs/ShortcutOverlay.js';
-import { HelpOverlay } from '../dialogs/HelpOverlay.js';
-import { GlobalSearch } from '../command/GlobalSearch.js';
-import { NextStepBar } from '../navigation/NextStepBar.js';
+import { ResizablePanel } from './ResizablePanel.js';
 import { WorkspaceFooter } from './WorkspaceFooter.js';
 import { WorkspaceHeader } from './WorkspaceHeader.js';
 import { WorkspaceSidebar } from './WorkspaceSidebar.js';
-import { ResizablePanel } from './ResizablePanel.js';
-import { EngineeringConsole } from '../console/EngineeringConsole.js';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton profiler
@@ -176,7 +175,9 @@ export function Workspace({
   }, [updateLayout]);
 
   // ── Loading state ─────────────────────────────────────────────────────────
-  const [pendingFile, setPendingFile] = useState<File | null>(initialFile ?? null);
+  const [pendingFile, setPendingFile] = useState<File | null>(
+    initialFile ?? null,
+  );
   const [loadingStep, setLoadingStep] = useState<LoadingStep>('ready');
   const [loadError, setLoadError] = useState<string | undefined>();
   const isLoading = lifecycle.status === 'loading' || pendingFile !== null;
@@ -197,7 +198,9 @@ export function Workspace({
   const captureSnapshot = useCallback(
     async (file: File): Promise<TileSnapshot | null> => {
       try {
-        const { createInspectorStore } = await import('../../store/inspector-store.js');
+        const { createInspectorStore } = await import(
+          '../../store/inspector-store.js'
+        );
         const tmpStore = createInspectorStore();
         const artifact = await decodeBrowserTile(file);
         await tmpStore.load(file.name, artifact, []);
@@ -227,7 +230,7 @@ export function Workspace({
         updateLayout({ activeTab: 'compare' });
       })();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFileSelectedA = useCallback(
@@ -338,7 +341,9 @@ export function Workspace({
       }
     };
     void run();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [inspector, pendingFile]);
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
@@ -346,31 +351,66 @@ export function Workspace({
     const shortcuts = createShortcutService();
     const unsub = shortcuts.registerHandler((action: ShortcutAction) => {
       switch (action) {
-        case 'clearSelection': store.select(null, null); break;
-        case 'resetView': inspector?.render(); break;
-        case 'focusSearch': searchInputRef.current?.focus(); break;
-        case 'showExplore': setActiveTab('inspector'); break;
-        case 'showDiagnostics': setActiveTab('diagnostics'); break;
-        case 'showStatistics': setActiveTab('statistics'); break;
-        case 'showStyle': setActiveTab('style-explorer'); break;
-        case 'showCompare': setActiveTab('compare'); break;
-        case 'showRegression': setActiveTab('regression'); break;
-        case 'showReports': setActiveTab('reports'); break;
+        case 'clearSelection':
+          store.select(null, null);
+          break;
+        case 'resetView':
+          inspector?.render();
+          break;
+        case 'focusSearch':
+          searchInputRef.current?.focus();
+          break;
+        case 'showExplore':
+          setActiveTab('inspector');
+          break;
+        case 'showDiagnostics':
+          setActiveTab('diagnostics');
+          break;
+        case 'showStatistics':
+          setActiveTab('statistics');
+          break;
+        case 'showStyle':
+          setActiveTab('style-explorer');
+          break;
+        case 'showCompare':
+          setActiveTab('compare');
+          break;
+        case 'showRegression':
+          setActiveTab('regression');
+          break;
+        case 'showReports':
+          setActiveTab('reports');
+          break;
         case 'openSettings':
-        case 'showSettings': setSettingsOpen(true); break;
-        case 'goHome': onGoHome(); break;
+        case 'showSettings':
+          setSettingsOpen(true);
+          break;
+        case 'goHome':
+          onGoHome();
+          break;
         case 'toggleHover':
-          inspector?.updateSettings({ hoverEnabled: !inspector.getSettings().hoverEnabled });
+          inspector?.updateSettings({
+            hoverEnabled: !inspector.getSettings().hoverEnabled,
+          });
           break;
         case 'toggleVertices':
-          inspector?.updateSettings({ showVertices: !inspector.getSettings().showVertices });
+          inspector?.updateSettings({
+            showVertices: !inspector.getSettings().showVertices,
+          });
           break;
         case 'toggleBounds':
-          inspector?.updateSettings({ showTileBounds: !inspector.getSettings().showTileBounds });
+          inspector?.updateSettings({
+            showTileBounds: !inspector.getSettings().showTileBounds,
+          });
           break;
-        case 'toggleDevOverlay': setDevOverlayVisible((v) => !v); break;
-        case 'togglePresentationMode': getPresentationService().toggle(); break;
-        default: break;
+        case 'toggleDevOverlay':
+          setDevOverlayVisible((v) => !v);
+          break;
+        case 'togglePresentationMode':
+          getPresentationService().toggle();
+          break;
+        default:
+          break;
       }
     });
     const cleanup = shortcuts.attach(window);
@@ -412,9 +452,9 @@ export function Workspace({
 
   // ── Derived flags ─────────────────────────────────────────────────────────
   // Canvas workspaces: canvas is visible, canvas-adjacent panels shown
-  const isExplore     = activeTab === 'inspector';
-  const isDiagnose    = activeTab === 'diagnostics';
-  const isCanvasPage  = isExplore || isDiagnose;
+  const isExplore = activeTab === 'inspector';
+  const isDiagnose = activeTab === 'diagnostics';
+  const isCanvasPage = isExplore || isDiagnose;
 
   // Non-canvas pages that render in the full-page overlay layer
   const isNonCanvasFullPage =
@@ -427,7 +467,6 @@ export function Workspace({
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--tg-bg-primary)] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
-
       {/* Application header */}
       <WorkspaceHeader
         activePage={activeTab as any}
@@ -444,14 +483,15 @@ export function Workspace({
           onHomeRequested={onGoHome}
           currentFile={activeFileName}
           onOpenFile={() => {
-            document.querySelector<HTMLInputElement>('[data-file-input]')?.click();
+            document
+              .querySelector<HTMLInputElement>('[data-file-input]')
+              ?.click();
           }}
           onHelpRequested={() => setHelpOverlayOpen(true)}
         />
 
         {/* Content column */}
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-
           {/* ── Canvas-page identity headers (always present when on those tabs) */}
           {isExplore && <InspectorPageHeader store={store} />}
           {isDiagnose && <TileHealthHeader store={store} />}
@@ -471,7 +511,10 @@ export function Workspace({
               searchResults={search.results}
               searchInputRef={searchInputRef}
               onSelectSearchResult={(result) => {
-                inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
+                inspector?.focusFeature(
+                  result.feature.layerName,
+                  result.feature.featureIndex,
+                );
                 search.clearSearch();
               }}
             />
@@ -479,13 +522,14 @@ export function Workspace({
 
           {/* ── Main content area ──────────────────────────────────────────── */}
           <div className="relative flex min-h-0 flex-1 overflow-hidden">
-
             {/* ══════════════════════════════════════════════════════════════
                 CANVAS LAYER — always mounted, never inside AnimatePresence.
                 Visibility is controlled by `hidden` class so the DOM and
                 React fiber stay alive. The InspectorStore is never disposed.
             ═══════════════════════════════════════════════════════════════ */}
-            <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${isNonCanvasFullPage ? 'hidden' : ''}`}>
+            <div
+              className={`flex min-h-0 flex-1 flex-col overflow-hidden ${isNonCanvasFullPage ? 'hidden' : ''}`}
+            >
               {/* Explore workspace: LayerExplorer | Canvas | FeatureInspector */}
               <ResizablePanel
                 leftWidth={leftPanelWidth}
@@ -511,8 +555,12 @@ export function Workspace({
                     {isLoading && loadingStep !== 'ready' && (
                       <LoadingOverlay
                         currentStep={loadingStep}
-                        {...(pendingFile !== null ? { fileName: pendingFile.name } : {})}
-                        {...(loadError !== undefined ? { error: loadError } : {})}
+                        {...(pendingFile !== null
+                          ? { fileName: pendingFile.name }
+                          : {})}
+                        {...(loadError !== undefined
+                          ? { error: loadError }
+                          : {})}
                       />
                     )}
                     {devOverlayVisible && (
@@ -521,7 +569,8 @@ export function Workspace({
                           metrics={metrics}
                           viewport={viewport}
                           hoveredFeature={
-                            hover.layerName !== null && hover.featureIndex !== null
+                            hover.layerName !== null &&
+                            hover.featureIndex !== null
                               ? (inspector?.getSelectedFeature() ?? null)
                               : null
                           }
@@ -548,7 +597,9 @@ export function Workspace({
                       <DiagnosticExplorer
                         store={store}
                         inspector={inspector}
-                        onDiagnosticSelected={diagnostics.handleSelectDiagnostic}
+                        onDiagnosticSelected={
+                          diagnostics.handleSelectDiagnostic
+                        }
                       />
                     </aside>
                   )}
@@ -561,7 +612,9 @@ export function Workspace({
                       style={{ width: rightPanelWidth }}
                       aria-label="Rule Inspector"
                     >
-                      <RuleInspector diagnostic={diagnostics.selectedDiagnostic} />
+                      <RuleInspector
+                        diagnostic={diagnostics.selectedDiagnostic}
+                      />
                     </aside>
                   )}
                 </div>
@@ -601,8 +654,12 @@ export function Workspace({
                       filePathA={filePathA}
                       filePathB={filePathB}
                       isComparing={isComparing}
-                      onFileSelectedA={(f) => { void handleFileSelectedA(f); }}
-                      onFileSelectedB={(f) => { void handleFileSelectedB(f); }}
+                      onFileSelectedA={(f) => {
+                        void handleFileSelectedA(f);
+                      }}
+                      onFileSelectedB={(f) => {
+                        void handleFileSelectedB(f);
+                      }}
                       onRunComparison={handleRunComparison}
                     />
                   )}
@@ -610,12 +667,14 @@ export function Workspace({
                     <RegressionPage comparison={comparison} />
                   )}
                   {activeTab === 'reports' && (
-                    <ReportPage comparison={comparison} regression={regressionAnalysis} />
+                    <ReportPage
+                      comparison={comparison}
+                      regression={regressionAnalysis}
+                    />
                   )}
                 </motion.div>
               )}
             </AnimatePresence>
-
           </div>
 
           {/* NextStepBar */}
@@ -640,7 +699,10 @@ export function Workspace({
       {/* Overlays */}
       <AnimatePresence>
         {settingsOpen && (
-          <SettingsOverlay key="settings" onClose={() => setSettingsOpen(false)} />
+          <SettingsOverlay
+            key="settings"
+            onClose={() => setSettingsOpen(false)}
+          />
         )}
         {commandPaletteOpen && (
           <CommandPalette
@@ -648,14 +710,26 @@ export function Workspace({
             onClose={() => setCommandPaletteOpen(false)}
             onNavigate={(page) => setActiveTab(page as NavTab)}
             onGoHome={onGoHome}
-            onOpenSettings={() => { setCommandPaletteOpen(false); setSettingsOpen(true); }}
-            onOpenShortcuts={() => { setCommandPaletteOpen(false); setShortcutOverlayOpen(true); }}
-            onTogglePresentationMode={() => { getPresentationService().toggle(); setCommandPaletteOpen(false); }}
+            onOpenSettings={() => {
+              setCommandPaletteOpen(false);
+              setSettingsOpen(true);
+            }}
+            onOpenShortcuts={() => {
+              setCommandPaletteOpen(false);
+              setShortcutOverlayOpen(true);
+            }}
+            onTogglePresentationMode={() => {
+              getPresentationService().toggle();
+              setCommandPaletteOpen(false);
+            }}
             onOpenFile={() => setCommandPaletteOpen(false)}
           />
         )}
         {shortcutOverlayOpen && (
-          <ShortcutOverlay key="shortcuts" onClose={() => setShortcutOverlayOpen(false)} />
+          <ShortcutOverlay
+            key="shortcuts"
+            onClose={() => setShortcutOverlayOpen(false)}
+          />
         )}
         {helpOverlayOpen && (
           <HelpOverlay key="help" onClose={() => setHelpOverlayOpen(false)} />

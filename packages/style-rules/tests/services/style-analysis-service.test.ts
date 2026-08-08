@@ -4,12 +4,12 @@
 
 import { describe, expect, it } from 'vitest';
 import {
-  parseStyle,
   analyzeStyle,
-  validateStyleAnalysis,
   getLayer,
   getSource,
   getStatistics,
+  parseStyle,
+  validateStyleAnalysis,
 } from '../../src/services/StyleAnalysisEngine.js';
 
 const VALID_STYLE = {
@@ -28,7 +28,11 @@ const VALID_STYLE = {
     },
   },
   layers: [
-    { id: 'background', type: 'background', paint: { 'background-color': '#f0f0f0' } },
+    {
+      id: 'background',
+      type: 'background',
+      paint: { 'background-color': '#f0f0f0' },
+    },
     {
       id: 'water',
       type: 'fill',
@@ -42,8 +46,14 @@ const VALID_STYLE = {
       type: 'line',
       source: 'openmaptiles',
       'source-layer': 'transportation',
-      filter: ['all', ['has', 'class'], ['==', ['geometry-type'], 'LineString']],
-      paint: { 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 20, 5] },
+      filter: [
+        'all',
+        ['has', 'class'],
+        ['==', ['geometry-type'], 'LineString'],
+      ],
+      paint: {
+        'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 20, 5],
+      },
     },
     {
       id: 'labels',
@@ -124,7 +134,11 @@ describe('StyleAnalysisService', () => {
     });
 
     it('reports errors for invalid style', () => {
-      const { analysis } = analyzeStyle({ version: 7, sources: {}, layers: [] });
+      const { analysis } = analyzeStyle({
+        version: 7,
+        sources: {},
+        layers: [],
+      });
       expect(analysis!.valid).toBe(false);
       expect(analysis!.errorCount).toBeGreaterThan(0);
     });
@@ -145,7 +159,11 @@ describe('StyleAnalysisService', () => {
 
   describe('validateStyleAnalysis()', () => {
     it('returns diagnostics for invalid style', () => {
-      const result = validateStyleAnalysis({ version: 7, sources: {}, layers: [] });
+      const result = validateStyleAnalysis({
+        version: 7,
+        sources: {},
+        layers: [],
+      });
       expect(result.diagnostics.length).toBeGreaterThan(0);
       expect(result.error).toBeUndefined();
     });

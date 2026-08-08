@@ -24,7 +24,6 @@ import type {
   ReportResult,
   StatisticsSection,
 } from './models/EngineeringReport.js';
-import { createReporterRegistry, type ReporterRegistry } from './ReporterRegistry.js';
 import {
   buildAppendix,
   buildDiagnosticsSummary,
@@ -36,6 +35,10 @@ import {
   buildStatisticsDashboard,
   flattenRecommendations,
 } from './ReportAssembler.js';
+import {
+  createReporterRegistry,
+  type ReporterRegistry,
+} from './ReporterRegistry.js';
 
 // ---------------------------------------------------------------------------
 // Options
@@ -74,7 +77,9 @@ export interface ReportEngine {
 // Factory
 // ---------------------------------------------------------------------------
 
-export function createReportEngine(defaults: ReportEngineOptions = {}): ReportEngine {
+export function createReportEngine(
+  defaults: ReportEngineOptions = {},
+): ReportEngine {
   function generate(
     comparison: ComparisonInput | null | undefined,
     regression: RegressionInput | null | undefined,
@@ -82,13 +87,26 @@ export function createReportEngine(defaults: ReportEngineOptions = {}): ReportEn
     options: ReportEngineOptions = {},
   ): ReportResult {
     if (!comparison) {
-      return { ok: false, error: { code: 'MISSING_COMPARISON', message: 'comparison input is required.' } };
+      return {
+        ok: false,
+        error: {
+          code: 'MISSING_COMPARISON',
+          message: 'comparison input is required.',
+        },
+      };
     }
     if (!regression) {
-      return { ok: false, error: { code: 'MISSING_REGRESSION', message: 'regression input is required.' } };
+      return {
+        ok: false,
+        error: {
+          code: 'MISSING_REGRESSION',
+          message: 'regression input is required.',
+        },
+      };
     }
 
-    const registry = options.registry ?? defaults.registry ?? createReporterRegistry();
+    const registry =
+      options.registry ?? defaults.registry ?? createReporterRegistry();
     const renderer = registry.resolve(format);
     if (!renderer) {
       return {
@@ -108,7 +126,10 @@ export function createReportEngine(defaults: ReportEngineOptions = {}): ReportEn
         ok: false,
         error: {
           code: 'SERIALIZATION_ERROR',
-          message: err instanceof Error ? err.message : 'Unknown error building report.',
+          message:
+            err instanceof Error
+              ? err.message
+              : 'Unknown error building report.',
         },
       };
     }
@@ -121,12 +142,19 @@ export function createReportEngine(defaults: ReportEngineOptions = {}): ReportEn
         ok: false,
         error: {
           code: 'SERIALIZATION_ERROR',
-          message: err instanceof Error ? err.message : 'Unknown error rendering report.',
+          message:
+            err instanceof Error
+              ? err.message
+              : 'Unknown error rendering report.',
         },
       };
     }
 
-    const output: ReportOutput = { format: format as ReportFormat, content, report };
+    const output: ReportOutput = {
+      format: format as ReportFormat,
+      content,
+      report,
+    };
     return { ok: true, value: output };
   }
 
@@ -154,8 +182,10 @@ function buildReport(
   options: ReportEngineOptions,
   defaults: ReportEngineOptions,
 ): EngineeringReport {
-  const tileguardVersion = options.tileguardVersion ?? defaults.tileguardVersion ?? '0.0.0';
-  const totalDurationMs = options.totalDurationMs ?? defaults.totalDurationMs ?? 0;
+  const tileguardVersion =
+    options.tileguardVersion ?? defaults.tileguardVersion ?? '0.0.0';
+  const totalDurationMs =
+    options.totalDurationMs ?? defaults.totalDurationMs ?? 0;
   const generatedAt = new Date().toISOString();
 
   // Resolve investigation metadata (Phase 2 — Step 2)
@@ -201,18 +231,29 @@ function buildReport(
 
   // ── New UX sections — assembled by ReportAssembler ─────────────────────
 
-  const executiveSummary = buildExecutiveSummary(comparison, regression, totalDurationMs, generatedAt);
+  const executiveSummary = buildExecutiveSummary(
+    comparison,
+    regression,
+    totalDurationMs,
+    generatedAt,
+  );
   const keyFindings = buildKeyFindings(comparison, regression);
   const layerImpact = buildLayerImpact(comparison, regression);
   const regressionHighlights = buildRegressionHighlights(regression);
   const diagnosticsSummary = buildDiagnosticsSummary(comparison);
   const statisticsDashboard = buildStatisticsDashboard(comparison);
-  const prioritizedRecommendations = buildPrioritizedRecommendations(comparison, regression);
+  const prioritizedRecommendations = buildPrioritizedRecommendations(
+    comparison,
+    regression,
+  );
   const appendix = buildAppendix(comparison, regression, statisticsDashboard);
 
   // ── Legacy recommendations — derived from prioritized recs ─────────────
   // This keeps existing tests passing (they check recommendations.items)
-  const legacyItems = flattenRecommendations(prioritizedRecommendations, regression.candidates);
+  const legacyItems = flattenRecommendations(
+    prioritizedRecommendations,
+    regression.candidates,
+  );
   const recommendations: RecommendationSection = {
     items: legacyItems,
     notes: [],

@@ -18,22 +18,26 @@
  * Pure function — no side effects, no I/O.
  */
 
-import type { EngineeringReport, PrioritizedRecommendation, RegressionHighlight } from '../models/EngineeringReport.js';
+import type {
+  EngineeringReport,
+  PrioritizedRecommendation,
+  RegressionHighlight,
+} from '../models/EngineeringReport.js';
 import { MarkdownWriter } from '../utils/MarkdownWriter.js';
 
 const STATUS_EMOJI: Record<string, string> = {
-  'identical': '✅',
+  identical: '✅',
   'changes-detected': '⚠️',
   'regressions-found': '🔴',
-  'clean': '✅',
+  clean: '✅',
 };
 
 const RISK_EMOJI: Record<string, string> = {
-  'none': '✅',
-  'low': '🟡',
-  'medium': '🟠',
-  'high': '🔴',
-  'critical': '🚨',
+  none: '✅',
+  low: '🟡',
+  medium: '🟠',
+  high: '🔴',
+  critical: '🚨',
 };
 
 export function renderMarkdown(report: EngineeringReport): string {
@@ -63,9 +67,9 @@ export function renderMarkdown(report: EngineeringReport): string {
   md.h1('TileGuard Engineering Report');
   md.p(
     `**Generated:** ${metadata.generatedAt}  |  ` +
-    `**TileGuard:** ${metadata.tileguardVersion}  |  ` +
-    `**Duration:** ${metadata.totalDurationMs}ms  |  ` +
-    `**Engine:** Analysis`,
+      `**TileGuard:** ${metadata.tileguardVersion}  |  ` +
+      `**Duration:** ${metadata.totalDurationMs}ms  |  ` +
+      `**Engine:** Analysis`,
   );
 
   // Investigation Metadata block (Phase 2 — Step 2)
@@ -80,12 +84,24 @@ export function renderMarkdown(report: EngineeringReport): string {
   if (metadata.platform) metaItems.push(['Platform', metadata.platform]);
   if (metadata.cliVersion) metaItems.push(['CLI Version', metadata.cliVersion]);
   if (metadata.nodeVersion) metaItems.push(['Node.js', metadata.nodeVersion]);
-  if (metadata.ruleSetVersion) metaItems.push(['Rule Set', metadata.ruleSetVersion]);
-  if (metadata.configPath) metaItems.push(['Config', md.code(metadata.configPath)]);
-  if (metadata.sourceTileHash) metaItems.push(['Source Hash', md.code(metadata.sourceTileHash.slice(0, 12) + '…')]);
-  if (metadata.targetTileHash) metaItems.push(['Target Hash', md.code(metadata.targetTileHash.slice(0, 12) + '…')]);
+  if (metadata.ruleSetVersion)
+    metaItems.push(['Rule Set', metadata.ruleSetVersion]);
+  if (metadata.configPath)
+    metaItems.push(['Config', md.code(metadata.configPath)]);
+  if (metadata.sourceTileHash)
+    metaItems.push([
+      'Source Hash',
+      md.code(metadata.sourceTileHash.slice(0, 12) + '…'),
+    ]);
+  if (metadata.targetTileHash)
+    metaItems.push([
+      'Target Hash',
+      md.code(metadata.targetTileHash.slice(0, 12) + '…'),
+    ]);
 
-  md.p('<details>\n<summary><strong>📋 Investigation Metadata</strong></summary>\n');
+  md.p(
+    '<details>\n<summary><strong>📋 Investigation Metadata</strong></summary>\n',
+  );
   md.table(['Field', 'Value'], metaItems);
   md.p('</details>\n');
 
@@ -104,8 +120,8 @@ export function renderMarkdown(report: EngineeringReport): string {
 
   md.p(
     `${statusIcon} **Status:** ${statusLabel}  |  ` +
-    `${riskIcon} **Regression Risk:** ${riskLabel}  |  ` +
-    `**Duration:** ${executiveSummary.durationMs}ms`,
+      `${riskIcon} **Regression Risk:** ${riskLabel}  |  ` +
+      `**Duration:** ${executiveSummary.durationMs}ms`,
   );
 
   md.p(
@@ -122,7 +138,10 @@ export function renderMarkdown(report: EngineeringReport): string {
       ['Features Removed', `-${m.featuresRemoved.toLocaleString()}`],
       ['Regression Candidates', String(m.regressionCandidates)],
       ['New Diagnostics', String(m.newDiagnostics)],
-      ['Overall Confidence', m.regressionCandidates > 0 ? `${m.overallConfidencePct}%` : 'N/A'],
+      [
+        'Overall Confidence',
+        m.regressionCandidates > 0 ? `${m.overallConfidencePct}%` : 'N/A',
+      ],
     ],
   );
 
@@ -158,9 +177,19 @@ export function renderMarkdown(report: EngineeringReport): string {
     [
       ['Source tile', md.code(overview.sourceTile)],
       ['Target tile', md.code(overview.targetTile)],
-      ['Status', overview.isIdentical ? '✅ **IDENTICAL** — No changes' : '⚠️ **CHANGED** — Differences found'],
+      [
+        'Status',
+        overview.isIdentical
+          ? '✅ **IDENTICAL** — No changes'
+          : '⚠️ **CHANGED** — Differences found',
+      ],
       ['Regression candidates', String(overview.totalCandidates)],
-      ['Overall confidence', overview.totalCandidates > 0 ? `${Math.round(overview.overallConfidence * 100)}%` : 'N/A'],
+      [
+        'Overall confidence',
+        overview.totalCandidates > 0
+          ? `${Math.round(overview.overallConfidence * 100)}%`
+          : 'N/A',
+      ],
       ['Dominant kind', overview.dominantKind ?? 'N/A'],
     ],
   );
@@ -176,7 +205,7 @@ export function renderMarkdown(report: EngineeringReport): string {
   } else {
     md.table(
       ['Layer', 'Added (+)', 'Modified (~)', 'Removed (-)'],
-      layerImpact.map(l => [
+      layerImpact.map((l) => [
         md.bold(l.layerName),
         l.added > 0 ? `+${l.added.toLocaleString()}` : '—',
         l.modified > 0 ? `~${l.modified.toLocaleString()}` : '—',
@@ -192,12 +221,18 @@ export function renderMarkdown(report: EngineeringReport): string {
   md.h2('Regression Analysis');
 
   if (regressionHighlights.isClean) {
-    md.p('✅ **CLEAN** — No regression candidates found across ' + regression.totalFeatures.toLocaleString() + ' features.');
+    md.p(
+      '✅ **CLEAN** — No regression candidates found across ' +
+        regression.totalFeatures.toLocaleString() +
+        ' features.',
+    );
   } else {
     md.p(
       `🔴 **${regressionHighlights.totalCandidates}** candidate(s) detected  |  ` +
-      `Overall confidence: **${regressionHighlights.overallConfidencePct}%**` +
-      (regressionHighlights.dominantKind ? `  |  Dominant pattern: **${regressionHighlights.dominantKind}**` : ''),
+        `Overall confidence: **${regressionHighlights.overallConfidencePct}%**` +
+        (regressionHighlights.dominantKind
+          ? `  |  Dominant pattern: **${regressionHighlights.dominantKind}**`
+          : ''),
     );
 
     // Confidence bar helper (text)
@@ -215,7 +250,9 @@ export function renderMarkdown(report: EngineeringReport): string {
     }
 
     if (regressionHighlights.remainingCandidates.length > 0) {
-      md.p(`> 📎 **${regressionHighlights.remainingCandidates.length}** additional candidate(s) in [Appendix F](#appendix-f--all-regression-candidates).`);
+      md.p(
+        `> 📎 **${regressionHighlights.remainingCandidates.length}** additional candidate(s) in [Appendix F](#appendix-f--all-regression-candidates).`,
+      );
     }
   }
 
@@ -239,7 +276,7 @@ export function renderMarkdown(report: EngineeringReport): string {
     md.h3('Top Rules');
     md.table(
       ['Rule', 'Count', 'Severity'],
-      diagnosticsSummary.topRules.map(r => [
+      diagnosticsSummary.topRules.map((r) => [
         md.code(r.ruleId),
         String(r.count),
         r.severity,
@@ -263,7 +300,10 @@ export function renderMarkdown(report: EngineeringReport): string {
     md.h3('Resolved Diagnostics');
     md.table(
       ['Rule', 'Severity'],
-      diagnostics.resolvedDiagnostics.map((d) => [md.code(d.ruleId), d.severity]),
+      diagnostics.resolvedDiagnostics.map((d) => [
+        md.code(d.ruleId),
+        d.severity,
+      ]),
     );
   }
 
@@ -276,10 +316,30 @@ export function renderMarkdown(report: EngineeringReport): string {
   md.table(
     ['Metric', 'Before', 'After', 'Δ'],
     [
-      ['Layers', String(statisticsDashboard.layersA), String(statisticsDashboard.layersB), fmt(statisticsDashboard.layersDelta)],
-      ['Features', n(statisticsDashboard.featuresA), n(statisticsDashboard.featuresB), fmt(statisticsDashboard.featuresDelta)],
-      ['Vertices', n(statisticsDashboard.verticesA), n(statisticsDashboard.verticesB), fmt(statisticsDashboard.verticesDelta)],
-      ['Diagnostics', String(statisticsDashboard.diagnosticsA), String(statisticsDashboard.diagnosticsB), fmt(statisticsDashboard.diagnosticsDelta)],
+      [
+        'Layers',
+        String(statisticsDashboard.layersA),
+        String(statisticsDashboard.layersB),
+        fmt(statisticsDashboard.layersDelta),
+      ],
+      [
+        'Features',
+        n(statisticsDashboard.featuresA),
+        n(statisticsDashboard.featuresB),
+        fmt(statisticsDashboard.featuresDelta),
+      ],
+      [
+        'Vertices',
+        n(statisticsDashboard.verticesA),
+        n(statisticsDashboard.verticesB),
+        fmt(statisticsDashboard.verticesDelta),
+      ],
+      [
+        'Diagnostics',
+        String(statisticsDashboard.diagnosticsA),
+        String(statisticsDashboard.diagnosticsB),
+        fmt(statisticsDashboard.diagnosticsDelta),
+      ],
     ],
   );
 
@@ -289,7 +349,10 @@ export function renderMarkdown(report: EngineeringReport): string {
 
   md.h2('Recommendations');
 
-  if (prioritizedRecommendations.length === 0 && recommendations.items.length === 0) {
+  if (
+    prioritizedRecommendations.length === 0 &&
+    recommendations.items.length === 0
+  ) {
     md.p('No recommendations generated.');
   } else if (prioritizedRecommendations.length > 0) {
     renderPrioritizedRecs(md, prioritizedRecommendations);
@@ -337,13 +400,28 @@ export function renderMarkdown(report: EngineeringReport): string {
   md.h2('Appendix');
 
   // A — Added features
-  renderAppendixGroup(md, 'A — Added Features', appendix.addedByLayer, comparison.features.added);
+  renderAppendixGroup(
+    md,
+    'A — Added Features',
+    appendix.addedByLayer,
+    comparison.features.added,
+  );
 
   // B — Modified features
-  renderAppendixGroup(md, 'B — Modified Features', appendix.modifiedByLayer, comparison.features.modified);
+  renderAppendixGroup(
+    md,
+    'B — Modified Features',
+    appendix.modifiedByLayer,
+    comparison.features.modified,
+  );
 
   // C — Removed features
-  renderAppendixGroup(md, 'C — Removed Features', appendix.removedByLayer, comparison.features.removed);
+  renderAppendixGroup(
+    md,
+    'C — Removed Features',
+    appendix.removedByLayer,
+    comparison.features.removed,
+  );
 
   // D — All diagnostics
   if (appendix.allNewDiagnostics.length > 0) {
@@ -355,17 +433,41 @@ export function renderMarkdown(report: EngineeringReport): string {
   md.table(
     ['Metric', 'Before', 'After', 'Δ'],
     [
-      ['Layers', String(appendix.rawStatistics.layersA), String(appendix.rawStatistics.layersB), fmt(appendix.rawStatistics.layersDelta)],
-      ['Features', n(appendix.rawStatistics.featuresA), n(appendix.rawStatistics.featuresB), fmt(appendix.rawStatistics.featuresDelta)],
-      ['Vertices', n(appendix.rawStatistics.verticesA), n(appendix.rawStatistics.verticesB), fmt(appendix.rawStatistics.verticesDelta)],
-      ['Diagnostics', String(appendix.rawStatistics.diagnosticsA), String(appendix.rawStatistics.diagnosticsB), fmt(appendix.rawStatistics.diagnosticsDelta)],
+      [
+        'Layers',
+        String(appendix.rawStatistics.layersA),
+        String(appendix.rawStatistics.layersB),
+        fmt(appendix.rawStatistics.layersDelta),
+      ],
+      [
+        'Features',
+        n(appendix.rawStatistics.featuresA),
+        n(appendix.rawStatistics.featuresB),
+        fmt(appendix.rawStatistics.featuresDelta),
+      ],
+      [
+        'Vertices',
+        n(appendix.rawStatistics.verticesA),
+        n(appendix.rawStatistics.verticesB),
+        fmt(appendix.rawStatistics.verticesDelta),
+      ],
+      [
+        'Diagnostics',
+        String(appendix.rawStatistics.diagnosticsA),
+        String(appendix.rawStatistics.diagnosticsB),
+        fmt(appendix.rawStatistics.diagnosticsDelta),
+      ],
     ],
   );
   md.p('</details>\n');
 
   // F — All regression candidates
   if (appendix.allCandidates.length > 0) {
-    md.p('<details>\n<summary><strong>F — All Regression Candidates (' + appendix.allCandidates.length + ')</strong></summary>\n');
+    md.p(
+      '<details>\n<summary><strong>F — All Regression Candidates (' +
+        appendix.allCandidates.length +
+        ')</strong></summary>\n',
+    );
     md.table(
       ['#', 'Layer', 'Feature', 'Kind', 'Confidence', 'Top Reason'],
       appendix.allCandidates.map((c, i) => [
@@ -382,7 +484,9 @@ export function renderMarkdown(report: EngineeringReport): string {
 
   // ── Footer ─────────────────────────────────────────────────────────────────
   md.hr();
-  md.p(`_Report generated by [TileGuard](https://github.com/shreeharshshinde/tileguard) v${metadata.tileguardVersion} · ${metadata.generatedAt}_`);
+  md.p(
+    `_Report generated by [TileGuard](https://github.com/shreeharshshinde/tileguard) v${metadata.tileguardVersion} · ${metadata.generatedAt}_`,
+  );
 
   return md.build();
 }
@@ -419,7 +523,11 @@ function renderPrioritizedRecs(
   md: MarkdownWriter,
   recs: readonly PrioritizedRecommendation[],
 ): void {
-  const priorityEmoji: Record<string, string> = { HIGH: '🔴', MEDIUM: '🟠', LOW: '🟡' };
+  const priorityEmoji: Record<string, string> = {
+    HIGH: '🔴',
+    MEDIUM: '🟠',
+    LOW: '🟡',
+  };
 
   for (const r of recs) {
     const icon = priorityEmoji[r.priority] ?? '⬜';
@@ -442,15 +550,21 @@ function renderPrioritizedRecs(
 function renderAppendixGroup(
   md: MarkdownWriter,
   title: string,
-  groups: readonly { layerName: string; count: number; examples: readonly string[] }[],
+  groups: readonly {
+    layerName: string;
+    count: number;
+    examples: readonly string[];
+  }[],
   fallbackTotal: number,
 ): void {
   if (groups.length > 0) {
     const total = groups.reduce((s, g) => s + g.count, 0);
-    md.p(`<details>\n<summary><strong>${title} (${total.toLocaleString()})</strong></summary>\n`);
+    md.p(
+      `<details>\n<summary><strong>${title} (${total.toLocaleString()})</strong></summary>\n`,
+    );
     md.table(
       ['Layer', 'Count', 'Examples'],
-      groups.map(g => [
+      groups.map((g) => [
         g.layerName,
         g.count.toLocaleString(),
         g.examples.slice(0, 5).join(', ') || '—',
@@ -458,17 +572,26 @@ function renderAppendixGroup(
     );
     md.p('</details>\n');
   } else if (fallbackTotal > 0) {
-    md.p(`<details>\n<summary><strong>${title} (${fallbackTotal.toLocaleString()})</strong></summary>\n`);
-    md.p('_Per-layer breakdown not available. Provide `layerStats` in ComparisonInput for detail._');
+    md.p(
+      `<details>\n<summary><strong>${title} (${fallbackTotal.toLocaleString()})</strong></summary>\n`,
+    );
+    md.p(
+      '_Per-layer breakdown not available. Provide `layerStats` in ComparisonInput for detail._',
+    );
     md.p('</details>\n');
   }
 }
 
-function renderDiagnosticsAppendix(md: MarkdownWriter, diags: readonly { ruleId: string; severity: string; message: string }[]): void {
-  md.p(`<details>\n<summary><strong>D — All New Diagnostics (${diags.length})</strong></summary>\n`);
+function renderDiagnosticsAppendix(
+  md: MarkdownWriter,
+  diags: readonly { ruleId: string; severity: string; message: string }[],
+): void {
+  md.p(
+    `<details>\n<summary><strong>D — All New Diagnostics (${diags.length})</strong></summary>\n`,
+  );
   md.table(
     ['Rule', 'Severity', 'Message'],
-    diags.map(d => [
+    diags.map((d) => [
       md.code(d.ruleId),
       d.severity,
       d.message.slice(0, 100) + (d.message.length > 100 ? '…' : ''),

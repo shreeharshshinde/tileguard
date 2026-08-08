@@ -12,12 +12,8 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { gunzipSync } from 'node:zlib';
 import { basename } from 'node:path';
-import { createEngine } from '@tileguard/core';
-import type { Diagnostic } from '@tileguard/core';
-import { decodeMvt } from '@tileguard/tile-rules';
-import type { Point } from '@tileguard/tile-rules';
+import { gunzipSync } from 'node:zlib';
 import {
   createComparisonEngine,
   createRegressionEngine,
@@ -26,17 +22,21 @@ import {
   type TileComparison,
   type TileSnapshot,
 } from '@tileguard/analysis';
+import type { Diagnostic } from '@tileguard/core';
+import { createEngine } from '@tileguard/core';
 import type {
   ComparisonInput,
   RegressionCandidateInput,
   RegressionInput,
 } from '@tileguard/reporters';
+import type { Point } from '@tileguard/tile-rules';
+import { decodeMvt } from '@tileguard/tile-rules';
 
 // ---------------------------------------------------------------------------
 // Re-export shared types for CLI consumers
 // ---------------------------------------------------------------------------
 
-export type { TileSnapshot, TileComparison, RegressionAnalysis };
+export type { RegressionAnalysis, TileComparison, TileSnapshot };
 
 // ---------------------------------------------------------------------------
 // Snapshot model (slim CLI-specific view for stats/output formatting)
@@ -58,7 +58,12 @@ export interface CliTileStats {
 export interface CliComparisonResult {
   readonly comparison: TileComparison;
   readonly isIdentical: boolean;
-  readonly features: { added: number; removed: number; modified: number; unchanged: number };
+  readonly features: {
+    added: number;
+    removed: number;
+    modified: number;
+    unchanged: number;
+  };
   readonly layers: { added: number; removed: number; modified: number };
   readonly asReportInput: ComparisonInput;
 }
@@ -97,10 +102,17 @@ export interface AnalysisOptions {
 // 1. Load a tile snapshot
 // ---------------------------------------------------------------------------
 
-export async function loadTileSnapshot(filePath: string): Promise<TileSnapshot> {
+export async function loadTileSnapshot(
+  filePath: string,
+): Promise<TileSnapshot> {
   const buffer = readFileSync(filePath);
-  const rawBytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-  const gzipped = rawBytes.length >= 2 && rawBytes[0] === 0x1f && rawBytes[1] === 0x8b;
+  const rawBytes = new Uint8Array(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
+  const gzipped =
+    rawBytes.length >= 2 && rawBytes[0] === 0x1f && rawBytes[1] === 0x8b;
   const bytes = gzipped ? gunzipSync(rawBytes) : rawBytes;
   const tile = decodeMvt(bytes);
 
@@ -231,16 +243,21 @@ export function analyzeRegression(
     totalCandidates: summary.totalCandidates,
     overallConfidence: confidence,
     dominantKind: summary.dominantKind,
-    candidates: candidates.map((c): RegressionCandidateInput => ({
-      layerName: c.feature.featureA?.layerName ?? c.feature.featureB?.layerName ?? 'unknown',
-      featureId: c.feature.featureA?.id ?? c.feature.featureB?.id,
-      confidence: c.confidence,
-      kind: c.kind,
-      topReason: c.reasons[0]?.description ?? 'Feature changed',
-      evidenceLabels: c.evidence.map((e) => e.label),
-      timelineLabels: c.timeline.map((t) => t.label),
-      recommendations: c.recommendations.map((r) => r.action),
-    })),
+    candidates: candidates.map(
+      (c): RegressionCandidateInput => ({
+        layerName:
+          c.feature.featureA?.layerName ??
+          c.feature.featureB?.layerName ??
+          'unknown',
+        featureId: c.feature.featureA?.id ?? c.feature.featureB?.id,
+        confidence: c.confidence,
+        kind: c.kind,
+        topReason: c.reasons[0]?.description ?? 'Feature changed',
+        evidenceLabels: c.evidence.map((e) => e.label),
+        timelineLabels: c.timeline.map((t) => t.label),
+        recommendations: c.recommendations.map((r) => r.action),
+      }),
+    ),
   };
 
   return {
@@ -250,7 +267,10 @@ export function analyzeRegression(
     overallConfidence: confidence,
     dominantKind: summary.dominantKind,
     candidates: candidates.map((c) => ({
-      layerName: c.feature.featureA?.layerName ?? c.feature.featureB?.layerName ?? 'unknown',
+      layerName:
+        c.feature.featureA?.layerName ??
+        c.feature.featureB?.layerName ??
+        'unknown',
       featureId: c.feature.featureA?.id ?? c.feature.featureB?.id,
       kind: c.kind,
       confidence: c.confidence,

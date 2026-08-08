@@ -88,7 +88,9 @@ const LayerRow = memo(function LayerRow({
     >
       <div className="flex items-center gap-[var(--tg-space-sm)] min-w-0">
         <Layers className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
-        <span className="truncate font-medium text-[var(--tg-text-primary)]">{name}</span>
+        <span className="truncate font-medium text-[var(--tg-text-primary)]">
+          {name}
+        </span>
       </div>
       <span className="ml-2 shrink-0 font-mono text-[10px] text-[var(--tg-text-muted)]">
         {featureCount.toLocaleString()}
@@ -141,7 +143,10 @@ interface SelectionHistoryProps {
   readonly inspector: Inspector | null;
 }
 
-function SelectionHistory({ store, inspector }: SelectionHistoryProps): JSX.Element {
+function SelectionHistory({
+  store,
+  inspector,
+}: SelectionHistoryProps): JSX.Element {
   const feature = useSelectedFeature(store);
 
   return (
@@ -260,12 +265,17 @@ export function LayerExplorer({
       {/* Search */}
       <div className="border-b border-[var(--tg-border)] p-[var(--tg-space-sm)]">
         <label className="flex items-center gap-2 rounded bg-[var(--tg-bg-surface)] px-2 py-1">
-          <Search className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]" aria-hidden />
+          <Search
+            className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)]"
+            aria-hidden
+          />
           <input
             type="search"
             placeholder="Search features…"
             value={searchQuery}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              onSearchChange(e.target.value)
+            }
             className="w-full bg-transparent text-xs text-[var(--tg-text-primary)] placeholder-[var(--tg-text-muted)] outline-none"
             aria-label="Search features"
           />
@@ -309,7 +319,9 @@ export function LayerExplorer({
       {/* Search results */}
       {search.results.length > 0 && (
         <div className="border-b border-[var(--tg-border)]">
-          <PanelSection title={`${search.results.length} result${search.results.length !== 1 ? 's' : ''}`}>
+          <PanelSection
+            title={`${search.results.length} result${search.results.length !== 1 ? 's' : ''}`}
+          >
             <ul className="max-h-32 overflow-y-auto">
               {search.results.slice(0, 20).map((result, i) => (
                 <li key={i}>
@@ -317,13 +329,22 @@ export function LayerExplorer({
                     type="button"
                     className="flex w-full items-center gap-2 px-[var(--tg-space-md)] py-1 text-left text-xs hover:bg-[var(--tg-bg-hover)]"
                     onClick={() => {
-                      inspector?.focusFeature(result.feature.layerName, result.feature.featureIndex);
+                      inspector?.focusFeature(
+                        result.feature.layerName,
+                        result.feature.featureIndex,
+                      );
                       onSearchChange('');
                     }}
                   >
-                    <span className="text-[var(--tg-text-secondary)]">{result.feature.layerName}</span>
-                    <span className="text-[var(--tg-text-muted)]">#{result.feature.featureIndex}</span>
-                    <span className="truncate text-[var(--tg-text-primary)]">{result.matchReason}</span>
+                    <span className="text-[var(--tg-text-secondary)]">
+                      {result.feature.layerName}
+                    </span>
+                    <span className="text-[var(--tg-text-muted)]">
+                      #{result.feature.featureIndex}
+                    </span>
+                    <span className="truncate text-[var(--tg-text-primary)]">
+                      {result.matchReason}
+                    </span>
                   </button>
                 </li>
               ))}

@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it, vi } from 'vitest';
-import { createLogger } from '../src/logging/Logger.js';
 import { getDefaultConfig } from '../src/config/ConfigLoader.js';
+import { createLogger } from '../src/logging/Logger.js';
 import type { CommandContext } from '../src/runner/CommandRunner.js';
 
 // Mock the analysis adapter
@@ -21,7 +21,12 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
       vertexCount: 8,
     })),
     diagnostics: [],
-    stats: { layerCount: 1, featureCount: 20, vertexCount: 160, diagnosticCount: 0 },
+    stats: {
+      layerCount: 1,
+      featureCount: 20,
+      vertexCount: 160,
+      diagnosticCount: 0,
+    },
   })),
   compareTiles: vi.fn().mockImplementation((a, b) => ({
     snapshotA: a,
@@ -38,14 +43,22 @@ vi.mock('../src/analysis/AnalysisAdapter.js', () => ({
       diagnosticsA: { errors: 0, warnings: 0, info: 0 },
       diagnosticsB: { errors: 1, warnings: 0, info: 0 },
       newDiagnostics: [
-        { ruleId: 'tile/self-intersection', severity: 'error', message: 'Self-intersecting ring' },
+        {
+          ruleId: 'tile/self-intersection',
+          severity: 'error',
+          message: 'Self-intersecting ring',
+        },
       ],
       resolvedDiagnostics: [],
       stats: {
-        layersA: 1, layersB: 1,
-        featuresA: 20, featuresB: 21,
-        verticesA: 160, verticesB: 168,
-        diagnosticsA: 0, diagnosticsB: 1,
+        layersA: 1,
+        layersB: 1,
+        featuresA: 20,
+        featuresB: 21,
+        verticesA: 160,
+        verticesB: 168,
+        diagnosticsA: 0,
+        diagnosticsB: 1,
       },
     },
   })),
