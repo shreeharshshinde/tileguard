@@ -98,7 +98,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 
 ### v0.5.0: FOSS4G Release & CLI (Target: August 15, 2026)
 *   **Goal:** The public launch of TileGuard at FOSS4G. A stable, extensible toolchain demonstrating the framework's architecture, default rule sets, CLI commands, and GitHub Actions integration.
-*   **Status:** In Progress (reporters and configuration loader implemented, CLI commands and CI setup pending).
+*   **Status:** ✅ Complete. All 9 packages implemented, ~1,838 tests passing. CLI delivers 10 commands (analyze, check, compare, doctor, init, report, rules, stats, style, version). Report engine supports Markdown, HTML, and JSON output. Analysis package provides tile comparison and regression detection. Inspector provides visual debugging. Published as `v0.5.0-beta.1`.
 *   **API Stability:** Internal APIs may still change, but the user-facing CLI, configuration schema, and the core Plugin API are frozen for the conference.
 
 ### v0.6.0 – v0.9.0: Post-Conference Beta Cycles
@@ -162,7 +162,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Rationale:** With the core runner established, we can implement the actual validation logic. Porting legacy code ensures we do not lose working, tested validator logic.
 *   **Architectural Dependencies:** Phase 2 (`@tileguard/core`) must be compiled and stable.
 *   **Package Milestones:** `@tileguard/tile-rules` and `@tileguard/style-rules` are implemented.
-*   **Expected Deliverables:** `VectorTile` provider (9 rules), `StyleSpecification` provider (9 rules). Ported PBF decoder and geometry utilities.
+*   **Expected Deliverables:** `VectorTile` provider (10 rules), `StyleSpecification` provider (9 rules). Ported PBF decoder and geometry utilities.
 *   **Completion Criteria:** All legacy validation test suites ported to Vitest and passing.
 *   **Target Release:** v0.3.0
 *   **Status:** Complete.
@@ -173,11 +173,11 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 *   **Objective:** Implement the CLI application, configuration loader, and core reporters.
 *   **Rationale:** A framework needs a user-facing tool to execute runs. The CLI parses files, resolves the configuration file, instantiates the engine, and outputs diagnostics via reporters.
 *   **Architectural Dependencies:** Phase 3 must be complete.
-*   **Package Milestones:** `tileguard` CLI package is implemented.
-*   **Expected Deliverables:** CLI entry point (`check`, `init`), config loader, Text/JSON reporters.
+*   **Package Milestones:** `@tileguard/cli` package is implemented.
+*   **Expected Deliverables:** CLI entry point (10 commands: analyze, check, compare, doctor, init, report, rules, stats, style, version), config loader, Text/JSON reporters, report engine (Markdown, HTML, JSON).
 *   **Completion Criteria:** E2E CLI tests passing against a mixture of vector tiles and styles.
 *   **Target Release:** v0.4.0
-*   **Status:** In Progress (config and reporters implemented, CLI commands pending).
+*   **Status:** ✅ Complete.
 
 ---
 
@@ -189,8 +189,11 @@ To ensure engineering discipline, we separate how we build the software (Phases)
     *   GitHub Actions reporter and `.github/workflows/tile-quality.yml`.
     *   Governance docs: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`.
     *   Per-rule documentation pages.
-*   **Completion Criteria:** E2E verification in GitHub Actions. Public repositories configured with community guidelines.
+    *   `@tileguard/analysis` package for comparison and regression detection.
+    *   `@tileguard/inspector` for visual debugging.
+*   **Completion Criteria:** E2E verification in GitHub Actions. Public repositories configured with community guidelines. ~1,838 tests passing across 96 test files.
 *   **Target Release:** v0.5.0
+*   **Status:** ✅ Complete.
 
 ---
 

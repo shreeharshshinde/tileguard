@@ -1,8 +1,14 @@
 # Examples
 
-This directory will contain worked examples demonstrating TileGuard integration patterns.
+This directory contains worked examples demonstrating TileGuard integration patterns.
 
-## Planned examples
+## Available Examples
+
+| File | Description |
+|:-----|:------------|
+| `reporters-demo.js` | Demonstrates the report engine: generates Markdown, HTML, and JSON reports from diagnostics |
+
+## Planned Examples
 
 | Directory | Description |
 |:----------|:------------|
@@ -12,6 +18,10 @@ This directory will contain worked examples demonstrating TileGuard integration 
 | `custom-rule/` | Writing and registering a custom validation rule |
 | `render-regression/` | Setting up render regression tests with reference images |
 
-## Status
+## Running the Examples
 
-📋 Examples will be added once the corresponding framework packages reach a stable API. See [`docs/engineering/MIGRATION_PLAN.md`](../docs/engineering/MIGRATION_PLAN.md) for the implementation roadmap.
+```bash
+# From the repository root (ensure packages are built):
+pnpm build
+node examples/reporters-demo.js
+```
