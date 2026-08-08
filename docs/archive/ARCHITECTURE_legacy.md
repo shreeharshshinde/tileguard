@@ -1,5 +1,11 @@
 # TileGuard Architecture & Detailed Codebase Documentation 🛡️
 
+> **⚠️ Superseded Document**  
+> This document describes the architecture of the original `packages/js/` and `packages/python/`
+> prototype codebase (now frozen in `legacy/`). For the current framework architecture, see
+> [`docs/architecture/`](architecture/README.md) — the authoritative Architecture Handbook covering
+> all 9 packages in the modern rule-based framework.
+
 TileGuard is a tile quality testing toolkit designed for open-source geospatial projects. It acts as a drop-in CI/CD quality gate for MapLibre, QGIS, GeoServer, and vector tile pipelines. This document provides a detailed architectural reference, low-level implementation details, algorithm explanations, configurations, and current integration statuses.
 
 ---

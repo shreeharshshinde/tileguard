@@ -12,7 +12,7 @@ MapLibre is a rendering engine. It silently skips invalid geometry and handles m
 
 ### Is this a fork of an existing tool?
 
-No. TileGuard is a new framework built from first principles. The architecture is inspired by ESLint's rule engine design, not forked from it. The encoding/decoding of MVT files uses `@mapbox/vector-tile` (the same library MapLibre uses), but all validation logic is original.
+No. TileGuard is a new framework built from first principles. The architecture is inspired by ESLint's rule engine design, not forked from it. The decoding of MVT files uses a custom PBF decoder (`pbf-decoder.ts` in `@tileguard/tile-rules`) — a purpose-built implementation that provides full control over geometry parsing and validation. All validation logic is original.
 
 ### What is a "rule engine"?
 

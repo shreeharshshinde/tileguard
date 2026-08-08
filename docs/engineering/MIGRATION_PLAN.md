@@ -1,8 +1,12 @@
 # TileGuard Migration Plan
 
-**Document status:** Active  
-**Last updated:** 2026-07-07  
+**Document status:** ✅ Complete (Migration Finished)  
+**Last updated:** 2026-08-08  
 **Author:** TileGuard maintainers
+
+> **Migration fully executed.** All phases described below have been completed.
+> The framework is now at v0.5.0-beta.1 with 9 packages, ~1,838 tests, and 10 CLI
+> commands. This document is retained as a historical record of the migration process.
 
 ---
 
