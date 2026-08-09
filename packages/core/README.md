@@ -6,6 +6,14 @@ This package defines every interface and type that TileGuard's runtime is built 
 
 ---
 
+## Installation
+
+```bash
+npm install @tileguard/core
+```
+
+---
+
 ## Contents
 
 - [Architecture in one diagram](#architecture-in-one-diagram)
