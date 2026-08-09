@@ -1,10 +1,53 @@
 import type { Rule } from '@tileguard/core';
 import { findCoordinateRangeIssues } from '../geometry.js';
-import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
+import type { VectorTileFeature } from '../types.js';
+import { getFeatureParts, getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 
 export interface CoordinateRangeOptions {
   readonly buffer?: number;
+  /**
+   * Layers to skip entirely. Defaults to common label/name layers that use
+   * cross-tile point duplication. Set to [] to check all layers.
+   */
   readonly excludeLayers?: readonly string[];
+  /**
+   * When true (default), features where ALL coordinates are outside the
+   * allowed range (buffer included) are skipped as cross-tile duplication.
+   * This catches label/geometry duplication regardless of layer naming.
+   */
+  readonly skipCrossTileFeatures?: boolean;
+}
+
+/** Default layers known to use cross-tile feature duplication in common tile providers. */
+const DEFAULT_EXCLUDE_LAYERS = [
+  'place', 'water_name', 'centroids',
+  'poi', 'housenumber', 'transportation_name',
+  'mountain_peak', 'park', 'aerodrome_label',
+];
+
+/**
+ * Returns true if every coordinate in the feature is outside the allowed range.
+ * This indicates the entire feature was duplicated into this tile for cross-tile
+ * rendering continuity — not a genuine geometry that overflows the clipping buffer.
+ */
+function isEntirelyOutsideTile(
+  feature: VectorTileFeature,
+  extent: number,
+  buffer: number,
+): boolean {
+  const min = -buffer;
+  const max = extent + buffer;
+  const parts = getFeatureParts(feature);
+
+  for (const part of parts) {
+    for (const point of part) {
+      if (point.x >= min && point.x <= max && point.y >= min && point.y <= max) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
@@ -24,12 +67,16 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
     // Default clipping buffer derived from empirical evaluation of production vector tiles.
     const buffer = context.options?.buffer ?? 80;
 
-    // Skip layers that use label duplication (placing points far outside extent for cross-tile rendering).
+    // Two-layer false positive suppression:
+    // 1. Named layer exclusion (handles known label layers with mixed in/out coordinates)
+    // 2. Algorithmic detection (handles any layer where ALL coords are outside)
     const excludeLayers = new Set(
-      context.options?.excludeLayers ?? ['place', 'water_name', 'centroids', 'poi', 'housenumber', 'transportation_name'],
+      context.options?.excludeLayers ?? DEFAULT_EXCLUDE_LAYERS,
     );
+    const skipCrossTile = context.options?.skipCrossTileFeatures ?? true;
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
+      // Layer-level exclusion: known label/name layers
       if (excludeLayers.has(layerName)) continue;
 
       for (
@@ -38,6 +85,12 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
         featureIndex += 1
       ) {
         const feature = layer.features[featureIndex]!;
+
+        // Feature-level exclusion: if ALL coordinates are outside, it's cross-tile duplication
+        if (skipCrossTile && isEntirelyOutsideTile(feature, layer.extent, buffer)) {
+          continue;
+        }
+
         for (const issue of findCoordinateRangeIssues(
           feature,
           layer.extent,

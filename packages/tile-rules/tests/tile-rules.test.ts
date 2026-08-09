@@ -181,7 +181,12 @@ describe('@tileguard/tile-rules', () => {
         ),
       ]),
     ]);
-    const engine = createEngine({ plugins: [tilePlugin] });
+    const engine = createEngine({
+      plugins: [tilePlugin],
+      rules: {
+        'tile/coordinate-range': ['error', { skipCrossTileFeatures: false }],
+      },
+    });
 
     const result = await engine.run([path]);
 
