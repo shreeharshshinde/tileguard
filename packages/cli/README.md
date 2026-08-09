@@ -1,6 +1,22 @@
-# tileguard (CLI)
+# @tileguard/cli
 
 The command-line interface for TileGuard. Wires the configuration loader, engine, rule plugins, and reporters into a single installable `tileguard` binary. The package also exports every command function as a pure, embeddable TypeScript API — safe to call from tests, editors, or any host process without spawning a subprocess.
+
+---
+
+## Installation
+
+```bash
+# Install globally
+npm install -g @tileguard/cli
+
+# Or run without installing
+npx @tileguard/cli check ./tile.pbf
+```
+
+---
+
+## Usage
 
 ```bash
 # Validate a vector tile
