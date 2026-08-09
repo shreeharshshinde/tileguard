@@ -197,27 +197,65 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 
 ---
 
-### Phase 6: Post-Conference Expansion & API Hardening
-*   **Objective:** Add rendering validation, archive formats, and prepare the plugin API for v1.0 stabilization.
-*   **Rationale:** Post-FOSS4G, we shift focus to visual rendering validation, dashboards, and API hardening.
+### Phase 6: Post-Conference Expansion — Rules, Cross-Domain Validation & Render Testing
+*   **Objective:** Expand the rule set based on real-world findings, introduce cross-domain validation (the headline feature), and add render regression testing.
+*   **Rationale:** The 19 v0.5.0 rules cover structural and geometric validation comprehensively. Post-conference, the highest-value additions are: (1) rules that catch semantic mismatches between styles and tiles, (2) deeper style analysis, and (3) visual render testing.
 *   **Architectural Dependencies:** Phase 5 must be released and stable.
 *   **Expected Deliverables:**
-    *   `@tileguard/render-rules` (Playwright + perceptual pixel diff).
-    *   MBTiles/PMTiles archive providers.
-    *   SARIF and HTML reporters.
-    *   Finalized Plugin API specifications.
-    *   Engine API hardening (expose `ReporterContext` on `RunResult` and track unique `enabledRuleCount` dynamically).
-*   **Completion Criteria:** Render tests run successfully via CLI. Plugin API is documented and verified via a community-built test plugin.
+
+    **New Style Rules (v0.6.0):**
+    | Rule | What it catches |
+    |------|----------------|
+    | `style/unused-source` | Source declared in `sources` but never referenced by any layer |
+    | `style/invalid-expression` | Malformed MapLibre expressions in paint/layout properties |
+    | `style/missing-source-layer` | Vector source layers referencing non-existent `source-layer` values |
+    | `style/unreachable-layer` | Layer with `minzoom` > source's `maxzoom` (layer never renders) |
+
+    **New Tile Rules (v0.6.0):**
+    | Rule | What it catches |
+    |------|----------------|
+    | `tile/duplicate-features` | Exact duplicate geometries within the same layer |
+    | `tile/property-type-consistency` | Same property key having different value types across features |
+
+    **Cross-Domain Rules (v0.7.0 — requires engine enhancement):**
+    | Rule | What it catches |
+    |------|----------------|
+    | `cross/source-layer-exists` | Style references a `source-layer` that doesn't exist in the actual tile |
+    | `cross/property-exists` | Filter/expression references a property not present in any feature of the tile |
+    | `cross/geometry-type-match` | Layer filter expects a geometry type not present in the referenced source-layer |
+
+    These cross-domain rules represent the "invisible road disappearing" scenario — catching mismatches between a style and its tile source that survive visual review because staging tiles differ from production tiles.
+
+    **Render Regression Testing (v0.8.0):**
+    *   `@tileguard/render-rules` — Playwright-based headless rendering + perceptual pixel comparison
+    *   Baseline image management and threshold configuration
+    *   Deterministic render snapshots for CI reproducibility
+
+    **Infrastructure (v0.6.0–v0.8.0):**
+    *   MBTiles/PMTiles archive providers (validate tiles inside archive formats)
+    *   SARIF reporter for GitHub Code Scanning integration
+    *   Plugin Authoring Guide and documented plugin SDK
+    *   Engine API hardening for cross-domain artifact loading
+
+*   **Completion Criteria:** Cross-domain rules can load both a tile and style simultaneously and validate references between them. Render tests run via CLI.
 *   **Target Release:** v0.6.0 – v0.9.0
 
 ---
 
-### Phase 7: Python SDK & Language Bindings
-*   **Objective:** Bring first-class support to the Python geospatial ecosystem through language bindings.
-*   **Rationale:** Half of the geospatial community uses Python. We wrap the TypeScript engine to provide pythonic interfaces.
+### Phase 7: Python SDK, Community Plugins & v1.0 Stability
+*   **Objective:** Bring first-class support to the Python geospatial ecosystem, formalize the plugin marketplace, and freeze the public API.
+*   **Rationale:** Half of the geospatial community uses Python. We wrap the TypeScript engine to provide pythonic interfaces. The plugin ecosystem must be mature enough for community contribution.
 *   **Architectural Dependencies:** The TypeScript core engine API must be frozen at v1.0.0-candidate.
-*   **Expected Deliverables:** Python package wrapper, `pytest` integration module, CLI bindings.
-*   **Completion Criteria:** Python developers can write standard pytest test cases importing `tileguard`.
+*   **Expected Deliverables:**
+    *   Python package wrapper (`pip install tileguard`)
+    *   `pytest` integration module for tile quality assertions
+    *   Community plugin registry / discovery
+    *   Plugin templates and scaffolding CLI command
+    *   LSP (Language Server Protocol) for IDE integration
+    *   VS Code extension with inline diagnostics
+    *   Auto-fix suggestions for fixable rules
+    *   Performance: parallel rule execution, artifact caching, incremental validation
+*   **Completion Criteria:** Python developers can write standard pytest test cases importing `tileguard`. At least 5 community-contributed plugins published.
 *   **Target Release:** v1.0.0
 
 ---
