@@ -140,7 +140,10 @@ describe('tile/coordinate-range', () => {
     const engine = createEngine({
       plugins: [plugin],
       rules: {
-        'tile/coordinate-range': ['error', { buffer: 100, skipCrossTileFeatures: false }],
+        'tile/coordinate-range': [
+          'error',
+          { buffer: 100, skipCrossTileFeatures: false },
+        ],
       },
     });
     const source = await makeTile([
@@ -368,7 +371,10 @@ describe('tile/coordinate-range', () => {
     const engine = createEngine({
       plugins: [plugin],
       rules: {
-        'tile/coordinate-range': ['error', { excludeLayers: [], skipCrossTileFeatures: false }],
+        'tile/coordinate-range': [
+          'error',
+          { excludeLayers: [], skipCrossTileFeatures: false },
+        ],
       },
     });
     const source = await makeTile([
@@ -394,7 +400,10 @@ describe('tile/coordinate-range', () => {
     const engine = createEngine({
       plugins: [plugin],
       rules: {
-        'tile/coordinate-range': ['error', { excludeLayers: ['custom-layer'], skipCrossTileFeatures: false }],
+        'tile/coordinate-range': [
+          'error',
+          { excludeLayers: ['custom-layer'], skipCrossTileFeatures: false },
+        ],
       },
     });
     const source = await makeTile([
@@ -418,7 +427,10 @@ describe('tile/coordinate-range', () => {
     const engine = createEngine({
       plugins: [plugin],
       rules: {
-        'tile/coordinate-range': ['error', { excludeLayers: [], skipCrossTileFeatures: false }],
+        'tile/coordinate-range': [
+          'error',
+          { excludeLayers: [], skipCrossTileFeatures: false },
+        ],
       },
     });
     const source = await makeTile([

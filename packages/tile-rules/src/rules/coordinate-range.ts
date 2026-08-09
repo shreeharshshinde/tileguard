@@ -1,7 +1,11 @@
 import type { Rule } from '@tileguard/core';
 import { findCoordinateRangeIssues } from '../geometry.js';
 import type { VectorTileFeature } from '../types.js';
-import { getFeatureParts, getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
+import {
+  getFeatureParts,
+  getVectorTile,
+  VECTOR_TILE_ARTIFACT_TYPE,
+} from '../types.js';
 
 export interface CoordinateRangeOptions {
   readonly buffer?: number;
@@ -20,9 +24,15 @@ export interface CoordinateRangeOptions {
 
 /** Default layers known to use cross-tile feature duplication in common tile providers. */
 const DEFAULT_EXCLUDE_LAYERS = [
-  'place', 'water_name', 'centroids',
-  'poi', 'housenumber', 'transportation_name',
-  'mountain_peak', 'park', 'aerodrome_label',
+  'place',
+  'water_name',
+  'centroids',
+  'poi',
+  'housenumber',
+  'transportation_name',
+  'mountain_peak',
+  'park',
+  'aerodrome_label',
 ];
 
 /**
@@ -41,7 +51,12 @@ function isEntirelyOutsideTile(
 
   for (const part of parts) {
     for (const point of part) {
-      if (point.x >= min && point.x <= max && point.y >= min && point.y <= max) {
+      if (
+        point.x >= min &&
+        point.x <= max &&
+        point.y >= min &&
+        point.y <= max
+      ) {
         return false;
       }
     }
@@ -87,7 +102,10 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
         const feature = layer.features[featureIndex]!;
 
         // Feature-level exclusion: if ALL coordinates are outside, it's cross-tile duplication
-        if (skipCrossTile && isEntirelyOutsideTile(feature, layer.extent, buffer)) {
+        if (
+          skipCrossTile &&
+          isEntirelyOutsideTile(feature, layer.extent, buffer)
+        ) {
           continue;
         }
 
