@@ -23,22 +23,29 @@ To eliminate these false positives without compromising the rule's ability to de
 We will modify the `tile/coordinate-range` rule to:
 1. **Increase the default `buffer` to 80 units** (from 0).
 2. **Add a new `excludeLayers` configuration option**, which accepts an array of layer names to exclude from coordinate-range validation.
-3. **Default `excludeLayers` to `['place', 'water_name', 'centroids']`**.
+3. **Default `excludeLayers` to the following 9 layers:**
+   ```
+   ['place', 'water_name', 'centroids', 'poi', 'housenumber',
+    'transportation_name', 'mountain_peak', 'park', 'aerodrome_label']
+   ```
+4. **Add a `skipCrossTileFeatures` option** (default: `true`) that suppresses diagnostics for features where ALL coordinates fall outside the allowed range — treating them as cross-tile spill-over features placed by the tile compiler for rendering continuity, rather than corruption.
 
 ## Rationale
 
 ### Default Buffer of 80 Units
 Our offset distribution analysis showed that geometry clipping buffers cluster at hard ceilings of 64 or 80 units (depending on the layer). Setting the default buffer to 80 suppresses 100% of the geometry clipping false positives in our production sample while maintaining validation coverage for any coordinates extending further.
 
-### Layer-Based Exclusion (Default: `['place', 'water_name', 'centroids']`)
+### Layer-Based Exclusion (Default: 9 layers)
 Label-duplication offsets extend up to 4096 units, making them too large to handle via a simple buffer increase. 
 
-An alternative proposal was to unconditionally exclude all Point geometry from coordinate-range validation. However, this violates our acceptance criterion: **"False negative increase: 0"** (no true violations may be suppressed by the fix). Excluding all Point features would leave the rule blind to genuine coordinate corruption in Point layers not containing duplicated labels (e.g., a corrupted POI location in a `poi` or `address` layer).
+An alternative proposal was to unconditionally exclude all Point geometry from coordinate-range validation. However, this violates our acceptance criterion: **"False negative increase: 0"** (no true violations may be suppressed by the fix). Excluding all Point features would leave the rule blind to genuine coordinate corruption in Point layers not containing duplicated labels.
 
-Targeting the three specific layers proven to use label duplication (`place`, `water_name`, and `centroids`) via the new `excludeLayers` option:
-- Suppresses 100% of the label-duplication false positives in our sample.
-- Retains coordinate-range validation for Point geometry in all other layers.
-- Grants users full configuration control to add or remove layers from this exclusion list.
+The initial Phase 1 investigation identified three layers (`place`, `water_name`, `centroids`) responsible for the majority of label-duplication false positives. Subsequent higher-zoom testing (documented in `docs/engineering/CROSS_TILE_COORDINATE_PROBLEM.md`) identified six additional layers exhibiting the same pattern: `poi`, `housenumber`, `transportation_name`, `mountain_peak`, `park`, and `aerodrome_label`. For example, the Tokyo z14 tile produced 92 false positives from `transportation_name` and 8 from `housenumber`.
+
+All 9 layers are excluded by default because they are confirmed to use intentional label/feature duplication across tile boundaries as a standard tile compiler technique.
+
+### Cross-Tile Feature Skipping (Default: `skipCrossTileFeatures = true`)
+In addition to layer-based exclusion, certain features have ALL their coordinates outside the allowed range. These are features placed entirely by a neighboring tile's compiler for rendering continuity (e.g., a road label whose anchor point falls in an adjacent tile). Rather than flagging every coordinate of such features, the `skipCrossTileFeatures` option (default: `true`) suppresses diagnostics for features where no coordinate falls within `[-buffer, extent + buffer]`. This eliminates false positives from cross-tile spill-over without requiring additional layer exclusions.
 
 ## Consequences
 
@@ -48,7 +55,7 @@ Targeting the three specific layers proven to use label duplication (`place`, `w
 - **Configurability:** Users can adjust the buffer or override `excludeLayers` via their `tileguard.config.ts` if their tile compiler uses different schemas or buffers.
 
 ### Costs
-- **Slightly more complex rule options:** The rule options schema now supports both `buffer` (number) and `excludeLayers` (array of strings).
+- **Slightly more complex rule options:** The rule options schema now supports `buffer` (number), `excludeLayers` (array of strings), and `skipCrossTileFeatures` (boolean).
 - **Schema dependency:** The default `excludeLayers` values are tailored to OpenMapTiles/Planetiler schema conventions. Users with alternative schemas (e.g., custom Tippecanoe-generated tiles or distinct layer names) must configure their own custom list in `tileguard.config.ts` to suppress label-duplication false positives.
 
 ## Alternatives Considered

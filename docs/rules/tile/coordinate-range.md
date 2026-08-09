@@ -77,13 +77,15 @@ No diagnostic produced.
 ```jsonc
 {
   "rules": {
-    // Simple — use shipped defaults (buffer=80, excludeLayers=['place','water_name','centroids'])
+    // Simple — use shipped defaults (buffer=80, excludeLayers=9 label/centroid layers, skipCrossTileFeatures=true)
     "tile/coordinate-range": "error",
 
-    // Full — override both options
+    // Full — override all options
     "tile/coordinate-range": ["error", {
       "buffer": 80,
-      "excludeLayers": ["place", "water_name", "centroids"]
+      "excludeLayers": ["place", "water_name", "centroids", "poi", "housenumber",
+                        "transportation_name", "mountain_peak", "park", "aerodrome_label"],
+      "skipCrossTileFeatures": true
     }]
   }
 }
@@ -94,14 +96,16 @@ No diagnostic produced.
 | Option | Type | Default | Description |
 |:-------|:-----|:--------|:------------|
 | `buffer` | `number` | `80` | Allowed margin beyond `[0, extent]` on each axis. Set to `0` to require strict containment. |
-| `excludeLayers` | `string[]` | `["place", "water_name", "centroids"]` | Layer names to skip entirely. These layers use label duplication (placing points far outside extent for cross-tile rendering) which is intentional tile compiler behavior, not corruption. Passing an empty array `[]` disables the built-in exclusions and validates every layer. |
+| `excludeLayers` | `string[]` | `["place", "water_name", "centroids", "poi", "housenumber", "transportation_name", "mountain_peak", "park", "aerodrome_label"]` | Layer names to skip entirely. These layers use label duplication (placing points far outside extent for cross-tile rendering) which is intentional tile compiler behavior, not corruption. Passing an empty array `[]` disables the built-in exclusions and validates every layer. |
+| `skipCrossTileFeatures` | `boolean` | `true` | When enabled, suppresses diagnostics for features where ALL coordinates fall outside the allowed range `[-buffer, extent + buffer]`. Such features are cross-tile spill-over: the tile compiler placed them entirely from a neighboring tile for rendering continuity (e.g., a road segment or label whose geometry belongs to an adjacent tile). Set to `false` to flag these features as violations. |
 
 ### Defaults & Rationale
 
-The default `buffer` of `80` and `excludeLayers` of `["place", "water_name", "centroids"]` were determined empirically during a 294-tile evaluation across three production tile providers (OpenMapTiles, Planetiler/OpenFreeMap, and CARTO Streets). See [ADR-006](../../architecture/adr/006-coordinate-range-defaults.md) for full details.
+The default `buffer` of `80`, `excludeLayers` of 9 layers, and `skipCrossTileFeatures: true` were determined empirically during evaluation across production tile providers (OpenMapTiles, Planetiler/OpenFreeMap, and CARTO Streets). See [ADR-006](../../architecture/adr/006-coordinate-range-defaults.md) for full details.
 
 - **Buffer 80** covers the P95 of observed clipping buffers across all geometry layers (`countries`, `geolines` at 80; `water`, `boundary`, `landcover`, `park`, `waterway` at 64).
-- **Layer exclusion** targets three specific layers confirmed to use label duplication — a technique where tile compilers intentionally place Point features far outside extent to enable cross-tile label rendering. Of the 64,458 diagnostics in these layers (60,820 + 3,578 + 60), 63,944 were Point geometries — the label-duplication pattern — and the remaining 514 were non-Point geometries (LineString/Polygon) in the same three layers, also correctly suppressed by the layer-based exclusion.
+- **Layer exclusion** targets 9 layers confirmed to use label duplication — a technique where tile compilers intentionally place Point features far outside extent to enable cross-tile label rendering. The initial 3 layers (`place`, `water_name`, `centroids`) were identified in Phase 1; the additional 6 (`poi`, `housenumber`, `transportation_name`, `mountain_peak`, `park`, `aerodrome_label`) were identified during higher-zoom cross-tile testing (see `docs/engineering/CROSS_TILE_COORDINATE_PROBLEM.md`).
+- **Cross-tile feature skipping** addresses a separate pattern where features have ALL coordinates outside the valid range — these are entire features spilled from adjacent tiles for rendering continuity, distinct from the per-point label duplication pattern.
 
 > **Note:** These defaults are calibrated to OpenMapTiles/Planetiler schema conventions. If your tile compiler uses different layer names for label duplication, supply your own `excludeLayers` in your `tileguard.config.ts`.
 
