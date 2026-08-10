@@ -67,7 +67,7 @@ const TAG_COLORS: Record<string, string> = {
     'text-[var(--tg-accent)] bg-[var(--tg-accent)]/10 border-[var(--tg-accent)]/25',
   regression:
     'text-[var(--tg-warning)] bg-[var(--tg-warning)]/10 border-[var(--tg-warning)]/25',
-  style: 'text-blue-400 bg-blue-400/10 border-blue-400/25',
+  style: 'text-[var(--tg-text-primary)] bg-[var(--tg-text-primary)]/10 border-[var(--tg-border)]',
   clean:
     'text-[var(--tg-success)] bg-[var(--tg-success)]/10 border-[var(--tg-success)]/25',
   diagnostics:
@@ -102,7 +102,7 @@ function SkeletonCard({ index }: { index: number }): JSX.Element {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.07 }}
-      className="h-44 animate-pulse rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]"
+      className="h-44 animate-pulse rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-surface)]"
       aria-hidden="true"
     />
   );
@@ -139,15 +139,15 @@ function DemoCard({
           disabled={anyLoading}
           whileHover={anyLoading ? {} : { y: -3 }}
           whileTap={anyLoading ? {} : { scale: 0.97 }}
-          className="group flex w-full flex-col rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] p-4 text-left transition-colors hover:border-[var(--tg-accent)]/60 hover:bg-[var(--tg-bg-hover)] disabled:cursor-wait disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--tg-bg-primary)]"
+          className="group flex w-full flex-col rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] p-5 text-left transition-all hover:border-[var(--tg-accent)]/50 hover:bg-[var(--tg-bg-hover)] disabled:cursor-wait disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tg-accent)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--tg-bg-primary)] shadow-sm"
           aria-label={`Load demo: ${dataset.title}`}
           aria-busy={loading}
         >
           {/* Icon row */}
-          <div className="mb-3 flex items-start justify-between gap-2">
+          <div className="mb-4 flex items-start justify-between gap-2">
             {/* Coloured icon pill */}
             <span
-              className={`flex items-center justify-center rounded-lg p-1.5 ${meta.color} ${meta.bg}`}
+              className={`flex items-center justify-center rounded bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-border)] p-1.5 transition-colors group-hover:ring-[var(--tg-accent)]/30 ${meta.color} ${meta.bg.includes('var') ? '' : meta.bg}`}
             >
               {meta.icon}
             </span>
@@ -177,18 +177,18 @@ function DemoCard({
           </span>
 
           {/* Description */}
-          <span className="mb-3 line-clamp-2 min-h-[2.5rem] text-xs leading-relaxed text-[var(--tg-text-secondary)]">
+          <span className="mb-4 line-clamp-2 min-h-[2.5rem] text-xs leading-relaxed text-[var(--tg-text-secondary)]">
             {dataset.description}
           </span>
 
           {/* Tags */}
-          <div className="mt-auto flex flex-wrap gap-1">
+          <div className="mt-auto flex flex-wrap gap-1.5">
             {dataset.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${
+                className={`rounded border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
                   TAG_COLORS[tag] ??
-                  'border-[var(--tg-border)] bg-[var(--tg-bg-surface)] text-[var(--tg-text-muted)]'
+                  'border-[var(--tg-border)] bg-[var(--tg-bg-primary)] text-[var(--tg-text-muted)]'
                 }`}
               >
                 {tag}
@@ -197,12 +197,12 @@ function DemoCard({
           </div>
 
           {/* Demo step footer */}
-          <div className="mt-3 flex items-center gap-1.5 border-t border-[var(--tg-border)] pt-2.5">
+          <div className="mt-4 flex items-center gap-2 border-t border-[var(--tg-border)] pt-3 transition-colors group-hover:border-[var(--tg-accent)]/20">
             <Zap
-              className="h-3 w-3 shrink-0 text-[var(--tg-text-muted)]"
+              className="h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)]/80"
               aria-hidden="true"
             />
-            <span className="truncate text-[10px] font-medium text-[var(--tg-text-muted)]">
+            <span className="truncate text-[10px] font-medium text-[var(--tg-text-muted)] group-hover:text-[var(--tg-text-primary)]">
               {dataset.demoStep}
             </span>
           </div>
