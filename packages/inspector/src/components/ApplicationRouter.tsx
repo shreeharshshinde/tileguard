@@ -18,7 +18,8 @@
  *   - Any analysis, comparison, regression, or rendering logic (those live
  *     inside Workspace and its children, unchanged).
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getNavigationService } from '../services/NavigationService.js';
 import {
   createSession,
   type InspectorSession,
@@ -29,6 +30,7 @@ import type { ApplicationState } from '../services/NavigationService.js';
 import { ReturnHomeDialog } from './dialogs/ReturnHomeDialog.js';
 import { HomePage } from './home/HomePage.js';
 import { Workspace } from './workspace/Workspace.js';
+import { DocsPage } from './docs/DocsPage.js';
 
 // ---------------------------------------------------------------------------
 // ApplicationRouter
@@ -48,6 +50,16 @@ export function ApplicationRouter(): JSX.Element {
     File | undefined
   >();
 
+  // Subscribe to NavigationService to sync appState
+  useEffect(() => {
+    const nav = getNavigationService();
+    const sync = () => setAppState(nav.currentApplication());
+    const unsub = nav.subscribe(sync);
+    // Initial sync
+    sync();
+    return unsub;
+  }, []);
+
   // ── Home → Workspace (single tile) ───────────────────────────────────────
   const handleFileSelected = (file: File) => {
     const newSession = createSession({ tile: { filePath: file.name } });
@@ -55,7 +67,7 @@ export function ApplicationRouter(): JSX.Element {
     setPendingFile(file);
     setPendingComparisonA(undefined);
     setPendingComparisonB(undefined);
-    setAppState('workspace');
+    getNavigationService().openWorkspace();
   };
 
   // ── Home → Workspace (comparison pair) ───────────────────────────────────
@@ -67,7 +79,7 @@ export function ApplicationRouter(): JSX.Element {
     setPendingFile(undefined);
     setPendingComparisonA(fileA);
     setPendingComparisonB(fileB);
-    setAppState('workspace');
+    getNavigationService().openWorkspace();
   };
 
   // ── Workspace → Home request (intercept if session active) ───────────────
@@ -100,7 +112,7 @@ export function ApplicationRouter(): JSX.Element {
     setPendingFile(undefined);
     setPendingComparisonA(undefined);
     setPendingComparisonB(undefined);
-    setAppState('home');
+    getNavigationService().goHome();
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -111,6 +123,8 @@ export function ApplicationRouter(): JSX.Element {
           onFileSelected={handleFileSelected}
           onComparisonSelected={handleComparisonSelected}
         />
+      ) : appState === 'docs' ? (
+        <DocsPage />
       ) : (
         <Workspace
           onGoHome={handleGoHome}

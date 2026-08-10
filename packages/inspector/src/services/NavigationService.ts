@@ -35,7 +35,7 @@ import type { WorkspaceTab } from './WorkspaceService.js';
 /**
  * The top-level application state: either the Home screen or the Workspace.
  */
-export type ApplicationState = 'home' | 'workspace';
+export type ApplicationState = 'home' | 'workspace' | 'docs';
 
 /**
  * A page within the Workspace — maps 1-to-1 onto WorkspaceTab.
@@ -112,6 +112,11 @@ export interface NavigationService {
    * at the same page if the user returns to it in the same session.
    */
   goHome(): void;
+
+  /**
+   * Navigate to the Documentation screen.
+   */
+  openDocs(): void;
 
   /**
    * Open the Workspace, optionally landing on a specific page.
@@ -370,6 +375,12 @@ class NavigationServiceImpl implements NavigationService {
   goHome(): void {
     if (this._application === 'home') return;
     this._application = 'home';
+    this._notify();
+  }
+
+  openDocs(): void {
+    if (this._application === 'docs') return;
+    this._application = 'docs';
     this._notify();
   }
 
