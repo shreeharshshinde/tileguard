@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --tg-bg-primary: #0f172a;
-  --tg-bg-secondary: #1e293b;
-  --tg-bg-surface: #273548;
-  --tg-bg-hover: #334155;
-  --tg-border: #334155;
-  --tg-accent: #3b82f6;
-  --tg-accent-hover: #2563eb;
-  --tg-text-primary: #f8fafc;
-  --tg-text-secondary: #94a3b8;
-  --tg-text-muted: #64748b;
+  --tg-bg-primary: #000000;
+  --tg-bg-secondary: #09090b;
+  --tg-bg-surface: #121214;
+  --tg-bg-hover: #1f1f22;
+  --tg-border: #27272a;
+  --tg-accent: #a3ff00;
+  --tg-accent-hover: #bef264;
+  --tg-text-primary: #ffffff;
+  --tg-text-secondary: #a1a1aa;
+  --tg-text-muted: #71717a;
   --tg-error: #ef4444;
   --tg-warning: #f59e0b;
-  --tg-info: #3b82f6;
+  --tg-info: #a3ff00;
   --tg-success: #22c55e;
   --tg-font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --tg-font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
@@ -71,16 +71,16 @@
   --tg-footer-height: 36px;
 
   /* Higher contrast accents */
-  --tg-accent: #60a5fa;
-  --tg-accent-hover: #93c5fd;
+  --tg-accent: #b5ff33;
+  --tg-accent-hover: #caff66;
   --tg-error: #f87171;
   --tg-warning: #fbbf24;
   --tg-success: #34d399;
 
   /* Slightly brighter borders */
-  --tg-border: #475569;
-  --tg-text-secondary: #cbd5e1;
-  --tg-text-muted: #94a3b8;
+  --tg-border: #52525b;
+  --tg-text-secondary: #d4d4d8;
+  --tg-text-muted: #a1a1aa;
 }
 
 /* Hide developer noise in presentation mode */
@@ -129,7 +129,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
+  background: #a3ff00;
 }
 
 ::-webkit-scrollbar-corner {
@@ -152,5 +152,26 @@
 .overflow-y-auto:hover::-webkit-scrollbar-thumb:hover,
 .overflow-auto:hover::-webkit-scrollbar-thumb:hover,
 [class*="overflow-y"]:hover::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
+  background: #a3ff00;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Conveyor Belt (Marquee) Animation
+   ────────────────────────────────────────────────────────────────────────── */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    /* Translate by exactly one-third since we duplicate the items 3 times */
+    transform: translateX(-33.3333%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  /* Will-change helps with smooth scrolling on large elements */
+  will-change: transform;
+}
+
