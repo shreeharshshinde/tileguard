@@ -45,118 +45,89 @@ const STAT_ITEMS = [
 
 export function HomeHeader(): JSX.Element {
   return (
-    <header className="relative overflow-hidden rounded-2xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)]">
-      {/* Decorative gradient mesh */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        aria-hidden="true"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 20% -10%, rgba(59,130,246,0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 110%, rgba(34,197,94,0.10) 0%, transparent 60%)',
-        }}
-      />
-
-      {/* Grid dot pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle, var(--tg-text-primary) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-
+    <header className="relative mb-16 flex flex-col items-center text-center">
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative px-8 pb-8 pt-10 text-center"
+        className="relative z-10 flex flex-col items-center"
       >
-        {/* Logo + wordmark */}
+        {/* Logo */}
         <motion.div
           variants={up}
-          className="mb-5 flex items-center justify-center gap-3"
+          className="mb-8"
         >
           <motion.div
             variants={logoAnim}
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--tg-accent)]/12 ring-2 ring-[var(--tg-accent)]/25"
+            className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.2)]"
           >
-            <Shield
-              className="h-7 w-7 text-[var(--tg-accent)]"
-              aria-hidden="true"
-            />
+            <svg className="h-12 w-12 text-[var(--tg-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              {/* Shield outline */}
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              {/* Globe grid / coordinate lines */}
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" strokeOpacity="0.5" />
+              <path d="M2 12h20" strokeOpacity="0.5" />
+              {/* Data fragments */}
+              <rect x="9" y="8" width="2" height="2" fill="currentColor" stroke="none" />
+              <rect x="14" y="14" width="2" height="2" fill="currentColor" stroke="none" />
+            </svg>
           </motion.div>
-          <h1 className="text-5xl font-bold tracking-tight text-[var(--tg-text-primary)]">
-            TileGuard
-          </h1>
         </motion.div>
+
+        {/* Headline */}
+        <motion.h1 
+          variants={up}
+          className="mb-6 text-6xl md:text-8xl font-extrabold tracking-tighter"
+        >
+          <span className="text-white">Tile</span>
+          <span className="text-[var(--tg-accent)] drop-shadow-[0_0_15px_rgba(163,255,0,0.4)]">Guard</span>
+        </motion.h1>
 
         {/* Tagline */}
         <motion.p
           variants={up}
-          className="mx-auto mb-2 max-w-lg text-base font-medium text-[var(--tg-text-secondary)]"
+          className="mx-auto mb-4 max-w-2xl text-xl md:text-2xl font-medium text-[var(--tg-text-secondary)] tracking-tight"
         >
-          Automated quality gates for geospatial software
+          Automated quality gates for geospatial software.
         </motion.p>
 
         <motion.p
           variants={up}
-          className="mx-auto mb-6 max-w-md text-sm text-[var(--tg-text-muted)]"
+          className="mx-auto mb-10 max-w-xl text-base text-[var(--tg-text-muted)] leading-relaxed"
         >
           The same engineering discipline ESLint brings to JavaScript, applied
           to vector tiles and MapLibre style specifications.
         </motion.p>
 
-        {/* Badge row */}
+        {/* Metrics */}
         <motion.div
           variants={up}
-          className="mb-8 flex flex-wrap items-center justify-center gap-2"
+          className="relative flex overflow-hidden rounded-full bg-[#09090b] p-[1px] shadow-[0_10px_30px_-10px_rgba(163,255,0,0.15)]"
         >
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tg-accent)]/30 bg-[var(--tg-accent)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[var(--tg-accent)]">
-            <span
-              className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--tg-accent)]"
-              aria-hidden="true"
-            />
-            Engineering Workstation
-          </span>
-          <span className="rounded-full border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-2.5 py-1 font-mono text-[10px] text-[var(--tg-text-muted)]">
-            v1.0.0
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-[var(--tg-success)]/30 bg-[var(--tg-success)]/8 px-2.5 py-1 text-[11px] font-medium text-[var(--tg-success)]">
-            <span
-              className="h-1.5 w-1.5 rounded-full bg-[var(--tg-success)]"
-              aria-hidden="true"
-            />
-            MIT License
-          </span>
-          <span className="rounded-full border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] px-2.5 py-1 text-[11px] text-[var(--tg-text-muted)]">
-            FOSS4G 2026 · Hiroshima
-          </span>
-        </motion.div>
+          {/* Ultra-thin gradient border wrapper (active) */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-r from-[var(--tg-accent)]/40 via-transparent to-[var(--tg-accent)]/40 opacity-100" />
+          
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-8 md:gap-14 rounded-full bg-[#09090b] px-10 py-5 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] w-full">
+            
+            {/* Subtle radial glow (active) */}
+            <div className="absolute left-1/2 top-1/2 -z-10 h-24 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--tg-accent)] opacity-15 blur-[50px]" />
 
-        {/* Stats row */}
-        <motion.div
-          variants={up}
-          className="grid grid-cols-4 divide-x divide-[var(--tg-border)] overflow-hidden rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-primary)]/60"
-        >
-          {STAT_ITEMS.map(({ value, label, icon: Icon }) => (
-            <div
-              key={label}
-              className="flex flex-col items-center gap-1 px-4 py-3"
-            >
-              <Icon
-                className="h-4 w-4 text-[var(--tg-accent)]"
-                aria-hidden="true"
-              />
-              <span className="text-xl font-bold text-[var(--tg-text-primary)]">
-                {value}
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-widest text-[var(--tg-text-muted)]">
-                {label}
-              </span>
-            </div>
-          ))}
+            {STAT_ITEMS.map(({ value, label, icon: Icon }) => (
+              <div key={label} className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black ring-1 ring-[var(--tg-accent)]/40 shadow-[0_0_15px_rgba(163,255,0,0.2),inset_0_1px_0px_rgba(255,255,255,0.1)]">
+                  <Icon className="h-4 w-4 text-[var(--tg-accent)]" aria-hidden="true" />
+                </div>
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-xl font-bold tracking-tight text-white leading-none mb-1.5 drop-shadow-sm">
+                    {value}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--tg-text-muted)] leading-none">
+                    {label}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </motion.div>
     </header>
