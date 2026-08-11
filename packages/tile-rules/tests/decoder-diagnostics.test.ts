@@ -12,11 +12,11 @@
  *   - JSON serialization of diagnostic data
  */
 
-import { describe, expect, it } from 'vitest';
-import { createEngine } from '@tileguard/core';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createEngine } from '@tileguard/core';
+import { describe, expect, it } from 'vitest';
 import { DecodeError, decodeMvt, PbfReader, tilePlugin } from '../src/index.js';
 
 // ---------------------------------------------------------------------------
@@ -79,9 +79,7 @@ function buildLayer(
     } else if (val.intValue !== undefined) {
       valueBytes = encodeVarintField(4, val.intValue);
     }
-    parts.push(
-      ...encodeLengthDelimited(4, new Uint8Array(valueBytes)),
-    );
+    parts.push(...encodeLengthDelimited(4, new Uint8Array(valueBytes)));
   }
 
   // Field 2: features
@@ -93,20 +91,14 @@ function buildLayer(
     if (feat.tags !== undefined && feat.tags.length > 0) {
       const tagBytes: number[] = [];
       for (const t of feat.tags) tagBytes.push(...encodeVarint(t));
-      featureBytes.push(
-        ...encodeLengthDelimited(2, new Uint8Array(tagBytes)),
-      );
+      featureBytes.push(...encodeLengthDelimited(2, new Uint8Array(tagBytes)));
     }
     if (feat.geometry !== undefined && feat.geometry.length > 0) {
       const geomBytes: number[] = [];
       for (const g of feat.geometry) geomBytes.push(...encodeVarint(g));
-      featureBytes.push(
-        ...encodeLengthDelimited(4, new Uint8Array(geomBytes)),
-      );
+      featureBytes.push(...encodeLengthDelimited(4, new Uint8Array(geomBytes)));
     }
-    parts.push(
-      ...encodeLengthDelimited(2, new Uint8Array(featureBytes)),
-    );
+    parts.push(...encodeLengthDelimited(2, new Uint8Array(featureBytes)));
   }
 
   // Field 5: extent
@@ -210,7 +202,7 @@ describe('decodeMvt — string-table bounds validation', () => {
   it('throws DecodeError when key index exceeds keys table', () => {
     const layer = buildLayer(
       'roads',
-      ['name'],                    // 1 key (index 0)
+      ['name'], // 1 key (index 0)
       [{ stringValue: 'hello' }], // 1 value (index 0)
       [{ type: 1, tags: [5, 0], geometry: [9, 4, 4] }], // key index 5 out of bounds
     );
@@ -234,8 +226,8 @@ describe('decodeMvt — string-table bounds validation', () => {
   it('throws DecodeError when value index exceeds values table', () => {
     const layer = buildLayer(
       'buildings',
-      ['height'],                  // 1 key
-      [{ intValue: 10 }],         // 1 value (index 0)
+      ['height'], // 1 key
+      [{ intValue: 10 }], // 1 value (index 0)
       [{ type: 3, tags: [0, 99], geometry: [9, 4, 4, 18, 0, 20, 20, 0, 15] }], // value index 99
     );
     const tile = buildTile([layer]);
