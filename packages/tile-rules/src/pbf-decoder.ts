@@ -1,3 +1,4 @@
+import { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
 import type {
   GeometryType,
   GeometryTypeName,
@@ -8,7 +9,6 @@ import type {
   VectorTileGeometry,
   VectorTileLayer,
 } from './types.js';
-import { DecodeError, type DecodeDiagnosticData } from './decode-error.js';
 
 const GEOMETRY_TYPES: Record<number, GeometryTypeName> = {
   0: 'Unknown',
@@ -45,7 +45,10 @@ interface DecodeContext {
 }
 
 /** Build a DecodeDiagnosticData object from context, only including defined fields. */
-function contextData(ctx: DecodeContext, extra?: Partial<DecodeDiagnosticData>): DecodeDiagnosticData {
+function contextData(
+  ctx: DecodeContext,
+  extra?: Partial<DecodeDiagnosticData>,
+): DecodeDiagnosticData {
   const data: Record<string, unknown> = {};
   if (ctx.layer !== undefined) data.layer = ctx.layer;
   if (ctx.featureIndex !== undefined) data.featureIndex = ctx.featureIndex;
@@ -58,8 +61,11 @@ function contextData(ctx: DecodeContext, extra?: Partial<DecodeDiagnosticData>):
 }
 
 /** Build a Location from context, only including defined fields. */
-function contextLocation(ctx: DecodeContext): import('@tileguard/core').Location | undefined {
-  if (ctx.layer === undefined && ctx.featureIndex === undefined) return undefined;
+function contextLocation(
+  ctx: DecodeContext,
+): import('@tileguard/core').Location | undefined {
+  if (ctx.layer === undefined && ctx.featureIndex === undefined)
+    return undefined;
   const loc: Record<string, unknown> = {};
   if (ctx.layer !== undefined) loc.layer = ctx.layer;
   if (ctx.featureIndex !== undefined) loc.featureIndex = ctx.featureIndex;
@@ -174,10 +180,10 @@ export class PbfReader {
       this.pos += 4;
       return;
     }
-    throw new DecodeError(
-      `Unsupported protobuf wire type ${wireType}`,
-      { byteOffset: this.pos, wireType },
-    );
+    throw new DecodeError(`Unsupported protobuf wire type ${wireType}`, {
+      byteOffset: this.pos,
+      wireType,
+    });
   }
 
   ensure(length: number): void {
@@ -207,14 +213,22 @@ export function decodeMvt(data: Uint8Array | ArrayBuffer): VectorTileContent {
           layers[layer.name] = layer;
         }
       } catch (err) {
-        if (err instanceof DecodeError && err.diagnosticData.layer === undefined) {
+        if (
+          err instanceof DecodeError &&
+          err.diagnosticData.layer === undefined
+        ) {
           // Re-throw with byte offset relative to top-level stream if no layer context yet
-          throw new DecodeError(err.message, {
-            ...err.diagnosticData,
-            byteOffset: err.diagnosticData.byteOffset !== undefined
-              ? tagPos + err.diagnosticData.byteOffset
-              : tagPos,
-          }, err.location);
+          throw new DecodeError(
+            err.message,
+            {
+              ...err.diagnosticData,
+              byteOffset:
+                err.diagnosticData.byteOffset !== undefined
+                  ? tagPos + err.diagnosticData.byteOffset
+                  : tagPos,
+            },
+            err.location,
+          );
         }
         throw err;
       }
