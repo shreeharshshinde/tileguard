@@ -121,11 +121,11 @@ export function HowItWorksSection(): JSX.Element {
               </div>
 
               {/* Text content */}
-              <div className="relative z-10 mt-auto flex flex-col gap-3">
-                <h3 className="text-xl font-bold tracking-tight text-white transition-colors duration-500 group-hover:text-[var(--tg-accent)]">
+              <div className="relative z-10 mt-auto flex flex-col gap-4">
+                <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white transition-colors duration-500 group-hover:text-[var(--tg-accent)]">
                   {step.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-[var(--tg-text-secondary)] transition-colors duration-500 group-hover:text-white/75">
+                <p className="text-sm md:text-[15px] leading-relaxed text-[var(--tg-text-secondary)] transition-colors duration-500 group-hover:text-white/80">
                   {step.description}
                 </p>
               </div>

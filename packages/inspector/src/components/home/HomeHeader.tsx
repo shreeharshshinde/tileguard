@@ -81,17 +81,21 @@ export function HomeHeader(): JSX.Element {
         {/* Tagline */}
         <motion.p
           variants={up}
-          className="mx-auto mb-4 max-w-2xl text-xl md:text-2xl font-medium text-[var(--tg-text-secondary)] tracking-tight"
+          className="mx-auto mb-6 max-w-3xl text-2xl md:text-[28px] font-medium leading-snug tracking-tight text-white/90"
         >
-          Automated quality gates for geospatial software.
+          Automated quality gates for{' '}
+          <span className="bg-gradient-to-r from-[var(--tg-accent)] to-emerald-400 bg-clip-text text-transparent font-semibold drop-shadow-[0_0_10px_rgba(163,255,0,0.15)]">
+            geospatial software.
+          </span>
         </motion.p>
 
+        {/* Sub-tagline */}
         <motion.p
           variants={up}
-          className="mx-auto mb-10 max-w-xl text-base text-[var(--tg-text-muted)] leading-relaxed"
+          className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-[var(--tg-text-secondary)]"
         >
-          The same engineering discipline ESLint brings to JavaScript, applied
-          to vector tiles and MapLibre style specifications.
+          The same engineering discipline <strong className="font-medium text-white/80">ESLint</strong> brings to JavaScript, applied
+          to vector tiles and <strong className="font-medium text-white/80">MapLibre</strong> style specifications.
         </motion.p>
 
         {/* Metrics */}
