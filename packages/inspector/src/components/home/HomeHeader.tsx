@@ -46,6 +46,11 @@ const STAT_ITEMS = [
 export function HomeHeader(): JSX.Element {
   return (
     <header className="relative mb-16 flex flex-col items-center text-center">
+      {/* Background geospatial dotted map */}
+      <div className="pointer-events-none absolute left-1/2 top-[-100px] -z-10 h-[600px] w-[1000px] -translate-x-1/2 opacity-[0.15] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]">
+        <img src="/dotted_map.svg" alt="" className="h-full w-full object-cover" aria-hidden="true" />
+      </div>
+
       <motion.div
         variants={container}
         initial="hidden"
@@ -61,16 +66,16 @@ export function HomeHeader(): JSX.Element {
             variants={logoAnim}
             className="relative flex h-64 w-64 md:h-[400px] md:w-[400px] items-center justify-center drop-shadow-[0_0_50px_rgba(163,255,0,0.3)]"
           >
-            <img 
-              src="/tileguard_hero_logo.png" 
-              alt="TileGuard Logo" 
+            <img
+              src="/tileguard_hero_logo.png"
+              alt="TileGuard Logo"
               className="h-full w-full object-contain"
             />
           </motion.div>
         </motion.div>
 
         {/* Headline */}
-        <motion.h1 
+        <motion.h1
           variants={up}
           className="mb-6 text-6xl md:text-8xl font-extrabold tracking-tighter"
         >
@@ -105,9 +110,9 @@ export function HomeHeader(): JSX.Element {
         >
           {/* Ultra-thin gradient border wrapper (active) */}
           <div className="absolute inset-0 z-0 bg-gradient-to-r from-[var(--tg-accent)]/40 via-transparent to-[var(--tg-accent)]/40 opacity-100" />
-          
+
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-8 md:gap-14 rounded-full bg-[#09090b] px-10 py-5 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] w-full">
-            
+
             {/* Subtle radial glow (active) */}
             <div className="absolute left-1/2 top-1/2 -z-10 h-24 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--tg-accent)] opacity-15 blur-[50px]" />
 
