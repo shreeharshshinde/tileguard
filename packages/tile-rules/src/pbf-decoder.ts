@@ -8,6 +8,7 @@ import type {
   VectorTileGeometry,
   VectorTileLayer,
 } from './types.js';
+import { DecodeError, type DecodeDiagnosticData } from './decode-error.js';
 
 const GEOMETRY_TYPES: Record<number, GeometryTypeName> = {
   0: 'Unknown',
@@ -33,6 +34,38 @@ interface MutableLayer {
   features: RawFeature[];
 }
 
+/**
+ * Parsing context propagated through the decode pipeline.
+ * Populated as decode progresses — fields may be undefined if
+ * the failure occurs before that context is established.
+ */
+interface DecodeContext {
+  layer?: string;
+  featureIndex?: number;
+}
+
+/** Build a DecodeDiagnosticData object from context, only including defined fields. */
+function contextData(ctx: DecodeContext, extra?: Partial<DecodeDiagnosticData>): DecodeDiagnosticData {
+  const data: Record<string, unknown> = {};
+  if (ctx.layer !== undefined) data.layer = ctx.layer;
+  if (ctx.featureIndex !== undefined) data.featureIndex = ctx.featureIndex;
+  if (extra !== undefined) {
+    for (const [k, v] of Object.entries(extra)) {
+      if (v !== undefined) data[k] = v;
+    }
+  }
+  return data as DecodeDiagnosticData;
+}
+
+/** Build a Location from context, only including defined fields. */
+function contextLocation(ctx: DecodeContext): import('@tileguard/core').Location | undefined {
+  if (ctx.layer === undefined && ctx.featureIndex === undefined) return undefined;
+  const loc: Record<string, unknown> = {};
+  if (ctx.layer !== undefined) loc.layer = ctx.layer;
+  if (ctx.featureIndex !== undefined) loc.featureIndex = ctx.featureIndex;
+  return loc as import('@tileguard/core').Location;
+}
+
 export class PbfReader {
   readonly data: Uint8Array;
   pos = 0;
@@ -50,6 +83,7 @@ export class PbfReader {
   }
 
   readVarint(): number {
+    const startPos = this.pos;
     let result = 0;
     let shift = 0;
 
@@ -67,11 +101,15 @@ export class PbfReader {
 
       shift += 7;
       if (shift > 63) {
-        throw new Error('Invalid varint: too many bytes');
+        throw new DecodeError('Invalid varint: too many bytes', {
+          byteOffset: startPos,
+        });
       }
     }
 
-    throw new Error('Unexpected end of protobuf while reading varint');
+    throw new DecodeError('Unexpected end of protobuf while reading varint', {
+      byteOffset: startPos,
+    });
   }
 
   readSVarint(): number {
@@ -136,12 +174,17 @@ export class PbfReader {
       this.pos += 4;
       return;
     }
-    throw new Error(`Unsupported protobuf wire type ${wireType}`);
+    throw new DecodeError(
+      `Unsupported protobuf wire type ${wireType}`,
+      { byteOffset: this.pos, wireType },
+    );
   }
 
   ensure(length: number): void {
     if (this.pos + length > this.data.length) {
-      throw new Error('Unexpected end of protobuf');
+      throw new DecodeError('Unexpected end of protobuf', {
+        byteOffset: this.pos,
+      });
     }
   }
 }
@@ -151,14 +194,29 @@ export function decodeMvt(data: Uint8Array | ArrayBuffer): VectorTileContent {
   const layers: Record<string, VectorTileLayer> = {};
 
   while (!reader.eof()) {
+    const tagPos = reader.pos;
     const tag = reader.readVarint();
     const field = tag >> 3;
     const wire = tag & 7;
 
     if (field === 3 && wire === 2) {
-      const layer = decodeLayer(reader.readBytes());
-      if (layer.name.length > 0) {
-        layers[layer.name] = layer;
+      const layerBytes = reader.readBytes();
+      try {
+        const layer = decodeLayer(layerBytes);
+        if (layer.name.length > 0) {
+          layers[layer.name] = layer;
+        }
+      } catch (err) {
+        if (err instanceof DecodeError && err.diagnosticData.layer === undefined) {
+          // Re-throw with byte offset relative to top-level stream if no layer context yet
+          throw new DecodeError(err.message, {
+            ...err.diagnosticData,
+            byteOffset: err.diagnosticData.byteOffset !== undefined
+              ? tagPos + err.diagnosticData.byteOffset
+              : tagPos,
+          }, err.location);
+        }
+        throw err;
       }
     } else {
       reader.skip(wire);
@@ -201,16 +259,26 @@ function decodeLayer(data: Uint8Array): VectorTileLayer {
     }
   }
 
-  const features = layer.features.map((feature): VectorTileFeature => {
-    const idPart = feature.id === undefined ? {} : { id: feature.id };
-    return {
-      ...idPart,
-      type: feature.type,
-      geometryType: feature.geometryType,
-      properties: hydrateProperties(feature.tags, layer.keys, layer.values),
-      geometry: decodeGeometry(feature.geometryCommands, feature.type),
-    };
-  });
+  const ctx: DecodeContext = { layer: layer.name };
+
+  const features = layer.features.map(
+    (feature, featureIndex): VectorTileFeature => {
+      ctx.featureIndex = featureIndex;
+      const idPart = feature.id === undefined ? {} : { id: feature.id };
+      return {
+        ...idPart,
+        type: feature.type,
+        geometryType: feature.geometryType,
+        properties: hydrateProperties(
+          feature.tags,
+          layer.keys,
+          layer.values,
+          ctx,
+        ),
+        geometry: decodeGeometry(feature.geometryCommands, feature.type, ctx),
+      };
+    },
+  );
 
   return {
     name: layer.name,
@@ -280,6 +348,7 @@ function hydrateProperties(
   tags: readonly number[],
   keys: readonly string[],
   values: readonly TileValue[],
+  ctx: DecodeContext,
 ): Record<string, TileValue> {
   const properties: Record<string, TileValue> = {};
 
@@ -288,11 +357,34 @@ function hydrateProperties(
     const valueIndex = tags[index + 1];
     if (keyIndex === undefined || valueIndex === undefined) continue;
 
-    const key = keys[keyIndex];
-    const value = values[valueIndex];
-    if (key !== undefined) {
-      properties[key] = value ?? null;
+    // String-table bounds validation
+    if (keyIndex >= keys.length) {
+      throw new DecodeError(
+        `String-table key index ${keyIndex} is out of bounds`,
+        contextData(ctx, {
+          table: 'keys',
+          requestedIndex: keyIndex,
+          tableLength: keys.length,
+        }),
+        contextLocation(ctx),
+      );
     }
+
+    if (valueIndex >= values.length) {
+      throw new DecodeError(
+        `String-table value index ${valueIndex} is out of bounds`,
+        contextData(ctx, {
+          table: 'values',
+          requestedIndex: valueIndex,
+          tableLength: values.length,
+        }),
+        contextLocation(ctx),
+      );
+    }
+
+    const key = keys[keyIndex]!;
+    const value = values[valueIndex] ?? null;
+    properties[key] = value;
   }
 
   return properties;
@@ -308,6 +400,7 @@ function readPackedVarints(data: Uint8Array): number[] {
 function decodeGeometry(
   commands: readonly number[],
   type: GeometryType,
+  ctx: DecodeContext,
 ): VectorTileGeometry {
   let x = 0;
   let y = 0;
@@ -318,7 +411,11 @@ function decodeGeometry(
   while (index < commands.length) {
     const commandInteger = commands[index];
     if (commandInteger === undefined) {
-      throw new Error('Unexpected end of geometry command stream');
+      throw new DecodeError(
+        'Unexpected end of geometry command stream',
+        contextData(ctx),
+        contextLocation(ctx),
+      );
     }
     index += 1;
 
@@ -335,7 +432,11 @@ function decodeGeometry(
         const dx = commands[index];
         const dy = commands[index + 1];
         if (dx === undefined || dy === undefined) {
-          throw new Error('Unexpected end of geometry coordinate stream');
+          throw new DecodeError(
+            'Unexpected end of geometry coordinate stream',
+            contextData(ctx),
+            contextLocation(ctx),
+          );
         }
         index += 2;
 
@@ -349,7 +450,11 @@ function decodeGeometry(
         if (first !== undefined) current.push({ ...first });
       }
     } else {
-      throw new Error(`Unsupported geometry command ${command}`);
+      throw new DecodeError(
+        `Unsupported geometry command ${command}`,
+        contextData(ctx),
+        contextLocation(ctx),
+      );
     }
   }
 
