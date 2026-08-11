@@ -64,18 +64,24 @@ export function WithWithoutSection(): JSX.Element {
       {/* Comparison table */}
       <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-white/5 bg-[#09090b]">
         {/* Column headers */}
-        <div className="grid grid-cols-2 border-b border-white/5">
-          <div className="flex items-center gap-3 border-r border-white/5 px-8 py-5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--tg-error)]/10">
+        <div className="grid grid-cols-2 border-b border-white/5 bg-[#09090b]">
+          <div className="relative flex items-center gap-3 border-r border-white/5 bg-[var(--tg-error)]/[0.01] px-8 py-6">
+            {/* Top glowing error line for the 'Without' column */}
+            <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[var(--tg-error)]/0 via-[var(--tg-error)]/50 to-[var(--tg-error)]/0" />
+
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--tg-error)]/10 ring-1 ring-[var(--tg-error)]/20 shadow-[0_0_15px_rgba(255,51,102,0.1)]">
               <X className="h-3.5 w-3.5 text-[var(--tg-error)]" aria-hidden="true" />
             </div>
-            <span className="text-sm font-bold text-[var(--tg-text-muted)]">Without TileGuard</span>
+            <span className="text-sm font-bold tracking-wide text-[var(--tg-text-muted)] transition-colors duration-300 group-hover:text-white">Without TileGuard</span>
           </div>
-          <div className="flex items-center gap-3 px-8 py-5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--tg-accent)]/10">
+          <div className="relative flex items-center gap-3 bg-[var(--tg-accent)]/[0.03] px-8 py-6">
+            {/* Top glowing accent line for the 'With' column */}
+            <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-[var(--tg-accent)]/0 via-[var(--tg-accent)] to-[var(--tg-accent)]/0" />
+            
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--tg-accent)]/10 ring-1 ring-[var(--tg-accent)]/30 shadow-[0_0_15px_rgba(163,255,0,0.15)]">
               <Check className="h-3.5 w-3.5 text-[var(--tg-accent)]" aria-hidden="true" />
             </div>
-            <span className="text-sm font-bold text-white">With TileGuard</span>
+            <span className="text-sm font-bold tracking-wide text-white">With TileGuard</span>
           </div>
         </div>
 
@@ -86,19 +92,22 @@ export function WithWithoutSection(): JSX.Element {
             initial={{ opacity: 0, x: -16 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.45, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-            className={`grid grid-cols-2 ${i < COMPARISONS.length - 1 ? 'border-b border-white/5' : ''}`}
+            className={`group grid grid-cols-2 transition-colors duration-300 hover:bg-white/[0.02] ${i < COMPARISONS.length - 1 ? 'border-b border-white/[0.02]' : ''}`}
           >
             {/* Without */}
-            <div className="flex items-start gap-4 border-r border-white/5 px-8 py-5">
-              <X className="mt-0.5 h-4 w-4 shrink-0 text-[var(--tg-error)]/50" aria-hidden="true" />
-              <p className="text-sm leading-relaxed text-[var(--tg-text-muted)]">
+            <div className="relative flex items-center gap-4 border-r border-white/5 bg-[var(--tg-error)]/[0.01] px-8 py-5 transition-all duration-300 group-hover:bg-[var(--tg-error)]/[0.02]">
+              <X className="h-4 w-4 shrink-0 text-[var(--tg-error)]/40 transition-all duration-300 group-hover:text-[var(--tg-error)] group-hover:shadow-[0_0_10px_rgba(255,51,102,0.3)]" aria-hidden="true" />
+              <p className="text-sm leading-relaxed text-[var(--tg-text-muted)] transition-colors duration-300 group-hover:text-white/70">
                 {row.without}
               </p>
             </div>
             {/* With */}
-            <div className="flex items-start gap-4 px-8 py-5">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--tg-accent)]" aria-hidden="true" />
-              <p className="text-sm leading-relaxed text-white">
+            <div className="relative flex items-center gap-4 bg-[var(--tg-accent)]/[0.02] px-8 py-5 transition-colors duration-300 group-hover:bg-[var(--tg-accent)]/[0.04]">
+              {/* Subtle left glow on hover */}
+              <div className="absolute bottom-0 left-0 top-0 w-[2px] bg-gradient-to-b from-transparent via-[var(--tg-accent)]/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              
+              <Check className="h-4 w-4 shrink-0 text-[var(--tg-accent)] shadow-[0_0_10px_rgba(163,255,0,0.3)]" aria-hidden="true" />
+              <p className="text-sm font-medium leading-relaxed text-white">
                 {row.with}
               </p>
             </div>
