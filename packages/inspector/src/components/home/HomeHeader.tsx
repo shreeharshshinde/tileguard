@@ -55,22 +55,17 @@ export function HomeHeader(): JSX.Element {
         {/* Logo */}
         <motion.div
           variants={up}
-          className="mb-8"
+          className="-mb-8 md:-mb-16"
         >
           <motion.div
             variants={logoAnim}
-            className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.2)]"
+            className="relative flex h-64 w-64 md:h-[400px] md:w-[400px] items-center justify-center drop-shadow-[0_0_50px_rgba(163,255,0,0.3)]"
           >
-            <svg className="h-12 w-12 text-[var(--tg-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              {/* Shield outline */}
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              {/* Globe grid / coordinate lines */}
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" strokeOpacity="0.5" />
-              <path d="M2 12h20" strokeOpacity="0.5" />
-              {/* Data fragments */}
-              <rect x="9" y="8" width="2" height="2" fill="currentColor" stroke="none" />
-              <rect x="14" y="14" width="2" height="2" fill="currentColor" stroke="none" />
-            </svg>
+            <img 
+              src="/tileguard_hero_logo.png" 
+              alt="TileGuard Logo" 
+              className="h-full w-full object-contain"
+            />
           </motion.div>
         </motion.div>
 
