@@ -198,7 +198,7 @@ describe('@tileguard/tile-rules', () => {
     );
   });
 
-  it('reports load-failed for invalid protobuf data', async () => {
+  it('reports decode-failed for invalid protobuf data', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'tileguard-'));
     const path = join(dir, 'bad.pbf');
     await writeFile(path, Buffer.from([0xff, 0xff]));
@@ -207,7 +207,7 @@ describe('@tileguard/tile-rules', () => {
     const result = await engine.run([path]);
 
     expect(result.summary.pass).toBe(false);
-    expect(result.diagnostics[0]?.ruleId).toBe('artifact/load-failed');
+    expect(result.diagnostics[0]?.ruleId).toBe('artifact/decode-failed');
   });
 });
 

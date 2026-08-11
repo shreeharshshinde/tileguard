@@ -625,11 +625,44 @@ export function createEngine(config: EngineOptions = {}): Engine {
           artifactCount += 1;
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
+
+          // Check for structured decode errors (duck-typed: errors with a
+          // `diagnosticData` property carry machine-readable context from the
+          // decoder — byte offsets, layer/feature context, string-table info).
+          const diagnosticData =
+            err !== null &&
+            typeof err === 'object' &&
+            'diagnosticData' in err &&
+            typeof (err as { diagnosticData: unknown }).diagnosticData ===
+              'object'
+              ? ((err as { diagnosticData: Record<string, unknown> })
+                  .diagnosticData as Record<string, unknown>)
+              : undefined;
+
+          const location =
+            err !== null &&
+            typeof err === 'object' &&
+            'location' in err &&
+            typeof (err as { location: unknown }).location === 'object'
+              ? ((err as { location: Record<string, unknown> }).location as
+                  | Record<string, unknown>
+                  | undefined)
+              : undefined;
+
+          // Use artifact/decode-failed for structured decode errors,
+          // artifact/load-failed for I/O and other load failures.
+          const ruleId =
+            diagnosticData !== undefined
+              ? 'artifact/decode-failed'
+              : 'artifact/load-failed';
+
           emitDiagnostic({
-            ruleId: 'artifact/load-failed',
+            ruleId,
             severity: 'error',
             message: `Failed to load artifact from "${source}": ${message}`,
             artifact: { type: provider.artifactTypes[0] ?? 'unknown', source },
+            ...(location !== undefined && { location }),
+            ...(diagnosticData !== undefined && { data: diagnosticData }),
           });
           if (diagnosticsTruncated) break;
           continue;

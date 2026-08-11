@@ -30,6 +30,7 @@ export {
   signedArea,
   uniquePointCount,
 } from './geometry.js';
+export { DecodeError, type DecodeDiagnosticData } from './decode-error.js';
 export { decodeMvt, PbfReader } from './pbf-decoder.js';
 export { tileProvider } from './provider.js';
 export { coordinateRangeRule } from './rules/coordinate-range.js';
