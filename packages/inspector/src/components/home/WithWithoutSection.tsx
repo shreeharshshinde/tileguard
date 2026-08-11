@@ -12,15 +12,15 @@ import { useRef } from 'react';
 
 const COMPARISONS = [
   {
-    without: 'Render test failed — no actionable context',
+    without: 'Render test failed — limited root-cause context',
     with: 'Diagnostic identifies the exact rule and affected feature',
   },
   {
-    without: 'Manually decode PBF binary to understand tile structure',
+    without: 'Inspecting raw PBF data is difficult to do manually',
     with: 'Inspect any feature directly in the visual canvas explorer',
   },
   {
-    without: 'Search through thousands of features to find the problem',
+    without: 'Finding the affected feature can require manual investigation',
     with: 'Jump directly to the affected geometry in one click',
   },
   {

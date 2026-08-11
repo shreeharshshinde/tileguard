@@ -49,7 +49,7 @@ export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element
 
             <div className="flex flex-col gap-3">
               <h2 className="text-2xl font-extrabold tracking-tight text-white lg:text-3xl">
-                Your first investigation,
+                Start your first investigation
                 <br />
                 in under 60 seconds.
               </h2>

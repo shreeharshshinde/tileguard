@@ -14,7 +14,7 @@ const STEPS = [
     icon: FileUp,
     title: 'Load a Tile',
     description:
-      'Drag and drop any Mapbox Vector Tile (.pbf or .mvt) directly into the browser — no server required, processing is 100% local.',
+      'Drag and drop any Mapbox Vector Tile (.pbf or .mvt) directly into the browser. Tile analysis runs locally — no TileGuard server is required.',
     accent: '#a3ff00',
   },
   {

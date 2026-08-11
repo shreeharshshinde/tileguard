@@ -39,7 +39,7 @@ const logoAnim = {
 const STAT_ITEMS = [
   { value: '10', label: 'Tile Rules', icon: Layers },
   { value: '9', label: 'Style Rules', icon: Zap },
-  { value: '131', label: 'Tests Passing', icon: Shield },
+  { value: '1,635', label: 'Tests Passing', icon: Shield },
   { value: 'CI', label: 'Ready', icon: GitCompare },
 ];
 
@@ -89,13 +89,13 @@ export function HomeHeader(): JSX.Element {
           </span>
         </motion.p>
 
-        {/* Sub-tagline */}
+        {/* Sub-tagline — precise four-line product description */}
         <motion.p
           variants={up}
           className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-[var(--tg-text-secondary)]"
         >
-          The same engineering discipline <strong className="font-medium text-white/80">ESLint</strong> brings to JavaScript, applied
-          to vector tiles and <strong className="font-medium text-white/80">MapLibre</strong> style specifications.
+          Validate vector tiles and MapLibre styles.{' '}
+          <span className="text-white/70">Inspect geometry. Diagnose failures. Compare tile versions. Generate engineering reports.</span>
         </motion.p>
 
         {/* Metrics */}

@@ -11,9 +11,9 @@ import { useRef } from 'react';
 const DIFFERENTIATORS = [
   {
     icon: Globe2,
-    title: 'Browser-first, zero setup',
+    title: 'Browser-first inspection',
     description:
-      'Works entirely in the browser. No Node.js, no CLI, no Docker. Paste a URL or drag a file and you\'re analysing in seconds.',
+      'Load a vector tile directly in the Inspector with no server or local installation required. Analysis runs entirely in your browser.',
     span: 'lg:col-span-2',
   },
   {
@@ -25,25 +25,25 @@ const DIFFERENTIATORS = [
   },
   {
     icon: Layers2,
-    title: 'Full MVT awareness',
+    title: 'MVT-aware validation',
     description:
-      'Understands the Mapbox Vector Tile spec deeply — layers, features, geometry types, coordinate systems, and winding order.',
+      'Understands the Mapbox Vector Tile spec — layers, features, geometry types, coordinate systems, and winding order.',
     span: 'lg:col-span-1',
   },
   {
     icon: GitMerge,
     title: 'CI-native quality gates',
     description:
-      'Designed to run headlessly inside GitHub Actions. Block a deployment if tiles regress — the same way unit tests block broken code.',
+      'Run TileGuard headlessly in GitHub Actions and use its exit status to fail a quality check when tile validation detects errors.',
     span: 'lg:col-span-2',
   },
 ];
 
 const PROOF_POINTS = [
-  '10 tile rules, 9 style rules, all open source',
-  '131 automated tests — CI green',
-  'Zero external API calls — 100% local processing',
-  'Built for FOSS4G 2026 — production road-tested',
+  '10 tile rules · 9 style rules · MIT licensed',
+  '1,635 automated tests · CI validated',
+  'Local analysis · no TileGuard cloud service required',
+  'Tested against real-world vector tile fixtures',
 ];
 
 const fadeUp = {
