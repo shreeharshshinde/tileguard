@@ -134,7 +134,7 @@ export function ResizablePanel({
           {left}
           {/* Left resize handle */}
           <div
-            className={handleStyle + ' right-0'}
+            className={`${handleStyle} right-0`}
             onPointerDown={handleLeftDragStart}
             onPointerMove={handleLeftDragMove}
             onPointerUp={handleLeftDragEnd}
@@ -157,7 +157,7 @@ export function ResizablePanel({
         >
           {/* Right resize handle */}
           <div
-            className={handleStyle + ' left-0'}
+            className={`${handleStyle} left-0`}
             onPointerDown={handleRightDragStart}
             onPointerMove={handleRightDragMove}
             onPointerUp={handleRightDragEnd}

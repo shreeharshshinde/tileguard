@@ -14,12 +14,11 @@
 import type { ResolvedLayer } from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
 import type {
-  ExpressionArg,
   PropertyReference,
   StyleExpression,
 } from '../models/StyleExpression.js';
 import { isExpression } from '../models/StyleExpression.js';
-import type { PropertyValue, StyleLayer } from '../models/StyleLayer.js';
+import type { StyleLayer } from '../models/StyleLayer.js';
 import type { StyleSource } from '../models/StyleSource.js';
 
 // ---------------------------------------------------------------------------

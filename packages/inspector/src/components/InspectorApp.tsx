@@ -298,7 +298,7 @@ function Footer({
 // Workspace
 // ---------------------------------------------------------------------------
 
-function Workspace(): JSX.Element {
+function _Workspace(): JSX.Element {
   const { inspector, store } = useInspectorContext();
   const lifecycle = useLifecycle(store);
   const search = useSearch(store);

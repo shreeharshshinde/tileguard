@@ -96,25 +96,25 @@ export function parseStyleDocument(input: unknown): ParseResult {
 
 function buildDocument(raw: Record<string, unknown>): StyleDocument {
   return {
-    version: typeof raw['version'] === 'number' ? raw['version'] : undefined,
-    name: typeof raw['name'] === 'string' ? raw['name'] : undefined,
-    metadata: isRecord(raw['metadata'])
-      ? (raw['metadata'] as Record<string, unknown>)
+    version: typeof raw.version === 'number' ? raw.version : undefined,
+    name: typeof raw.name === 'string' ? raw.name : undefined,
+    metadata: isRecord(raw.metadata)
+      ? (raw.metadata as Record<string, unknown>)
       : undefined,
-    sprite: parseSpriteValue(raw['sprite']),
-    glyphs: typeof raw['glyphs'] === 'string' ? raw['glyphs'] : undefined,
-    projection: parseProjection(raw['projection']),
-    terrain: parseTerrain(raw['terrain']),
-    fog: parseFog(raw['fog']),
-    light: parseLight(raw['light']),
-    transition: parseTransition(raw['transition']),
-    center: parseCenter(raw['center']),
-    zoom: typeof raw['zoom'] === 'number' ? raw['zoom'] : undefined,
-    bearing: typeof raw['bearing'] === 'number' ? raw['bearing'] : undefined,
-    pitch: typeof raw['pitch'] === 'number' ? raw['pitch'] : undefined,
-    sources: parseSources(raw['sources']),
-    layers: parseLayers(raw['layers']),
-    imports: parseImports(raw['imports']),
+    sprite: parseSpriteValue(raw.sprite),
+    glyphs: typeof raw.glyphs === 'string' ? raw.glyphs : undefined,
+    projection: parseProjection(raw.projection),
+    terrain: parseTerrain(raw.terrain),
+    fog: parseFog(raw.fog),
+    light: parseLight(raw.light),
+    transition: parseTransition(raw.transition),
+    center: parseCenter(raw.center),
+    zoom: typeof raw.zoom === 'number' ? raw.zoom : undefined,
+    bearing: typeof raw.bearing === 'number' ? raw.bearing : undefined,
+    pitch: typeof raw.pitch === 'number' ? raw.pitch : undefined,
+    sources: parseSources(raw.sources),
+    layers: parseLayers(raw.layers),
+    imports: parseImports(raw.imports),
     raw,
   };
 }
@@ -130,8 +130,8 @@ function parseSpriteValue(value: unknown): SpriteDescriptor | undefined {
     const descriptors = value.filter(
       (item): item is { id: string; url: string } =>
         isRecord(item) &&
-        typeof (item as Record<string, unknown>)['id'] === 'string' &&
-        typeof (item as Record<string, unknown>)['url'] === 'string',
+        typeof (item as Record<string, unknown>).id === 'string' &&
+        typeof (item as Record<string, unknown>).url === 'string',
     );
     return descriptors.length > 0 ? descriptors : undefined;
   }
@@ -141,18 +141,18 @@ function parseSpriteValue(value: unknown): SpriteDescriptor | undefined {
 function parseProjection(value: unknown): StyleProjection | undefined {
   if (!isRecord(value)) return undefined;
   const rec = value as Record<string, unknown>;
-  const type = typeof rec['type'] === 'string' ? rec['type'] : 'mercator';
+  const type = typeof rec.type === 'string' ? rec.type : 'mercator';
   return { type };
 }
 
 function parseTerrain(value: unknown): StyleTerrain | undefined {
   if (!isRecord(value)) return undefined;
   const rec = value as Record<string, unknown>;
-  if (typeof rec['source'] !== 'string') return undefined;
+  if (typeof rec.source !== 'string') return undefined;
   return {
-    source: rec['source'],
+    source: rec.source,
     exaggeration:
-      typeof rec['exaggeration'] === 'number' ? rec['exaggeration'] : undefined,
+      typeof rec.exaggeration === 'number' ? rec.exaggeration : undefined,
   };
 }
 
@@ -160,14 +160,14 @@ function parseFog(value: unknown): StyleFog | undefined {
   if (!isRecord(value)) return undefined;
   const rec = value as Record<string, unknown>;
   return {
-    color: typeof rec['color'] === 'string' ? rec['color'] : undefined,
+    color: typeof rec.color === 'string' ? rec.color : undefined,
     'high-color':
       typeof rec['high-color'] === 'string' ? rec['high-color'] : undefined,
     'horizon-blend':
       typeof rec['horizon-blend'] === 'number'
         ? rec['horizon-blend']
         : undefined,
-    range: parseTuple2(rec['range']),
+    range: parseTuple2(rec.range),
     'star-intensity':
       typeof rec['star-intensity'] === 'number'
         ? rec['star-intensity']
@@ -182,13 +182,12 @@ function parseLight(value: unknown): StyleLight | undefined {
   const rec = value as Record<string, unknown>;
   return {
     anchor:
-      rec['anchor'] === 'map' || rec['anchor'] === 'viewport'
-        ? rec['anchor']
+      rec.anchor === 'map' || rec.anchor === 'viewport'
+        ? rec.anchor
         : undefined,
-    color: typeof rec['color'] === 'string' ? rec['color'] : undefined,
-    intensity:
-      typeof rec['intensity'] === 'number' ? rec['intensity'] : undefined,
-    position: parseTuple3(rec['position']),
+    color: typeof rec.color === 'string' ? rec.color : undefined,
+    intensity: typeof rec.intensity === 'number' ? rec.intensity : undefined,
+    position: parseTuple3(rec.position),
   };
 }
 
@@ -196,8 +195,8 @@ function parseTransition(value: unknown): StyleTransition | undefined {
   if (!isRecord(value)) return undefined;
   const rec = value as Record<string, unknown>;
   return {
-    duration: typeof rec['duration'] === 'number' ? rec['duration'] : undefined,
-    delay: typeof rec['delay'] === 'number' ? rec['delay'] : undefined,
+    duration: typeof rec.duration === 'number' ? rec.duration : undefined,
+    delay: typeof rec.delay === 'number' ? rec.delay : undefined,
   };
 }
 
@@ -214,13 +213,12 @@ function parseImports(value: unknown): readonly StyleImport[] | undefined {
   for (const item of value) {
     if (!isRecord(item)) continue;
     const rec = item as Record<string, unknown>;
-    if (typeof rec['id'] !== 'string' || typeof rec['url'] !== 'string')
-      continue;
+    if (typeof rec.id !== 'string' || typeof rec.url !== 'string') continue;
     imports.push({
-      id: rec['id'],
-      url: rec['url'],
-      config: isRecord(rec['config'])
-        ? (rec['config'] as Record<string, unknown>)
+      id: rec.id,
+      url: rec.url,
+      config: isRecord(rec.config)
+        ? (rec.config as Record<string, unknown>)
         : undefined,
     });
   }
@@ -248,15 +246,15 @@ function parseSource(
   id: string,
   raw: Record<string, unknown>,
 ): StyleSource | undefined {
-  const type = raw['type'] as string | undefined;
+  const type = raw.type as string | undefined;
   if (typeof type !== 'string') return undefined;
 
   const base = {
     id,
-    minzoom: typeof raw['minzoom'] === 'number' ? raw['minzoom'] : undefined,
-    maxzoom: typeof raw['maxzoom'] === 'number' ? raw['maxzoom'] : undefined,
+    minzoom: typeof raw.minzoom === 'number' ? raw.minzoom : undefined,
+    maxzoom: typeof raw.maxzoom === 'number' ? raw.maxzoom : undefined,
     attribution:
-      typeof raw['attribution'] === 'string' ? raw['attribution'] : undefined,
+      typeof raw.attribution === 'string' ? raw.attribution : undefined,
   };
 
   switch (type) {
@@ -264,93 +262,80 @@ function parseSource(
       return {
         ...base,
         type: 'vector',
-        url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
-        tiles: parseStringArray(raw['tiles']),
-        bounds: parseBounds(raw['bounds']),
+        url: typeof raw.url === 'string' ? raw.url : undefined,
+        tiles: parseStringArray(raw.tiles),
+        bounds: parseBounds(raw.bounds),
         scheme:
-          raw['scheme'] === 'xyz' || raw['scheme'] === 'tms'
-            ? raw['scheme']
-            : undefined,
-        promoteId: parsePromoteId(raw['promoteId']),
+          raw.scheme === 'xyz' || raw.scheme === 'tms' ? raw.scheme : undefined,
+        promoteId: parsePromoteId(raw.promoteId),
       } satisfies VectorSource;
 
     case 'geojson':
       return {
         ...base,
         type: 'geojson',
-        data: raw['data'],
-        cluster:
-          typeof raw['cluster'] === 'boolean' ? raw['cluster'] : undefined,
+        data: raw.data,
+        cluster: typeof raw.cluster === 'boolean' ? raw.cluster : undefined,
         clusterMaxZoom:
-          typeof raw['clusterMaxZoom'] === 'number'
-            ? raw['clusterMaxZoom']
+          typeof raw.clusterMaxZoom === 'number'
+            ? raw.clusterMaxZoom
             : undefined,
         clusterRadius:
-          typeof raw['clusterRadius'] === 'number'
-            ? raw['clusterRadius']
-            : undefined,
-        clusterProperties: isRecord(raw['clusterProperties'])
-          ? (raw['clusterProperties'] as Record<string, unknown>)
+          typeof raw.clusterRadius === 'number' ? raw.clusterRadius : undefined,
+        clusterProperties: isRecord(raw.clusterProperties)
+          ? (raw.clusterProperties as Record<string, unknown>)
           : undefined,
         generateId:
-          typeof raw['generateId'] === 'boolean'
-            ? raw['generateId']
-            : undefined,
+          typeof raw.generateId === 'boolean' ? raw.generateId : undefined,
         promoteId:
-          typeof raw['promoteId'] === 'string' ? raw['promoteId'] : undefined,
-        buffer: typeof raw['buffer'] === 'number' ? raw['buffer'] : undefined,
+          typeof raw.promoteId === 'string' ? raw.promoteId : undefined,
+        buffer: typeof raw.buffer === 'number' ? raw.buffer : undefined,
         tolerance:
-          typeof raw['tolerance'] === 'number' ? raw['tolerance'] : undefined,
+          typeof raw.tolerance === 'number' ? raw.tolerance : undefined,
         lineMetrics:
-          typeof raw['lineMetrics'] === 'boolean'
-            ? raw['lineMetrics']
-            : undefined,
+          typeof raw.lineMetrics === 'boolean' ? raw.lineMetrics : undefined,
       } satisfies GeoJsonSource;
 
     case 'raster':
       return {
         ...base,
         type: 'raster',
-        url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
-        tiles: parseStringArray(raw['tiles']),
-        tileSize:
-          typeof raw['tileSize'] === 'number' ? raw['tileSize'] : undefined,
-        bounds: parseBounds(raw['bounds']),
+        url: typeof raw.url === 'string' ? raw.url : undefined,
+        tiles: parseStringArray(raw.tiles),
+        tileSize: typeof raw.tileSize === 'number' ? raw.tileSize : undefined,
+        bounds: parseBounds(raw.bounds),
         scheme:
-          raw['scheme'] === 'xyz' || raw['scheme'] === 'tms'
-            ? raw['scheme']
-            : undefined,
+          raw.scheme === 'xyz' || raw.scheme === 'tms' ? raw.scheme : undefined,
       } satisfies RasterSource;
 
     case 'raster-dem':
       return {
         ...base,
         type: 'raster-dem',
-        url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
-        tiles: parseStringArray(raw['tiles']),
-        tileSize:
-          typeof raw['tileSize'] === 'number' ? raw['tileSize'] : undefined,
+        url: typeof raw.url === 'string' ? raw.url : undefined,
+        tiles: parseStringArray(raw.tiles),
+        tileSize: typeof raw.tileSize === 'number' ? raw.tileSize : undefined,
         encoding:
-          raw['encoding'] === 'mapbox' || raw['encoding'] === 'terrarium'
-            ? raw['encoding']
+          raw.encoding === 'mapbox' || raw.encoding === 'terrarium'
+            ? raw.encoding
             : undefined,
-        bounds: parseBounds(raw['bounds']),
+        bounds: parseBounds(raw.bounds),
       } satisfies RasterDemSource;
 
     case 'image':
       return {
         ...base,
         type: 'image',
-        url: typeof raw['url'] === 'string' ? raw['url'] : undefined,
-        coordinates: parseCoordinateArray(raw['coordinates']),
+        url: typeof raw.url === 'string' ? raw.url : undefined,
+        coordinates: parseCoordinateArray(raw.coordinates),
       } satisfies ImageSource;
 
     case 'video':
       return {
         ...base,
         type: 'video',
-        urls: parseStringArray(raw['urls']),
-        coordinates: parseCoordinateArray(raw['coordinates']),
+        urls: parseStringArray(raw.urls),
+        coordinates: parseCoordinateArray(raw.coordinates),
       } satisfies VideoSource;
 
     default:
@@ -377,22 +362,22 @@ function parseLayers(value: unknown): readonly StyleLayer[] {
 }
 
 function parseLayer(raw: Record<string, unknown>, index: number): StyleLayer {
-  const id = typeof raw['id'] === 'string' ? raw['id'] : `<unnamed-${index}>`;
-  const type = typeof raw['type'] === 'string' ? raw['type'] : 'unknown';
+  const id = typeof raw.id === 'string' ? raw.id : `<unnamed-${index}>`;
+  const type = typeof raw.type === 'string' ? raw.type : 'unknown';
 
   return {
     id,
     type,
-    source: typeof raw['source'] === 'string' ? raw['source'] : undefined,
+    source: typeof raw.source === 'string' ? raw.source : undefined,
     sourceLayer:
       typeof raw['source-layer'] === 'string' ? raw['source-layer'] : undefined,
-    filter: parseLayerFilter(raw['filter']),
-    minzoom: typeof raw['minzoom'] === 'number' ? raw['minzoom'] : undefined,
-    maxzoom: typeof raw['maxzoom'] === 'number' ? raw['maxzoom'] : undefined,
-    layout: parseProperties(raw['layout']),
-    paint: parseProperties(raw['paint']),
-    metadata: isRecord(raw['metadata'])
-      ? (raw['metadata'] as Record<string, unknown>)
+    filter: parseLayerFilter(raw.filter),
+    minzoom: typeof raw.minzoom === 'number' ? raw.minzoom : undefined,
+    maxzoom: typeof raw.maxzoom === 'number' ? raw.maxzoom : undefined,
+    layout: parseProperties(raw.layout),
+    paint: parseProperties(raw.paint),
+    metadata: isRecord(raw.metadata)
+      ? (raw.metadata as Record<string, unknown>)
       : undefined,
     index,
     raw,

@@ -20,6 +20,7 @@ import { selfIntersectionRule } from './rules/self-intersection.js';
 import { unclosedRingRule } from './rules/unclosed-ring.js';
 import { zeroAreaRingRule } from './rules/zero-area-ring.js';
 
+export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
 export {
   findCoordinateRangeIssues,
   findDegenerateGeometryIssues,
@@ -30,7 +31,6 @@ export {
   signedArea,
   uniquePointCount,
 } from './geometry.js';
-export { DecodeError, type DecodeDiagnosticData } from './decode-error.js';
 export { decodeMvt, PbfReader } from './pbf-decoder.js';
 export { tileProvider } from './provider.js';
 export { coordinateRangeRule } from './rules/coordinate-range.js';

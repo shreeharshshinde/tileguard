@@ -23,13 +23,7 @@
  *   - The CanvasView (passed in as `canvas` prop — Workspace singleton)
  *   - Store / inspector instances (passed down from Workspace)
  */
-import {
-  Center,
-  Crosshair,
-  DownloadIcon,
-  RotateCcw,
-  Search,
-} from 'lucide-react';
+import { Crosshair, DownloadIcon, RotateCcw, Search } from 'lucide-react';
 import type { Inspector } from '../../create-inspector.js';
 import type { InspectorStore } from '../../store/inspector-store.js';
 import { WorkspaceToolbar } from '../shared/index.js';

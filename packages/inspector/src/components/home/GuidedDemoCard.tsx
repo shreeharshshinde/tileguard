@@ -20,7 +20,9 @@ const TILE_STATS = [
   { icon: AlertCircle, label: 'Diagnostics', value: '1 finding' },
 ];
 
-export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element {
+export function GuidedDemoCard({
+  onOpenDemo,
+}: GuidedDemoCardProps): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -55,8 +57,8 @@ export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element
               </h2>
               <p className="text-base leading-relaxed text-[var(--tg-text-secondary)]">
                 Load a real Tokyo vector tile and investigate a deliberately
-                broken geometry — from raw .pbf file to a full diagnostic report,
-                guided step by step.
+                broken geometry — from raw .pbf file to a full diagnostic
+                report, guided step by step.
               </p>
             </div>
 
@@ -66,7 +68,10 @@ export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element
               className="group/btn relative flex w-fit items-center gap-3 overflow-hidden rounded-full bg-[var(--tg-accent)] px-6 py-3 text-sm font-bold text-black transition-all duration-300 hover:shadow-[0_0_30px_rgba(163,255,0,0.4)] hover:scale-[1.02] active:scale-[0.98]"
             >
               <span>Start Guided Demo</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1"
+                aria-hidden="true"
+              />
             </button>
           </div>
 
@@ -82,21 +87,30 @@ export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element
                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--tg-error)]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--tg-warning)]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--tg-success)]" />
-                <span className="ml-2 text-[10px] text-[var(--tg-text-muted)]">tokyo_14-14548-6487.pbf</span>
+                <span className="ml-2 text-[10px] text-[var(--tg-text-muted)]">
+                  tokyo_14-14548-6487.pbf
+                </span>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-[var(--tg-text-muted)]">size</span>
+                  <span className="text-[11px] text-[var(--tg-text-muted)]">
+                    size
+                  </span>
                   <span className="text-[11px] text-white">403 KB</span>
                 </div>
                 <div className="h-px bg-white/5" />
                 {TILE_STATS.map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-center justify-between">
+                  <div
+                    key={label}
+                    className="flex items-center justify-between"
+                  >
                     <span className="flex items-center gap-1.5 text-[11px] text-[var(--tg-text-muted)]">
                       <Icon className="h-3 w-3" aria-hidden="true" />
                       {label}
                     </span>
-                    <span className={`text-[11px] font-medium ${label === 'Diagnostics' ? 'text-[var(--tg-warning)]' : 'text-white'}`}>
+                    <span
+                      className={`text-[11px] font-medium ${label === 'Diagnostics' ? 'text-[var(--tg-warning)]' : 'text-white'}`}
+                    >
                       {value}
                     </span>
                   </div>
@@ -105,8 +119,8 @@ export function GuidedDemoCard({ onOpenDemo }: GuidedDemoCardProps): JSX.Element
             </div>
 
             <p className="text-xs text-[var(--tg-text-muted)] italic">
-              "Load → Inspect → Diagnose → Report. The full TileGuard
-              pipeline, live in your browser."
+              "Load → Inspect → Diagnose → Report. The full TileGuard pipeline,
+              live in your browser."
             </p>
           </div>
         </div>

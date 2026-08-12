@@ -13,7 +13,6 @@ import type {
   EngineeringReport,
   FormatRenderer,
   RegressionInput,
-  ReporterRegistry,
 } from '../src/report/index.js';
 import {
   createReportEngine,

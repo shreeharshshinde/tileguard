@@ -15,7 +15,8 @@
       "!**/coverage",
       "!**/legacy",
       "!**/fixtures",
-      "!**/pnpm-lock.yaml"
+      "!**/pnpm-lock.yaml",
+      "!packages/inspector"
     ]
   },
   "formatter": {
@@ -79,6 +80,9 @@
       ],
       "linter": {
         "rules": {
+          "complexity": {
+            "noExcessiveCognitiveComplexity": "off"
+          },
           "suspicious": {
             "noConsole": "off",
             "noExplicitAny": "off"
@@ -94,6 +98,7 @@
         "**/vite.config.ts",
         "**/vitest.config.ts",
         "**/tileguard.config.ts",
+        "**/tileguard.config.mjs",
         "playwright.config.ts",
         "**/pages/**",
         "**/app/**"

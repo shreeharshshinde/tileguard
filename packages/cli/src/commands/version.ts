@@ -15,7 +15,7 @@ import type { CliCommandResult } from '../runner/CommandRunner.js';
 // ---------------------------------------------------------------------------
 
 const TILEGUARD_VERSION = '0.5.0';
-const NODE_MIN = '18.0.0';
+const _NODE_MIN = '18.0.0';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -48,7 +48,7 @@ export function runVersion(args: VersionArgs = {}): CliCommandResult {
   if (args.format === 'json') {
     return {
       exitCode: 0,
-      output: JSON.stringify(info, null, 2) + '\n',
+      output: `${JSON.stringify(info, null, 2)}\n`,
     };
   }
 

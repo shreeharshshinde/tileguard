@@ -26,7 +26,6 @@ import type {
   KeyFinding,
   LayerImpactEntry,
   LayerStatInput,
-  NewDiagnosticEntry,
   PrioritizedRecommendation,
   RegressionCandidateInput,
   RegressionHighlight,

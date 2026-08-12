@@ -15,7 +15,7 @@
  *   - Escape key closes the overlay
  *   - Backdrop click closes the overlay
  */
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import {
   Code,
@@ -408,7 +408,7 @@ export function SettingsOverlay({
               <div className={rowClass}>
                 <div>
                   <p className={labelClass}>Session storage key</p>
-                  <p className={descClass + ' font-mono'}>
+                  <p className={`${descClass} font-mono`}>
                     tileguard:inspector:workspace:v1
                   </p>
                 </div>

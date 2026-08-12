@@ -44,6 +44,7 @@ function countVertices(geometry: RingArray): number {
  * Compute the axis-aligned bounding box of a geometry.
  * Returns a unit box at origin if the geometry is empty.
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: nested geometry traversal
 function computeBounds(geometry: RingArray): BoundingRect {
   let minX = Number.POSITIVE_INFINITY;
   let minY = Number.POSITIVE_INFINITY;
@@ -113,6 +114,7 @@ function boundsEqual(a: BoundingRect, b: BoundingRect): boolean {
 /**
  * Deeply compare two ring arrays for exact coordinate equality.
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: deep recursive equality check
 function geometryCoordinatesEqual(a: RingArray, b: RingArray): boolean {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {

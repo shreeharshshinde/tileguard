@@ -19,7 +19,7 @@ import type { StyleDocument } from '../models/StyleDocument.js';
 
 export function validateSources(
   document: StyleDocument,
-  resolvedLayers: readonly ResolvedLayer[],
+  _resolvedLayers: readonly ResolvedLayer[],
 ): readonly StyleDiagnostic[] {
   const diagnostics: StyleDiagnostic[] = [];
 

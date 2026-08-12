@@ -20,12 +20,8 @@ import type {
   StyleStatistics,
 } from '../models/StyleAnalysis.js';
 import type { StyleDocument } from '../models/StyleDocument.js';
-import type {
-  ExpressionArg,
-  StyleExpression,
-} from '../models/StyleExpression.js';
+import type { StyleExpression } from '../models/StyleExpression.js';
 import { isExpression } from '../models/StyleExpression.js';
-import type { StyleLayer } from '../models/StyleLayer.js';
 import type { StyleSource } from '../models/StyleSource.js';
 import { parseStyleDocument } from '../parser/StyleParser.js';
 import { resolveLayers } from '../resolver/SemanticResolver.js';

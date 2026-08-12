@@ -43,7 +43,7 @@ export interface HomePageProps {
 // Section divider
 // ---------------------------------------------------------------------------
 
-function SectionGap(): JSX.Element {
+function _SectionGap(): JSX.Element {
   return <div className="h-8" aria-hidden="true" />;
 }
 
@@ -51,7 +51,7 @@ function SectionGap(): JSX.Element {
 // Right rail — Recent sessions
 // ---------------------------------------------------------------------------
 
-function RecentRail({
+function _RecentRail({
   onOpenFilePicker,
 }: {
   onOpenFilePicker: () => void;
@@ -147,7 +147,7 @@ function RecentRail({
 // Right rail — Documentation links
 // ---------------------------------------------------------------------------
 
-function DocsRail(): JSX.Element {
+function _DocsRail(): JSX.Element {
   const links = [
     {
       label: 'Architecture',
@@ -200,12 +200,22 @@ function DocsRail(): JSX.Element {
 // Right rail — About / version card
 // ---------------------------------------------------------------------------
 
-function AboutRail(): JSX.Element {
+function _AboutRail(): JSX.Element {
   return (
     <div className="rounded-[var(--tg-panel-radius)] border border-[var(--tg-border)] bg-[var(--tg-bg-surface)] p-5">
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-border)] text-[var(--tg-accent)]">
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
         </div>
         <p className="text-sm font-semibold text-[var(--tg-text-primary)]">
           TileGuard
@@ -227,7 +237,9 @@ function AboutRail(): JSX.Element {
         </div>
         <div className="flex justify-between items-center">
           <span>Event</span>
-          <span className="font-mono text-[var(--tg-text-primary)]">FOSS4G 2026</span>
+          <span className="font-mono text-[var(--tg-text-primary)]">
+            FOSS4G 2026
+          </span>
         </div>
       </div>
     </div>
@@ -277,13 +289,16 @@ export function HomePage({
         aria-label="TileGuard Home"
       >
         {/* Massive top glow */}
-        <div 
-          className="pointer-events-none absolute left-1/2 top-[-20%] -z-10 h-[1000px] w-[1200px] -translate-x-1/2 opacity-20 blur-[120px]" 
-          style={{ background: 'radial-gradient(circle, var(--tg-accent), transparent 60%)' }} 
+        <div
+          className="pointer-events-none absolute left-1/2 top-[-20%] -z-10 h-[1000px] w-[1200px] -translate-x-1/2 opacity-20 blur-[120px]"
+          style={{
+            background:
+              'radial-gradient(circle, var(--tg-accent), transparent 60%)',
+          }}
         />
-        
+
         {/* Header Bar */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="show"
           variants={fadeIn}
@@ -291,40 +306,70 @@ export function HomePage({
         >
           {/* Left: Brand */}
           <div className="flex items-center gap-3">
-             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-black ring-1 ring-white/10 shadow-[inset_0_1px_0px_rgba(255,255,255,0.1)]">
-               <svg className="h-4 w-4 text-[var(--tg-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-             </div>
-             <span className="text-sm font-bold tracking-tight text-white">TileGuard</span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-black ring-1 ring-white/10 shadow-[inset_0_1px_0px_rgba(255,255,255,0.1)]">
+              <svg
+                className="h-4 w-4 text-[var(--tg-accent)]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <span className="text-sm font-bold tracking-tight text-white">
+              TileGuard
+            </span>
           </div>
-          
+
           {/* Right: Docs, GitHub Star & Version */}
           <div className="flex items-center gap-8">
             <button
               type="button"
               onClick={() => {
                 import('../../services/NavigationService.js').then((m) =>
-                  m.getNavigationService().openDocs()
+                  m.getNavigationService().openDocs(),
                 );
               }}
               className="text-sm font-semibold text-[var(--tg-text-secondary)] hover:text-white transition-colors"
             >
               Documentation
             </button>
-            
+
             <div className="flex items-center gap-3">
-              <a href="https://github.com/shreeharshshinde/tileguard" target="_blank" rel="noreferrer" className="group flex h-8 items-center gap-2 rounded-full border border-white/5 bg-[#09090b] px-4 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] transition-all duration-300 hover:border-[var(--tg-accent)]/50 hover:shadow-[0_0_15px_rgba(163,255,0,0.15)]">
-                <svg className="h-4 w-4 text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)] transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+              <a
+                href="https://github.com/shreeharshshinde/tileguard"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex h-8 items-center gap-2 rounded-full border border-white/5 bg-[#09090b] px-4 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] transition-all duration-300 hover:border-[var(--tg-accent)]/50 hover:shadow-[0_0_15px_rgba(163,255,0,0.15)]"
+              >
+                <svg
+                  className="h-4 w-4 text-[var(--tg-text-muted)] group-hover:text-[var(--tg-accent)] transition-colors duration-300"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clipRule="evenodd"
+                  />
                 </svg>
-                <span className="text-[11px] font-bold tracking-wide text-white transition-colors duration-300">Star us on GitHub</span>
+                <span className="text-[11px] font-bold tracking-wide text-white transition-colors duration-300">
+                  Star us on GitHub
+                </span>
               </a>
-              <span className="flex h-8 items-center rounded-full bg-[var(--tg-accent)]/10 border border-[var(--tg-accent)]/20 px-3 font-mono text-[11px] font-semibold tracking-wider text-[var(--tg-accent)]">v0.5.0-rc.1</span>
+              <span className="flex h-8 items-center rounded-full bg-[var(--tg-accent)]/10 border border-[var(--tg-accent)]/20 px-3 font-mono text-[11px] font-semibold tracking-wider text-[var(--tg-accent)]">
+                v0.5.0-rc.1
+              </span>
             </div>
           </div>
         </motion.div>
-        
+
         {/* Main Centered Content (Top) */}
-        <motion.div 
+        <motion.div
           variants={pageContainer}
           initial="hidden"
           animate="show"
@@ -356,7 +401,7 @@ export function HomePage({
         </div>
 
         {/* Capabilities Conveyor Belt (Full Width) */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="show"
           variants={fadeIn}
@@ -381,7 +426,7 @@ export function HomePage({
         </div>
 
         {/* Demo Gallery */}
-        <motion.div 
+        <motion.div
           variants={pageContainer}
           initial="hidden"
           animate="show"
@@ -395,10 +440,13 @@ export function HomePage({
               <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
                 Try it now,
                 <br />
-                <span className="text-[var(--tg-text-muted)]">no file needed.</span>
+                <span className="text-[var(--tg-text-muted)]">
+                  no file needed.
+                </span>
               </h2>
               <p className="mt-4 max-w-lg text-base text-[var(--tg-text-secondary)]">
-                Explore pre-loaded Tokyo vector tile datasets straight in the browser — real data, real rules, zero setup.
+                Explore pre-loaded Tokyo vector tile datasets straight in the
+                browser — real data, real rules, zero setup.
               </p>
             </div>
             <DemoGallery

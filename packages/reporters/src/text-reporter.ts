@@ -149,7 +149,7 @@ export function createTextReporter(
       ) {
         process.stdout.write(text);
       } else {
-        // Browser/non-Node fallback
+        // biome-ignore lint/suspicious/noConsole: intentional browser/non-Node fallback
         console.log(text);
       }
     });

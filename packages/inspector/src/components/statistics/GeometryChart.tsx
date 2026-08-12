@@ -98,7 +98,7 @@ export function GeometryChart({
       >
         {arcs.map((arc) => {
           if (arc === null) return null;
-          const d = `${arc.outerPath} L ${
+          const _d = `${arc.outerPath} L ${
             polarToCartesian(cx, cy, innerR, currentAngle - arc.sweep).x
           } ${
             polarToCartesian(cx, cy, innerR, currentAngle - arc.sweep).y

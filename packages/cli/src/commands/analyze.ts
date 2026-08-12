@@ -60,32 +60,31 @@ export async function runAnalyze(
 
   // Format output
   if (args.format === 'json') {
-    const jsonOutput =
-      JSON.stringify(
-        {
-          comparison: {
-            isIdentical: comparison.isIdentical,
-            features: comparison.features,
-            layers: comparison.layers,
-          },
-          regression: {
-            isClean: regression.isClean,
-            totalCandidates: regression.totalCandidates,
-            overallConfidence: regression.overallConfidence,
-            dominantKind: regression.dominantKind,
-            candidates: regression.candidates.map((c) => ({
-              layerName: c.layerName,
-              featureId: c.featureId,
-              kind: c.kind,
-              confidence: c.confidence,
-              reason: c.reason,
-              evidence: c.evidence,
-            })),
-          },
+    const jsonOutput = `${JSON.stringify(
+      {
+        comparison: {
+          isIdentical: comparison.isIdentical,
+          features: comparison.features,
+          layers: comparison.layers,
         },
-        null,
-        2,
-      ) + '\n';
+        regression: {
+          isClean: regression.isClean,
+          totalCandidates: regression.totalCandidates,
+          overallConfidence: regression.overallConfidence,
+          dominantKind: regression.dominantKind,
+          candidates: regression.candidates.map((c) => ({
+            layerName: c.layerName,
+            featureId: c.featureId,
+            kind: c.kind,
+            confidence: c.confidence,
+            reason: c.reason,
+            evidence: c.evidence,
+          })),
+        },
+      },
+      null,
+      2,
+    )}\n`;
 
     if (args.output) {
       const { writeFileSync } = await import('node:fs');
@@ -129,7 +128,7 @@ export async function runAnalyze(
   );
 
   if (regression.candidates.length > 0) {
-    sections.push('\nRegression Candidates\n' + '─'.repeat(40) + '\n');
+    sections.push(`\nRegression Candidates\n${'─'.repeat(40)}\n`);
     for (const c of regression.candidates) {
       sections.push(
         `  ${c.kind.padEnd(22)} ${c.layerName.padEnd(15)} ` +

@@ -67,7 +67,8 @@ const TAG_COLORS: Record<string, string> = {
     'text-[var(--tg-accent)] bg-[var(--tg-accent)]/10 border-[var(--tg-accent)]/25',
   regression:
     'text-[var(--tg-warning)] bg-[var(--tg-warning)]/10 border-[var(--tg-warning)]/25',
-  style: 'text-[var(--tg-text-primary)] bg-[var(--tg-text-primary)]/10 border-[var(--tg-border)]',
+  style:
+    'text-[var(--tg-text-primary)] bg-[var(--tg-text-primary)]/10 border-[var(--tg-border)]',
   clean:
     'text-[var(--tg-success)] bg-[var(--tg-success)]/10 border-[var(--tg-success)]/25',
   diagnostics:

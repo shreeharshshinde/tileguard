@@ -74,6 +74,7 @@ interface Bounds {
   maxY: number;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: nested geometry traversal
 function computeBoundsFromGeometry(geometry: RingArray): Bounds {
   let minX = Number.POSITIVE_INFINITY;
   let minY = Number.POSITIVE_INFINITY;
@@ -225,6 +226,7 @@ class FeatureMatcherImpl implements FeatureMatcher {
   // Property similarity threshold for Priority 4
   private static readonly PROP_THRESHOLD = 0.5;
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: multi-priority matching algorithm with fallback stages
   match(
     featuresA: readonly FeatureSnapshot[],
     featuresB: readonly FeatureSnapshot[],

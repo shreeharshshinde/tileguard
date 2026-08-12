@@ -61,7 +61,7 @@ function computeRecommendations(
   hasFeatures: boolean,
   hasDiagnostics: boolean,
   hasComparison: boolean,
-  hasRegressionSelection: boolean,
+  _hasRegressionSelection: boolean,
   hasSelectedFeature: boolean,
 ): Recommendation[] {
   const recs: Recommendation[] = [];

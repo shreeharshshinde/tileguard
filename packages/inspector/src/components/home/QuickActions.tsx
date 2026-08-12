@@ -6,7 +6,7 @@
  */
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { motion } from 'framer-motion';
-import { FileJson, Globe, PlayCircle, Upload } from 'lucide-react';
+import { FileJson, PlayCircle, Upload } from 'lucide-react';
 import { useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
@@ -111,15 +111,20 @@ function TileDropZone({
         aria-label="Load a vector tile — click or drag and drop"
       >
         <input {...getInputProps()} />
-        
+
         {/* Ultra-thin gradient border wrapper */}
-        <div className={`absolute inset-0 z-0 bg-gradient-to-b to-transparent transition-all duration-500 ${isDragActive ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'} ${wrapperBorderCls}`} />
-        
+        <div
+          className={`absolute inset-0 z-0 bg-gradient-to-b to-transparent transition-all duration-500 ${isDragActive ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'} ${wrapperBorderCls}`}
+        />
+
         {/* Inner card container */}
-        <div className={`relative z-10 flex h-full w-full flex-col items-center justify-center gap-6 overflow-hidden rounded-[23px] px-8 py-20 text-center shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] transition-colors duration-500 ${innerBgCls}`}>
-          
+        <div
+          className={`relative z-10 flex h-full w-full flex-col items-center justify-center gap-6 overflow-hidden rounded-[23px] px-8 py-20 text-center shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] transition-colors duration-500 ${innerBgCls}`}
+        >
           {/* Subtle radial glow on hover / active */}
-          <div className={`absolute left-1/2 top-1/2 z-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--tg-accent)] blur-[120px] transition-opacity duration-700 ${isDragActive ? 'opacity-20' : 'opacity-0 group-hover:opacity-10'}`} />
+          <div
+            className={`absolute left-1/2 top-1/2 z-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--tg-accent)] blur-[120px] transition-opacity duration-700 ${isDragActive ? 'opacity-20' : 'opacity-0 group-hover:opacity-10'}`}
+          />
 
           <div
             className={`relative z-10 flex h-20 w-20 items-center justify-center rounded-2xl bg-black ring-1 ring-white/5 shadow-[inset_0_1px_0px_rgba(255,255,255,0.1)] transition-all duration-500 ${isDragActive ? 'scale-110 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.3)]' : 'group-hover:scale-110 group-hover:ring-[var(--tg-accent)]/40 group-hover:shadow-[0_0_20px_rgba(163,255,0,0.2)]'}`}
@@ -186,10 +191,9 @@ export function QuickActions({
     >
       {/* Ultra-thin gradient border wrapper */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/15 to-transparent opacity-50 transition-opacity duration-500 group-hover:from-[var(--tg-accent)] group-hover:opacity-100" />
-      
+
       {/* Inner card container */}
       <div className="relative z-10 flex h-full w-full flex-col overflow-hidden rounded-[23px] bg-[#09090b] p-6 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)]">
-        
         {/* Subtle radial glow on hover */}
         <div className="absolute -left-10 -top-10 z-0 h-32 w-32 rounded-full bg-[var(--tg-accent)] opacity-0 blur-[50px] transition-opacity duration-700 group-hover:opacity-15" />
 

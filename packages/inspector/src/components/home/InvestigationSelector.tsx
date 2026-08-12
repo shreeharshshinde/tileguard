@@ -115,7 +115,10 @@ export function InvestigationSelector({
             {/* Top: Icon + badge */}
             <div className="relative z-10 mb-auto flex items-start justify-between pb-8">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black ring-1 ring-[var(--tg-accent)]/30 shadow-[0_0_20px_rgba(163,255,0,0.15),inset_0_1px_0px_rgba(255,255,255,0.1)] transition-all duration-500 group-hover:ring-[var(--tg-accent)]/60 group-hover:shadow-[0_0_30px_rgba(163,255,0,0.3)]">
-                <AlertTriangle className="h-7 w-7 text-[var(--tg-accent)]" aria-hidden="true" />
+                <AlertTriangle
+                  className="h-7 w-7 text-[var(--tg-accent)]"
+                  aria-hidden="true"
+                />
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tg-accent)]/30 bg-[var(--tg-accent)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--tg-accent)]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--tg-accent)]" />
@@ -137,14 +140,17 @@ export function InvestigationSelector({
 
               <div className="flex items-center gap-2 text-sm font-semibold text-[var(--tg-accent)] transition-all duration-300 group-hover:gap-3">
                 Drop a tile to start
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
               </div>
             </div>
           </div>
         </motion.div>
 
         {/* ── Secondary cards: 2 × 2 ─────────────────────────────────────── */}
-        {SECONDARY.map((item, i) => (
+        {SECONDARY.map((item, _i) => (
           <motion.button
             key={item.title}
             type="button"
@@ -166,7 +172,10 @@ export function InvestigationSelector({
               {/* Icon + tag row */}
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black ring-1 ring-white/10 shadow-[inset_0_1px_0px_rgba(255,255,255,0.08)] transition-all duration-400 group-hover:ring-[var(--tg-accent)]/40 group-hover:shadow-[0_0_16px_rgba(163,255,0,0.2)]">
-                  <item.icon className="h-5 w-5 text-[var(--tg-text-muted)] transition-colors duration-400 group-hover:text-[var(--tg-accent)]" aria-hidden="true" />
+                  <item.icon
+                    className="h-5 w-5 text-[var(--tg-text-muted)] transition-colors duration-400 group-hover:text-[var(--tg-accent)]"
+                    aria-hidden="true"
+                  />
                 </div>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--tg-text-muted)] transition-colors duration-400 group-hover:text-[var(--tg-accent)]/70">
                   {item.tag}

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookOpen, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import { getNavigationService } from '../../services/NavigationService.js';
 
 const fadeUp = {
@@ -15,9 +15,12 @@ export function DocsPage(): JSX.Element {
   return (
     <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-[#000000] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
       {/* Background glow */}
-      <div 
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-[100px]" 
-        style={{ background: 'radial-gradient(circle, var(--tg-accent), transparent 60%)' }} 
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-[100px]"
+        style={{
+          background:
+            'radial-gradient(circle, var(--tg-accent), transparent 60%)',
+        }}
       />
 
       {/* Header back button */}
@@ -43,13 +46,15 @@ export function DocsPage(): JSX.Element {
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.15)]">
           <BookOpen className="h-10 w-10 text-[var(--tg-accent)]" />
         </div>
-        
+
         <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-white">
           Documentation
         </h1>
-        
+
         <p className="mb-10 text-lg leading-relaxed text-[var(--tg-text-secondary)]">
-          The official TileGuard documentation is currently being written. It will contain complete references for all rules, configuration guides, and architecture overviews.
+          The official TileGuard documentation is currently being written. It
+          will contain complete references for all rules, configuration guides,
+          and architecture overviews.
         </p>
 
         <div className="rounded-2xl border border-[var(--tg-accent)]/20 bg-[var(--tg-accent)]/5 px-6 py-4">

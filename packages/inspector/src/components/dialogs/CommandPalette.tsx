@@ -19,12 +19,10 @@ import { Command } from 'cmdk';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import {
-  AlertTriangle,
   BarChart3,
   Bug,
   Camera,
   Crosshair,
-  FileJson,
   FileOutput,
   GitCompare,
   Home,
@@ -36,7 +34,6 @@ import {
   Settings,
   Shuffle,
   X,
-  Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInvestigationActions } from '../../context/InvestigationContext.js';

@@ -22,7 +22,6 @@ import {
   type TileComparison,
   type TileSnapshot,
 } from '@tileguard/analysis';
-import type { Diagnostic } from '@tileguard/core';
 import { createEngine } from '@tileguard/core';
 import type {
   ComparisonInput,

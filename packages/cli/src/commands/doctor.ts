@@ -29,6 +29,7 @@ interface CheckResult {
 // Command
 // ---------------------------------------------------------------------------
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: sequential health check orchestration
 export async function runDoctor(
   _args: unknown,
   ctx: CommandContext,
@@ -57,7 +58,7 @@ export async function runDoctor(
   checks.push(checkNodeVersion());
 
   // Format output
-  const lines: string[] = ['\nTileGuard Doctor\n' + '═'.repeat(20) + '\n'];
+  const lines: string[] = [`\nTileGuard Doctor\n${'═'.repeat(20)}\n`];
 
   let hasFailure = false;
   let hasWarning = false;
@@ -94,7 +95,7 @@ export async function runDoctor(
 // Individual checks
 // ---------------------------------------------------------------------------
 
-async function checkConfig(ctx: CommandContext): Promise<CheckResult> {
+async function checkConfig(_ctx: CommandContext): Promise<CheckResult> {
   try {
     const { loadConfig } = await import('@tileguard/config');
     const result = await loadConfig({});

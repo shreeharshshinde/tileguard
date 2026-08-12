@@ -82,7 +82,6 @@ export function CandidateList({
   return (
     <ul
       className="divide-y divide-[var(--tg-border)]"
-      role="list"
       aria-label="Regression candidates"
     >
       {candidates.map((c, i) => {

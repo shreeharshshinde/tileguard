@@ -24,9 +24,8 @@ import {
   Gauge,
   ListChecks,
   ScrollText,
-  X,
 } from 'lucide-react';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import { useInspectorContext } from '../../context/InspectorContext.js';
 import { useInvestigationState } from '../../context/InvestigationContext.js';
 import { InvestigationTimeline } from '../investigation/InvestigationTimeline.js';

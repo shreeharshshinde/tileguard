@@ -120,7 +120,7 @@ export function useSelectedFeature(
     const provider = createFeatureProvider(store);
     return provider.getSelectedFeature();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selection, lifecycle]);
+  }, [selection, lifecycle, store]);
 }
 
 /**
@@ -133,7 +133,7 @@ export function useLayers(store: InspectorStore): readonly LayerInfo[] {
     if (lifecycle.status !== 'loaded') return [];
     return createLayerProvider(store).getLayers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lifecycle]);
+  }, [lifecycle, store]);
 }
 
 /**
@@ -141,14 +141,14 @@ export function useLayers(store: InspectorStore): readonly LayerInfo[] {
  * Re-renders when lifecycle or filters change.
  */
 export function useGroupedDiagnostics(store: InspectorStore): DiagnosticGroups {
-  const lifecycle = useLifecycle(store);
-  const filters = useFilters(store);
+  const _lifecycle = useLifecycle(store);
+  const _filters = useFilters(store);
 
   return useMemo(() => {
     const provider = createDiagnosticProvider(store);
     return provider.getGrouped();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lifecycle, filters]);
+  }, [store]);
 }
 
 /**
@@ -156,13 +156,13 @@ export function useGroupedDiagnostics(store: InspectorStore): DiagnosticGroups {
  * Re-renders when lifecycle changes.
  */
 export function useDiagnosticSummary(store: InspectorStore): DiagnosticSummary {
-  const lifecycle = useLifecycle(store);
+  const _lifecycle = useLifecycle(store);
 
   return useMemo(() => {
     const provider = createDiagnosticProvider(store);
     return provider.getSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lifecycle]);
+  }, [store]);
 }
 
 // ---------------------------------------------------------------------------
@@ -199,7 +199,7 @@ export function useSearch(store: InspectorStore): UseSearchResult {
     const service = createSearchService(provider);
     return service.search(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, lifecycle]);
+  }, [query, lifecycle, store]);
 
   const setQuery = useCallback((q: string) => {
     setQueryRaw(q);

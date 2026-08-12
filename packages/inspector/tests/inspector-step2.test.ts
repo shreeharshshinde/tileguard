@@ -9,7 +9,7 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createInspector, type Inspector } from '../src/create-inspector.js';
 import type { Renderer } from '../src/renderer/canvas-renderer.js';
 import { createViewport, type Viewport } from '../src/viewport/viewport.js';

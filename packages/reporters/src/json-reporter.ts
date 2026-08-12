@@ -121,7 +121,7 @@ export function createJsonReporter(
       ) {
         process.stdout.write(text);
       } else {
-        // Browser/non-Node fallback
+        // biome-ignore lint/suspicious/noConsole: intentional browser/non-Node fallback
         console.info(text);
       }
     });

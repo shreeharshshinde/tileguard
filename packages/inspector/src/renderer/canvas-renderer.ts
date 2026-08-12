@@ -216,8 +216,6 @@ export class CanvasRenderer implements Renderer {
   private _showTileBounds: boolean;
   private _showBufferBounds: boolean;
   private _overlayOpacity: number;
-  private _selectionThickness: number;
-  private _hoverThickness: number;
 
   constructor(options: CanvasRendererOptions) {
     this._viewport = options.viewport;

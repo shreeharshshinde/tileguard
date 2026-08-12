@@ -67,21 +67,20 @@ export async function runStats(
   });
 
   if (args.format === 'json') {
-    const jsonOutput =
-      JSON.stringify(
-        {
-          file: args.file,
-          layers: stats.layerCount,
-          features: stats.featureCount,
-          vertices: stats.vertexCount,
-          diagnostics: stats.diagnosticCount,
-          geometry: geometryCounts,
-          severity: severityCounts,
-          layerDetails,
-        },
-        null,
-        2,
-      ) + '\n';
+    const jsonOutput = `${JSON.stringify(
+      {
+        file: args.file,
+        layers: stats.layerCount,
+        features: stats.featureCount,
+        vertices: stats.vertexCount,
+        diagnostics: stats.diagnosticCount,
+        geometry: geometryCounts,
+        severity: severityCounts,
+        layerDetails,
+      },
+      null,
+      2,
+    )}\n`;
 
     return { exitCode: 0, output: jsonOutput };
   }
@@ -119,7 +118,7 @@ export async function runStats(
     );
   }
 
-  sections.push('\nLayers\n' + '─'.repeat(40) + '\n');
+  sections.push(`\nLayers\n${'─'.repeat(40)}\n`);
   const headers = ['Name', 'Features', 'Vertices', 'Extent'];
   const rows = layerDetails.map((l) => [
     l.name,

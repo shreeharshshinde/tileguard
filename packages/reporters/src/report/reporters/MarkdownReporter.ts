@@ -47,7 +47,6 @@ export function renderMarkdown(report: EngineeringReport): string {
     overview,
     comparison,
     regression,
-    statistics,
     diagnostics,
     recommendations,
     executiveSummary,
@@ -91,12 +90,12 @@ export function renderMarkdown(report: EngineeringReport): string {
   if (metadata.sourceTileHash)
     metaItems.push([
       'Source Hash',
-      md.code(metadata.sourceTileHash.slice(0, 12) + '…'),
+      md.code(`${metadata.sourceTileHash.slice(0, 12)}…`),
     ]);
   if (metadata.targetTileHash)
     metaItems.push([
       'Target Hash',
-      md.code(metadata.targetTileHash.slice(0, 12) + '…'),
+      md.code(`${metadata.targetTileHash.slice(0, 12)}…`),
     ]);
 
   md.p(

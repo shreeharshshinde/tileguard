@@ -68,7 +68,10 @@ export function WhyTileGuardSection(): JSX.Element {
       {/* Faint mid-page glow */}
       <div
         className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[900px] -translate-x-1/2 opacity-10 blur-[100px]"
-        style={{ background: 'radial-gradient(circle, var(--tg-accent), transparent 65%)' }}
+        style={{
+          background:
+            'radial-gradient(circle, var(--tg-accent), transparent 65%)',
+        }}
       />
 
       {/* Section heading */}
@@ -106,7 +109,10 @@ export function WhyTileGuardSection(): JSX.Element {
               <div className="absolute -right-12 -top-12 z-0 h-36 w-36 rounded-full bg-[var(--tg-accent)] opacity-0 blur-[60px] transition-opacity duration-700 group-hover:opacity-15" />
 
               <div className="relative z-10 flex h-11 w-11 items-center justify-center rounded-2xl bg-black ring-1 ring-white/10 shadow-[inset_0_1px_0px_rgba(255,255,255,0.1)] transition-all duration-500 group-hover:ring-[var(--tg-accent)]/40 group-hover:shadow-[0_0_20px_rgba(163,255,0,0.2)]">
-                <item.icon className="h-5 w-5 text-[var(--tg-text-muted)] transition-colors duration-500 group-hover:text-[var(--tg-accent)]" aria-hidden="true" />
+                <item.icon
+                  className="h-5 w-5 text-[var(--tg-text-muted)] transition-colors duration-500 group-hover:text-[var(--tg-accent)]"
+                  aria-hidden="true"
+                />
               </div>
 
               <div className="relative z-10 flex flex-col gap-2">
@@ -140,8 +146,14 @@ export function WhyTileGuardSection(): JSX.Element {
 
             <ul className="flex flex-col gap-3 lg:items-end lg:text-right">
               {PROOF_POINTS.map((point) => (
-                <li key={point} className="flex items-center gap-2.5 text-sm text-[var(--tg-text-secondary)]">
-                  <CheckCircle className="h-4 w-4 shrink-0 text-[var(--tg-accent)]" aria-hidden="true" />
+                <li
+                  key={point}
+                  className="flex items-center gap-2.5 text-sm text-[var(--tg-text-secondary)]"
+                >
+                  <CheckCircle
+                    className="h-4 w-4 shrink-0 text-[var(--tg-accent)]"
+                    aria-hidden="true"
+                  />
                   {point}
                 </li>
               ))}

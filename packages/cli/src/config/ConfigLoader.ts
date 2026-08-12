@@ -207,36 +207,32 @@ export function loadYamlConfig(
 function mergeWithDefaults(yamlContent: string): TileguardYamlConfig {
   const parsed = parseSimpleYaml(yamlContent);
 
-  const comparison = parsed['comparison'] as
-    | Record<string, unknown>
-    | undefined;
-  const regression = parsed['regression'] as
-    | Record<string, unknown>
-    | undefined;
-  const report = parsed['report'] as Record<string, unknown> | undefined;
-  const output = parsed['output'] as Record<string, unknown> | undefined;
+  const comparison = parsed.comparison as Record<string, unknown> | undefined;
+  const regression = parsed.regression as Record<string, unknown> | undefined;
+  const report = parsed.report as Record<string, unknown> | undefined;
+  const output = parsed.output as Record<string, unknown> | undefined;
 
   return {
     comparison: {
-      stableProperties: Array.isArray(comparison?.['stableProperties'])
-        ? (comparison['stableProperties'] as string[])
+      stableProperties: Array.isArray(comparison?.stableProperties)
+        ? (comparison.stableProperties as string[])
         : DEFAULT_CONFIG.comparison.stableProperties,
     },
     regression: {
       minConfidence:
-        typeof regression?.['minConfidence'] === 'number'
-          ? (regression['minConfidence'] as number)
+        typeof regression?.minConfidence === 'number'
+          ? (regression.minConfidence as number)
           : DEFAULT_CONFIG.regression.minConfidence,
     },
     report: {
-      format: isReportFormat(report?.['format'])
-        ? report['format']
+      format: isReportFormat(report?.format)
+        ? report.format
         : DEFAULT_CONFIG.report.format,
     },
     output: {
       directory:
-        typeof output?.['directory'] === 'string'
-          ? (output['directory'] as string)
+        typeof output?.directory === 'string'
+          ? (output.directory as string)
           : DEFAULT_CONFIG.output.directory,
     },
   };

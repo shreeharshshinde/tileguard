@@ -13,7 +13,7 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   createDiagnosticProvider,
   createFeatureProvider,
@@ -253,7 +253,7 @@ describe('FeaturePanel data layer', () => {
 describe('Event flow: selectDiagnostic → FeaturePanel', () => {
   it('selecting a diagnostic with a layer+featureIndex reference updates selection', async () => {
     const store = await loadedStore();
-    const diags = makeMixedDiagnostics();
+    const _diags = makeMixedDiagnostics();
     const featureProvider = createFeatureProvider(store);
     const diagProvider = createDiagnosticProvider(store);
 

@@ -87,7 +87,7 @@
 .presentation-mode [data-dev-overlay],
 .presentation-mode [data-fps-counter],
 .presentation-mode [data-debug-button] {
-  display: none !important;
+  display: none;
 }
 
 /* Slightly larger icon targets */
@@ -174,4 +174,3 @@
   /* Will-change helps with smooth scrolling on large elements */
   will-change: transform;
 }
-

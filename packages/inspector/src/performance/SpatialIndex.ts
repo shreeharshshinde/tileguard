@@ -71,7 +71,7 @@ class SpatialIndexImpl implements SpatialIndex {
    */
   constructor(
     gridSize = 32,
-    private readonly _extent = 4096,
+    readonly _extent = 4096,
   ) {
     this._gridSize = gridSize;
     this._cellSize = _extent / gridSize;

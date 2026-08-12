@@ -16,7 +16,7 @@ import type {
   ExpressionLiteral,
   StyleExpression,
 } from '../models/StyleExpression.js';
-import { isExpressionArray, parseExpression } from './ExpressionParser.js';
+import { parseExpression } from './ExpressionParser.js';
 
 // ---------------------------------------------------------------------------
 // Legacy Filter Operators

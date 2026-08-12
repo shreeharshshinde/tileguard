@@ -231,7 +231,13 @@ export function Workspace({
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    initialComparisonB.name,
+    initialComparisonA,
+    initialComparisonB,
+    updateLayout,
+    captureSnapshot,
+  ]);
 
   const handleFileSelectedA = useCallback(
     async (file: File) => {
@@ -344,7 +350,12 @@ export function Workspace({
     return () => {
       cancelled = true;
     };
-  }, [inspector, pendingFile]);
+  }, [
+    inspector,
+    pendingFile, // Phase 4: record in investigation context
+    investigationActions.setDatasetName,
+    investigationActions.addTimelineEvent,
+  ]);
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
   useEffect(() => {
@@ -445,7 +456,7 @@ export function Workspace({
       unsub();
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [inspector, store, setActiveTab]);
+  }, [inspector, store, setActiveTab, onGoHome]);
 
   // ── Diagnostics state (shared between left + right panels) ───────────────
   const diagnostics = useDiagnosticsState(store, inspector);

@@ -6,7 +6,7 @@
  * into a single immutable result object.
  */
 
-import type { Diagnostic, Severity } from '@tileguard/core';
+import type { Severity } from '@tileguard/core';
 import type { StyleDocument } from './StyleDocument.js';
 import type { PropertyReference } from './StyleExpression.js';
 import type { StyleLayer } from './StyleLayer.js';

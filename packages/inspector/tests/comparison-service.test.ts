@@ -15,7 +15,7 @@
 
 import type { Diagnostic } from '@tileguard/core';
 import type { VectorTileArtifact } from '@tileguard/tile-rules';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createComparisonService } from '../src/comparison/ComparisonService.js';
 import {
   createInspectorStore,

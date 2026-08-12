@@ -48,7 +48,7 @@ export function useStatistics(store: InspectorStore): TileStatistics {
       layerProvider,
     ).compute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lifecycle]);
+  }, [lifecycle, store]);
 }
 
 // ---------------------------------------------------------------------------

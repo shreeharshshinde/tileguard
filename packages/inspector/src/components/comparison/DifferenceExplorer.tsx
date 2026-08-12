@@ -81,7 +81,7 @@ function PropertyRow({ entry }: { entry: PropertyDiffEntry }): JSX.Element {
 // Unchanged property row
 // ---------------------------------------------------------------------------
 
-function UnchangedPropertyRow({
+function _UnchangedPropertyRow({
   k,
   v,
 }: {
@@ -102,7 +102,7 @@ function UnchangedPropertyRow({
 // ---------------------------------------------------------------------------
 
 function PropertySection({ diff }: { diff: PropertyDiff }): JSX.Element {
-  const changedKeys = new Set(diff.entries.map((e) => e.key));
+  const _changedKeys = new Set(diff.entries.map((e) => e.key));
 
   return (
     <div>

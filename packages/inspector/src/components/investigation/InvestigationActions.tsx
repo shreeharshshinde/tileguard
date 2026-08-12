@@ -28,10 +28,7 @@ import {
   Eye,
   FileOutput,
   GitCompare,
-  MapPin,
 } from 'lucide-react';
-import { useCallback } from 'react';
-import { useInvestigationActions } from '../../context/InvestigationContext.js';
 import type { WorkspacePage } from '../../services/NavigationService.js';
 
 // ---------------------------------------------------------------------------

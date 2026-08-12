@@ -112,6 +112,7 @@ function compare(
 // Layer comparison
 // ---------------------------------------------------------------------------
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: multi-layer comparison algorithm with inherent branching
 function compareLayers(
   snapshotA: TileSnapshot,
   snapshotB: TileSnapshot,

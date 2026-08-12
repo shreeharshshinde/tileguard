@@ -55,17 +55,16 @@ export async function runCompare(
 
   // Format output
   if (args.format === 'json') {
-    const jsonOutput =
-      JSON.stringify(
-        {
-          isIdentical: comparison.isIdentical,
-          features: comparison.features,
-          layers: comparison.layers,
-          stats: comparison.asReportInput.stats,
-        },
-        null,
-        2,
-      ) + '\n';
+    const jsonOutput = `${JSON.stringify(
+      {
+        isIdentical: comparison.isIdentical,
+        features: comparison.features,
+        layers: comparison.layers,
+        stats: comparison.asReportInput.stats,
+      },
+      null,
+      2,
+    )}\n`;
 
     if (args.output) {
       const { writeFileSync } = await import('node:fs');

@@ -164,7 +164,7 @@ describe('StyleParser', () => {
 
     it('preserves raw JSON', () => {
       const { document } = parseStyleDocument({ version: 8, custom: 'field' });
-      expect(document!.raw['custom']).toBe('field');
+      expect(document!.raw.custom).toBe('field');
     });
   });
 

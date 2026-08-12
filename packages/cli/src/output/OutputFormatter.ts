@@ -53,7 +53,7 @@ function createTextFormatter(): OutputFormatter {
       for (const [key, value] of entries) {
         lines.push(`  ${key.padEnd(maxLabel + 2)}${value}`);
       }
-      return lines.join('\n') + '\n';
+      return `${lines.join('\n')}\n`;
     },
 
     table(headers, rows) {
@@ -65,7 +65,7 @@ function createTextFormatter(): OutputFormatter {
       const body = rows.map((row) =>
         row.map((cell, i) => String(cell).padEnd(widths[i]!)).join('  '),
       );
-      return [headerLine, sep, ...body].join('\n') + '\n';
+      return `${[headerLine, sep, ...body].join('\n')}\n`;
     },
 
     status(label, value) {
@@ -77,7 +77,7 @@ function createTextFormatter(): OutputFormatter {
     },
 
     separator() {
-      return '─'.repeat(40) + '\n';
+      return `${'─'.repeat(40)}\n`;
     },
 
     envelope(sections) {
@@ -121,7 +121,7 @@ function createJsonFormatter(): OutputFormatter {
     },
 
     envelope(_sections) {
-      return JSON.stringify(data, null, 2) + '\n';
+      return `${JSON.stringify(data, null, 2)}\n`;
     },
   };
 }
@@ -134,9 +134,6 @@ export function createOutputFormatter(format: OutputFormat): OutputFormatter {
   switch (format) {
     case 'json':
       return createJsonFormatter();
-    case 'text':
-    case 'markdown':
-    case 'html':
     default:
       return createTextFormatter();
   }

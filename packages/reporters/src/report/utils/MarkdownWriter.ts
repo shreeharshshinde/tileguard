@@ -153,7 +153,7 @@ export class MarkdownWriter {
   // ---------------------------------------------------------------------------
 
   build(): string {
-    return this._lines.join('\n').trimEnd() + '\n';
+    return `${this._lines.join('\n').trimEnd()}\n`;
   }
 
   toString(): string {

@@ -13,12 +13,7 @@
  */
 
 import type { Diagnostic } from '@tileguard/core';
-import type {
-  FeatureComparison,
-  GeometryDiff,
-  PropertyDiff,
-  TileComparison,
-} from './models/comparison.js';
+import type { FeatureComparison, TileComparison } from './models/comparison.js';
 import {
   AREA_CHANGE_THRESHOLD,
   CENTROID_SHIFT_THRESHOLD,
@@ -64,6 +59,7 @@ export function createEvidenceBuilder(): EvidenceBuilder {
 // Main entry point
 // ---------------------------------------------------------------------------
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: aggregates multiple evidence sub-builders
 function buildForFeature(
   fc: FeatureComparison,
   comparison: TileComparison,
@@ -287,6 +283,7 @@ function buildGeometryEvidence(
 // Property evidence
 // ---------------------------------------------------------------------------
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: property diff classification requires many conditions
 function buildPropertyEvidence(
   diff: NonNullable<ReturnType<typeof computePropertyDiff>>,
   reasons: RegressionReason[],
@@ -653,6 +650,7 @@ function computeCentroid(geo: RingArray): { x: number; y: number } {
   return n > 0 ? { x: sx / n, y: sy / n } : { x: 0, y: 0 };
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: nested geometry traversal
 function computeBounds(geo: RingArray): {
   minX: number;
   minY: number;
@@ -671,7 +669,7 @@ function computeBounds(geo: RingArray): {
       if (pt.y > maxY) maxY = pt.y;
     }
   }
-  if (!isFinite(minX)) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+  if (!Number.isFinite(minX)) return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
   return { minX, minY, maxX, maxY };
 }
 

@@ -18,9 +18,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
-  Box,
   Database,
-  FileJson,
   Layers,
   MapPin,
   Palette,
@@ -205,7 +203,7 @@ export function GlobalSearch({
     }
 
     return items.slice(0, 30);
-  }, [query, store, inspector, actions, onNavigate, onClose]);
+  }, [query, store, actions, onNavigate, onClose]);
 
   // Group results by category
   const groupedResults = useMemo(() => {

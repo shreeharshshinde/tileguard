@@ -11,7 +11,7 @@
  */
 
 import { readFile } from 'node:fs/promises';
-import type { StyleAnalysis, StyleDiagnostic } from '@tileguard/style-rules';
+import type { StyleAnalysis } from '@tileguard/style-rules';
 import { analyzeStyle } from '@tileguard/style-rules';
 import type { OutputFormat } from '../output/OutputFormatter.js';
 import { createOutputFormatter } from '../output/OutputFormatter.js';
@@ -113,7 +113,7 @@ function formatJson(file: string, analysis: StyleAnalysis): string {
     info: analysis.infoCount,
   };
 
-  return JSON.stringify(output, null, 2) + '\n';
+  return `${JSON.stringify(output, null, 2)}\n`;
 }
 
 // ---------------------------------------------------------------------------
@@ -180,7 +180,7 @@ function formatText(file: string, analysis: StyleAnalysis): string {
       ]),
     );
 
-    sections.push('\nFindings\n' + '─'.repeat(40) + '\n');
+    sections.push(`\nFindings\n${'─'.repeat(40)}\n`);
     for (const diag of analysis.diagnostics) {
       const icon = severityIcon(diag.severity);
       sections.push(`  ${icon} [${diag.code}] ${diag.message}\n`);

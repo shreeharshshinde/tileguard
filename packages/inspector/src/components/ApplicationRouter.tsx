@@ -19,7 +19,6 @@
  *     inside Workspace and its children, unchanged).
  */
 import { useEffect, useState } from 'react';
-import { getNavigationService } from '../services/NavigationService.js';
 import {
   createSession,
   type InspectorSession,
@@ -27,10 +26,11 @@ import {
   updateSession,
 } from '../models/InspectorSession.js';
 import type { ApplicationState } from '../services/NavigationService.js';
+import { getNavigationService } from '../services/NavigationService.js';
 import { ReturnHomeDialog } from './dialogs/ReturnHomeDialog.js';
+import { DocsPage } from './docs/DocsPage.js';
 import { HomePage } from './home/HomePage.js';
 import { Workspace } from './workspace/Workspace.js';
-import { DocsPage } from './docs/DocsPage.js';
 
 // ---------------------------------------------------------------------------
 // ApplicationRouter

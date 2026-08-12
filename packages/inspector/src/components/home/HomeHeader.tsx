@@ -48,7 +48,12 @@ export function HomeHeader(): JSX.Element {
     <header className="relative mb-16 flex flex-col items-center text-center">
       {/* Background geospatial dotted map */}
       <div className="pointer-events-none absolute left-1/2 top-[-100px] -z-10 h-[600px] w-[1000px] -translate-x-1/2 opacity-[0.15] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]">
-        <img src="/dotted_map.svg" alt="" className="h-full w-full object-cover" aria-hidden="true" />
+        <img
+          src="/dotted_map.svg"
+          alt=""
+          className="h-full w-full object-cover"
+          aria-hidden="true"
+        />
       </div>
 
       <motion.div
@@ -58,10 +63,7 @@ export function HomeHeader(): JSX.Element {
         className="relative z-10 flex flex-col items-center"
       >
         {/* Logo */}
-        <motion.div
-          variants={up}
-          className="-mb-8 md:-mb-16"
-        >
+        <motion.div variants={up} className="-mb-8 md:-mb-16">
           <motion.div
             variants={logoAnim}
             className="relative flex h-64 w-64 md:h-[400px] md:w-[400px] items-center justify-center drop-shadow-[0_0_50px_rgba(163,255,0,0.3)]"
@@ -80,7 +82,9 @@ export function HomeHeader(): JSX.Element {
           className="mb-6 text-6xl md:text-8xl font-extrabold tracking-tighter"
         >
           <span className="text-white">Tile</span>
-          <span className="text-[var(--tg-accent)] drop-shadow-[0_0_15px_rgba(163,255,0,0.4)]">Guard</span>
+          <span className="text-[var(--tg-accent)] drop-shadow-[0_0_15px_rgba(163,255,0,0.4)]">
+            Guard
+          </span>
         </motion.h1>
 
         {/* Tagline */}
@@ -100,7 +104,10 @@ export function HomeHeader(): JSX.Element {
           className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-[var(--tg-text-secondary)]"
         >
           Validate vector tiles and MapLibre styles.{' '}
-          <span className="text-white/70">Inspect geometry. Diagnose failures. Compare tile versions. Generate engineering reports.</span>
+          <span className="text-white/70">
+            Inspect geometry. Diagnose failures. Compare tile versions. Generate
+            engineering reports.
+          </span>
         </motion.p>
 
         {/* Metrics */}
@@ -112,14 +119,16 @@ export function HomeHeader(): JSX.Element {
           <div className="absolute inset-0 z-0 bg-gradient-to-r from-[var(--tg-accent)]/40 via-transparent to-[var(--tg-accent)]/40 opacity-100" />
 
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-8 md:gap-14 rounded-full bg-[#09090b] px-10 py-5 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] w-full">
-
             {/* Subtle radial glow (active) */}
             <div className="absolute left-1/2 top-1/2 -z-10 h-24 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--tg-accent)] opacity-15 blur-[50px]" />
 
             {STAT_ITEMS.map(({ value, label, icon: Icon }) => (
               <div key={label} className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black ring-1 ring-[var(--tg-accent)]/40 shadow-[0_0_15px_rgba(163,255,0,0.2),inset_0_1px_0px_rgba(255,255,255,0.1)]">
-                  <Icon className="h-4 w-4 text-[var(--tg-accent)]" aria-hidden="true" />
+                  <Icon
+                    className="h-4 w-4 text-[var(--tg-accent)]"
+                    aria-hidden="true"
+                  />
                 </div>
                 <div className="flex flex-col items-start text-left">
                   <span className="text-xl font-bold tracking-tight text-white leading-none mb-1.5 drop-shadow-sm">

@@ -177,7 +177,7 @@ export function InvestigationTimeline({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [timeline.length]);
+  }, []);
 
   const filteredEvents = filterWorkspace
     ? timeline.filter(

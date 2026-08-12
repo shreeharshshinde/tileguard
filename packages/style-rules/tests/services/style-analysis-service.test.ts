@@ -216,12 +216,12 @@ describe('StyleAnalysisService', () => {
       const stats = getStatistics(document!);
       expect(stats.sourceCount).toBe(2);
       expect(stats.layerCount).toBe(4);
-      expect(stats.sourcesByType['vector']).toBe(1);
-      expect(stats.sourcesByType['raster']).toBe(1);
-      expect(stats.layersByType['fill']).toBe(1);
-      expect(stats.layersByType['line']).toBe(1);
-      expect(stats.layersByType['symbol']).toBe(1);
-      expect(stats.layersByType['background']).toBe(1);
+      expect(stats.sourcesByType.vector).toBe(1);
+      expect(stats.sourcesByType.raster).toBe(1);
+      expect(stats.layersByType.fill).toBe(1);
+      expect(stats.layersByType.line).toBe(1);
+      expect(stats.layersByType.symbol).toBe(1);
+      expect(stats.layersByType.background).toBe(1);
     });
 
     it('counts expressions across layers', () => {
