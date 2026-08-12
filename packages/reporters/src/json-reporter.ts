@@ -30,6 +30,9 @@ import type {
   ReporterContext,
   Severity,
 } from '@tileguard/core';
+import { createDefaultWrite, type WriteFn } from './defaultWrite.js';
+
+export type { WriteFn };
 
 // ---------------------------------------------------------------------------
 // WriteFn — injectable output destination for testability
@@ -39,7 +42,6 @@ import type {
  * The write function signature accepted by the JSON reporter.
  * Defaults to process.stdout.write but can be overridden in tests.
  */
-export type WriteFn = (text: string) => void;
 
 // ---------------------------------------------------------------------------
 // JSON Reporter options
@@ -112,19 +114,7 @@ export interface SerializedDiagnostic {
 export function createJsonReporter(
   options: JsonReporterOptions = {},
 ): Reporter {
-  const write =
-    options.write ??
-    ((text: string) => {
-      if (
-        typeof process !== 'undefined' &&
-        process.stdout?.write !== undefined
-      ) {
-        process.stdout.write(text);
-      } else {
-        // biome-ignore lint/suspicious/noConsole: intentional browser/non-Node fallback
-        console.info(text);
-      }
-    });
+  const write = options.write ?? createDefaultWrite('info');
   const indent = options.indent ?? 2;
 
   return {

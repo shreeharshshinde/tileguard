@@ -26,6 +26,9 @@ import type {
   ReporterContext,
   Severity,
 } from '@tileguard/core';
+import { createDefaultWrite, type WriteFn } from './defaultWrite.js';
+
+export type { WriteFn };
 
 // ---------------------------------------------------------------------------
 // ANSI color codes
@@ -107,7 +110,6 @@ function formatLocation(location: Location): string {
  * The write function signature accepted by the text reporter.
  * Defaults to process.stdout.write but can be overridden in tests.
  */
-export type WriteFn = (text: string) => void;
 
 // ---------------------------------------------------------------------------
 // Text Reporter options
@@ -140,19 +142,7 @@ export interface TextReporterOptions {
 export function createTextReporter(
   options: TextReporterOptions = {},
 ): Reporter {
-  const write =
-    options.write ??
-    ((text: string) => {
-      if (
-        typeof process !== 'undefined' &&
-        process.stdout?.write !== undefined
-      ) {
-        process.stdout.write(text);
-      } else {
-        // biome-ignore lint/suspicious/noConsole: intentional browser/non-Node fallback
-        console.log(text);
-      }
-    });
+  const write = options.write ?? createDefaultWrite('log');
   const useColor =
     options.color ??
     (typeof process !== 'undefined' && process.stdout?.isTTY === true);
