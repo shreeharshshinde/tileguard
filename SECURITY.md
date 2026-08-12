@@ -12,7 +12,7 @@
 If you discover a security vulnerability in TileGuard, please report it responsibly:
 
 1. **Do NOT** open a public GitHub issue.
-2. Email: **shreeharshshinde@gmail.com** with subject line `[SECURITY] TileGuard: <brief description>`.
+2. Email: **shindeshreeharsh157@gmail.com** with subject line `[SECURITY] TileGuard: <brief description>`.
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
