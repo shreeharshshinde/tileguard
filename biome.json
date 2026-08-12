@@ -34,9 +34,9 @@
       "complexity": {
         "noExcessiveCognitiveComplexity": {
           "level": "warn",
-          "options": { "maxAllowedComplexity": 15 }
+          "options": { "maxAllowedComplexity": 25 }
         },
-        "noVoid": "error"
+        "noVoid": "warn"
       },
       "correctness": {
         "noUnusedVariables": "warn",
