@@ -59,7 +59,6 @@ export function createEvidenceBuilder(): EvidenceBuilder {
 // Main entry point
 // ---------------------------------------------------------------------------
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: aggregates multiple evidence sub-builders
 function buildForFeature(
   fc: FeatureComparison,
   comparison: TileComparison,
@@ -650,7 +649,6 @@ function computeCentroid(geo: RingArray): { x: number; y: number } {
   return n > 0 ? { x: sx / n, y: sy / n } : { x: 0, y: 0 };
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: nested geometry traversal
 function computeBounds(geo: RingArray): {
   minX: number;
   minY: number;

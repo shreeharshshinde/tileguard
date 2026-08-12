@@ -29,7 +29,6 @@ interface CheckResult {
 // Command
 // ---------------------------------------------------------------------------
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: sequential health check orchestration
 export async function runDoctor(
   _args: unknown,
   ctx: CommandContext,

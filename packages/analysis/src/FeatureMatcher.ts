@@ -74,7 +74,6 @@ interface Bounds {
   maxY: number;
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: nested geometry traversal
 function computeBoundsFromGeometry(geometry: RingArray): Bounds {
   let minX = Number.POSITIVE_INFINITY;
   let minY = Number.POSITIVE_INFINITY;
