@@ -1,0 +1,56 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "TileGuard API Reference",
+  "entryPoints": [
+    "packages/core/src/index.ts",
+    "packages/tile-rules/src/index.ts",
+    "packages/style-rules/src/index.ts",
+    "packages/config/src/index.ts",
+    "packages/reporters/src/index.ts",
+    "packages/analysis/src/index.ts",
+    "packages/cli/src/index.ts"
+  ],
+  "entryPointStrategy": "expand",
+  "out": "docs/api",
+  "tsconfig": "tsconfig.typedoc.json",
+  "readme": "none",
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Core",
+    "Tile Validation",
+    "Style Validation",
+    "Configuration",
+    "Reporters",
+    "Analysis",
+    "CLI",
+    "*"
+  ],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "sort": ["source-order", "alphabetical"],
+  "kindSortOrder": [
+    "Function",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Variable",
+    "Enum"
+  ],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "cleanOutputDir": true,
+  "githubPages": false,
+  "hideGenerator": true,
+  "searchInComments": true,
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "@alpha": false,
+    "@beta": false
+  }
+}

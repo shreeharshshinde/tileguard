@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": [
+    "packages/core/src/**/*.ts",
+    "packages/tile-rules/src/**/*.ts",
+    "packages/style-rules/src/**/*.ts",
+    "packages/config/src/**/*.ts",
+    "packages/reporters/src/**/*.ts",
+    "packages/analysis/src/**/*.ts",
+    "packages/cli/src/**/*.ts"
+  ]
+}
