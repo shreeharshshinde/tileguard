@@ -11,6 +11,9 @@ packages/*/dist/
 dist/
 *.tsbuildinfo
 
+# Generated API documentation (regenerate with `pnpm docs`)
+docs/api/
+
 # Python
 legacy/python/venv/
 .venv/
