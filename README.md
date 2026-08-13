@@ -202,11 +202,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full rule authoring guide.
 
 | Document | Contents |
 |:---------|:---------|
+| [API Reference](docs/api/) | Generated TypeDoc API documentation |
 | [Architecture Handbook](docs/architecture/) | System design, interface specs, decision records |
+| [Rule Reference](docs/rules/) | Per-rule documentation with examples and remediation |
 | [Project Vision](docs/PROJECT_VISION.md) | Why TileGuard exists and where it's going |
 | [Problem Statement](docs/PROBLEM_STATEMENT.md) | The concrete problem TileGuard solves |
 | [Execution Roadmap](ROADMAP.md) | Phase-by-phase delivery plan |
-| [Rule Reference](docs/rules/) | Per-rule documentation for all 19 rules |
+
+### Package Documentation
+
+Each package includes its own README with detailed API documentation:
+
+| Package | README |
+|:--------|:-------|
+| `@tileguard/core` | [Core Contracts](packages/core/README.md) |
+| `@tileguard/tile-rules` | [Tile Validation](packages/tile-rules/README.md) |
+| `@tileguard/style-rules` | [Style Linting](packages/style-rules/README.md) |
+| `@tileguard/config` | [Configuration](packages/config/README.md) |
+| `@tileguard/reporters` | [Reporters & Reports](packages/reporters/README.md) |
+| `@tileguard/analysis` | [Comparison & Regression](packages/analysis/README.md) |
+| `@tileguard/cli` | [CLI Commands](packages/cli/README.md) |
 
 ---
 
