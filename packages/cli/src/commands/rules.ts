@@ -116,10 +116,10 @@ export async function runRulesList(
 /**
  * Stub for `tileguard rules explain <ruleId>`.
  *
- * Returns a "coming soon" message in `result.message` (→ stderr via bin.ts)
- * and exit code 0. Extracted as a pure function so the explain/docs subcommands
- * follow the same CommandResult pattern as every other command, even as stubs.
- * When this feature ships, the implementation lives here — bin.ts is untouched.
+ * Planned feature: prints detailed explanation for a specific rule
+ * including rationale, configuration options, and remediation guidance.
+ * Currently returns an informational message directing users to the
+ * Rule Reference documentation.
  *
  * @param _ruleId - The rule ID argument (unused until the feature is implemented).
  */
@@ -133,8 +133,9 @@ export async function runRulesExplain(_ruleId: string): Promise<CommandResult> {
 /**
  * Stub for `tileguard rules docs <ruleId>`.
  *
- * Returns a "coming soon" message in `result.message` (→ stderr via bin.ts)
- * and exit code 0. Same rationale as `runRulesExplain`.
+ * Planned feature: opens the rule's documentation page in the default
+ * browser using the `docsUrl` from the rule's metadata.
+ * Currently returns an informational message.
  *
  * @param _ruleId - The rule ID argument (unused until the feature is implemented).
  */

@@ -125,7 +125,7 @@ rules
 // Reserved stubs — namespace declared now so --help output is stable (D2).
 rules
   .command('explain <ruleId>')
-  .description('Print detailed explanation for a rule (coming soon)')
+  .description('Print detailed explanation for a rule')
   .action(async (ruleId: string) => {
     const result = await runRulesExplain(ruleId);
     present(result);
@@ -133,7 +133,7 @@ rules
 
 rules
   .command('docs <ruleId>')
-  .description('Open documentation for a rule (coming soon)')
+  .description('Open documentation for a rule in the browser')
   .action(async (ruleId: string) => {
     const result = await runRulesDocs(ruleId);
     present(result);
