@@ -1,3 +1,29 @@
+/**
+ * Rule: `tile/degenerate-geometry`
+ *
+ * Validates that geometries have enough unique vertices for their declared type.
+ *
+ * @remarks
+ * A degenerate geometry is one that lacks sufficient distinct coordinates to
+ * form a valid shape for its type:
+ *
+ * - LineString: requires at least 2 unique points
+ * - Polygon ring: requires at least 4 points (3 unique + closure)
+ *
+ * Degenerate geometries typically result from:
+ * - Aggressive simplification that collapses vertices
+ * - Integer quantization snapping distinct coordinates to the same grid point
+ * - Upstream data errors producing zero-length lines or collapsed polygons
+ *
+ * Such geometries waste tile bytes, may cause rendering engines to skip or
+ * crash on the feature, and indicate quality problems in the tile pipeline.
+ *
+ * The rule reports the affected layer, feature index, part index, and a
+ * machine-readable issue code (`DEGENERATE_LINE` or `DEGENERATE_POLYGON`).
+ *
+ * @see {@link zeroAreaRingRule} — catches polygons that have vertices but zero area
+ * @see {@link unclosedRingRule} — catches polygons missing closure vertex
+ */
 import type { Rule } from '@tileguard/core';
 import { findDegenerateGeometryIssues } from '../geometry.js';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';

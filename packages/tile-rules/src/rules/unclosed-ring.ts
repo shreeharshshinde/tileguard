@@ -1,3 +1,27 @@
+/**
+ * Rule: `tile/unclosed-ring`
+ *
+ * Validates that polygon rings are explicitly closed.
+ *
+ * @remarks
+ * A polygon ring must return to its starting coordinate (first vertex
+ * equals last vertex). Unclosed rings produce ambiguous polygon topology
+ * and may result in:
+ *
+ * - Rendering artifacts (gaps in fill, incorrect stroke termination)
+ * - Invalid spatial operations (area returns NaN or negative)
+ * - Rejection by strict geometry consumers (PostGIS, Turf.js)
+ *
+ * The MVT specification requires closure for polygon rings but does not
+ * enforce it at the encoding level. Some tile generators omit the closing
+ * vertex as an optimization, relying on consumers to infer closure. This
+ * rule flags such tiles as non-conformant.
+ *
+ * The rule reports the affected layer, feature index, and ring (part) index.
+ *
+ * @see {@link selfIntersectionRule} — related ring integrity check
+ * @see {@link zeroAreaRingRule} — related degenerate polygon check
+ */
 import type { Rule } from '@tileguard/core';
 import { findUnclosedRingIssues } from '../geometry.js';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';

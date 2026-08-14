@@ -1,3 +1,27 @@
+/**
+ * Rule: `tile/zero-area-ring`
+ *
+ * Detects polygon rings with zero computed area.
+ *
+ * @remarks
+ * A zero-area ring is a degenerate polygon that occupies no space —
+ * typically caused by all vertices being collinear or by duplicate
+ * points collapsing the ring into a line or point. Such rings:
+ *
+ * - Are invisible when rendered (zero fill area)
+ * - Waste tile bytes without contributing visual information
+ * - May cause division-by-zero in centroid or label-placement algorithms
+ * - Indicate upstream geometry processing errors
+ *
+ * Area is computed using the shoelace formula on the integer MVT grid.
+ * Rings with `|signedArea| === 0` are flagged regardless of vertex count.
+ *
+ * The rule reports the affected layer, feature index, and ring (part) index.
+ *
+ * @see {@link unclosedRingRule} — related ring integrity check
+ * @see {@link selfIntersectionRule} — related ring integrity check
+ * @see {@link degenerateGeometryRule} — catches insufficient vertex count
+ */
 import type { Rule } from '@tileguard/core';
 import { findZeroAreaRingIssues } from '../geometry.js';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
