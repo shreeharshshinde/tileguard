@@ -1,13 +1,57 @@
 /**
  * @tileguard/style-rules — MapLibre style specification provider + lint rules.
  *
- * This package ports the legacy style linter into framework-native rules.
- * The provider produces StyleSpecification artifacts for valid style JSON,
- * InvalidStyleSpecification artifacts for parse failures, and empty placeholder
- * artifacts for the zero-byte render fixtures preserved in the repo.
+ * This package provides the complete style validation pipeline for TileGuard:
  *
- * Additionally, this package exports the Style Analysis Engine — a complete
- * parser, resolver, validator, and statistics pipeline for MapLibre styles.
+ * - **Provider**: Loads `.json` style files, handles parse failures gracefully
+ *   (producing InvalidStyleSpecification artifacts for the `valid-json` rule),
+ *   and supports empty placeholder fixtures.
+ *
+ * - **9 lint rules**: Each rule checks one specific aspect of the MapLibre
+ *   style specification, producing structured diagnostics with JSON path
+ *   location context.
+ *
+ * - **Style Analysis Engine**: A complete parser, resolver, validator, and
+ *   statistics pipeline for MapLibre styles. Useful for building advanced
+ *   analysis tools, custom validators, and style introspection utilities.
+ *
+ * ## Quick Start
+ *
+ * ```ts
+ * import { createEngine } from '@tileguard/core';
+ * import { stylePlugin } from '@tileguard/style-rules';
+ *
+ * const engine = createEngine({ plugins: [stylePlugin] });
+ * const result = await engine.run(['./style.json']);
+ * ```
+ *
+ * ## Rules
+ *
+ * | Rule ID | Default Severity | What it catches |
+ * |---------|-----------------|-----------------|
+ * | `style/valid-json` | error | Style file is not valid JSON |
+ * | `style/version` | error | Version must be `8` |
+ * | `style/sources-present` | error | Missing `sources` object |
+ * | `style/layers-present` | error | Missing `layers` array |
+ * | `style/layer-id-required` | error | Layers without an `id` |
+ * | `style/unique-layer-id` | error | Duplicate layer IDs |
+ * | `style/known-source` | error | References to undeclared sources |
+ * | `style/zoom-range` | error | `minzoom` greater than `maxzoom` |
+ * | `style/no-deprecated-ref` | warning | Usage of deprecated `ref` |
+ *
+ * ## Style Analysis Engine
+ *
+ * For advanced use cases beyond rule validation:
+ *
+ * ```ts
+ * import { parseStyle, analyzeStyle, getStatistics } from '@tileguard/style-rules';
+ *
+ * const doc = parseStyle(styleJson);
+ * const analysis = analyzeStyle(doc);
+ * const stats = getStatistics(analysis);
+ * ```
+ *
+ * @packageDocumentation
  */
 
 import type { Plugin, Rule } from '@tileguard/core';
@@ -113,6 +157,13 @@ export { validateStyle } from './validator/index.js';
 
 // ── Plugin & Rules ────────────────────────────────────────────────────────
 
+/**
+ * All style lint rules in recommended execution order.
+ *
+ * `validJsonRule` is first because all other rules depend on having a
+ * successfully parsed style object. Structural rules (version, sources,
+ * layers) precede content rules (known-source, zoom-range, etc.).
+ */
 export const styleRules: readonly Rule[] = [
   validJsonRule,
   versionRule,
@@ -125,6 +176,27 @@ export const styleRules: readonly Rule[] = [
   noDeprecatedRefRule,
 ];
 
+/**
+ * The style validation plugin for TileGuard.
+ *
+ * Bundles the style provider and all 9 style lint rules into a single
+ * registerable unit. Pass this to `createEngine()` to enable style
+ * validation.
+ *
+ * @example
+ * ```ts
+ * import { createEngine } from '@tileguard/core';
+ * import { stylePlugin } from '@tileguard/style-rules';
+ *
+ * const engine = createEngine({
+ *   plugins: [stylePlugin],
+ *   rules: {
+ *     'style/known-source': 'error',
+ *     'style/no-deprecated-ref': 'off',
+ *   },
+ * });
+ * ```
+ */
 export const stylePlugin: Plugin = {
   id: 'style-rules',
   name: 'TileGuard Style Rules',
