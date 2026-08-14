@@ -2,12 +2,33 @@
  * @tileguard/tile-rules — Decoder Diagnostics
  *
  * Structured error class for MVT/PBF decode failures. When thrown during
- * artifact loading, the engine can inspect the `data` and `location` fields
- * to produce richer diagnostics than a plain error message string.
+ * artifact loading, the engine inspects the structured `diagnosticData`
+ * and `location` fields to produce richer diagnostics than a plain error
+ * message string.
  *
- * Design: DecodeError extends Error so it works with existing catch blocks.
- * The engine checks for a `data` property on caught errors and includes it
- * in the artifact/decode-failed diagnostic when present.
+ * ## Error Recovery
+ *
+ * DecodeError is **not recoverable** — when thrown, it means the tile
+ * cannot be decoded at all and no rules will execute against it. The engine
+ * emits an `artifact/decode-failed` diagnostic and continues with other sources.
+ *
+ * ## Consumer Guidance
+ *
+ * Consumers should prefer the structured `diagnosticData` field over parsing
+ * the human-readable error message. The message format is not stable; the
+ * diagnostic data fields are part of the public API contract.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   const content = decodeMvt(bytes);
+ * } catch (err) {
+ *   if (err instanceof DecodeError) {
+ *     console.log(err.diagnosticData.byteOffset); // e.g., 42
+ *     console.log(err.diagnosticData.layer);      // e.g., 'buildings'
+ *   }
+ * }
+ * ```
  */
 
 import type { Location } from '@tileguard/core';

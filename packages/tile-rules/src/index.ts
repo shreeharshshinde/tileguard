@@ -1,10 +1,48 @@
 /**
  * @tileguard/tile-rules — Vector tile provider + validation rules.
  *
- * This package ports the legacy MVT/PBF decoder and tile validation logic into
- * framework-native providers and independent rules. The geometry checks are
- * intentionally split into separate rule IDs so users can configure expensive
- * or noisy checks independently.
+ * This package provides the complete tile validation pipeline for TileGuard:
+ *
+ * - **Provider**: Loads `.pbf`/`.mvt` files (local or remote), handles gzip
+ *   decompression, and decodes the MVT protobuf format into typed artifacts.
+ *
+ * - **10 validation rules**: Each rule checks one specific aspect of tile
+ *   geometry or structure, producing structured diagnostics with layer/feature
+ *   location context.
+ *
+ * - **Geometry utilities**: Pure functions for coordinate validation, ring
+ *   closure checking, area computation, and self-intersection detection.
+ *   Exported for use in custom rules or analysis pipelines.
+ *
+ * - **PBF decoder**: Low-level MVT protobuf decoder with structured error
+ *   reporting. Exported for advanced use cases.
+ *
+ * ## Quick Start
+ *
+ * ```ts
+ * import { createEngine } from '@tileguard/core';
+ * import { tilePlugin } from '@tileguard/tile-rules';
+ *
+ * const engine = createEngine({ plugins: [tilePlugin] });
+ * const result = await engine.run(['./tile.pbf']);
+ * ```
+ *
+ * ## Rules
+ *
+ * | Rule ID | Default Severity | What it catches |
+ * |---------|-----------------|-----------------|
+ * | `tile/required-layers` | error | Missing expected layers |
+ * | `tile/required-properties` | error | Features missing declared properties |
+ * | `tile/coordinate-range` | error | Coordinates outside valid extent |
+ * | `tile/feature-count` | warning | Total feature count outside bounds |
+ * | `tile/layer-feature-count` | warning | Per-layer count outside bounds |
+ * | `tile/unclosed-ring` | error | Polygon rings not closed |
+ * | `tile/zero-area-ring` | error | Degenerate zero-area polygons |
+ * | `tile/self-intersection` | error | Geometry that crosses itself |
+ * | `tile/degenerate-geometry` | error | Insufficient vertices |
+ * | `tile/no-empty` | warning | Tiles with zero features |
+ *
+ * @packageDocumentation
  */
 
 import type { Plugin, Rule } from '@tileguard/core';
@@ -20,29 +58,28 @@ import { selfIntersectionRule } from './rules/self-intersection.js';
 import { unclosedRingRule } from './rules/unclosed-ring.js';
 import { zeroAreaRingRule } from './rules/zero-area-ring.js';
 
-export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
-export {
-  findCoordinateRangeIssues,
-  findDegenerateGeometryIssues,
-  findSelfIntersectionIssues,
-  findUnclosedRingIssues,
-  findZeroAreaRingIssues,
-  segmentsIntersect,
-  signedArea,
-  uniquePointCount,
-} from './geometry.js';
-export { decodeMvt, PbfReader } from './pbf-decoder.js';
+// ── Provider ──────────────────────────────────────────────────────────────
 export { tileProvider } from './provider.js';
+
+// ── Rules ─────────────────────────────────────────────────────────────────
 export { coordinateRangeRule } from './rules/coordinate-range.js';
+export type { CoordinateRangeOptions } from './rules/coordinate-range.js';
 export { degenerateGeometryRule } from './rules/degenerate-geometry.js';
 export { featureCountRule } from './rules/feature-count.js';
+export type { FeatureCountOptions } from './rules/feature-count.js';
 export { layerFeatureCountRule } from './rules/layer-feature-count.js';
+export type { LayerFeatureCountOptions } from './rules/layer-feature-count.js';
 export { noEmptyRule } from './rules/no-empty.js';
+export type { NoEmptyOptions } from './rules/no-empty.js';
 export { requiredLayersRule } from './rules/required-layers.js';
+export type { RequiredLayersOptions } from './rules/required-layers.js';
 export { requiredPropertiesRule } from './rules/required-properties.js';
+export type { RequiredPropertiesOptions } from './rules/required-properties.js';
 export { selfIntersectionRule } from './rules/self-intersection.js';
 export { unclosedRingRule } from './rules/unclosed-ring.js';
 export { zeroAreaRingRule } from './rules/zero-area-ring.js';
+
+// ── Domain types ──────────────────────────────────────────────────────────
 export type {
   GeometryType,
   GeometryTypeName,
@@ -62,6 +99,31 @@ export {
   VECTOR_TILE_ARTIFACT_TYPE,
 } from './types.js';
 
+// ── Error types ───────────────────────────────────────────────────────────
+export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
+
+// ── Geometry utilities (for custom rules and analysis) ────────────────────
+export {
+  findCoordinateRangeIssues,
+  findDegenerateGeometryIssues,
+  findSelfIntersectionIssues,
+  findUnclosedRingIssues,
+  findZeroAreaRingIssues,
+  segmentsIntersect,
+  signedArea,
+  uniquePointCount,
+} from './geometry.js';
+
+// ── Low-level decoder (advanced use) ─────────────────────────────────────
+export { decodeMvt, PbfReader } from './pbf-decoder.js';
+
+/**
+ * All tile validation rules in recommended execution order.
+ *
+ * This array is used by the `tilePlugin` to register all rules with the engine.
+ * You can also import it directly to iterate rules for documentation generation
+ * or custom rule selection logic.
+ */
 export const tileRules: readonly Rule[] = [
   requiredLayersRule,
   featureCountRule,
@@ -75,6 +137,26 @@ export const tileRules: readonly Rule[] = [
   noEmptyRule,
 ];
 
+/**
+ * The tile validation plugin for TileGuard.
+ *
+ * Bundles the vector tile provider and all 10 tile validation rules into a
+ * single registerable unit. Pass this to `createEngine()` to enable tile
+ * validation.
+ *
+ * @example
+ * ```ts
+ * import { createEngine } from '@tileguard/core';
+ * import { tilePlugin } from '@tileguard/tile-rules';
+ *
+ * const engine = createEngine({
+ *   plugins: [tilePlugin],
+ *   rules: {
+ *     'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
+ *   },
+ * });
+ * ```
+ */
 export const tilePlugin: Plugin = {
   id: 'tile-rules',
   name: 'TileGuard Tile Rules',
