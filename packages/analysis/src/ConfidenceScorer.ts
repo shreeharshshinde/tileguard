@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — ConfidenceScorer (Milestone 7 — Step 2)
+ * @tileguard/analysis — ConfidenceScorer
  *
  * Converts a set of RegressionReasons into a normalised confidence score in [0, 1].
  *

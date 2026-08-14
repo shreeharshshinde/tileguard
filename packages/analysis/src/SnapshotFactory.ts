@@ -1,8 +1,24 @@
 /**
  * @tileguard/analysis — SnapshotFactory
  *
- * Creates TileSnapshot objects from raw tile data.
- * No InspectorStore dependency — operates on plain data.
+ * Creates immutable TileSnapshot objects from raw decoded tile data.
+ * Snapshots are the input format for the ComparisonEngine — they represent
+ * a frozen capture of tile state at a point in time.
+ *
+ * The factory computes derived statistics (feature counts, geometry distribution,
+ * diagnostic summaries) during snapshot creation so that downstream consumers
+ * can access them without re-computation.
+ *
+ * @example
+ * ```ts
+ * import { createSnapshotFactory } from '@tileguard/analysis';
+ *
+ * const factory = createSnapshotFactory();
+ * const snapshot = factory.createSnapshot('./tile.pbf', layers, diagnostics);
+ *
+ * console.log(snapshot.statistics.totalFeatures);
+ * console.log(snapshot.features.length);
+ * ```
  */
 
 import type { Diagnostic } from '@tileguard/core';
@@ -17,16 +33,34 @@ import type { LayerStatistics, TileStatistics } from './models/statistics.js';
 // Input types (callers provide these)
 // ---------------------------------------------------------------------------
 
+/**
+ * Raw layer data provided to the snapshot factory.
+ *
+ * This is the minimal structure needed to create a TileSnapshot.
+ * Typically obtained from the tile provider's decode output.
+ */
 export interface RawLayerData {
+  /** Layer name. */
   readonly name: string;
+  /** Coordinate extent for this layer. */
   readonly extent: number;
+  /** All features in this layer. */
   readonly features: readonly RawFeatureData[];
 }
 
+/**
+ * Raw feature data provided to the snapshot factory.
+ *
+ * Represents a single decoded feature before snapshot creation.
+ */
 export interface RawFeatureData {
+  /** Optional feature ID from the MVT encoding. */
   readonly id?: number | string;
+  /** Geometry type string (e.g., "Point", "Polygon"). */
   readonly geometryType: string;
+  /** Feature properties. */
   readonly properties: Readonly<Record<string, unknown>>;
+  /** Decoded geometry as arrays of coordinate arrays. */
   readonly geometry: readonly (readonly {
     readonly x: number;
     readonly y: number;
@@ -37,7 +71,20 @@ export interface RawFeatureData {
 // Factory interface
 // ---------------------------------------------------------------------------
 
+/**
+ * A factory that creates immutable TileSnapshot objects from raw data.
+ *
+ * Created via {@link createSnapshotFactory}.
+ */
 export interface SnapshotFactory {
+  /**
+   * Creates an immutable tile snapshot from raw layer data and diagnostics.
+   *
+   * @param filePath - The file path or URL identifying this tile.
+   * @param layers - Raw decoded layer data.
+   * @param diagnostics - Diagnostics produced during validation of this tile.
+   * @returns A frozen TileSnapshot ready for comparison.
+   */
   createSnapshot(
     filePath: string,
     layers: readonly RawLayerData[],

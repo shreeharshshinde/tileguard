@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — EvidenceBuilder (Milestone 7 — Step 2)
+ * @tileguard/analysis — EvidenceBuilder
  *
  * Transforms raw FeatureComparison data into structured RegressionEvidence[]
  * and RegressionReason[] that the RegressionEngine uses to build candidates.

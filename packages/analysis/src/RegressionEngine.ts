@@ -1,25 +1,34 @@
 /**
- * @tileguard/inspector — RegressionEngine (Milestone 7 — Step 2)
+ * @tileguard/analysis — Regression Engine
  *
- * Consumes a TileComparison produced by the Comparison Engine and transforms
- * it into a RegressionAnalysis: a ranked list of likely root-cause candidates
- * with evidence, confidence scores, classification, and recommendations.
+ * Analyzes a tile comparison result to identify likely regression candidates,
+ * ranked by confidence score.
  *
- * Architecture:
- *   1. Filters FeatureComparisons to those with actual changes.
- *   2. For each changed feature, delegates to EvidenceBuilder to build reasons
- *      and evidence.
- *   3. Uses ConfidenceScorer to produce a normalised confidence ∈ [0, 1].
- *   4. Classifies each candidate (geometry / attribute / diagnostic / mixed).
- *   5. Sorts candidates descending by confidence.
- *   6. Builds a RegressionSummary over all candidates.
- *   7. Returns a frozen RegressionAnalysis.
+ * The regression engine transforms raw feature-level changes into actionable
+ * engineering intelligence:
  *
- * Key invariant:
- *   - RegressionEngine NEVER calls ComparisonService or re-reads tiles.
- *   - It only reads the TileComparison argument.
+ * 1. **Filters** to features with actual modifications
+ * 2. **Builds evidence** for each change (geometry shifts, property mutations,
+ *    new diagnostics)
+ * 3. **Scores confidence** using configurable weighted factors
+ * 4. **Classifies** each candidate (geometry / attribute / diagnostic / mixed)
+ * 5. **Ranks** candidates by confidence score (descending)
+ * 6. **Summarizes** overall regression risk and recommendations
  *
- * Boundary: imports only from comparison/models and analysis/*.
+ * The engine is deterministic: the same TileComparison always produces the
+ * same RegressionAnalysis. It never re-reads tile data or performs I/O.
+ *
+ * @example
+ * ```ts
+ * import { createComparisonEngine, createRegressionEngine } from '@tileguard/analysis';
+ *
+ * const comparison = createComparisonEngine().compare(before, after);
+ * const regression = createRegressionEngine().analyze(comparison);
+ *
+ * for (const candidate of regression.candidates) {
+ *   console.log(`${candidate.confidence.toFixed(2)} - ${candidate.kind}: ${candidate.summary}`);
+ * }
+ * ```
  */
 
 import { createConfidenceScorer } from './ConfidenceScorer.js';
@@ -38,12 +47,22 @@ import { MIN_CANDIDATE_CONFIDENCE } from './models/regression.js';
 // Public interface
 // ---------------------------------------------------------------------------
 
+/**
+ * A stateless regression analysis engine.
+ *
+ * Created via {@link createRegressionEngine}. Analyzes a TileComparison
+ * to produce a ranked list of regression candidates with evidence and
+ * confidence scores.
+ */
 export interface RegressionEngine {
   /**
-   * Analyse a TileComparison and produce a ranked RegressionAnalysis.
-   * Deterministic: same TileComparison always produces the same result.
+   * Analyzes a tile comparison and produces a ranked regression analysis.
    *
-   * Never re-reads tile data. Only processes comparison.features.
+   * Deterministic: the same TileComparison always produces the same result.
+   * Never re-reads tile data — only processes the comparison result.
+   *
+   * @param comparison - A TileComparison from the ComparisonEngine.
+   * @returns A regression analysis with ranked candidates and summary.
    */
   analyze(comparison: TileComparison): RegressionAnalysis;
 }
@@ -52,10 +71,15 @@ export interface RegressionEngine {
 // Factory
 // ---------------------------------------------------------------------------
 
+/**
+ * Options for creating a regression engine.
+ */
 export interface RegressionEngineOptions {
   /**
-   * Override default confidence weights.
-   * Useful for testing or future configurability.
+   * Override default confidence scoring weights.
+   *
+   * Allows tuning which types of changes contribute more to the
+   * regression confidence score. Useful for domain-specific thresholds.
    */
   readonly weights?: Partial<ConfidenceWeights>;
 
