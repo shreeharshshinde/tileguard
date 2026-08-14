@@ -1,9 +1,33 @@
 /**
  * @tileguard/analysis — ComparisonEngine
  *
- * Pure comparison logic extracted from ComparisonService.
- * Takes two TileSnapshots and produces a TileComparison.
- * No InspectorStore dependency, no DOM, no UI.
+ * Compares two decoded vector tile snapshots and identifies structural,
+ * feature-level, and property-level changes between them.
+ *
+ * The comparison pipeline:
+ * 1. **Feature matching** — pairs features from snapshot A to snapshot B
+ *    using heuristic matching (geometry similarity, property overlap, IDs)
+ * 2. **Geometry differencing** — for modified features, computes detailed
+ *    geometry diffs (area changes, centroid shifts, vertex changes)
+ * 3. **Property differencing** — for modified features, identifies added,
+ *    removed, and changed properties
+ * 4. **Summary statistics** — aggregates changes into layer-level and
+ *    tile-level comparison summaries
+ *
+ * This module has zero DOM, React, or browser API dependencies. It is safe
+ * to use in Node.js, CLI tools, and server-side pipelines.
+ *
+ * @example
+ * ```ts
+ * import { createComparisonEngine } from '@tileguard/analysis';
+ *
+ * const engine = createComparisonEngine();
+ * const comparison = engine.compare(snapshotBefore, snapshotAfter);
+ *
+ * console.log(`${comparison.summary.addedFeatures} features added`);
+ * console.log(`${comparison.summary.removedFeatures} features removed`);
+ * console.log(`${comparison.summary.modifiedFeatures} features modified`);
+ * ```
  */
 
 import type { Diagnostic } from '@tileguard/core';
@@ -25,7 +49,20 @@ import { createPropertyDiffer } from './PropertyDiffer.js';
 // Public interface
 // ---------------------------------------------------------------------------
 
+/**
+ * A stateless comparison engine that compares two tile snapshots.
+ *
+ * Created via {@link createComparisonEngine}. The engine is reusable
+ * across multiple comparisons without state leaking between calls.
+ */
 export interface ComparisonEngine {
+  /**
+   * Compares two tile snapshots and produces a structured comparison result.
+   *
+   * @param snapshotA - The baseline (before) tile snapshot.
+   * @param snapshotB - The target (after) tile snapshot being evaluated.
+   * @returns A complete comparison result with feature-level detail.
+   */
   compare(snapshotA: TileSnapshot, snapshotB: TileSnapshot): TileComparison;
 }
 
@@ -33,6 +70,15 @@ export interface ComparisonEngine {
 // Factory
 // ---------------------------------------------------------------------------
 
+/**
+ * Creates a new comparison engine instance.
+ *
+ * The engine is stateless and can be reused across multiple comparisons.
+ * Internally it creates FeatureMatcher, GeometryDiffer, and PropertyDiffer
+ * instances per comparison call.
+ *
+ * @returns A configured {@link ComparisonEngine}.
+ */
 export function createComparisonEngine(): ComparisonEngine {
   return { compare };
 }

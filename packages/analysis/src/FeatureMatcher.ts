@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — FeatureMatcher (Milestone 7 — Step 1)
+ * @tileguard/analysis — FeatureMatcher
  *
  * Matches features between two tile snapshots using a 4-priority cascade:
  *
