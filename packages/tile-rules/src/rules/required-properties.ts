@@ -1,9 +1,56 @@
+/**
+ * Rule: `tile/required-properties`
+ *
+ * Validates that features in specified layers include required properties.
+ *
+ * @remarks
+ * Map renderers and data consumers depend on specific feature properties
+ * being present. Missing properties can cause:
+ *
+ * - Labels failing to render (missing `name` or `name:en`)
+ * - Style expressions evaluating to fallback values
+ * - Data pipeline consumers silently dropping features
+ * - Incorrect classification (missing `class` or `type` property)
+ *
+ * This rule checks every feature in the configured layers and reports
+ * each missing property individually, enabling precise diagnosis of which
+ * features and which properties are affected.
+ *
+ * Layers not present in the tile are silently skipped (use
+ * `tile/required-layers` to enforce layer presence).
+ *
+ * @example
+ * ```ts
+ * rules: {
+ *   'tile/required-properties': ['error', {
+ *     layers: {
+ *       buildings: ['name', 'height', 'type'],
+ *       roads: ['name', 'class', 'oneway'],
+ *     }
+ *   }]
+ * }
+ * ```
+ *
+ * @see {@link requiredLayersRule} for enforcing layer presence
+ * @see {@link RequiredPropertiesOptions} for configuration
+ */
 import type { Rule } from '@tileguard/core';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 
+/**
+ * Configuration options for the `tile/required-properties` rule.
+ *
+ * Supports three equivalent configuration forms for flexibility:
+ * - `{ layers: { water: ['name', 'class'] } }` (preferred)
+ * - `{ requiredProperties: { water: ['name', 'class'] } }` (legacy)
+ * - `{ water: ['name', 'class'] }` (shorthand)
+ */
 export interface RequiredPropertiesOptions {
+  /** Per-layer required property lists. Preferred configuration form. */
   readonly layers?: Readonly<Record<string, readonly string[]>>;
+  /** @deprecated Use `layers` instead. */
   readonly requiredProperties?: Readonly<Record<string, readonly string[]>>;
+  /** Shorthand: layer names as top-level keys with property arrays as values. */
   readonly [layerName: string]: unknown;
 }
 

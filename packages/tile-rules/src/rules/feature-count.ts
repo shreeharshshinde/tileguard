@@ -1,3 +1,31 @@
+/**
+ * Rule: `tile/feature-count`
+ *
+ * Validates that the total feature count across all layers falls within
+ * configured bounds.
+ *
+ * @remarks
+ * Feature count bounds serve as a tile-level sanity check:
+ *
+ * - **Minimum**: catches tiles that are suspiciously sparse, indicating
+ *   possible data loss or overly aggressive filtering.
+ * - **Maximum**: catches tiles that are overloaded with features, indicating
+ *   missing simplification or incorrect zoom-level assignment. Oversized
+ *   tiles degrade rendering performance and increase bandwidth costs.
+ *
+ * This rule checks the aggregate count across all layers. For per-layer
+ * bounds, use {@link layerFeatureCountRule}.
+ *
+ * @example
+ * ```ts
+ * rules: {
+ *   'tile/feature-count': ['warning', { min: 1, max: 50000 }]
+ * }
+ * ```
+ *
+ * @see {@link layerFeatureCountRule} for per-layer bounds
+ * @see {@link FeatureCountOptions} for configuration
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getVectorTile,
@@ -5,10 +33,17 @@ import {
   VECTOR_TILE_ARTIFACT_TYPE,
 } from '../types.js';
 
+/**
+ * Configuration options for the `tile/feature-count` rule.
+ */
 export interface FeatureCountOptions {
+  /** Minimum acceptable total feature count. */
   readonly min?: number;
+  /** Maximum acceptable total feature count. */
   readonly max?: number;
+  /** @deprecated Use `min` instead. */
   readonly minFeatures?: number;
+  /** @deprecated Use `max` instead. */
   readonly maxFeatures?: number;
 }
 

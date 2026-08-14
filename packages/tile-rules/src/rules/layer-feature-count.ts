@@ -1,3 +1,39 @@
+/**
+ * Rule: `tile/layer-feature-count`
+ *
+ * Validates that individual layer feature counts fall within configured bounds.
+ *
+ * @remarks
+ * Per-layer bounds are more targeted than the aggregate `tile/feature-count` rule.
+ * They allow defining different expectations for each layer:
+ *
+ * - A `water` layer might always have 1–100 features
+ * - A `buildings` layer at zoom 14+ might have 50–10000 features
+ * - A `roads` layer might have 10–5000 features
+ *
+ * When a layer's feature count falls outside its configured bounds, it indicates
+ * either data loss (too few) or missing simplification/filtering (too many).
+ *
+ * Layers not listed in the configuration are not checked. Layers listed in
+ * the configuration but absent from the tile are silently skipped (use
+ * `tile/required-layers` to enforce layer presence).
+ *
+ * @example
+ * ```ts
+ * rules: {
+ *   'tile/layer-feature-count': ['warning', {
+ *     layers: {
+ *       water: { min: 1, max: 500 },
+ *       buildings: { max: 10000 },
+ *       roads: { min: 5, max: 5000 },
+ *     }
+ *   }]
+ * }
+ * ```
+ *
+ * @see {@link featureCountRule} for aggregate bounds
+ * @see {@link LayerFeatureCountOptions} for configuration
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getVectorTile,
@@ -5,8 +41,13 @@ import {
   VECTOR_TILE_ARTIFACT_TYPE,
 } from '../types.js';
 
+/**
+ * Configuration options for the `tile/layer-feature-count` rule.
+ */
 export interface LayerFeatureCountOptions {
+  /** Per-layer feature count bounds, keyed by layer name. */
   readonly layers?: Readonly<Record<string, LayerFeatureBounds>>;
+  /** @deprecated Use `layers` instead. */
   readonly layerConfig?: Readonly<Record<string, LayerFeatureBounds>>;
 }
 

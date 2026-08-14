@@ -1,7 +1,39 @@
+/**
+ * Rule: `tile/required-layers`
+ *
+ * Validates that specified layers are present in the vector tile.
+ *
+ * @remarks
+ * Vector tile pipelines produce tiles with a defined layer schema — consumers
+ * (map renderers, data processors) depend on specific layers being present.
+ * When a tile is missing expected layers, it indicates:
+ *
+ * - A tile generation pipeline regression (layer dropped from config)
+ * - A geographic coverage gap (data source incomplete for this region)
+ * - A zoom-level configuration error (layer not generated at this zoom)
+ *
+ * This rule is especially valuable as a CI gate: it catches schema regressions
+ * before they reach production map rendering.
+ *
+ * @example
+ * ```ts
+ * rules: {
+ *   'tile/required-layers': ['error', {
+ *     layers: ['water', 'roads', 'buildings', 'landuse']
+ *   }]
+ * }
+ * ```
+ *
+ * @see {@link RequiredLayersOptions} for configuration
+ */
 import type { Rule } from '@tileguard/core';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 
+/**
+ * Configuration options for the `tile/required-layers` rule.
+ */
 export interface RequiredLayersOptions {
+  /** Layer names that must be present in every validated tile. */
   readonly layers?: readonly string[];
 }
 
