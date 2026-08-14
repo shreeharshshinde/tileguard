@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — PropertyDiffer (Milestone 7 — Step 1)
+ * @tileguard/analysis — PropertyDiffer
  *
  * Compares the properties of two FeatureSnapshots and produces a detailed
  * PropertyDiff describing added, removed, and modified properties.

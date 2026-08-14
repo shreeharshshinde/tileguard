@@ -1,5 +1,5 @@
 /**
- * @tileguard/inspector — GeometryDiffer (Milestone 7 — Step 1)
+ * @tileguard/analysis — GeometryDiffer
  *
  * Compares the geometry of two FeatureSnapshots and produces a detailed
  * GeometryDiff describing what changed.
