@@ -328,14 +328,14 @@ function resolveReporter(
   reporterConfig: TileGuardConfig['reporter'],
 ): Reporter {
   if (reporterConfig === undefined || typeof reporterConfig === 'string') {
-    // Phase 2 note: actual reporter resolution (text, json, sarif) is
-    // implemented in @tileguard/reporters and wired up in the CLI package.
-    // The core engine accepts a pre-resolved Reporter object via createEngine()
-    // overload. When no reporter is provided, use the noop.
+    // Reporter resolution from ID strings (text, json, sarif) is handled by
+    // @tileguard/reporters and wired up in the CLI package. The core engine
+    // accepts a pre-resolved Reporter object via createEngine()'s EngineOptions.
+    // When no reporter is provided, use the no-op reporter.
     return noopReporter;
   }
   if (Array.isArray(reporterConfig)) {
-    // [id, options] tuple — options reserved for future use in core
+    // [id, options] tuple — resolved by the CLI before engine creation.
     return noopReporter;
   }
   // If a Reporter object was passed directly (not standard config, but
