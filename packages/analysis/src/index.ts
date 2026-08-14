@@ -1,10 +1,50 @@
 /**
  * @tileguard/analysis — Shared Analysis Engine
  *
- * Single source of truth for comparison and regression algorithms.
- * Consumed by both @tileguard/inspector and @tileguard/cli.
+ * Provides tile comparison and regression detection algorithms for TileGuard.
+ * This is the single source of truth for all comparison logic, consumed by
+ * both `@tileguard/cli` (headless) and `@tileguard/inspector` (visual).
  *
- * Zero React, DOM, Vite, Canvas, or browser API dependencies.
+ * ## Architecture
+ *
+ * The analysis pipeline has two stages:
+ *
+ * 1. **Comparison** — Takes two tile snapshots and produces a feature-level
+ *    diff (added, removed, modified features with geometry and property diffs).
+ *
+ * 2. **Regression** — Takes a comparison result and ranks modified features
+ *    by regression confidence, producing actionable engineering intelligence
+ *    about which changes are most likely to be regressions.
+ *
+ * ## Key Design Decisions
+ *
+ * - Zero DOM, React, Canvas, or browser API dependencies
+ * - All engines are stateless factories (create once, use many times)
+ * - All models are deeply readonly (immutable after creation)
+ * - Deterministic: same inputs always produce same outputs
+ *
+ * ## Quick Start
+ *
+ * ```ts
+ * import {
+ *   createComparisonEngine,
+ *   createRegressionEngine,
+ *   createSnapshotFactory,
+ * } from '@tileguard/analysis';
+ *
+ * // Create snapshots from raw tile data
+ * const factory = createSnapshotFactory();
+ * const before = factory.createSnapshot('./v1.pbf', layers, diagnostics);
+ * const after = factory.createSnapshot('./v2.pbf', layers, diagnostics);
+ *
+ * // Compare and analyze
+ * const comparison = createComparisonEngine().compare(before, after);
+ * const regression = createRegressionEngine().analyze(comparison);
+ *
+ * console.log(`${regression.summary.totalCandidates} regression candidates found`);
+ * ```
+ *
+ * @packageDocumentation
  */
 
 // ComparisonEngine — full comparison pipeline
