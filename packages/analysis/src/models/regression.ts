@@ -1,16 +1,22 @@
 /**
- * @tileguard/inspector — Regression Investigation Models (Milestone 7 — Step 2)
+ * @tileguard/analysis — Regression Investigation Models
  *
- * Domain types for the Regression Investigation Engine.
+ * Domain types for the regression detection and analysis engine.
  *
- * Architecture:
- *   - RegressionAnalysis:  root result produced by RegressionEngine
- *   - RegressionCandidate: a single feature ranked by confidence
- *   - RegressionEvidence:  a supporting data point for a candidate
- *   - RegressionReason:    atomic explanation unit
- *   - ConfidenceWeights:   tunable scoring coefficients
+ * ## Concepts
  *
- * Boundary: imports only from comparison/models — never from renderer, DOM, or UI.
+ * - **RegressionAnalysis**: Root result produced by {@link RegressionEngine.analyze}.
+ *   Contains ranked candidates, summary statistics, and overall risk assessment.
+ * - **RegressionCandidate**: A single feature flagged as a potential regression,
+ *   ranked by confidence score (0–1).
+ * - **RegressionEvidence**: A structured data point explaining why a candidate
+ *   was flagged (geometry shift, property mutation, new diagnostic, etc.)
+ * - **RegressionReason**: An atomic scoring contribution with human-readable
+ *   explanation.
+ * - **ConfidenceWeights**: Tunable coefficients controlling how different
+ *   change types contribute to the overall confidence score.
+ *
+ * @packageDocumentation
  */
 
 import type { FeatureComparison } from './comparison.js';

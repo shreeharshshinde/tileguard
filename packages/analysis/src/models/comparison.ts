@@ -1,14 +1,28 @@
 /**
- * @tileguard/inspector — Comparison Data Models (Milestone 7 — Step 1)
+ * @tileguard/analysis — Comparison Data Models
  *
- * Immutable snapshot and comparison result types for the Tile Comparison Engine.
+ * Immutable snapshot and comparison result types for tile-level differencing.
  *
- * Architecture:
- *   - TileSnapshot: frozen capture of tile state at a point in time.
- *   - TileComparison: root comparison result produced by ComparisonService.
- *   - All models are readonly — consumers never mutate them.
+ * ## Architecture
  *
- * Boundary: Zero imports from renderer/, overlay/, viewport/, or DOM APIs.
+ * - {@link TileSnapshot}: Frozen capture of tile state at a point in time.
+ *   Created by {@link SnapshotFactory} from decoded tile data.
+ * - {@link TileComparison}: Root comparison result produced by
+ *   {@link ComparisonEngine.compare}. Contains feature-level diffs, layer
+ *   comparisons, and summary statistics.
+ * - All models are deeply readonly — consumers never mutate them.
+ *
+ * ## Data Flow
+ *
+ * ```
+ * Raw tile data → SnapshotFactory → TileSnapshot
+ *                                         ↓
+ * TileSnapshot A + TileSnapshot B → ComparisonEngine → TileComparison
+ *                                                            ↓
+ *                                  TileComparison → RegressionEngine → RegressionAnalysis
+ * ```
+ *
+ * @packageDocumentation
  */
 
 import type { Diagnostic } from '@tileguard/core';
