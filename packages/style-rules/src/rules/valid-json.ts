@@ -1,3 +1,27 @@
+/**
+ * Rule: `style/valid-json`
+ *
+ * Validates that style files contain syntactically valid JSON.
+ *
+ * @remarks
+ * This is the foundational style rule — all other style rules depend on
+ * having a parsed JSON object to inspect. When JSON parsing fails, this
+ * rule produces a single diagnostic with the parse error message.
+ *
+ * The rule operates on `InvalidStyleSpecification` artifacts (files that
+ * failed JSON.parse during provider loading). Valid styles pass through
+ * without any diagnostic.
+ *
+ * Common causes of invalid JSON:
+ * - Trailing commas (not allowed in JSON)
+ * - Single quotes instead of double quotes
+ * - Unquoted keys
+ * - Comments (// or /* not allowed in JSON)
+ * - Truncated files from interrupted downloads
+ *
+ * This rule cannot be disabled for invalid files — the remaining style rules
+ * simply do not execute because the artifact type does not match.
+ */
 import type { Rule } from '@tileguard/core';
 import {
   EMPTY_STYLE_ARTIFACT_TYPE,

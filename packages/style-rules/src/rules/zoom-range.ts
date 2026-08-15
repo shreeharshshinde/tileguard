@@ -1,3 +1,24 @@
+/**
+ * Rule: `style/zoom-range`
+ *
+ * Validates that layer `minzoom` values do not exceed `maxzoom` values.
+ *
+ * @remarks
+ * When `minzoom > maxzoom`, the layer is invisible at all zoom levels —
+ * a condition that is almost always a configuration error rather than
+ * intentional behavior.
+ *
+ * Common causes:
+ * - Swapped values during manual editing
+ * - Copy-paste errors from layers with different zoom ranges
+ * - Incorrect unit conversion from tile-matrix zoom to display zoom
+ *
+ * The rule checks both `minzoom` and `maxzoom` simultaneously. Layers
+ * that define only one of the two values are not flagged (they have an
+ * implicit unbounded range on the other end).
+ *
+ * @see {@link https://maplibre.org/maplibre-style-spec/layers/#minzoom | MapLibre minzoom spec}
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getLayerId,

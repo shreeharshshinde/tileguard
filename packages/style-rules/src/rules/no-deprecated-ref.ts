@@ -1,3 +1,26 @@
+/**
+ * Rule: `style/no-deprecated-ref`
+ *
+ * Flags style layers that use the deprecated `ref` property.
+ *
+ * @remarks
+ * The `ref` property was an early style specification feature that allowed
+ * one layer to inherit from another. It was deprecated in Mapbox GL JS v0.36
+ * and removed from the specification because:
+ *
+ * - It created implicit coupling between layers
+ * - It made style documents harder to reason about statically
+ * - It complicated layer resolution in style tooling
+ *
+ * MapLibre GL JS still supports `ref` for backward compatibility but may
+ * remove support in future versions. Styles using `ref` should be migrated
+ * to use full layer definitions.
+ *
+ * The rule defaults to `warning` severity since `ref` layers still render
+ * correctly in current MapLibre versions.
+ *
+ * @see {@link https://github.com/mapbox/mapbox-gl-js/issues/3965 | Original deprecation discussion}
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getLayerId,
