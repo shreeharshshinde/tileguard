@@ -55,6 +55,8 @@ export interface GeometryIssue {
     | 'UNCLOSED_RING'
     | 'ZERO_AREA_RING'
     | 'SELF_INTERSECTION'
+    | 'WRONG_WINDING'
+    | 'HOLE_OUTSIDE_SHELL'
     | 'EMPTY_GEOMETRY';
 
   /** Human-readable description suitable for inclusion in a diagnostic message. */
@@ -232,15 +234,68 @@ export function findUnclosedRingIssues(
 // ─── Zero-area rings ──────────────────────────────────────────────────────────
 
 /**
- * Returns a `ZERO_AREA_RING` issue for every Polygon ring whose signed shoelace
- * area is exactly zero.
+ * Returns a `ZERO_AREA_RING` issue for every Polygon ring whose absolute signed
+ * area is below the specified minimum threshold.
  *
- * A zero-area ring collapses to a line or a point and is not renderable as a
- * polygon.  Only applies to Polygon features (`feature.type === 3`).
+ * When `minArea` is 0 (default), only rings with exactly zero area are flagged.
+ * When `minArea > 0`, rings with area below the threshold are also flagged
+ * as "near-zero" — these represent sliver polygons from coordinate quantization
+ * that are effectively degenerate and can cause numerically unstable triangulation.
+ *
+ * Only applies to Polygon features (`feature.type === 3`).
+ *
+ * @param feature - The decoded MVT feature to inspect.
+ * @param minArea - Minimum absolute area threshold in tile coordinate units². Defaults to 0 (exact zero only).
+ */
+export function findZeroAreaRingIssues(
+  feature: VectorTileFeature,
+  minArea = 0,
+): readonly GeometryIssue[] {
+  if (feature.type !== 3) return [];
+
+  const issues: GeometryIssue[] = [];
+  const parts = getFeatureParts(feature);
+
+  for (let partIndex = 0; partIndex < parts.length; partIndex += 1) {
+    const points = parts[partIndex]!;
+    const absArea = Math.abs(signedArea(points));
+    if (minArea > 0 ? absArea < minArea : absArea === 0) {
+      const message =
+        absArea === 0
+          ? 'Polygon ring has zero signed area.'
+          : `Polygon ring area (${absArea}) is below minimum threshold (${minArea}).`;
+      issues.push({
+        code: 'ZERO_AREA_RING',
+        message,
+        partIndex,
+      });
+    }
+  }
+
+  return issues;
+}
+
+// ─── Winding order ────────────────────────────────────────────────────────────
+
+/**
+ * Returns a `WRONG_WINDING` issue for every Polygon ring whose winding order
+ * does not conform to the MVT convention:
+ *
+ * - **Outer ring (index 0)**: must be clockwise (signedArea < 0)
+ * - **Hole rings (index > 0)**: must be counter-clockwise (signedArea > 0)
+ *
+ * The MVT specification defines this convention so that renderers (including
+ * earcut) can distinguish outer boundaries from holes without additional metadata.
+ * Incorrect winding causes:
+ * - Outer rings interpreted as holes → polygon disappears
+ * - Holes interpreted as outer rings → inverted fill
+ * - Mixed winding → garbage triangulation
+ *
+ * Only applies to Polygon features (`feature.type === 3`).
  *
  * @param feature - The decoded MVT feature to inspect.
  */
-export function findZeroAreaRingIssues(
+export function findWindingOrderIssues(
   feature: VectorTileFeature,
 ): readonly GeometryIssue[] {
   if (feature.type !== 3) return [];
@@ -250,16 +305,144 @@ export function findZeroAreaRingIssues(
 
   for (let partIndex = 0; partIndex < parts.length; partIndex += 1) {
     const points = parts[partIndex]!;
-    if (Math.abs(signedArea(points)) === 0) {
+    // Rings with fewer than 3 points cannot have meaningful area or winding
+    if (points.length < 3) continue;
+
+    const area = signedArea(points);
+
+    if (partIndex === 0) {
+      // Outer ring must be clockwise (signedArea < 0) per MVT convention
+      if (area > 0) {
+        issues.push({
+          code: 'WRONG_WINDING',
+          message: `Outer ring has counter-clockwise winding (area=${area}); expected clockwise (negative area) per MVT convention.`,
+          partIndex,
+        });
+      }
+    } else {
+      // Hole rings must be counter-clockwise (signedArea > 0) per MVT convention
+      if (area < 0) {
+        issues.push({
+          code: 'WRONG_WINDING',
+          message: `Hole ring ${partIndex} has clockwise winding (area=${area}); expected counter-clockwise (positive area) per MVT convention.`,
+          partIndex,
+        });
+      }
+    }
+  }
+
+  return issues;
+}
+
+// ─── Hole containment ─────────────────────────────────────────────────────────
+
+/**
+ * Returns a `HOLE_OUTSIDE_SHELL` issue for every hole ring that has at least one
+ * vertex lying outside the outer ring (ring index 0).
+ *
+ * Uses the ray-casting (point-in-polygon) algorithm: for each hole vertex, cast
+ * a horizontal ray to the right and count intersections with the outer ring edges.
+ * An odd count means inside; even count means outside.
+ *
+ * Vertices exactly on the outer ring boundary are considered valid (inside).
+ *
+ * Only applies to Polygon features (`feature.type === 3`) with at least 2 rings.
+ *
+ * @param feature - The decoded MVT feature to inspect.
+ */
+export function findHoleContainmentIssues(
+  feature: VectorTileFeature,
+): readonly GeometryIssue[] {
+  if (feature.type !== 3) return [];
+
+  const parts = getFeatureParts(feature);
+  if (parts.length < 2) return [];
+
+  const issues: GeometryIssue[] = [];
+  const outerRing = parts[0]!;
+
+  for (let partIndex = 1; partIndex < parts.length; partIndex += 1) {
+    const holeRing = parts[partIndex]!;
+    let outsideCount = 0;
+
+    for (let vi = 0; vi < holeRing.length; vi += 1) {
+      const vertex = holeRing[vi]!;
+      if (!pointInPolygon(vertex, outerRing)) {
+        outsideCount += 1;
+      }
+    }
+
+    if (outsideCount > 0) {
       issues.push({
-        code: 'ZERO_AREA_RING',
-        message: 'Polygon ring has zero signed area.',
+        code: 'HOLE_OUTSIDE_SHELL',
+        message: `Hole ring ${partIndex} has ${outsideCount} vertex(es) outside the outer ring.`,
         partIndex,
       });
     }
   }
 
   return issues;
+}
+
+/**
+ * Determines whether a point lies inside or on the boundary of a polygon ring
+ * using the ray-casting algorithm.
+ *
+ * Points exactly on an edge or vertex of the ring are considered **inside**.
+ *
+ * @param point - The point to test.
+ * @param ring  - The polygon ring (array of vertices, may or may not be closed).
+ * @returns `true` if the point is inside or on the boundary of the ring.
+ */
+function pointInPolygon(point: Point, ring: readonly Point[]): boolean {
+  const { x, y } = point;
+  let inside = false;
+  const n = ring.length;
+
+  for (let i = 0, j = n - 1; i < n; j = i, i += 1) {
+    const xi = ring[i]!.x;
+    const yi = ring[i]!.y;
+    const xj = ring[j]!.x;
+    const yj = ring[j]!.y;
+
+    // Check if point is exactly on this edge segment
+    if (isPointOnSegment(x, y, xi, yi, xj, yj)) return true;
+
+    // Ray-casting: count crossings of a horizontal ray cast to the right
+    if (yi > y !== yj > y) {
+      const intersectX = xj + ((y - yj) * (xi - xj)) / (yi - yj);
+      if (x < intersectX) {
+        inside = !inside;
+      }
+    }
+  }
+
+  return inside;
+}
+
+/**
+ * Returns true if point (px, py) lies on segment (x1, y1)→(x2, y2).
+ * Uses exact integer cross-product for collinearity and AABB for containment.
+ */
+function isPointOnSegment(
+  px: number,
+  py: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): boolean {
+  // Cross product for collinearity
+  const cross = (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1);
+  if (cross !== 0) return false;
+
+  // AABB containment
+  return (
+    px >= Math.min(x1, x2) &&
+    px <= Math.max(x1, x2) &&
+    py >= Math.min(y1, y2) &&
+    py <= Math.max(y1, y2)
+  );
 }
 
 // ─── Self-intersection ────────────────────────────────────────────────────────
