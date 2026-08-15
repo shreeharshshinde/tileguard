@@ -1,3 +1,22 @@
+/**
+ * Rule: `style/sources-present`
+ *
+ * Validates that the style includes a top-level `sources` object.
+ *
+ * @remarks
+ * The `sources` object is a required structural element of the MapLibre
+ * style specification. It defines where map data comes from (vector tile
+ * endpoints, raster URLs, GeoJSON data, etc.).
+ *
+ * A missing `sources` object means no layer can render any data. This
+ * typically indicates:
+ * - An incomplete style template
+ * - A file that is valid JSON but not a valid style specification
+ * - Accidental deletion during style editing
+ *
+ * @see {@link layersPresentRule} — validates the `layers` array exists
+ * @see {@link knownSourceRule} — validates layers reference declared sources
+ */
 import type { Rule } from '@tileguard/core';
 import { getStyleObject, isRecord, STYLE_ARTIFACT_TYPE } from '../types.js';
 

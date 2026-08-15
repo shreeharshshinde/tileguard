@@ -1,3 +1,24 @@
+/**
+ * Rule: `style/known-source`
+ *
+ * Validates that layer source references point to declared sources.
+ *
+ * @remarks
+ * Every layer in a MapLibre style that renders data must reference a source
+ * declared in the top-level `sources` object. A dangling source reference
+ * causes the layer to silently render nothing — a common and hard-to-debug
+ * issue in style development.
+ *
+ * Common causes:
+ * - Typos in the source name (e.g., "openmaptile" vs "openmaptiles")
+ * - Renaming a source without updating all layer references
+ * - Copy-pasting layers from another style with different source names
+ *
+ * The rule reports the affected layer ID, the unknown source name, and
+ * the list of available source IDs for easy correction.
+ *
+ * @see {@link sourcesPresentRule} — ensures the `sources` object exists
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getLayerId,
