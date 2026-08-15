@@ -1,3 +1,24 @@
+/**
+ * Rule: `style/unique-layer-id`
+ *
+ * Validates that all layer IDs in the style are unique.
+ *
+ * @remarks
+ * Duplicate layer IDs cause undefined behavior in map renderers:
+ *
+ * - `map.getLayer(id)` returns only the first match
+ * - `map.setPaintProperty(id, ...)` modifies only the first match
+ * - Style tooling may merge or overwrite duplicate layers during processing
+ * - The rendered result depends on implementation-specific load order
+ *
+ * Duplicates typically arise from copy-paste errors during style editing or
+ * incorrect style merging tools.
+ *
+ * The rule reports each duplicate occurrence with the index of both the
+ * first and duplicate layer for easy identification.
+ *
+ * @see {@link layerIdRequiredRule} — validates IDs are present
+ */
 import type { Rule } from '@tileguard/core';
 import {
   getLayerId,

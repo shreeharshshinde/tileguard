@@ -1,3 +1,23 @@
+/**
+ * Rule: `style/layer-id-required`
+ *
+ * Validates that every style layer declares a non-empty `id`.
+ *
+ * @remarks
+ * Layer IDs are the primary identifier for layers in the style specification.
+ * They are used by:
+ *
+ * - Map SDKs for programmatic layer manipulation (`map.setLayoutProperty(id, ...)`)
+ * - Style editors (Maputnik, MapLibre Studio) for layer selection
+ * - TileGuard itself for diagnostic location reporting
+ * - The `style/unique-layer-id` rule for uniqueness validation
+ *
+ * A missing or empty ID makes the layer unreferenceable and typically
+ * indicates a malformed style that will be rejected by MapLibre GL JS.
+ *
+ * @see {@link uniqueLayerIdRule} — validates IDs are unique
+ * @see {@link layersPresentRule} — validates the layers array exists
+ */
 import type { Rule } from '@tileguard/core';
 import { getStyleObject, isRecord, STYLE_ARTIFACT_TYPE } from '../types.js';
 

@@ -1,3 +1,22 @@
+/**
+ * Rule: `style/layers-present`
+ *
+ * Validates that the style includes a top-level `layers` array.
+ *
+ * @remarks
+ * The `layers` array is a required structural element of the MapLibre
+ * style specification. It defines the visual rendering stack — which data
+ * to show, how to style it, and in what order.
+ *
+ * A missing `layers` array means the map renders an empty canvas. This
+ * typically indicates:
+ * - An incomplete style template
+ * - A file that is valid JSON but not a valid style specification
+ * - A sources-only configuration file mistakenly used as a full style
+ *
+ * @see {@link sourcesPresentRule} — validates the `sources` object exists
+ * @see {@link layerIdRequiredRule} — validates layers have IDs
+ */
 import type { Rule } from '@tileguard/core';
 import { getStyleObject, STYLE_ARTIFACT_TYPE } from '../types.js';
 
