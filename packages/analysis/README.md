@@ -1,8 +1,12 @@
 # @tileguard/analysis
 
-Comparison and regression analysis engine for TileGuard. Compares vector tile snapshots, identifies structural changes, matches features across versions, and ranks regression candidates by confidence.
+**Tile comparison and regression detection engine for TileGuard.**
 
-> **Package boundary:** Depends only on `@tileguard/core`. Zero browser, DOM, React, or UI dependencies. Consumed by both `@tileguard/cli` and `@tileguard/inspector`.
+[![npm](https://img.shields.io/npm/v/@tileguard/analysis)](https://www.npmjs.com/package/@tileguard/analysis)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+
+Compare two vector tile versions and identify regressions. Feature-level matching, geometry differencing, property comparison, and confidence-scored regression ranking — all in a pure Node.js library with zero browser or DOM dependencies.
 
 ---
 
@@ -23,182 +27,100 @@ import {
   createSnapshotFactory,
 } from '@tileguard/analysis';
 
-// 1. Create snapshots from raw tile data
+// 1. Create snapshots from decoded tile data
 const factory = createSnapshotFactory();
-const before = factory.create({ layers: rawLayersBefore, diagnostics: [] });
-const after = factory.create({ layers: rawLayersAfter, diagnostics: [] });
+const before = factory.createSnapshot('./v1.pbf', layersBefore, diagnosticsBefore);
+const after = factory.createSnapshot('./v2.pbf', layersAfter, diagnosticsAfter);
 
-// 2. Compare the two snapshots
-const comparison = createComparisonEngine();
-const diff = comparison.compare(before, after);
+// 2. Compare
+const comparison = createComparisonEngine().compare(before, after);
+
+console.log(`${comparison.summary.addedFeatures} added`);
+console.log(`${comparison.summary.removedFeatures} removed`);
+console.log(`${comparison.summary.modifiedFeatures} modified`);
 
 // 3. Detect regressions
-const regression = createRegressionEngine();
-const analysis = regression.analyze(diff);
+const regression = createRegressionEngine().analyze(comparison);
 
-console.log(analysis.summary.totalCandidates); // number of regression candidates
-console.log(analysis.candidates[0]?.confidence); // 0.0 – 1.0
+for (const candidate of regression.candidates.slice(0, 5)) {
+  console.log(`  ${(candidate.confidence * 100).toFixed(0)}% — ${candidate.kind}: ${candidate.summary}`);
+}
+```
+
+**Output:**
+
+```
+12 added
+3 removed
+47 modified
+  92% — geometry: Building footprint area reduced by 73% in layer "buildings"
+  85% — attribute: Property "class" changed from "primary" to "tertiary" on 4 road features
+  71% — mixed: Feature moved 200+ tile units with property changes
 ```
 
 ---
 
-## Architecture
-
-The analysis pipeline flows in one direction:
+## Pipeline
 
 ```
 Raw Tile Data ──► SnapshotFactory ──► TileSnapshot
-                                              │
-                        ┌─────────────────────┘
-                        ▼
-              ComparisonEngine.compare(A, B)
-                        │
-                        ▼ TileComparison
-              RegressionEngine.analyze(comparison)
-                        │
-                        ▼ RegressionAnalysis
-              (ranked candidates with confidence)
-```
-
-### Core Components
-
-| Component | Responsibility |
-|:----------|:---------------|
-| `SnapshotFactory` | Converts raw layer/feature data into immutable `TileSnapshot` objects with computed statistics |
-| `ComparisonEngine` | Compares two snapshots — produces layer diffs, feature matches, geometry diffs, property diffs |
-| `FeatureMatcher` | Matches features between snapshots using a 4-priority cascade (ID → stable properties → geometry similarity → property similarity) |
-| `GeometryDiffer` | Computes geometry-level differences (bounding box delta, centroid shift, vertex changes) |
-| `PropertyDiffer` | Computes property-level differences (added/removed/changed keys with values) |
-| `RegressionEngine` | Analyzes a `TileComparison` to rank regression candidates by confidence |
-| `ConfidenceScorer` | Produces normalized confidence scores ∈ [0, 1] from weighted evidence signals |
-| `EvidenceBuilder` | Builds structured evidence (reasons, classification, recommendations) for each candidate |
-
----
-
-## API Reference
-
-### Factories
-
-All components use factory functions (no `new`, no classes):
-
-```typescript
-createSnapshotFactory(): SnapshotFactory
-createComparisonEngine(): ComparisonEngine
-createRegressionEngine(options?: RegressionEngineOptions): RegressionEngine
-createFeatureMatcher(): FeatureMatcher
-createGeometryDiffer(): GeometryDiffer
-createPropertyDiffer(): PropertyDiffer
-createConfidenceScorer(weights?: ConfidenceWeights): ConfidenceScorer
-createEvidenceBuilder(): EvidenceBuilder
-```
-
-### Key Types
-
-```typescript
-// Snapshots
-interface TileSnapshot {
-  layers: readonly LayerSnapshot[];
-  statistics: TileStatistics;
-  diagnostics: readonly Diagnostic[];
-}
-
-// Comparison output
-interface TileComparison {
-  layers: readonly LayerComparison[];
-  features: readonly FeatureComparison[];
-  statistics: StatisticsDelta;
-  summary: ComparisonSummary;
-  diagnostics: DiagnosticComparison;
-}
-
-// Regression output
-interface RegressionAnalysis {
-  candidates: readonly RegressionCandidate[];
-  summary: RegressionSummary;
-}
-
-interface RegressionCandidate {
-  feature: FeatureComparison;
-  confidence: number; // 0.0 – 1.0
-  kind: RegressionKind; // 'geometry' | 'attribute' | 'diagnostic' | 'mixed'
-  evidence: RegressionEvidence;
-  recommendations: readonly RegressionRecommendation[];
-}
-```
-
-### Feature Matching Strategy
-
-The `FeatureMatcher` uses a 4-priority greedy cascade:
-
-1. **ID match** — definitive if both features have matching IDs
-2. **Stable property match** — known stable identifiers (`osm_id`, `building_id`, `gid`, `fid`, etc.)
-3. **Geometry similarity** — bounding box overlap + centroid proximity + type agreement (threshold: 0.7)
-4. **Property similarity** — Jaccard index weighted by matching values (threshold: 0.5)
-
-Unmatched features are classified as `added` (in B only) or `removed` (in A only).
-
-### Confidence Scoring
-
-Confidence is computed from weighted evidence signals:
-
-| Signal | Default Weight | Description |
-|:-------|:--------------|:------------|
-| Geometry changes | 0.35 | Area change, centroid shift, vertex delta |
-| Property changes | 0.25 | High-signal property modifications |
-| Diagnostic changes | 0.25 | New diagnostics appearing on the feature |
-| Feature match quality | 0.15 | How strongly the feature was matched |
-
-Weights are configurable via `ConfidenceWeights`.
-
----
-
-## Configuration
-
-```typescript
-interface RegressionEngineOptions {
-  /** Custom confidence weights (default: balanced across all signals) */
-  weights?: Partial<ConfidenceWeights>;
-  /** Minimum confidence threshold to include a candidate (default: 0.3) */
-  minConfidence?: number;
-}
+                                          │
+TileSnapshot A + B ──► ComparisonEngine ──► TileComparison
+                                                │
+TileComparison ──► RegressionEngine ──► RegressionAnalysis
+                                          │
+                                     Ranked candidates
+                                     with confidence scores
 ```
 
 ---
 
-## Testing
+## Engines
 
-```bash
-# Run analysis tests
-pnpm --filter @tileguard/analysis test
+| Factory | Creates | Purpose |
+|:--------|:--------|:--------|
+| `createSnapshotFactory()` | `SnapshotFactory` | Create immutable tile snapshots from raw data |
+| `createComparisonEngine()` | `ComparisonEngine` | Feature-level comparison between two snapshots |
+| `createRegressionEngine(opts?)` | `RegressionEngine` | Confidence-scored regression ranking |
+| `createFeatureMatcher()` | `FeatureMatcher` | 4-priority feature matching (ID → stable props → geometry → Jaccard) |
+| `createGeometryDiffer()` | `GeometryDiffer` | Area, centroid, and vertex-level geometry diffs |
+| `createPropertyDiffer()` | `PropertyDiffer` | Added/removed/changed property detection |
+| `createConfidenceScorer()` | `ConfidenceScorer` | Weighted confidence scoring |
+| `createEvidenceBuilder()` | `EvidenceBuilder` | Structured evidence collection |
 
-# Watch mode
-pnpm --filter @tileguard/analysis test:watch
-```
-
-Tests verify:
-- Snapshot creation from raw data
-- Feature matching across all 4 priority levels
-- Comparison engine correctness (layer diffs, feature correspondence)
-- Regression engine scoring and ranking
-- Parity with inspector's internal analysis logic
+All engines are stateless — create once, reuse across multiple comparisons.
 
 ---
 
-## Dependencies
+## When to use this package
 
-| Dependency | Purpose |
-|:-----------|:--------|
-| `@tileguard/core` | `Diagnostic` type used in snapshots and comparisons |
-
-**Zero external runtime dependencies.**
+- **Tile pipeline CI**: Compare output tiles before/after a pipeline change to detect regressions
+- **Version diffing**: Understand what changed between two tile versions
+- **Quality dashboards**: Feed comparison data into engineering reports via `@tileguard/reporters`
+- **Custom analysis tools**: Build on the comparison/regression primitives
 
 ---
 
-## Related Packages
+## Part of the TileGuard ecosystem
 
-| Package | Relationship |
-|:--------|:-------------|
-| `@tileguard/core` | Provides `Diagnostic` type |
-| `@tileguard/cli` | Consumer — powers `compare` and `analyze` commands |
-| `@tileguard/inspector` | Consumer — powers visual comparison and regression UI |
-| `@tileguard/reporters` | Consumer — report engine uses analysis results to generate reports |
+| Package | Purpose |
+|:--------|:--------|
+| [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) | CLI — `tileguard compare`, `tileguard analyze` |
+| [`@tileguard/core`](https://www.npmjs.com/package/@tileguard/core) | Framework contracts |
+| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | Vector tile validation rules |
+| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Generates reports from analysis data |
+| **@tileguard/analysis** | Comparison + regression (this package) |
+
+---
+
+## Documentation
+
+- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api)
+- [ADR: Shared Analysis Engine](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture/adr/010-shared-analysis-engine.md)
+- [Repository](https://github.com/shreeharshshinde/tileguard)
+
+---
+
+## License
+
+[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)

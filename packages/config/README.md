@@ -1,8 +1,25 @@
 # @tileguard/config
 
-Configuration file discovery, loading, schema validation, and error reporting for TileGuard. This package handles everything that happens *before* the engine runs: finding the config file, parsing it, and validating its shape.
+**Configuration file discovery, loading, and validation for TileGuard.**
 
-> **Package boundary:** Depends only on `@tileguard/core` (for the `TileGuardConfig` type) and `jiti` (for TypeScript/ESM config loading). Does not depend on domain packages or reporters.
+[![npm](https://img.shields.io/npm/v/@tileguard/config)](https://www.npmjs.com/package/@tileguard/config)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+
+Finds, loads, and validates `tileguard.config.ts` files. Handles TypeScript, ESM, CommonJS, and JSON config formats with clear, actionable error messages when something is wrong.
+
+---
+
+## Do I need this package?
+
+| Use case | Install this? |
+|:---------|:-------------|
+| Using the CLI (`npx tileguard check`) | **No** — the CLI handles config automatically |
+| Building a tool that loads TileGuard config | **Yes** |
+| Writing tests that need config loading | **Yes** |
+| Using `createEngine()` with hardcoded config | **No** — pass config directly to the engine |
+
+> Most users never install this package directly. It's a dependency of `@tileguard/cli`.
 
 ---
 
@@ -19,178 +36,93 @@ npm install @tileguard/config @tileguard/core
 ```typescript
 import { loadConfig } from '@tileguard/config';
 
-// Discover, load, and validate config — the full pipeline
-const { config, configPath, warnings } = await loadConfig({
-  cwd: process.cwd(),
-});
+const { config, configPath, warnings } = await loadConfig();
 
-console.log(configPath);   // '/path/to/tileguard.config.ts' or undefined
-console.log(config.rules); // { 'tile/required-layers': 'error', ... }
-console.log(warnings);     // e.g., [{ key: 'unknownKey', severity: 'warning', ... }]
+console.log(configPath);    // '/project/tileguard.config.ts' or undefined
+console.log(config.rules);  // { 'tile/required-layers': 'error', ... }
+console.log(warnings);      // [] or [{ path: '...', message: '...' }]
 ```
 
 ---
 
-## How It Works
+## What it does
 
 ```
 Working directory
       │
       ▼
-┌─────────────────┐
-│   findConfigFile │  Walk upward searching for config files
-└─────────────────┘
-      │ path (or undefined)
+  findConfigFile()    ← walks upward looking for tileguard.config.{ts,js,mjs,json}
+      │
       ▼
-┌─────────────────┐
-│  loadConfigFile  │  Parse .json / dynamically import .ts/.js/.mjs via jiti
-└─────────────────┘
-      │ raw object
+  loadConfigFile()    ← dynamically imports .ts/.js/.mjs or parses .json
+      │
       ▼
-┌─────────────────┐
-│  validateConfig  │  Check shape against TileGuardConfig schema
-└─────────────────┘
-      │ validated config + warnings
+  validateConfig()    ← checks shape against TileGuardConfig schema
+      │
       ▼
-   LoadConfigResult
+  LoadConfigResult    ← { config, configPath, warnings }
 ```
-
-### File Discovery
-
-Searches **upward** from the starting directory. At each level, checks all supported filenames before moving to the parent:
-
-| Priority | Filename |
-|:---------|:---------|
-| 1 | `tileguard.config.ts` |
-| 2 | `tileguard.config.js` |
-| 3 | `tileguard.config.mjs` |
-| 4 | `tileguard.config.json` |
-
-**Directory proximity beats format priority.** A `.json` file in the project root is found before a `.ts` file two directories above.
-
-### Schema Validation
-
-The validator is **non-short-circuiting** — it collects all issues in a single pass rather than stopping at the first error. This gives users a complete picture of what needs fixing.
-
-Validated fields:
-- `plugins` — must not be specified in JSON configs (code imports not possible)
-- `rules` — severity strings (`'error'`, `'warning'`, `'info'`, `'off'`) or `[severity, options]` tuples
-- `reporter` — string ID or `[id, options]` tuple
-- `overrides` — file glob patterns with rule override maps
-- Unknown top-level keys generate warnings (not errors)
 
 ---
 
-## API Reference
+## Error handling
 
-### `loadConfig(options?): Promise<LoadConfigResult>`
-
-Primary entry point. Discovers, loads, and validates configuration.
+Three specific error classes for precise error handling:
 
 ```typescript
-interface LoadConfigOptions {
-  cwd?: string;        // Starting directory (default: process.cwd())
-  configPath?: string; // Explicit path — skips discovery
-}
+import { loadConfig, ConfigNotFoundError, ConfigLoadError, ConfigValidationError } from '@tileguard/config';
 
-interface LoadConfigResult {
-  config: TileGuardConfig;           // Validated configuration
-  configPath: string | undefined;    // Resolved file path (undefined if no file found)
-  warnings: readonly ValidationIssue[]; // Warning-severity issues
+try {
+  const { config } = await loadConfig({ configPath: './my-config.ts' });
+} catch (err) {
+  if (err instanceof ConfigNotFoundError) {
+    // Explicit --config path doesn't exist
+  } else if (err instanceof ConfigLoadError) {
+    // File exists but can't produce a config (syntax error, no default export)
+  } else if (err instanceof ConfigValidationError) {
+    // Loaded object has invalid shape
+    console.log(err.issues); // [{ path: 'rules.x', message: '...' }]
+  }
 }
 ```
 
-When no config file is found and no explicit path is given, returns an empty config (engine uses all defaults).
+---
 
-### `findConfigFile(cwd, options?): string | undefined`
+## API
 
-Lower-level discovery function. Returns the absolute path to the nearest config file, or `undefined`.
-
-```typescript
-findConfigFile('/path/to/project', { stopAt: '/path/to' });
-```
-
-### `validateConfig(raw, options?): ValidateConfigResult`
-
-Lower-level validation. Validates a raw object against the config schema.
-
-```typescript
-interface ValidateConfigResult {
-  config: TileGuardConfig;
-  warnings: readonly ValidationIssue[];
-}
-```
-
-Throws `ConfigValidationError` if there are error-severity issues.
-
-### `isValidRuleConfig(value): boolean`
-
-Utility to check if a value is a valid rule configuration entry.
-
-### Error Classes
-
-| Error | When |
-|:------|:-----|
-| `ConfigNotFoundError` | Explicit `--config` path doesn't exist |
-| `ConfigLoadError` | File exists but can't be parsed/imported |
-| `ConfigValidationError` | Object loaded but has schema violations |
-
-All errors include human-readable messages with visual prefixes (`✗` for errors, `⚠` for warnings).
-
-### Constants
-
-```typescript
-import { CONFIG_FILENAMES } from '@tileguard/config';
-// ['tileguard.config.ts', 'tileguard.config.js', 'tileguard.config.mjs', 'tileguard.config.json']
-```
+| Export | Purpose |
+|:-------|:--------|
+| `loadConfig(options?)` | Primary API — discover, load, validate in one call |
+| `findConfigFile(cwd)` | Lower-level: find config file path |
+| `validateConfig(obj)` | Lower-level: validate a loaded object |
+| `CONFIG_FILENAMES` | Array of recognized config file names |
+| `ConfigNotFoundError` | Explicit path doesn't exist |
+| `ConfigLoadError` | File exists but can't produce config |
+| `ConfigValidationError` | Shape violates the schema |
 
 ---
 
-## Common Mistakes
+## Part of the TileGuard ecosystem
 
-| Mistake | What happens |
-|:--------|:-------------|
-| Specifying `plugins` in `.json` config | Error — JSON cannot import code modules |
-| Missing `export default` in `.ts`/`.js` | `ConfigLoadError` — named exports are not resolved |
-| Typo in top-level key (e.g., `plguins`) | Warning — unknown key detected, plugins won't load |
-| Invalid severity string (e.g., `'warn'`) | Error — must be `'error'`, `'warning'`, `'info'`, or `'off'` |
-
----
-
-## Testing
-
-```bash
-# Run config tests
-pnpm --filter @tileguard/config test
-
-# Watch mode
-pnpm --filter @tileguard/config test:watch
-```
-
-**103 tests** across 5 suites:
-
-| Suite | Covers |
-|:------|:-------|
-| `errors.test.ts` | Error class construction, cause chaining, message formatting |
-| `finder.test.ts` | Upward traversal, priority ordering, stopAt boundary, edge cases |
-| `loader.test.ts` | JSON parsing, jiti TypeScript loading, missing default export, malformed files |
-| `validator.test.ts` | Schema validation for all fields, non-short-circuiting, warnings |
-| `integration.test.ts` | Full pipeline (discover → load → validate) against physical fixtures |
+| Package | Purpose |
+|:--------|:--------|
+| [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) | CLI (uses this package internally) |
+| [`@tileguard/core`](https://www.npmjs.com/package/@tileguard/core) | Framework contracts |
+| **@tileguard/config** | Config loading (this package) |
+| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | Vector tile validation rules |
+| [`@tileguard/style-rules`](https://www.npmjs.com/package/@tileguard/style-rules) | MapLibre style lint rules |
+| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON, Markdown, HTML reports |
 
 ---
 
-## Dependencies
+## Documentation
 
-| Dependency | Purpose |
-|:-----------|:--------|
-| `@tileguard/core` | `TileGuardConfig` type contract |
-| `jiti` | Runtime TypeScript/ESM module loading without compilation |
+- [Configuration Guide](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture/06-configuration.md)
+- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api)
+- [Repository](https://github.com/shreeharshshinde/tileguard)
 
 ---
 
-## Related Packages
+## License
 
-| Package | Relationship |
-|:--------|:-------------|
-| `@tileguard/core` | Defines the `TileGuardConfig` schema this package validates against |
-| `@tileguard/cli` | Primary consumer — calls `loadConfig()` before engine instantiation |
+[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)

@@ -1,8 +1,23 @@
 # @tileguard/core
 
-The framework contracts package for TileGuard — the quality analysis framework for geospatial software.
+**Framework contracts for the TileGuard quality analysis engine.**
 
-This package defines every interface and type that TileGuard's runtime is built on. Domain packages (`@tileguard/tile-rules`, `@tileguard/style-rules`) depend on `@tileguard/core`. Core itself has **zero runtime dependencies**.
+[![npm](https://img.shields.io/npm/v/@tileguard/core)](https://www.npmjs.com/package/@tileguard/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+
+This package defines every interface and type that TileGuard's runtime is built on: Diagnostic, Artifact, Rule, Plugin, Reporter, Engine. It has **zero runtime dependencies** and serves as the stable kernel that all other TileGuard packages depend on.
+
+---
+
+## When to install this package
+
+- **You're writing a custom rule** and need the `Rule`, `RuleContext`, and `DiagnosticDescriptor` types.
+- **You're building a custom reporter** and need the `Reporter` and `Diagnostic` interfaces.
+- **You're using TileGuard programmatically** via `createEngine()`.
+- **You're building a tool** that consumes TileGuard diagnostics.
+
+> If you just want to validate tiles or styles from the CLI, install [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) instead — it includes everything.
 
 ---
 
@@ -14,702 +29,111 @@ npm install @tileguard/core
 
 ---
 
-## Contents
-
-- [Architecture in one diagram](#architecture-in-one-diagram)
-- [Diagnostic model](#diagnostic-model)
-- [Artifact model](#artifact-model)
-- [Rule system](#rule-system)
-- [Plugin system](#plugin-system)
-- [Configuration system](#configuration-system)
-- [Reporter system](#reporter-system)
-- [Engine](#engine)
-- [Complete example](#complete-example)
-- [Public API reference](#public-api-reference)
-
----
-
-## Architecture in one diagram
-<!-- TODO: INSERT DIAGRAM 1: Monorepo Package Dependencies -->
-
-**Image Description / Generation Prompt:** A UML Component Diagram representing the monorepo package dependency structure of TileGuard. Draw the following components as boxes: `tileguard (cli)` (at the top), `@tileguard/config` (middle-left), `@tileguard/core` (middle-right), `@tileguard/reporters` (middle-bottom), `@tileguard/tile-rules` (bottom-left), `@tileguard/style-rules` (bottom-right), and `@tileguard/shared` (bottom-middle). Draw solid arrows pointing from `tileguard (cli)` to `@tileguard/config`, `@tileguard/core`, `@tileguard/reporters`, `@tileguard/tile-rules`, and `@tileguard/style-rules`. Draw solid arrows pointing from `@tileguard/tile-rules` and `@tileguard/style-rules` to `@tileguard/core` and `@tileguard/shared`. Draw arrows pointing from `@tileguard/config` and `@tileguard/reporters` to `@tileguard/core`. Draw an arrow pointing from `@tileguard/shared` to `@tileguard/core`. Mark the arrows indicating that imports flow strictly inward, showing `@tileguard/core` as the independent kernel at the core of the dependency graph.
-
-
-```
-  Source string (file path, URL, …)
-         │
-         ▼
-  ┌──────────────────────┐
-  │   ArtifactProvider   │  ── canHandle() → load() → Artifact
-  └──────────────────────┘
-         │
-         ▼  Artifact<T, C>
-  ┌──────────────────────┐
-  │   Rule Engine        │  ── routes by artifact.type, runs create(context)
-  └──────────────────────┘
-         │
-         ▼  Diagnostic[]
-  ┌──────────────────────┐
-  │   Reporter           │  ── report(diagnostics, context)
-  └──────────────────────┘
-         │
-         ▼
-    Terminal / CI / IDE
-```
-
-Everything flows through `Diagnostic`. Rules produce them. The engine collects them. Reporters consume them. Nothing else produces formatted output.
-
----
-
-## Diagnostic model
-
-A `Diagnostic` is a structured, immutable record describing one validation finding. It is the universal currency between rules and reporters.
+## Quick Start
 
 ```typescript
-interface Diagnostic {
-  ruleId:     string;          // e.g. "tile/required-layers"
-  severity:   Severity;        // "error" | "warning" | "info"
-  message:    string;          // human-readable description
-  artifact:   ArtifactRef;     // lightweight source identifier
-  location?:  Location;        // where in the artifact
-  suggestion?: string;         // actionable fix advice
-  docsUrl?:   string;          // link to rule documentation
-  data?:      Record<string, unknown>;  // rule-specific structured data
+import { createEngine } from '@tileguard/core';
+import { tilePlugin } from '@tileguard/tile-rules';
+import { stylePlugin } from '@tileguard/style-rules';
+
+const engine = createEngine({
+  plugins: [tilePlugin, stylePlugin],
+  rules: {
+    'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
+    'style/known-source': 'error',
+  },
+});
+
+const result = await engine.run(['./tile.pbf', './style.json']);
+
+if (!result.summary.pass) {
+  for (const d of result.diagnostics) {
+    console.log(`[${d.severity}] ${d.ruleId}: ${d.message}`);
+  }
 }
-```
-
-### Severity
-
-| Value | Meaning | Exit code |
-|:------|:--------|:----------|
-| `'error'` | Defect. Run fails. | 1 |
-| `'warning'` | Potential problem. Run passes. | 0 |
-| `'info'` | Observation. Never fails the run. | 0 |
-
-### ArtifactRef
-
-A lightweight, serializable identifier for an artifact. Embedded in every diagnostic so diagnostics remain JSON-safe without holding a reference to the full decoded artifact.
-
-```typescript
-interface ArtifactRef {
-  type:    string;   // e.g. "VectorTile"
-  source:  string;   // e.g. "./tiles/14/8741.pbf"
-  label?:  string;   // optional display name
-}
-```
-
-### Location
-
-A structured pointer into a specific position within an artifact. All fields are optional; include whichever subset is meaningful.
-
-```typescript
-interface Location {
-  layer?:        string;   // vector tile layer name
-  featureIndex?: number;   // 0-indexed feature position within a layer
-  partIndex?:    number;   // 0-indexed geometry part index
-  jsonPath?:     string;   // style spec path, e.g. "layers[3].paint.fill-color"
-  line?:         number;   // source file line (1-indexed)
-  column?:       number;   // source file column (1-indexed)
-  region?:       { x: number; y: number; width: number; height: number };
-}
-```
-
-### DiagnosticDescriptor
-
-The subset of `Diagnostic` that a rule supplies when calling `context.report()`. The engine fills in `ruleId`, `severity`, `artifact`, and `docsUrl` automatically.
-
-```typescript
-interface DiagnosticDescriptor {
-  message:     string;
-  location?:   Location;
-  suggestion?: string;
-  data?:       Record<string, unknown>;
-}
+// Output:
+// [error] tile/required-layers: Required layer "roads" is not present in the tile.
+// [error] style/known-source: Layer "buildings" references unknown source "composite".
 ```
 
 ---
 
-## Artifact model
+## What's in this package
 
-An `Artifact` is a decoded, in-memory representation of something that rules can validate. It is created by an `ArtifactProvider` and consumed by the rule engine.
-
-```typescript
-interface Artifact<T extends string = string, C = unknown> {
-  type:       T;               // discriminant, e.g. "VectorTile"
-  ref:        ArtifactRef;     // serializable source identifier
-  content:    C;               // fully decoded, read-only content
-  metadata?:  Record<string, unknown>;  // provider-supplied extra info
-}
-```
-
-Core uses `Artifact<string, unknown>`. Domain packages narrow the generics:
-
-```typescript
-// In @tileguard/tile-rules:
-type VectorTileArtifact = Artifact<'VectorTile', VectorTileContent>;
-```
-
-### ArtifactProvider
-<!-- TODO: INSERT DIAGRAM 4: Dynamic Config Loader Evaluation -->
-
-**Image Description / Generation Prompt:** A UML Activity Diagram illustrating the dynamic file format evaluation and loading execution paths in `loader.ts`. The process accepts an absolute file path.
-1. Branch: Check the file extension.
-2. If the extension is `.json`:
-   - Read the file using `fs.readFileSync`.
-   - Parse the contents using `JSON.parse`.
-   - Validate that the parsed value is a plain object.
-   - If any parsing/reading fails, catch the error, wrap it in a `ConfigLoadError` using ES2022 cause chaining, and throw.
-3. If the extension is `.ts`, `.js`, or `.mjs`:
-   - Load the file dynamically using `jiti`'s runtime compiler (`jiti.import`).
-   - Verify that the module namespace has a `default` property (`'default' in module`).
-   - Extract the default export value as the configuration object.
-   - Validate that the value is a plain object.
-   - If loading or validation fails, catch the error, wrap it in a `ConfigLoadError` with ES2022 cause chaining, and throw.
-4. Output the loaded configuration object.
-
-
-An `ArtifactProvider` encapsulates the full load pipeline: source detection → byte fetching → format detection → decoding → `Artifact` construction.
-
-```typescript
-interface ArtifactProvider {
-  id:             string;
-  artifactTypes:  readonly string[];   // types this provider produces
-
-  // Returns true if this provider can load the given source.
-  // Must be fast, synchronous, and conservative (false if unsure).
-  canHandle(source: string): boolean;
-
-  // Loads and fully decodes an artifact from the source.
-  // Must not throw for expected failure modes (file missing, bad format) —
-  // the engine handles those by emitting artifact/load-failed.
-  load(source: string, options?: ProviderOptions): Promise<Artifact>;
-}
-```
+| Export | Purpose |
+|:-------|:--------|
+| `createEngine()` | Creates a configured validation engine |
+| `Diagnostic` | The universal output format — every finding is a Diagnostic |
+| `Rule`, `RuleContext` | Contracts for writing custom rules |
+| `Artifact`, `ArtifactProvider` | Contracts for custom format loaders |
+| `Plugin` | Bundles providers + rules for registration |
+| `Reporter`, `ReporterContext` | Contracts for custom output formatters |
+| `TileGuardConfig` | The user-facing configuration shape |
+| `Engine`, `RunResult`, `RunSummary` | Engine execution contracts |
 
 ---
 
-## Rule system
+## Writing a custom rule
 
-Rules are the primary extension mechanism. Each rule encapsulates exactly one validation concern as a plain object — no base classes, no decorators.
-
-```typescript
-interface Rule<C = unknown> {
-  id:            string;          // "category/rule-name"
-  meta:          RuleMeta;
-  artifactTypes: readonly string[];
-  schema?:       Record<string, unknown>;  // JSON Schema for options validation
-  create(context: RuleContext<C>): void | Promise<void>;
-}
-```
-
-### RuleMeta
-
-```typescript
-interface RuleMeta {
-  description:      string;
-  defaultSeverity:  Severity;
-  docsUrl?:         string;
-  recommended?:     boolean;    // included in "recommended" preset if true
-  hasSuggestions?:  boolean;
-  since?:           string;
-}
-```
-
-### RuleContext
-
-The rule's entire world. Rules must not access anything outside this object.
-
-```typescript
-interface RuleContext<C = unknown> {
-  artifact:  Readonly<Artifact>;
-  options:   Readonly<C> | undefined;
-  report(descriptor: DiagnosticDescriptor): void;
-}
-```
-
-### Writing a rule
+A rule is a plain object — no base classes, no decorators:
 
 ```typescript
 import type { Rule } from '@tileguard/core';
 
 export const myRule: Rule = {
-  id: 'tile/my-check',
+  id: 'custom/my-check',
   meta: {
-    description: 'Ensures the tile has at least one feature.',
-    defaultSeverity: 'error',
-    recommended: true,
-    docsUrl: 'https://tileguard.dev/rules/tile/my-check',
-  },
-  artifactTypes: ['VectorTile'],
-
-  create(context) {
-    const tile = context.artifact.content as { layers: Record<string, unknown> };
-    if (Object.keys(tile.layers).length === 0) {
-      context.report({
-        message: 'The tile contains no layers.',
-        suggestion: 'Ensure your tile generation pipeline produces at least one layer.',
-      });
-    }
-  },
-};
-```
-
-Rules with options:
-
-```typescript
-interface MyOptions { threshold: number }
-
-export const myRule: Rule<MyOptions> = {
-  id: 'tile/feature-count',
-  meta: { description: 'Feature count check', defaultSeverity: 'warning', recommended: true },
-  artifactTypes: ['VectorTile'],
-  schema: {
-    type: 'object',
-    properties: { threshold: { type: 'number' } },
-    required: ['threshold'],
-  },
-
-  create(context) {
-    const threshold = context.options?.threshold ?? 100;
-    // ...validate context.artifact.content against threshold...
-  },
-};
-```
-
-### Rule ID naming convention
-
-| Category | Scope |
-|:---------|:------|
-| `tile/` | Vector tile structure and content |
-| `style/` | MapLibre style specification |
-| `render/` | Visual regression |
-| `artifact/` | Artifact loading (framework-internal) |
-| `engine/` | Engine runtime (framework-internal) |
-| `project/` | Custom project rules |
-
----
-
-## Plugin system
-
-A `Plugin` bundles providers and rules into a named unit that the engine can register.
-
-```typescript
-interface Plugin {
-  id:          string;
-  name?:       string;
-  version?:    string;
-  providers?:  readonly ArtifactProvider[];
-  rules?:      readonly Rule[];
-}
-```
-
-Plugins are the only mechanism for registering providers and rules. The engine does not scan `node_modules` or the file system.
-
-```typescript
-// In @tileguard/tile-rules:
-export const tilePlugin: Plugin = {
-  id: 'tile-rules',
-  name: 'TileGuard Tile Rules',
-  version: '0.2.0',
-  providers: [vectorTileProvider],
-  rules: [requiredLayersRule, coordinateRangeRule, unclosedRingRule, /* … */],
-};
-```
-
----
-
-## Configuration system
-
-### TileGuardConfig
-
-The shape of `tileguard.config.ts`:
-
-```typescript
-interface TileGuardConfig {
-  plugins?:   readonly Plugin[];
-  rules?:     Record<string, RuleConfig>;
-  reporter?:  string | readonly [string, Record<string, unknown>];
-  overrides?: readonly Override[];
-  options?:   GlobalOptions;
-}
-```
-
-### RuleConfig
-
-```typescript
-type RuleConfig =
-  | Severity           // 'error' | 'warning' | 'info'
-  | 'off'
-  | readonly [Severity, unknown];  // [severity, options]
-```
-
-### GlobalOptions
-
-```typescript
-interface GlobalOptions {
-  timeout?:        number;  // HTTP timeout, ms. Default: 30000
-  maxDetails?:     number;  // max diagnostics per rule per artifact. Default: 100
-  maxDiagnostics?: number;  // max total diagnostics per run. Default: 1000
-}
-```
-
-### Configuration resolution
-<!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
-
-**Image Description / Generation Prompt:** An activity flowchart demonstrating the parallel non-short-circuiting configuration schema validation logic in `validator.ts`.
-1. Start with the incoming configuration object.
-2. Check: "Is the root configuration a plain object?"
-   - No: Throw `ConfigValidationError` immediately (fast-fail root check).
-   - Yes: Proceed to run validation sub-checkers.
-3. Perform the following checks concurrently without stopping on failures:
-   - `validatePlugins`: Check that plugins are not defined in JSON config files.
-   - `validateRules`: Verify the syntax of rules, severities, and options shapes.
-   - `validateReporters`: Verify reporter configurations (strings or tuples).
-   - `validateOverrides`: Validate file globs and rule override maps.
-   - `checkUnknownKeys`: Detect extraneous properties and collect warning diagnostics.
-4. Aggregation Step: Accumulate all collected validation errors and warnings.
-5. Decision: "Are there any errors in the accumulated list?"
-   - Yes: Throw a single `ConfigValidationError` containing the complete list of errors and warnings.
-   - No: Return the verified configuration object alongside any advisory warnings.
-
-
-When the engine starts, it resolves configuration through these steps:
-
-1. Collect all rules from all plugins into a flat registry (duplicate IDs throw)
-2. Apply default severities: `recommended: true` rules use `meta.defaultSeverity`; non-recommended rules default to `'off'`
-3. Apply user `rules` overrides on top of defaults
-4. Register all providers in plugin order
-
-The resolved config is represented as `ResolvedConfig`:
-
-```typescript
-interface ResolvedConfig {
-  rules:     ReadonlyMap<string, ResolvedRuleConfig>;
-  providers: readonly ArtifactProvider[];
-  reporter:  Reporter;
-  options:   Required<GlobalOptions>;
-  overrides: readonly ResolvedOverride[];
-}
-```
-
-### Overrides
-
-Path-specific rule overrides for monorepo setups:
-
-```typescript
-// tileguard.config.ts
-export default {
-  plugins: [tilePlugin],
-  rules: {
-    'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
-  },
-  overrides: [
-    {
-      files: ['fixtures/experimental/**'],
-      rules: { 'tile/self-intersection': 'off' },
-    },
-  ],
-};
-```
-
-Override globs support `*`, `**`, and `?`. They are compiled once during
-configuration resolution and evaluated against each source before rule
-dispatch. Matching overrides are applied in declaration order, so later
-entries win. An override can disable a base rule or enable a rule that is
-otherwise off.
-
-`maxDiagnostics` is a hard cap over every diagnostic category, including
-`artifact/*`, `engine/rule-error`, and `engine/max-diagnostics`. The
-truncation notice occupies the final slot in that budget.
-
----
-
-## Reporter system
-
-Reporters transform the collected diagnostics into a specific output format. They are invoked once per run, after all rules have completed and diagnostics are sorted.
-
-```typescript
-interface Reporter {
-  id: string;
-  report(
-    diagnostics: readonly Diagnostic[],
-    context: ReporterContext,
-  ): void | Promise<void>;
-}
-```
-
-### ReporterContext
-
-```typescript
-interface ReporterContext {
-  duration:       number;              // run wall-clock time, ms
-  sources:        readonly string[];   // sources passed to engine.run()
-  ruleCount:      number;              // total rule invocations
-  artifactCount:  number;              // artifacts successfully loaded
-  summary: {
-    errors:   number;
-    warnings: number;
-    infos:    number;
-    pass:     boolean;
-  };
-  config:  Readonly<Record<string, unknown>>;
-}
-```
-
-Reporter implementations live in `@tileguard/reporters`. The core package only defines the contract.
-
----
-
-## Engine
-
-The engine is the core orchestrator. It is created once and can be called multiple times (e.g., in watch mode).
-
-### createEngine
-
-```typescript
-function createEngine(config?: EngineOptions): Engine
-```
-
-Accepts a `TileGuardConfig` (or `EngineOptions` which additionally allows a pre-constructed `Reporter` object). Throws synchronously if configuration is invalid (e.g., duplicate rule IDs).
-
-### Engine interface
-
-```typescript
-interface Engine {
-  run(sources: readonly string[]): Promise<RunResult>;
-}
-```
-
-### RunResult
-
-```typescript
-interface RunResult {
-  diagnostics: readonly Diagnostic[];
-  summary:     RunSummary;
-}
-
-interface RunSummary {
-  errors:         number;
-  warnings:       number;
-  infos:          number;
-  sourceCount:    number;
-  artifactCount:  number;
-  ruleExecutions: number;
-  duration:       number;   // ms
-  pass:           boolean;  // true when errors === 0
-}
-```
-
-### Execution pipeline
-<!-- TODO: INSERT DIAGRAM 2: CLI-to-Output Flow -->
-
-**Image Description / Generation Prompt:** A UML Sequence Diagram visualizing the end-to-end execution pipeline of TileGuard. The actors/objects from left to right are: `User/Shell`, `cli.ts (CLI Entrypoint)`, `loadConfig() (@tileguard/config)`, `Engine (@tileguard/core)`, `RulesRunner (Execution Loop)`, and `Reporters (@tileguard/reporters)`. The execution steps flow sequentially:
-1. `User/Shell` runs the CLI check command.
-2. `cli.ts` invokes `loadConfig()` to find and parse configuration files.
-3. `loadConfig()` returns the validated `TileGuardConfig` object to `cli.ts`.
-4. `cli.ts` instantiates the `Engine` with the resolved configuration.
-5. `cli.ts` calls `engine.run(sources)`.
-6. The `Engine` initializes the `RulesRunner` check loop.
-7. The `RulesRunner` fetches and decodes tile/style artifacts, executing matching active rules for each.
-8. Rules call `context.report()` to append diagnostics back to the engine.
-9. The `Engine` collects all diagnostics and invokes `reporters.report(diagnostics)`.
-10. `Reporters` format the diagnostic outputs and write them to the terminal or JSON file.
-11. `cli.ts` exits with code 1 if errors were found, or code 0 if none.
-
-
-```
-run(sources)
-  │
-  ├─ [for each source]
-  │    ├─ find provider via canHandle()
-  │    │    └─ no match → emit artifact/no-provider, continue
-  │    ├─ provider.load(source)
-  │    │    └─ throws → emit artifact/load-failed, continue
-  │    └─ [for each matching rule]
-  │         ├─ skip if rule is disabled
-  │         ├─ build RuleContext(artifact, options)
-  │         ├─ await rule.create(context)
-  │         │    └─ throws → emit engine/rule-error, continue
-  │         └─ collect diagnostics from context.report()
-  │
-  ├─ sort diagnostics (source → severity → ruleId → location)
-  ├─ await reporter.report(diagnostics, context)
-  └─ return RunResult
-```
-
-### Error philosophy
-
-The engine never throws to its caller during normal operation. All expected failure modes are represented as diagnostics:
-
-| Situation | Diagnostic ruleId |
-|:----------|:------------------|
-| No provider handles source | `artifact/no-provider` |
-| Provider load() throws | `artifact/load-failed` |
-| Rule create() throws | `engine/rule-error` |
-| maxDiagnostics cap reached | `engine/max-diagnostics` |
-
-### Diagnostic sorting
-
-Diagnostics are sorted deterministically:
-1. By artifact `source` (alphabetical)
-2. By `severity` (error → warning → info)
-3. By `ruleId` (alphabetical)
-4. By `location` fields (layer → featureIndex → partIndex)
-
-This ordering is consistent regardless of rule execution order, enabling stable snapshot tests and reproducible CI output.
-
----
-
-## Complete example
-
-```typescript
-import { createEngine } from '@tileguard/core';
-import type { ArtifactProvider, Plugin, Reporter, Rule } from '@tileguard/core';
-
-// ── Mock provider ────────────────────────────────────────────────────────────
-const mockProvider: ArtifactProvider = {
-  id: 'mock-provider',
-  artifactTypes: ['MockArtifact'],
-  canHandle: (source) => source.startsWith('mock://'),
-  load: async (source) => ({
-    type: 'MockArtifact',
-    ref: { type: 'MockArtifact', source },
-    content: { featureCount: 0 },
-  }),
-};
-
-// ── Mock rule ────────────────────────────────────────────────────────────────
-const emptyTileRule: Rule = {
-  id: 'mock/no-empty',
-  meta: {
-    description: 'Tile must not be empty.',
+    description: 'Validates something specific to your pipeline.',
     defaultSeverity: 'error',
     recommended: true,
   },
-  artifactTypes: ['MockArtifact'],
+  artifactTypes: ['VectorTile'],
   create(context) {
-    const tile = context.artifact.content as { featureCount: number };
-    if (tile.featureCount === 0) {
-      context.report({
-        message: 'The tile contains 0 features.',
-        suggestion: 'Check whether your tile generation pipeline is producing data.',
-      });
-    }
+    const tile = context.artifact.content;
+    // Inspect content, call context.report() for each finding
+    context.report({
+      message: 'Something is wrong.',
+      location: { layer: 'buildings', featureIndex: 0 },
+      suggestion: 'Fix it by doing X.',
+    });
   },
 };
-
-// ── Mock reporter ────────────────────────────────────────────────────────────
-const textReporter: Reporter = {
-  id: 'text',
-  report(diagnostics, ctx) {
-    for (const d of diagnostics) {
-      process.stdout.write(`[${d.severity}] ${d.ruleId}: ${d.message}\n`);
-    }
-    process.stdout.write(`\n${ctx.summary.errors} errors — ${ctx.summary.pass ? 'PASS' : 'FAIL'}\n`);
-  },
-};
-
-// ── Plugin ───────────────────────────────────────────────────────────────────
-const mockPlugin: Plugin = {
-  id: 'mock',
-  providers: [mockProvider],
-  rules: [emptyTileRule],
-};
-
-// ── Engine usage ─────────────────────────────────────────────────────────────
-const engine = createEngine({
-  plugins: [mockPlugin],
-  reporter: textReporter,
-  rules: {
-    'mock/no-empty': 'error',
-  },
-});
-
-const result = await engine.run(['mock://tile-a', 'mock://tile-b']);
-
-console.log(`pass: ${result.summary.pass}`);
-// Output:
-// [error] mock/no-empty: The tile contains 0 features.
-// [error] mock/no-empty: The tile contains 0 features.
-//
-// 2 errors — FAIL
-// pass: false
 ```
 
 ---
 
-## Public API reference
+## API design principles
 
-All types are exported from the package root:
-
-```typescript
-import type {
-  // Diagnostic model
-  Diagnostic, DiagnosticDescriptor, Severity, ArtifactRef, Location,
-
-  // Artifact model
-  Artifact, ArtifactProvider, ProviderOptions,
-
-  // Rule system
-  Rule, RuleMeta, RuleContext,
-
-  // Reporter system
-  Reporter, ReporterContext,
-
-  // Plugin system
-  Plugin,
-
-  // Configuration system
-  TileGuardConfig, ResolvedConfig, ResolvedRuleConfig, RuleConfig,
-  ResolvedOverride, ResolvedRuleOverride, GlobalOptions, Override,
-
-  // Engine
-  Engine, EngineOptions, RunResult, RunSummary,
-} from '@tileguard/core';
-
-// Runtime value (only createEngine is a value, everything else is a type)
-import { createEngine } from '@tileguard/core';
-```
+- **Rules never print.** They emit diagnostics via `context.report()`.
+- **Reporters never validate.** They format diagnostics for output.
+- **The engine never throws** during normal operation. Load failures and rule crashes become diagnostics.
+- **All results are typed.** `RunResult` contains `diagnostics` and `summary` — no parsing required.
+- **Configuration errors are caught early.** Invalid configs throw before I/O begins.
 
 ---
 
-## Status
+## Part of the TileGuard ecosystem
 
-✅ **Implemented.** All contracts are live and tested.
-
-| Module | Status | Tests |
-|:-------|:-------|:------|
-| `diagnostic.ts` | ✅ Complete | via engine tests |
-| `artifact.ts` | ✅ Complete | via engine tests |
-| `rule.ts` | ✅ Complete | via engine tests |
-| `reporter.ts` | ✅ Complete | via engine tests |
-| `plugin.ts` | ✅ Complete | via engine tests |
-| `config.ts` | ✅ Complete | via engine tests |
-| `engine.ts` | ✅ Complete | 23 unit tests |
-
-Run tests:
-
-```bash
-cd packages/core
-npm test
-```
-
-Build:
-
-```bash
-cd packages/core
-npm run build
-```
+| Package | Purpose |
+|:--------|:--------|
+| **@tileguard/core** | Framework contracts (this package) |
+| [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) | CLI with 10 commands |
+| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | 10 vector tile validation rules |
+| [`@tileguard/style-rules`](https://www.npmjs.com/package/@tileguard/style-rules) | 9 MapLibre style lint rules |
+| [`@tileguard/config`](https://www.npmjs.com/package/@tileguard/config) | Config file discovery + validation |
+| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON reporters + report engine |
+| [`@tileguard/analysis`](https://www.npmjs.com/package/@tileguard/analysis) | Tile comparison + regression detection |
 
 ---
 
-## Architecture
+## Documentation
 
-See the architecture handbook for detailed rationale and design decisions:
+- [Full API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
+- [Architecture Handbook](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture) — System design + ADRs
+- [Rule Authoring Guide](https://github.com/shreeharshshinde/tileguard/blob/main/CONTRIBUTING.md)
 
-- [04 — Rule System](../../docs/architecture/04-rule-system.md)
-- [05 — Reporter System](../../docs/architecture/05-reporter-system.md)
-- [06 — Configuration](../../docs/architecture/06-configuration.md)
-- [07 — Engine](../../docs/architecture/07-engine.md)
-- [ADR-003: Diagnostic as Contract](../../docs/architecture/adr/003-diagnostic-as-contract.md)
-- [ADR-004: Direct Artifact Access](../../docs/architecture/adr/004-direct-artifact-access.md)
+---
+
+## License
+
+[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
