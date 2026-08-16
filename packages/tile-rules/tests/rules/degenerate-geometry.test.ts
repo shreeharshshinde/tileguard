@@ -120,3 +120,117 @@ describe('tile/degenerate-geometry', () => {
     expect(result.diagnostics).toHaveLength(0);
   });
 });
+
+// ── Multi-ring polygon tests ──────────────────────────────────────────────────
+
+describe('tile/degenerate-geometry — multi-ring polygons', () => {
+  it('valid outer, degenerate hole (2 unique vertices) → flags hole', async () => {
+    const engine = createEngine({ plugins: [plugin] });
+    const source = await makeTile([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Valid outer ring
+              [
+                { x: 0, y: 0 },
+                { x: 0, y: 100 },
+                { x: 100, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Degenerate hole (only 2 unique vertices)
+              [
+                { x: 20, y: 20 },
+                { x: 80, y: 80 },
+                { x: 20, y: 20 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    const result = await engine.run([source]);
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0]?.location?.partIndex).toBe(1);
+  });
+
+  it('degenerate outer, valid hole → flags outer only', async () => {
+    const engine = createEngine({ plugins: [plugin] });
+    const source = await makeTile([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Degenerate outer (2 unique vertices)
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Valid hole
+              [
+                { x: 20, y: 20 },
+                { x: 80, y: 20 },
+                { x: 80, y: 80 },
+                { x: 20, y: 80 },
+                { x: 20, y: 20 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    const result = await engine.run([source]);
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0]?.location?.partIndex).toBe(0);
+  });
+
+  it('multiple holes, only one degenerate → flags only the bad one', async () => {
+    const engine = createEngine({ plugins: [plugin] });
+    const source = await makeTile([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Valid outer
+              [
+                { x: 0, y: 0 },
+                { x: 0, y: 200 },
+                { x: 200, y: 200 },
+                { x: 200, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Valid hole
+              [
+                { x: 10, y: 10 },
+                { x: 50, y: 10 },
+                { x: 50, y: 50 },
+                { x: 10, y: 50 },
+                { x: 10, y: 10 },
+              ],
+              // Degenerate hole (all same point)
+              [
+                { x: 100, y: 100 },
+                { x: 100, y: 100 },
+                { x: 100, y: 100 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    const result = await engine.run([source]);
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0]?.location?.partIndex).toBe(2);
+  });
+});

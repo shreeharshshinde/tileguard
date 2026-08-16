@@ -563,3 +563,111 @@ describe('tile/self-intersection — false-negative guard', () => {
     expect(diags).toHaveLength(1);
   });
 });
+
+// ── Multi-ring polygon tests ──────────────────────────────────────────────────
+
+describe('tile/self-intersection — multi-ring polygons', () => {
+  it('valid outer, self-intersecting hole → diagnostic for hole ring', async () => {
+    const diags = await run([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Valid outer (no self-intersection)
+              [
+                { x: 0, y: 0 },
+                { x: 0, y: 100 },
+                { x: 100, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Bowtie hole (self-intersecting)
+              [
+                { x: 20, y: 20 },
+                { x: 80, y: 80 },
+                { x: 20, y: 80 },
+                { x: 80, y: 20 },
+                { x: 20, y: 20 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.data?.partIndex).toBe(1);
+  });
+
+  it('self-intersecting outer, valid hole → diagnostic for outer ring', async () => {
+    const diags = await run([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Bowtie outer (self-intersecting)
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 100 },
+                { x: 0, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Valid hole
+              [
+                { x: 30, y: 40 },
+                { x: 70, y: 40 },
+                { x: 70, y: 60 },
+                { x: 30, y: 60 },
+                { x: 30, y: 40 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.data?.partIndex).toBe(0);
+  });
+
+  it('both rings self-intersecting → diagnostics for both', async () => {
+    const diags = await run([
+      {
+        name: 'buildings',
+        features: [
+          {
+            type: 3,
+            points: [
+              // Bowtie outer
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 100 },
+                { x: 0, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 0 },
+              ],
+              // Bowtie hole
+              [
+                { x: 20, y: 20 },
+                { x: 80, y: 80 },
+                { x: 20, y: 80 },
+                { x: 80, y: 20 },
+                { x: 20, y: 20 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(2);
+    const partIndices = diags.map((d) => d.data?.partIndex);
+    expect(partIndices).toContain(0);
+    expect(partIndices).toContain(1);
+  });
+});
