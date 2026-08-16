@@ -6,7 +6,7 @@
  * - **Provider**: Loads `.pbf`/`.mvt` files (local or remote), handles gzip
  *   decompression, and decodes the MVT protobuf format into typed artifacts.
  *
- * - **10 validation rules**: Each rule checks one specific aspect of tile
+ * - **12 validation rules**: Each rule checks one specific aspect of tile
  *   geometry or structure, producing structured diagnostics with layer/feature
  *   location context.
  *
@@ -38,6 +38,8 @@
  * | `tile/layer-feature-count` | warning | Per-layer count outside bounds |
  * | `tile/unclosed-ring` | error | Polygon rings not closed |
  * | `tile/zero-area-ring` | error | Degenerate zero-area polygons |
+ * | `tile/winding-order` | error | Incorrect ring winding order |
+ * | `tile/hole-containment` | error | Hole rings outside outer ring |
  * | `tile/self-intersection` | error | Geometry that crosses itself |
  * | `tile/degenerate-geometry` | error | Insufficient vertices |
  * | `tile/no-empty` | warning | Tiles with zero features |
@@ -50,12 +52,14 @@ import { tileProvider } from './provider.js';
 import { coordinateRangeRule } from './rules/coordinate-range.js';
 import { degenerateGeometryRule } from './rules/degenerate-geometry.js';
 import { featureCountRule } from './rules/feature-count.js';
+import { holeContainmentRule } from './rules/hole-containment.js';
 import { layerFeatureCountRule } from './rules/layer-feature-count.js';
 import { noEmptyRule } from './rules/no-empty.js';
 import { requiredLayersRule } from './rules/required-layers.js';
 import { requiredPropertiesRule } from './rules/required-properties.js';
 import { selfIntersectionRule } from './rules/self-intersection.js';
 import { unclosedRingRule } from './rules/unclosed-ring.js';
+import { windingOrderRule } from './rules/winding-order.js';
 import { zeroAreaRingRule } from './rules/zero-area-ring.js';
 
 // ── Provider ──────────────────────────────────────────────────────────────
@@ -67,6 +71,7 @@ export type { CoordinateRangeOptions } from './rules/coordinate-range.js';
 export { degenerateGeometryRule } from './rules/degenerate-geometry.js';
 export { featureCountRule } from './rules/feature-count.js';
 export type { FeatureCountOptions } from './rules/feature-count.js';
+export { holeContainmentRule } from './rules/hole-containment.js';
 export { layerFeatureCountRule } from './rules/layer-feature-count.js';
 export type { LayerFeatureCountOptions } from './rules/layer-feature-count.js';
 export { noEmptyRule } from './rules/no-empty.js';
@@ -77,7 +82,9 @@ export { requiredPropertiesRule } from './rules/required-properties.js';
 export type { RequiredPropertiesOptions } from './rules/required-properties.js';
 export { selfIntersectionRule } from './rules/self-intersection.js';
 export { unclosedRingRule } from './rules/unclosed-ring.js';
+export { windingOrderRule } from './rules/winding-order.js';
 export { zeroAreaRingRule } from './rules/zero-area-ring.js';
+export type { ZeroAreaRingOptions } from './rules/zero-area-ring.js';
 
 // ── Domain types ──────────────────────────────────────────────────────────
 export type {
@@ -104,15 +111,20 @@ export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
 
 // ── Geometry utilities (for custom rules and analysis) ────────────────────
 export {
+  detectWindingConvention,
   findCoordinateRangeIssues,
   findDegenerateGeometryIssues,
+  findHoleContainmentIssues,
   findSelfIntersectionIssues,
   findUnclosedRingIssues,
+  findWindingOrderIssues,
   findZeroAreaRingIssues,
+  groupRingsIntoPolygons,
   segmentsIntersect,
   signedArea,
   uniquePointCount,
 } from './geometry.js';
+export type { LogicalPolygon, WindingConvention } from './geometry.js';
 
 // ── Low-level decoder (advanced use) ─────────────────────────────────────
 export { decodeMvt, PbfReader } from './pbf-decoder.js';
@@ -133,6 +145,8 @@ export const tileRules: readonly Rule[] = [
   degenerateGeometryRule,
   unclosedRingRule,
   zeroAreaRingRule,
+  windingOrderRule,
+  holeContainmentRule,
   selfIntersectionRule,
   noEmptyRule,
 ];
@@ -140,7 +154,7 @@ export const tileRules: readonly Rule[] = [
 /**
  * The tile validation plugin for TileGuard.
  *
- * Bundles the vector tile provider and all 10 tile validation rules into a
+ * Bundles the vector tile provider and all 12 tile validation rules into a
  * single registerable unit. Pass this to `createEngine()` to enable tile
  * validation.
  *
