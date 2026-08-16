@@ -4,27 +4,50 @@
 
 ## Summary
 
-Polygon rings must follow the MVT winding order convention: outer rings must be clockwise (CW), and hole rings must be counter-clockwise (CCW). Incorrect winding causes earcut triangulation to produce invisible polygons, inverted fills, or garbage geometry.
+Validates that polygon rings follow a consistent winding order convention within each feature. The rule auto-detects whether the tile uses the MVT specification convention (outer=CW, holes=CCW) or the OGC/GeoJSON convention (outer=CCW, holes=CW), and only flags **inconsistencies** — rings that break the detected pattern.
 
 ---
 
 ## Details
 
-The Mapbox Vector Tile specification defines a strict winding convention that allows renderers to distinguish outer boundaries from holes:
+### Convention detection
 
-- **Outer ring (index 0):** clockwise → negative signed area (shoelace formula)
-- **Hole rings (index > 0):** counter-clockwise → positive signed area
+The Mapbox Vector Tile specification defines a strict winding convention (outer=CW, holes=CCW), but many major tile producers use the OGC/GeoJSON convention (outer=CCW, holes=CW) instead:
 
-When winding order is incorrect:
-- Outer rings interpreted as holes → polygon disappears entirely
-- Holes interpreted as outer rings → inverted fill (renders everything *except* the intended area)
-- Mixed winding in multi-ring polygons → garbage triangulation with visual artefacts
+| Convention | Outer ring | Hole ring | Used by |
+|:-----------|:-----------|:----------|:--------|
+| **MVT spec** | Clockwise (signedArea < 0) | Counter-clockwise (signedArea > 0) | Mapbox |
+| **OGC/GeoJSON** | Counter-clockwise (signedArea > 0) | Clockwise (signedArea < 0) | OpenMapTiles, Planetiler, CARTO |
 
-MapLibre wraps earcut in a try/catch, so incorrect winding typically results in **silent visual errors** rather than crashes — making this a particularly insidious data quality issue.
+Renderers (MapLibre, Mapbox GL) handle **both** conventions correctly. Rather than flagging every OGC-convention tile as broken, TileGuard detects the convention from the **first ring** of each feature:
 
-The rule delegates to `findWindingOrderIssues()` from `geometry.ts`, which computes the signed area of each ring and verifies it matches the expected sign for its position (outer vs hole).
+- First ring CW (signedArea < 0) → MVT convention detected
+- First ring CCW (signedArea > 0) → OGC convention detected
 
-Rings with zero signed area (collinear/degenerate) are not flagged by this rule — they are handled by `tile/zero-area-ring`.
+### Ring grouping (multi-polygon support)
+
+MVT multi-polygon features encode multiple polygons as a flat array of rings. The rule uses `groupRingsIntoPolygons()` to split them into logical polygons based on winding sign changes under the detected convention:
+
+- Each ring matching the "outer" winding starts a new logical polygon
+- Subsequent rings with the opposite winding are holes of that polygon
+
+### What gets flagged
+
+A `WRONG_WINDING` diagnostic is emitted only when a ring's actual winding **contradicts its role** within the grouped structure:
+
+- An outer ring (first in its group) whose winding doesn't match the detected outer convention
+- A hole ring whose winding doesn't match the detected hole convention
+
+If all rings in a feature are consistent (even if they all use OGC rather than MVT convention), **no issues are reported**.
+
+### Why this matters
+
+When winding order is truly inconsistent:
+- Renderers can't distinguish outers from holes → polygon disappears or inverts
+- Earcut triangulation produces garbage geometry
+- MapLibre wraps earcut in try/catch, so errors are **silent visual bugs**
+
+Rings with zero signed area (collinear/degenerate) are not flagged — they are handled by `tile/zero-area-ring`.
 
 Only `Polygon` features are checked.
 
@@ -33,51 +56,69 @@ Only `Polygon` features are checked.
 ## Diagnostic
 
 ```
-Outer ring in layer "<layerName>", feature <featureIndex> has incorrect winding order.
+Outer ring at index <N> has inconsistent winding; expected <direction> per detected <CONVENTION> convention.
 ```
 or
 ```
-Hole ring <N> in layer "<layerName>", feature <featureIndex> has incorrect winding order.
+Hole ring at index <N> has inconsistent winding; expected <direction> per detected <CONVENTION> convention.
 ```
 
 **Location:** `{ layer: "<layerName>", featureIndex: N, partIndex: N }`
 
-**Suggestion:** Reverse the vertex order of the ring to make it clockwise/counter-clockwise per the MVT specification.
+**Suggestion:** Reverse the vertex order of the ring to match the detected convention.
 
 **Data fields:**
 | Field | Type | Description |
 |:------|:-----|:------------|
 | `layer` | `string` | Layer name |
 | `featureIndex` | `number` | Feature index within the layer |
-| `partIndex` | `number` | Ring index (0 = outer, >0 = holes) |
+| `partIndex` | `number` | Ring index in the flat parts array |
 
 ---
 
 ## Examples
 
-### ❌ Failing — CCW outer ring
-
-```
-Vertices: (0,0) → (10,0) → (10,10) → (0,10) → (0,0)
-Signed area: +100 (positive = CCW = WRONG for outer ring)
-```
-
-*Diagnostic:* `Outer ring in layer "buildings", feature 0 has incorrect winding order.`
-
-### ❌ Failing — CW hole ring
-
-```
-Outer (CW, correct): (0,0) → (0,100) → (100,100) → (100,0) → (0,0)
-Hole (CW, WRONG):    (20,20) → (20,80) → (80,80) → (80,20) → (20,20)
-```
-
-*Diagnostic:* `Hole ring 1 in layer "buildings", feature 0 has incorrect winding order.`
-
-### ✅ Passing — Correct MVT winding
+### ✅ Passing — MVT convention (outer=CW, hole=CCW)
 
 ```
 Outer (CW): (0,0) → (0,100) → (100,100) → (100,0) → (0,0)    [area < 0]
 Hole (CCW): (20,20) → (80,20) → (80,80) → (20,80) → (20,20)  [area > 0]
+
+Convention detected: MVT (first ring is CW)
+All rings consistent → no diagnostic
+```
+
+### ✅ Passing — OGC convention (outer=CCW, hole=CW)
+
+```
+Outer (CCW): (0,0) → (100,0) → (100,100) → (0,100) → (0,0)   [area > 0]
+Hole (CW):   (20,20) → (20,80) → (80,80) → (80,20) → (20,20) [area < 0]
+
+Convention detected: OGC (first ring is CCW)
+All rings consistent → no diagnostic
+```
+
+### ✅ Passing — Multi-polygon (all CCW outers, OGC convention)
+
+```
+Ring 0 (CCW): building A outer   [area > 0]
+Ring 1 (CCW): building B outer   [area > 0]
+Ring 2 (CCW): building C outer   [area > 0]
+...
+
+Convention detected: OGC
+All rings are outers (same winding) → valid multi-polygon, no diagnostic
+```
+
+This is the typical encoding from OpenMapTiles — many separate building polygons in a single feature.
+
+### ❌ Failing — Inconsistent hole winding
+
+```
+Ring 0 (CW): outer ring          [area < 0] → MVT convention detected
+Ring 1 (CW): supposed hole       [area < 0] → WRONG: should be CCW for MVT hole
+
+Diagnostic: Hole ring at index 1 has inconsistent winding; expected counter-clockwise per detected MVT convention.
 ```
 
 ---
@@ -98,12 +139,23 @@ This rule accepts no options.
 
 ## Remediation
 
-Reverse the vertex order of the offending ring. Most geometry libraries provide a method for this:
+Reverse the vertex order of the offending ring:
 
 - **Turf.js:** `turf.rewind(polygon, { mutate: true })`
 - **JTS/GEOS:** `ring.reverse()`
 - **Tippecanoe:** Automatically corrects winding on output
-- **PostGIS:** `ST_ForcePolygonCW(geom)`
+- **PostGIS:** `ST_ForcePolygonCW(geom)` (MVT) or `ST_ForcePolygonCCW(geom)` (OGC)
+
+---
+
+## Exported utilities
+
+| Function | Description |
+|:---------|:------------|
+| `detectWindingConvention(parts)` | Returns `'mvt'` or `'ogc'` based on first ring's winding |
+| `groupRingsIntoPolygons(parts, convention?)` | Splits flat rings into `LogicalPolygon[]` (outer + holes) |
+| `findWindingOrderIssues(feature)` | Returns `GeometryIssue[]` for inconsistent rings |
+| `signedArea(points)` | Shoelace formula: negative = CW, positive = CCW |
 
 ---
 
@@ -112,7 +164,7 @@ Reverse the vertex order of the offending ring. Most geometry libraries provide 
 | Rule | Relationship |
 |:-----|:-------------|
 | [`tile/zero-area-ring`](./zero-area-ring.md) | Catches degenerate rings with no winding |
-| [`tile/hole-containment`](./hole-containment.md) | Validates holes are within the outer ring |
+| [`tile/hole-containment`](./hole-containment.md) | Validates holes are within their parent outer ring |
 | [`tile/self-intersection`](./self-intersection.md) | Catches rings that cross themselves |
 
 ---
