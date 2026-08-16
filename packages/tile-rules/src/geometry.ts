@@ -275,21 +275,152 @@ export function findZeroAreaRingIssues(
   return issues;
 }
 
+// ─── Ring grouping (multi-polygon support) ────────────────────────────────────
+
+/**
+ * Winding convention used by a tile/feature.
+ *
+ * - `'mvt'` — MVT spec convention: outer rings are CW (signedArea < 0),
+ *   holes are CCW (signedArea > 0).
+ * - `'ogc'` — OGC/GeoJSON convention: outer rings are CCW (signedArea > 0),
+ *   holes are CW (signedArea < 0).
+ *
+ * Many tile producers (OpenMapTiles, Planetiler) use the OGC convention despite
+ * the MVT spec mandating CW outers.  Renderers (MapLibre, Mapbox GL) accept both.
+ */
+export type WindingConvention = 'mvt' | 'ogc';
+
+/**
+ * A logical polygon within a multi-polygon feature: one outer ring and zero or
+ * more holes.
+ */
+export interface LogicalPolygon {
+  /** Index of the outer ring within the original flat parts array. */
+  readonly outerIndex: number;
+  /** The outer ring's coordinate array. */
+  readonly outer: readonly Point[];
+  /** Indices of hole rings within the original flat parts array. */
+  readonly holeIndices: readonly number[];
+  /** The hole rings' coordinate arrays. */
+  readonly holes: readonly (readonly Point[])[];
+}
+
+/**
+ * Detects which winding convention a polygon feature uses by examining the
+ * signed areas of all rings.
+ *
+ * Strategy: The **first ring** with a non-zero area determines the convention.
+ * In all valid MVT encodings (both MVT-spec and OGC/GeoJSON convention), the
+ * first ring of a polygon/multi-polygon is always an outer ring. Its winding
+ * direction tells us which convention the producer used:
+ *
+ * - First ring CW (area < 0) → MVT convention (CW=outer, CCW=hole)
+ * - First ring CCW (area > 0) → OGC convention (CCW=outer, CW=hole)
+ *
+ * This is more reliable than a majority-vote heuristic because it works
+ * correctly even when a polygon has more holes than outers (e.g., a single
+ * outer with many holes).
+ *
+ * @param parts - The flat array of rings from `getFeatureParts()`.
+ * @returns The detected winding convention.
+ */
+export function detectWindingConvention(
+  parts: readonly (readonly Point[])[],
+): WindingConvention {
+  // The first ring is always an outer — its winding reveals the convention.
+  for (const ring of parts) {
+    if (ring.length < 3) continue;
+    const area = signedArea(ring);
+    if (area < 0) return 'mvt'; // CW first ring → MVT convention
+    if (area > 0) return 'ogc'; // CCW first ring → OGC convention
+  }
+
+  // All rings are degenerate (zero area) — default to MVT
+  return 'mvt';
+}
+
+/**
+ * Groups a flat array of polygon rings into logical polygons (outer + holes)
+ * based on winding direction.
+ *
+ * In a multi-polygon MVT feature, each outer ring starts a new logical polygon.
+ * Subsequent rings with the opposite winding are holes belonging to that outer.
+ * When the winding flips back to the "outer" direction, a new logical polygon
+ * begins.
+ *
+ * This function auto-detects the winding convention (MVT vs OGC) by examining
+ * the dominant winding direction.
+ *
+ * @param parts - The flat array of rings from `getFeatureParts()`.
+ * @param convention - Explicit convention override. If omitted, auto-detected.
+ * @returns An array of `LogicalPolygon` objects.
+ */
+export function groupRingsIntoPolygons(
+  parts: readonly (readonly Point[])[],
+  convention?: WindingConvention,
+): readonly LogicalPolygon[] {
+  if (parts.length === 0) return [];
+
+  const conv = convention ?? detectWindingConvention(parts);
+  const polygons: LogicalPolygon[] = [];
+
+  // In MVT convention: outer has signedArea < 0 (CW), hole has signedArea > 0 (CCW)
+  // In OGC convention: outer has signedArea > 0 (CCW), hole has signedArea < 0 (CW)
+  const isOuter = (area: number): boolean =>
+    conv === 'mvt' ? area < 0 : area > 0;
+
+  let current: { outerIndex: number; outer: readonly Point[]; holeIndices: number[]; holes: (readonly Point[])[] } | undefined;
+
+  for (let i = 0; i < parts.length; i += 1) {
+    const ring = parts[i]!;
+    const area = signedArea(ring);
+
+    if (isOuter(area) || area === 0) {
+      // Start a new logical polygon — flush the previous one
+      if (current !== undefined) {
+        polygons.push(current);
+      }
+      current = { outerIndex: i, outer: ring, holeIndices: [], holes: [] };
+    } else {
+      // This is a hole — attach it to the current outer
+      if (current !== undefined) {
+        current.holeIndices.push(i);
+        current.holes.push(ring);
+      } else {
+        // Orphan hole with no preceding outer — treat it as its own polygon
+        // (shouldn't happen in well-formed data, but be defensive)
+        current = { outerIndex: i, outer: ring, holeIndices: [], holes: [] };
+      }
+    }
+  }
+
+  // Flush the last polygon
+  if (current !== undefined) {
+    polygons.push(current);
+  }
+
+  return polygons;
+}
+
 // ─── Winding order ────────────────────────────────────────────────────────────
 
 /**
- * Returns a `WRONG_WINDING` issue for every Polygon ring whose winding order
- * does not conform to the MVT convention:
+ * Validates winding-order consistency within a polygon feature.
  *
- * - **Outer ring (index 0)**: must be clockwise (signedArea < 0)
- * - **Hole rings (index > 0)**: must be counter-clockwise (signedArea > 0)
+ * Rather than enforcing a single convention (MVT spec says CW=outer), this rule
+ * detects which convention the feature uses and only flags **inconsistencies** —
+ * rings that break the detected pattern. This avoids false positives on tiles
+ * that use the OGC/GeoJSON convention (CCW=outer), which is extremely common
+ * in production (OpenMapTiles, Planetiler, etc.).
  *
- * The MVT specification defines this convention so that renderers (including
- * earcut) can distinguish outer boundaries from holes without additional metadata.
- * Incorrect winding causes:
- * - Outer rings interpreted as holes → polygon disappears
- * - Holes interpreted as outer rings → inverted fill
- * - Mixed winding → garbage triangulation
+ * A `WRONG_WINDING` issue is reported when:
+ * - A ring that should be an outer (based on its position in the grouped
+ *   sequence) has the wrong winding for the detected convention.
+ * - A ring that should be a hole has the wrong winding for the detected
+ *   convention.
+ *
+ * If all rings in a feature are consistent (even if they use OGC rather than
+ * MVT convention), no issues are reported.
  *
  * Only applies to Polygon features (`feature.type === 3`).
  *
@@ -300,32 +431,47 @@ export function findWindingOrderIssues(
 ): readonly GeometryIssue[] {
   if (feature.type !== 3) return [];
 
-  const issues: GeometryIssue[] = [];
   const parts = getFeatureParts(feature);
+  if (parts.length === 0) return [];
 
-  for (let partIndex = 0; partIndex < parts.length; partIndex += 1) {
-    const points = parts[partIndex]!;
-    // Rings with fewer than 3 points cannot have meaningful area or winding
-    if (points.length < 3) continue;
+  const convention = detectWindingConvention(parts);
+  const issues: GeometryIssue[] = [];
 
-    const area = signedArea(points);
+  // In MVT convention: outer must have signedArea < 0, holes must have > 0
+  // In OGC convention: outer must have signedArea > 0, holes must have < 0
+  const isOuterArea = (area: number): boolean =>
+    convention === 'mvt' ? area < 0 : area > 0;
 
-    if (partIndex === 0) {
-      // Outer ring must be clockwise (signedArea < 0) per MVT convention
-      if (area > 0) {
+  const polygons = groupRingsIntoPolygons(parts, convention);
+
+  for (const poly of polygons) {
+    // Validate the outer ring
+    const outerPoints = poly.outer;
+    if (outerPoints.length >= 3) {
+      const area = signedArea(outerPoints);
+      if (area !== 0 && !isOuterArea(area)) {
+        const expected = convention === 'mvt' ? 'clockwise' : 'counter-clockwise';
         issues.push({
           code: 'WRONG_WINDING',
-          message: `Outer ring has counter-clockwise winding (area=${area}); expected clockwise (negative area) per MVT convention.`,
-          partIndex,
+          message: `Outer ring at index ${poly.outerIndex} has inconsistent winding; expected ${expected} per detected ${convention.toUpperCase()} convention.`,
+          partIndex: poly.outerIndex,
         });
       }
-    } else {
-      // Hole rings must be counter-clockwise (signedArea > 0) per MVT convention
-      if (area < 0) {
+    }
+
+    // Validate hole rings
+    for (let hi = 0; hi < poly.holeIndices.length; hi += 1) {
+      const holeIdx = poly.holeIndices[hi]!;
+      const holePoints = poly.holes[hi]!;
+      if (holePoints.length < 3) continue;
+
+      const area = signedArea(holePoints);
+      if (area !== 0 && isOuterArea(area)) {
+        const expected = convention === 'mvt' ? 'counter-clockwise' : 'clockwise';
         issues.push({
           code: 'WRONG_WINDING',
-          message: `Hole ring ${partIndex} has clockwise winding (area=${area}); expected counter-clockwise (positive area) per MVT convention.`,
-          partIndex,
+          message: `Hole ring at index ${holeIdx} has inconsistent winding; expected ${expected} per detected ${convention.toUpperCase()} convention.`,
+          partIndex: holeIdx,
         });
       }
     }
@@ -338,7 +484,12 @@ export function findWindingOrderIssues(
 
 /**
  * Returns a `HOLE_OUTSIDE_SHELL` issue for every hole ring that has at least one
- * vertex lying outside the outer ring (ring index 0).
+ * vertex lying outside its parent outer ring.
+ *
+ * Uses ring grouping to correctly identify which outer ring each hole belongs to
+ * in multi-polygon features. The rings are grouped based on the detected winding
+ * convention — each outer ring (identified by its winding direction) starts a new
+ * logical polygon, and subsequent rings with opposite winding are its holes.
  *
  * Uses the ray-casting (point-in-polygon) algorithm: for each hole vertex, cast
  * a horizontal ray to the right and count intersections with the outer ring edges.
@@ -358,26 +509,34 @@ export function findHoleContainmentIssues(
   const parts = getFeatureParts(feature);
   if (parts.length < 2) return [];
 
+  const polygons = groupRingsIntoPolygons(parts);
   const issues: GeometryIssue[] = [];
-  const outerRing = parts[0]!;
 
-  for (let partIndex = 1; partIndex < parts.length; partIndex += 1) {
-    const holeRing = parts[partIndex]!;
-    let outsideCount = 0;
+  for (const poly of polygons) {
+    // Only check polygons that have holes
+    if (poly.holes.length === 0) continue;
 
-    for (let vi = 0; vi < holeRing.length; vi += 1) {
-      const vertex = holeRing[vi]!;
-      if (!pointInPolygon(vertex, outerRing)) {
-        outsideCount += 1;
+    const outerRing = poly.outer;
+
+    for (let hi = 0; hi < poly.holeIndices.length; hi += 1) {
+      const holeIdx = poly.holeIndices[hi]!;
+      const holeRing = poly.holes[hi]!;
+      let outsideCount = 0;
+
+      for (let vi = 0; vi < holeRing.length; vi += 1) {
+        const vertex = holeRing[vi]!;
+        if (!pointInPolygon(vertex, outerRing)) {
+          outsideCount += 1;
+        }
       }
-    }
 
-    if (outsideCount > 0) {
-      issues.push({
-        code: 'HOLE_OUTSIDE_SHELL',
-        message: `Hole ring ${partIndex} has ${outsideCount} vertex(es) outside the outer ring.`,
-        partIndex,
-      });
+      if (outsideCount > 0) {
+        issues.push({
+          code: 'HOLE_OUTSIDE_SHELL',
+          message: `Hole ring ${holeIdx} has ${outsideCount} vertex(es) outside its outer ring (index ${poly.outerIndex}).`,
+          partIndex: holeIdx,
+        });
+      }
     }
   }
 
