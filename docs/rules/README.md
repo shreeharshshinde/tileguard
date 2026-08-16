@@ -1,6 +1,6 @@
 # Rule Docs: `docs/rules/`
 
-This directory contains per-rule reference documentation for all 19 built-in TileGuard rules.
+This directory contains per-rule reference documentation for all 21 built-in TileGuard rules.
 
 ## Style Rules (`@tileguard/style-rules`)
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
@@ -77,9 +77,11 @@ This directory contains per-rule reference documentation for all 19 built-in Til
 | `tile/degenerate-geometry` | [degenerate-geometry.md](./tile/degenerate-geometry.md) | Geometries must have enough vertices |
 | `tile/unclosed-ring` | [unclosed-ring.md](./tile/unclosed-ring.md) | Polygon rings must be closed |
 | `tile/zero-area-ring` | [zero-area-ring.md](./tile/zero-area-ring.md) | Polygon rings must have non-zero area |
+| `tile/winding-order` | [winding-order.md](./tile/winding-order.md) | Polygon rings must follow a consistent winding convention |
+| `tile/hole-containment` | [hole-containment.md](./tile/hole-containment.md) | Hole rings must be inside their parent outer ring |
 | `tile/self-intersection` | [self-intersection.md](./tile/self-intersection.md) | Geometries must not self-intersect |
 | `tile/no-empty` | [no-empty.md](./tile/no-empty.md) | Tiles must contain at least one feature |
 
 ---
 
-*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.5.0*
+*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.6.0*

@@ -7,6 +7,23 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- **tile/winding-order** — No longer produces false positives on tiles using the OGC/GeoJSON winding convention (outer=CCW, holes=CW). The rule now auto-detects the convention from the first ring and only flags rings that are inconsistent with the detected pattern. Previously, all OGC-convention tiles (including OpenMapTiles/Planetiler output) were incorrectly flagged.
+- **tile/hole-containment** — No longer produces false positives on multi-polygon features. The rule now groups rings into logical polygons using convention-aware winding detection before checking containment. Previously, it naively assumed `parts[0]` was the only outer ring, causing every subsequent outer ring in a multi-polygon to be flagged as "a hole outside the shell."
+- **Inspector diagnostics** — Browser tile validation now runs actual rules instead of passing a hardcoded empty array. The Inspector previously showed all tiles as "clean" regardless of geometry errors.
+
+### Added
+
+- `detectWindingConvention()` — Determines whether a tile uses MVT (CW=outer) or OGC (CCW=outer) convention based on the first ring's winding direction.
+- `groupRingsIntoPolygons()` — Splits a flat array of polygon rings into logical polygons (outer + holes) based on winding sign changes under the detected convention.
+- `WindingConvention` type and `LogicalPolygon` interface exported from `@tileguard/tile-rules`.
+- `runBrowserDiagnostics()` service in Inspector — executes all browser-safe tile rules against decoded artifacts.
+
+---
+
 ## [0.5.0-rc.1] — 2026-08-07
 
 ### Highlights

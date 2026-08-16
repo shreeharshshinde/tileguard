@@ -13,7 +13,7 @@ TileGuard is a rule-based validation framework for vector tiles and MapLibre sty
 
 ## Features
 
-- **19 built-in rules** — 10 tile validation + 9 style lint rules, all configurable
+- **21 built-in rules** — 12 tile validation + 9 style lint rules, all configurable
 - **Plugin architecture** — write custom rules in ~25 lines of TypeScript
 - **Zero-config defaults** — works out of the box, customize when you need to
 - **CI-native** — exit codes, JSON output, GitHub Actions ready
@@ -56,6 +56,7 @@ const config: TileGuardConfig = {
   rules: {
     'tile/required-layers': ['error', { layers: ['water', 'roads', 'buildings'] }],
     'tile/self-intersection': 'warning',
+    'tile/winding-order': 'error',
     'tile/no-empty': 'off',
     'style/known-source': 'error',
   },
@@ -81,7 +82,9 @@ Without a config file, all recommended rules run at their default severities.
 | `tile/feature-count` | Total feature count outside configured bounds |
 | `tile/layer-feature-count` | Per-layer feature count outside configured bounds |
 | `tile/unclosed-ring` | Polygon rings not closed (first ≠ last vertex) |
-| `tile/zero-area-ring` | Degenerate polygons with zero area |
+| `tile/zero-area-ring` | Degenerate polygons with zero/near-zero area |
+| `tile/winding-order` | Incorrect ring winding order (earcut safety) |
+| `tile/hole-containment` | Hole rings outside the outer ring (earcut safety) |
 | `tile/self-intersection` | Geometry that crosses itself |
 | `tile/degenerate-geometry` | Lines/polygons with insufficient vertices |
 | `tile/no-empty` | Tiles with zero features |
@@ -159,7 +162,7 @@ Rules never print. Reporters never validate. Adding a rule never touches formatt
 |:--------|:--------|
 | [`@tileguard/core`](packages/core) | Framework contracts — Diagnostic, Artifact, Rule, Plugin, Reporter, Engine |
 | [`@tileguard/shared`](packages/shared) | Cross-package utilities |
-| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 10 tile validation rules |
+| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation rules |
 | [`@tileguard/style-rules`](packages/style-rules) | Style provider + 9 lint rules + parser/resolver/validator |
 | [`@tileguard/config`](packages/config) | Config file discovery, loading, and schema validation |
 | [`@tileguard/reporters`](packages/reporters) | Text & JSON reporters + report engine (Markdown, HTML, JSON) |
