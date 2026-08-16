@@ -41,7 +41,7 @@ function TileDropZone({
 }): JSX.Element {
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
-      accept: { '*/*': ['.pbf', '.mvt'] },
+      accept: { 'application/octet-stream': ['.pbf', '.mvt'], 'application/x-protobuf': ['.pbf', '.mvt'] },
       maxFiles: 1,
       onDropAccepted: (files) => {
         const f = files[0];

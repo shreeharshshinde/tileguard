@@ -457,12 +457,15 @@ function _Workspace(): JSX.Element {
         await new Promise<void>((r) => setTimeout(r, 30));
         if (cancelled) return;
 
-        setLoadingStep('statistics');
-        await inspector.load(pendingFile.name, artifact, []);
+        setLoadingStep('diagnostics');
+        const { runBrowserDiagnostics } = await import(
+          '../services/browser-diagnostics.js'
+        );
+        const diagnostics = runBrowserDiagnostics(artifact);
         if (cancelled) return;
 
-        setLoadingStep('diagnostics');
-        await new Promise<void>((r) => setTimeout(r, 20));
+        setLoadingStep('statistics');
+        await inspector.load(pendingFile.name, artifact, diagnostics);
         if (cancelled) return;
 
         setLoadingStep('ready');
