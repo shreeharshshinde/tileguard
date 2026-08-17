@@ -42,6 +42,7 @@ import {
   comparisonCompleteToast,
   tileLoadErrorToast,
   tileLoadedToast,
+  toast,
 } from '../../lib/toast.js';
 import {
   createPerformanceProfiler,
@@ -208,7 +209,8 @@ export function Workspace({
         const snap = svc.createSnapshot(tmpStore);
         tmpStore.dispose();
         return snap;
-      } catch {
+      } catch (err) {
+        console.error('[TileGuard] captureSnapshot failed for', file.name, err);
         return null;
       }
     },
@@ -242,7 +244,16 @@ export function Workspace({
   const handleFileSelectedA = useCallback(
     async (file: File) => {
       setFilePathA(file.name);
-      setSnapshotA(await captureSnapshot(file));
+      const snap = await captureSnapshot(file);
+      if (snap === null) {
+        toast.error(`Failed to decode "${file.name}"`, {
+          description: 'Check that the file is a valid .pbf / .mvt tile.',
+          duration: 5000,
+        });
+        setSnapshotA(null);
+      } else {
+        setSnapshotA(snap);
+      }
       setComparison(null);
     },
     [captureSnapshot],
@@ -251,7 +262,16 @@ export function Workspace({
   const handleFileSelectedB = useCallback(
     async (file: File) => {
       setFilePathB(file.name);
-      setSnapshotB(await captureSnapshot(file));
+      const snap = await captureSnapshot(file);
+      if (snap === null) {
+        toast.error(`Failed to decode "${file.name}"`, {
+          description: 'Check that the file is a valid .pbf / .mvt tile.',
+          duration: 5000,
+        });
+        setSnapshotB(null);
+      } else {
+        setSnapshotB(snap);
+      }
       setComparison(null);
     },
     [captureSnapshot],
@@ -669,6 +689,7 @@ export function Workspace({
                       filePathA={filePathA}
                       filePathB={filePathB}
                       isComparing={isComparing}
+                      canCompare={snapshotA !== null && snapshotB !== null}
                       onFileSelectedA={(f) => {
                         void handleFileSelectedA(f);
                       }}

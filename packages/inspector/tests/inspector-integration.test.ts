@@ -132,7 +132,7 @@ describe('Inspector (integration)', () => {
     it('passes the loaded artifact to the renderer', async () => {
       await inspector.load('test.pbf', artifact, []);
 
-      expect(renderer.render).toHaveBeenCalledWith(artifact, expect.any(Array));
+      expect(renderer.render).toHaveBeenCalledWith(artifact, expect.any(Array), null);
     });
 
     it('produces no interaction overlays immediately after load', async () => {
