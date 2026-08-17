@@ -313,6 +313,7 @@ export interface ComparisonPageProps {
   filePathA: string | null;
   filePathB: string | null;
   isComparing: boolean;
+  canCompare?: boolean;
   onFileSelectedA: (file: File) => void;
   onFileSelectedB: (file: File) => void;
   onRunComparison: () => void;
@@ -327,6 +328,7 @@ export function ComparisonPage({
   filePathA,
   filePathB,
   isComparing,
+  canCompare = false,
   onFileSelectedA,
   onFileSelectedB,
   onRunComparison,
@@ -416,7 +418,7 @@ export function ComparisonPage({
         <button
           type="button"
           onClick={onRunComparison}
-          disabled={!filePathA || !filePathB || isComparing}
+          disabled={!canCompare || isComparing}
           className="flex h-9 items-center gap-1.5 rounded border border-[var(--tg-border)] bg-[var(--tg-bg-primary)] px-3 text-xs font-semibold text-[var(--tg-text-primary)] transition hover:bg-[var(--tg-accent)] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
           <RefreshCw

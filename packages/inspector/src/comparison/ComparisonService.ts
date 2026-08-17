@@ -99,9 +99,13 @@ class ComparisonServiceImpl implements ComparisonService {
             geometryType: f.geometryType,
             properties: Object.freeze({ ...f.properties }),
             geometry: Object.freeze(
-              (
-                f.geometry as readonly (readonly { x: number; y: number }[])[]
-              ).map((ring) => Object.freeze([...ring])),
+              f.geometryType === 'Point'
+                ? // Point geometry: Point[] — wrap in outer array for uniform shape
+                  [(f.geometry as readonly { x: number; y: number }[]).map((p) => Object.freeze({ ...p }))]
+                : // LineString/Polygon geometry: Point[][] — map each ring/part
+                  (
+                    f.geometry as readonly (readonly { x: number; y: number }[])[]
+                  ).map((ring) => Object.freeze([...ring])),
             ),
           }),
         );
