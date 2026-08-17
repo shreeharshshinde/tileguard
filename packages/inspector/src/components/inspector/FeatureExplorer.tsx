@@ -22,7 +22,7 @@
  */
 
 import { Crosshair, Hash, Layers, Search, X } from 'lucide-react';
-import { type ChangeEvent, useMemo, useState } from 'react';
+import { type ChangeEvent, useEffect, useMemo, useState } from 'react';
 import type { Inspector } from '../../create-inspector.js';
 import {
   useLayers,
@@ -166,8 +166,19 @@ export function FeatureExplorer({
     [layers],
   );
 
+  // ── Reverse sync: canvas feature click → auto-highlight matching layer row ──
+  const selection = store.selection;
+  useEffect(() => {
+    if (selection.layerName !== null) {
+      setSelectedLayer(selection.layerName);
+    }
+  }, [selection.layerName]);
+
   const handleLayerClick = (name: string) => {
-    setSelectedLayer((prev) => (prev === name ? null : name));
+    const newSelection = selectedLayer === name ? null : name;
+    setSelectedLayer(newSelection);
+    // Forward sync: layer click → canvas highlight all features of that layer
+    store.select(newSelection, null);
   };
 
   return (

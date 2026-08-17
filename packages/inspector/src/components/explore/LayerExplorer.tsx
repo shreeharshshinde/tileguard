@@ -25,7 +25,7 @@ import {
   Search,
   X,
 } from 'lucide-react';
-import { type ChangeEvent, memo, useMemo, useState } from 'react';
+import { type ChangeEvent, memo, useEffect, useMemo, useState } from 'react';
 import type { Inspector } from '../../create-inspector.js';
 import {
   useLayers,
@@ -211,6 +211,14 @@ export function LayerExplorer({
     [layers],
   );
 
+  // ── Reverse sync: canvas feature click → auto-highlight matching layer row ──
+  const selection = store.selection;
+  useEffect(() => {
+    if (selection.layerName !== null) {
+      setSelectedLayer(selection.layerName);
+    }
+  }, [selection.layerName]);
+
   const toggleFilter = (f: GeometryFilter) => {
     setActiveFilters((prev) => {
       const next = new Set(prev);
@@ -224,7 +232,10 @@ export function LayerExplorer({
   };
 
   const handleLayerClick = (name: string) => {
-    setSelectedLayer((prev) => (prev === name ? null : name));
+    const newSelection = selectedLayer === name ? null : name;
+    setSelectedLayer(newSelection);
+    // Forward sync: layer click → canvas highlight all features of that layer
+    store.select(newSelection, null);
   };
 
   if (!loaded) {
