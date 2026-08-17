@@ -222,6 +222,8 @@ export class CanvasRenderer implements Renderer {
   private _showTileBounds: boolean;
   private _showBufferBounds: boolean;
   private _overlayOpacity: number;
+  private _selectionThickness: number;
+  private _hoverThickness: number;
 
   constructor(options: CanvasRendererOptions) {
     this._viewport = options.viewport;
@@ -558,6 +560,33 @@ export class CanvasRenderer implements Renderer {
             },
           );
         }
+      } else if (overlay.type === 'cross-marker') {
+        // Cross-marker: compute exact intersection point of two segments
+        // target = [segA, segB] — segment indices on the first ring
+        const target = overlay.target as [number, number];
+        const ring = firstRing(feature);
+        const a1 = ring[target[0]];
+        const a2 = ring[target[0] + 1];
+        const b1 = ring[target[1]];
+        const b2 = ring[target[1] + 1];
+
+        if (
+          a1 !== undefined &&
+          a2 !== undefined &&
+          b1 !== undefined &&
+          b2 !== undefined
+        ) {
+          const ix = lineLineIntersection(a1, a2, b1, b2);
+          if (ix !== null) {
+            const pt = vp.tileToScreen(ix);
+            drawCrossMarker(ctx, pt, {
+              size: OVERLAY_STYLE.pointRadius * 2,
+              strokeColor: color,
+              lineWidth: OVERLAY_STYLE.lineWidth * 1.5,
+              globalAlpha: this._overlayOpacity,
+            });
+          }
+        }
       }
     }
   }
@@ -661,4 +690,91 @@ function flattenVertices(
 function resolveLayerColor(layerName: string): string {
   const key = layerName as keyof typeof LAYER_COLORS;
   return key in LAYER_COLORS ? LAYER_COLORS[key] : LAYER_COLORS.default;
+}
+
+// ---------------------------------------------------------------------------
+// Geometry math helpers (overlay-only)
+// ---------------------------------------------------------------------------
+
+/**
+ * Compute the intersection point of two line segments using parametric form.
+ *
+ * Returns the intersection point if the segments actually cross (0 ≤ t,u ≤ 1),
+ * or null if they are parallel or do not cross within their extents.
+ *
+ * Uses the standard 2D line-line intersection formula:
+ *   t = ((x3-x1)(y3-y4) - (y3-y1)(x3-x4)) / ((x1-x2)(y3-y4) - (y1-y2)(x3-x4))
+ *   u = ((x1-x2)(y3-y1) - (y1-y2)(x3-x1)) / ((x1-x2)(y3-y4) - (y1-y2)(x3-x4))
+ */
+function lineLineIntersection(
+  a1: { x: number; y: number },
+  a2: { x: number; y: number },
+  b1: { x: number; y: number },
+  b2: { x: number; y: number },
+): { x: number; y: number } | null {
+  const dx1 = a1.x - a2.x;
+  const dy1 = a1.y - a2.y;
+  const dx2 = b1.x - b2.x;
+  const dy2 = b1.y - b2.y;
+
+  const denom = dx1 * dy2 - dy1 * dx2;
+
+  // Parallel or coincident — no single intersection point
+  if (Math.abs(denom) < 1e-10) return null;
+
+  const dx3 = b1.x - a1.x;
+  const dy3 = b1.y - a1.y;
+
+  const t = (dx3 * dy2 - dy3 * dx2) / denom;
+  const u = (dx3 * dy1 - dy3 * dx1) / denom;
+
+  // Check that intersection lies within both segment extents
+  if (t < 0 || t > 1 || u < 0 || u > 1) return null;
+
+  return {
+    x: a1.x + t * (a2.x - a1.x),
+    y: a1.y + t * (a2.y - a1.y),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Cross-marker drawing helper (overlay-only)
+// ---------------------------------------------------------------------------
+
+interface CrossMarkerStyle {
+  size: number;
+  strokeColor: string;
+  lineWidth: number;
+  globalAlpha: number;
+}
+
+/**
+ * Draw an ✕ (cross) marker at a screen position.
+ *
+ * The cross is drawn as two diagonal lines centred on the given point,
+ * with a half-arm length of `size / 2`.
+ */
+function drawCrossMarker(
+  ctx: CanvasRenderingContext2D,
+  center: { x: number; y: number },
+  style: CrossMarkerStyle,
+): void {
+  const half = style.size / 2;
+
+  ctx.save();
+  ctx.globalAlpha = style.globalAlpha;
+  ctx.strokeStyle = style.strokeColor;
+  ctx.lineWidth = style.lineWidth;
+  ctx.lineCap = 'round';
+
+  ctx.beginPath();
+  // Top-left to bottom-right
+  ctx.moveTo(center.x - half, center.y - half);
+  ctx.lineTo(center.x + half, center.y + half);
+  // Top-right to bottom-left
+  ctx.moveTo(center.x + half, center.y - half);
+  ctx.lineTo(center.x - half, center.y + half);
+  ctx.stroke();
+
+  ctx.restore();
 }
