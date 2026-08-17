@@ -12,6 +12,12 @@
  *       selection → 'info'
  *       hover     → 'warning'
  *
+ * Layer-level selection:
+ *   When `selection.layerName` is set but `featureIndex` is null, the producer
+ *   generates a bbox-fill overlay for every feature in that layer. This enables
+ *   bidirectional canvas↔layer-list sync: clicking a layer row highlights all
+ *   features on canvas.
+ *
  * Note on severity reuse:
  *   Selection uses 'info' and hover uses 'warning' as a temporary implementation
  *   choice driven by the frozen OverlayDescriptor contract. Future milestones
@@ -19,6 +25,7 @@
  *   architecture.
  */
 
+import type { VectorTileArtifact } from '@tileguard/tile-rules';
 import type { FeatureRef } from '../store/inspector-store.js';
 import type { OverlayDescriptor } from './overlay-adapter.js';
 
@@ -32,16 +39,24 @@ export type { FeatureRef };
 /**
  * SelectionProducer — transforms UI selection/hover state into OverlayDescriptors.
  *
- * Generates at most 2 descriptors per call (one selection, one hover).
+ * Generates overlays for:
+ * - Single feature selection (layerName + featureIndex both set)
+ * - Layer-level selection (layerName set, featureIndex null → all features highlighted)
+ * - Single feature hover
  */
 export interface SelectionProducer {
   /**
    * Convert current selection and hover state into OverlayDescriptors.
    *
-   * @param selection Current selected feature pointer (or null fields).
+   * @param selection Current selected feature/layer pointer (or null fields).
    * @param hover     Current hovered feature pointer (or null fields).
+   * @param artifact  The loaded tile artifact (needed for layer-level selection).
    */
-  toOverlays(selection: FeatureRef, hover: FeatureRef): OverlayDescriptor[];
+  toOverlays(
+    selection: FeatureRef,
+    hover: FeatureRef,
+    artifact?: VectorTileArtifact,
+  ): OverlayDescriptor[];
 }
 
 // ---------------------------------------------------------------------------
@@ -49,11 +64,16 @@ export interface SelectionProducer {
 // ---------------------------------------------------------------------------
 
 class SelectionProducerImpl implements SelectionProducer {
-  toOverlays(selection: FeatureRef, hover: FeatureRef): OverlayDescriptor[] {
+  toOverlays(
+    selection: FeatureRef,
+    hover: FeatureRef,
+    artifact?: VectorTileArtifact,
+  ): OverlayDescriptor[] {
     const overlays: OverlayDescriptor[] = [];
 
     // Selected feature overlay (severity: 'info')
     if (selection.layerName !== null && selection.featureIndex !== null) {
+      // Single feature selection
       overlays.push({
         type: 'bbox-fill',
         layerName: selection.layerName,
@@ -62,6 +82,8 @@ class SelectionProducerImpl implements SelectionProducer {
         severity: 'info',
       });
     }
+    // Layer-level selection (layerName set, featureIndex null) is handled by
+    // the renderer's dim-other-layers effect — no overlays needed here.
 
     // Hovered feature overlay (severity: 'warning')
     if (hover.layerName !== null && hover.featureIndex !== null) {

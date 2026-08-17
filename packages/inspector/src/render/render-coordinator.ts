@@ -110,10 +110,18 @@ class RenderCoordinatorImpl implements RenderCoordinator {
     const overlays: OverlayDescriptor[] = this._selectionProducer.toOverlays(
       selection,
       hover,
+      artifact,
     );
 
-    // Step 3 — invoke renderer (errors propagate to caller)
-    this._renderer.render(artifact, overlays);
+    // Step 3 — determine active layer for isolation/dim effect
+    // When selection has a layerName but no featureIndex, it's a layer-level selection
+    const activeLayer =
+      selection.layerName !== null && selection.featureIndex === null
+        ? selection.layerName
+        : null;
+
+    // Step 4 — invoke renderer (errors propagate to caller)
+    this._renderer.render(artifact, overlays, activeLayer);
   }
 }
 

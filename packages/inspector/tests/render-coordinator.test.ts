@@ -88,11 +88,13 @@ describe('RenderCoordinator', () => {
       expect(selectionProducer.toOverlays).toHaveBeenCalledWith(
         { layerName: 'roads', featureIndex: 0 },
         { layerName: 'roads', featureIndex: 0 },
+        mockArtifact,
       );
       expect(renderer.render).toHaveBeenCalledTimes(1);
       expect(renderer.render).toHaveBeenCalledWith(
         mockArtifact,
         producedOverlays,
+        null,
       );
     });
 
@@ -104,6 +106,7 @@ describe('RenderCoordinator', () => {
       expect(selectionProducer.toOverlays).toHaveBeenLastCalledWith(
         { layerName: 'roads', featureIndex: 1 },
         { layerName: null, featureIndex: null },
+        mockArtifact,
       );
 
       store.setHover('water', 2);
@@ -111,6 +114,7 @@ describe('RenderCoordinator', () => {
       expect(selectionProducer.toOverlays).toHaveBeenLastCalledWith(
         { layerName: 'roads', featureIndex: 1 },
         { layerName: 'water', featureIndex: 2 },
+        mockArtifact,
       );
     });
   });

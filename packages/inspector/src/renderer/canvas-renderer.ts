@@ -127,10 +127,16 @@ export interface Renderer {
    * Execute the full rendering pipeline:
    *   boundary → polygons → lines → points → vertices → overlays
    *
-   * @param artifact  The decoded VectorTileArtifact to render.
-   * @param overlays  Overlay descriptors produced by the OverlayAdapter.
+   * @param artifact    The decoded VectorTileArtifact to render.
+   * @param overlays    Overlay descriptors produced by the OverlayAdapter.
+   * @param activeLayer Optional layer name to isolate visually. When set,
+   *                    non-active layers render at reduced opacity (dim effect).
    */
-  render(artifact: VectorTileArtifact, overlays: OverlayDescriptor[]): void;
+  render(
+    artifact: VectorTileArtifact,
+    overlays: OverlayDescriptor[],
+    activeLayer?: string | null,
+  ): void;
 }
 
 // ---------------------------------------------------------------------------
@@ -294,7 +300,7 @@ export class CanvasRenderer implements Renderer {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  render(artifact: VectorTileArtifact, overlays: OverlayDescriptor[]): void {
+  render(artifact: VectorTileArtifact, overlays: OverlayDescriptor[], activeLayer?: string | null): void {
     const ctx = this._requireCtx();
     const vp = this._viewport;
 
@@ -310,17 +316,20 @@ export class CanvasRenderer implements Renderer {
     //    This buffer is local to this call — it is discarded when render() returns.
     const accumulated = this._collectGeometry(artifact, vp);
 
+    // Resolve active layer: null/undefined means "no isolation" (all layers full opacity)
+    const isolatedLayer = activeLayer ?? null;
+
     // 4–6. Draw passes (enforces global z-order: polygons → lines → points)
-    this._drawPolygons(ctx, accumulated);
-    this._drawLines(ctx, accumulated);
-    this._drawPoints(ctx, accumulated);
+    this._drawPolygons(ctx, accumulated, isolatedLayer);
+    this._drawLines(ctx, accumulated, isolatedLayer);
+    this._drawPoints(ctx, accumulated, isolatedLayer);
 
     // 7. Optional vertex markers
     if (this._showVertices) {
       this._drawVertices(ctx, accumulated);
     }
 
-    // 8. Diagnostic overlays (top pass — always above geometry)
+    // 8. Diagnostic overlays (top pass — always above geometry, always full opacity)
     this._drawOverlays(ctx, overlays, artifact, vp);
 
     // accumulated is now eligible for GC — no reference is kept
@@ -411,13 +420,17 @@ export class CanvasRenderer implements Renderer {
   private _drawPolygons(
     ctx: CanvasRenderingContext2D,
     accumulated: AccumulatedGeometry,
+    activeLayer: string | null,
   ): void {
     for (const { rings, layerName } of accumulated.polygons) {
       const color = resolveLayerColor(layerName);
+      const dimmed = activeLayer !== null && layerName !== activeLayer;
+      const alpha = dimmed ? 0.08 : POLYGON_STYLE.globalAlpha;
       drawPolygon(ctx, rings, {
         ...POLYGON_STYLE,
         fillColor: color,
         strokeColor: color,
+        globalAlpha: alpha,
       });
     }
   }
@@ -425,20 +438,34 @@ export class CanvasRenderer implements Renderer {
   private _drawLines(
     ctx: CanvasRenderingContext2D,
     accumulated: AccumulatedGeometry,
+    activeLayer: string | null,
   ): void {
     for (const { points, layerName } of accumulated.lines) {
       const color = resolveLayerColor(layerName);
-      drawLineString(ctx, points, { ...LINE_STYLE, strokeColor: color });
+      const dimmed = activeLayer !== null && layerName !== activeLayer;
+      const alpha = dimmed ? 0.1 : LINE_STYLE.globalAlpha;
+      drawLineString(ctx, points, {
+        ...LINE_STYLE,
+        strokeColor: color,
+        globalAlpha: alpha,
+      });
     }
   }
 
   private _drawPoints(
     ctx: CanvasRenderingContext2D,
     accumulated: AccumulatedGeometry,
+    activeLayer: string | null,
   ): void {
     for (const { point, layerName } of accumulated.points) {
       const color = resolveLayerColor(layerName);
-      drawPoint(ctx, point, { ...POINT_STYLE, fillColor: color });
+      const dimmed = activeLayer !== null && layerName !== activeLayer;
+      const alpha = dimmed ? 0.1 : POINT_STYLE.globalAlpha;
+      drawPoint(ctx, point, {
+        ...POINT_STYLE,
+        fillColor: color,
+        globalAlpha: alpha,
+      });
     }
   }
 
