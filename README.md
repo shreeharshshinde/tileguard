@@ -14,12 +14,15 @@ TileGuard is a rule-based validation framework for vector tiles and MapLibre sty
 ## Features
 
 - **21 built-in rules** — 12 tile validation + 9 style lint rules, all configurable
+- **Visual Inspector** — browser-based debugging environment with canvas geometry rendering, diagnostic overlays, and investigation workflows
 - **Plugin architecture** — write custom rules in ~25 lines of TypeScript
 - **Zero-config defaults** — works out of the box, customize when you need to
 - **CI-native** — exit codes, JSON output, GitHub Actions ready
 - **Structured diagnostics** — every finding has a rule ID, severity, location, and suggestion
 - **Comparison & regression detection** — diff tiles across versions, rank regressions by confidence
 - **Report generation** — Markdown, HTML, and JSON engineering reports
+- **Convention-aware geometry validation** — auto-detects MVT (CW) vs OGC/GeoJSON (CCW) winding conventions
+- **10 CLI commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `version`
 - **Modular** — install only what you need (tile rules, style rules, or both)
 
 ---
@@ -35,6 +38,12 @@ npx @tileguard/cli check ./style.json
 
 # Multiple sources, JSON output for CI
 npx @tileguard/cli check ./tiles/ ./styles/ --reporter json
+
+# Compare two tile versions
+npx @tileguard/cli compare ./v1.pbf ./v2.pbf
+
+# Generate an engineering report
+npx @tileguard/cli report ./v1.pbf ./v2.pbf --format markdown
 
 # Scaffold a config file
 npx @tileguard/cli init
@@ -83,8 +92,8 @@ Without a config file, all recommended rules run at their default severities.
 | `tile/layer-feature-count` | Per-layer feature count outside configured bounds |
 | `tile/unclosed-ring` | Polygon rings not closed (first ≠ last vertex) |
 | `tile/zero-area-ring` | Degenerate polygons with zero/near-zero area |
-| `tile/winding-order` | Incorrect ring winding order (earcut safety) |
-| `tile/hole-containment` | Hole rings outside the outer ring (earcut safety) |
+| `tile/winding-order` | Incorrect ring winding order (convention-aware: MVT & OGC) |
+| `tile/hole-containment` | Hole rings outside the outer ring (multi-polygon aware) |
 | `tile/self-intersection` | Geometry that crosses itself |
 | `tile/degenerate-geometry` | Lines/polygons with insufficient vertices |
 | `tile/no-empty` | Tiles with zero features |
@@ -168,7 +177,7 @@ Rules never print. Reporters never validate. Adding a rule never touches formatt
 | [`@tileguard/reporters`](packages/reporters) | Text & JSON reporters + report engine (Markdown, HTML, JSON) |
 | [`@tileguard/analysis`](packages/analysis) | Comparison and regression analysis engine |
 | [`@tileguard/cli`](packages/cli) | CLI with 10 commands |
-| [`@tileguard/inspector`](packages/inspector) | Visual debugging environment (private) |
+| [`@tileguard/inspector`](packages/inspector) | Visual debugging environment — canvas rendering, diagnostic overlays, investigation workflows |
 
 Dependencies flow strictly inward. Core has zero runtime dependencies. Domain packages depend only on Core. Install only what you need.
 
@@ -225,6 +234,7 @@ Each package includes its own README with detailed API documentation:
 | `@tileguard/reporters` | [Reporters & Reports](packages/reporters/README.md) |
 | `@tileguard/analysis` | [Comparison & Regression](packages/analysis/README.md) |
 | `@tileguard/cli` | [CLI Commands](packages/cli/README.md) |
+| `@tileguard/inspector` | [Visual Inspector](packages/inspector/README.md) |
 
 ---
 
