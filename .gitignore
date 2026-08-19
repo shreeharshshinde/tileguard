@@ -1,7 +1,11 @@
 # Node
-node_modules/
+**/node_modules/
 npm-debug.log*
 package-lock.json
+
+# VitePress documentation site build output & cache
+docs-site/.vitepress/dist/
+docs-site/.vitepress/cache/
 
 # Legacy prototype node_modules (preserved as-is, not tracked)
 legacy/js/node_modules/
