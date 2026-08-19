@@ -1,5 +1,14 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  BookOpen,
+  FileText,
+  GitCompare,
+  Layers,
+  Shield,
+  Zap,
+} from 'lucide-react';
 import { getNavigationService } from '../../services/NavigationService.js';
 
 const fadeUp = {
@@ -11,9 +20,43 @@ const fadeUp = {
   },
 };
 
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.2 } },
+};
+
+const DOCS_URL = 'https://dist-rho-three-iej1rtdssc.vercel.app';
+
+const QUICK_LINKS = [
+  {
+    icon: Zap,
+    title: 'Quick Start',
+    description: 'Install and run in 5 minutes',
+    href: `${DOCS_URL}/getting-started/quick-start`,
+  },
+  {
+    icon: Layers,
+    title: 'Rules Reference',
+    description: '21 built-in rules for tiles & styles',
+    href: `${DOCS_URL}/rules/`,
+  },
+  {
+    icon: Shield,
+    title: 'How It Works',
+    description: 'Architecture and pipeline',
+    href: `${DOCS_URL}/learn/how-it-works`,
+  },
+  {
+    icon: GitCompare,
+    title: 'CI / GitHub Actions',
+    description: 'Automated quality gates',
+    href: `${DOCS_URL}/guides/ci-github-actions`,
+  },
+];
+
 export function DocsPage(): JSX.Element {
   return (
-    <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-[#000000] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
+    <div className="relative flex h-screen w-screen flex-col items-center overflow-y-auto bg-[#000000] font-[var(--tg-font-sans)] text-[var(--tg-text-primary)]">
       {/* Background glow */}
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 opacity-10 blur-[100px]"
@@ -38,30 +81,76 @@ export function DocsPage(): JSX.Element {
       </div>
 
       <motion.div
-        variants={fadeUp}
+        variants={stagger}
         initial="hidden"
         animate="show"
-        className="flex max-w-lg flex-col items-center text-center z-10"
+        className="flex max-w-2xl flex-col items-center pt-24 pb-16 px-6 text-center z-10"
       >
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.15)]">
+        {/* Icon */}
+        <motion.div
+          variants={fadeUp}
+          className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--tg-bg-primary)] ring-1 ring-[var(--tg-accent)]/50 shadow-[0_0_30px_rgba(163,255,0,0.15)]"
+        >
           <BookOpen className="h-10 w-10 text-[var(--tg-accent)]" />
-        </div>
+        </motion.div>
 
-        <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-white">
+        {/* Heading */}
+        <motion.h1
+          variants={fadeUp}
+          className="mb-4 text-4xl font-extrabold tracking-tight text-white"
+        >
           Documentation
-        </h1>
+        </motion.h1>
 
-        <p className="mb-10 text-lg leading-relaxed text-[var(--tg-text-secondary)]">
-          The official TileGuard documentation is currently being written. It
-          will contain complete references for all rules, configuration guides,
-          and architecture overviews.
-        </p>
+        <motion.p
+          variants={fadeUp}
+          className="mb-10 text-lg leading-relaxed text-[var(--tg-text-secondary)]"
+        >
+          Rules, architecture, guides, and API reference — everything you need
+          to validate, inspect, and ship quality geospatial data.
+        </motion.p>
 
-        <div className="rounded-2xl border border-[var(--tg-accent)]/20 bg-[var(--tg-accent)]/5 px-6 py-4">
-          <p className="font-mono text-sm text-[var(--tg-accent)]">
-            Coming soon in v1.0
-          </p>
-        </div>
+        {/* Open docs button */}
+        <motion.a
+          variants={fadeUp}
+          href={DOCS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-14 inline-flex items-center gap-2 rounded-full bg-[var(--tg-accent)] px-6 py-3 text-sm font-bold text-black transition-all hover:bg-[var(--tg-accent-hover)] hover:shadow-[0_0_20px_rgba(163,255,0,0.3)]"
+        >
+          <FileText className="h-4 w-4" />
+          Open Documentation
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </motion.a>
+
+        {/* Quick links grid */}
+        <motion.div
+          variants={fadeUp}
+          className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2"
+        >
+          {QUICK_LINKS.map(({ icon: Icon, title, description, href }) => (
+            <a
+              key={title}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start gap-4 rounded-xl border border-[var(--tg-border)] bg-[var(--tg-bg-secondary)] p-4 text-left transition-all hover:border-[var(--tg-accent)]/40 hover:shadow-[0_0_15px_rgba(163,255,0,0.06)]"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-black ring-1 ring-white/10 transition-all group-hover:ring-[var(--tg-accent)]/40">
+                <Icon className="h-4 w-4 text-[var(--tg-text-muted)] transition-colors group-hover:text-[var(--tg-accent)]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-semibold text-white transition-colors group-hover:text-[var(--tg-accent)]">
+                  {title}
+                </h3>
+                <p className="mt-0.5 text-xs text-[var(--tg-text-muted)]">
+                  {description}
+                </p>
+              </div>
+              <ArrowUpRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--tg-text-muted)] opacity-0 transition-all group-hover:opacity-100 group-hover:text-[var(--tg-accent)]" />
+            </a>
+          ))}
+        </motion.div>
       </motion.div>
     </div>
   );

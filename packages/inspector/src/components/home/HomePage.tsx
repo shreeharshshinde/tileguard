@@ -150,16 +150,20 @@ function _RecentRail({
 function _DocsRail(): JSX.Element {
   const links = [
     {
+      label: 'Quick Start',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start',
+    },
+    {
+      label: 'Rules Reference',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/rules/',
+    },
+    {
       label: 'Architecture',
-      href: 'https://github.com/shreeharshshinde/tileguard/docs/architecture',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/learn/how-it-works',
     },
     {
-      label: 'Rule Reference',
-      href: 'https://github.com/shreeharshshinde/tileguard/docs/rules',
-    },
-    {
-      label: 'Contributing',
-      href: 'https://github.com/shreeharshshinde/tileguard/CONTRIBUTING.md',
+      label: 'CI / GitHub Actions',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/guides/ci-github-actions',
     },
     { label: 'GitHub', href: 'https://github.com/shreeharshshinde/tileguard' },
   ];
@@ -326,17 +330,14 @@ export function HomePage({
 
           {/* Right: Docs, GitHub Star & Version */}
           <div className="flex items-center gap-8">
-            <button
-              type="button"
-              onClick={() => {
-                import('../../services/NavigationService.js').then((m) =>
-                  m.getNavigationService().openDocs(),
-                );
-              }}
+            <a
+              href="https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm font-semibold text-[var(--tg-text-secondary)] hover:text-white transition-colors"
             >
               Documentation
-            </button>
+            </a>
 
             <div className="flex items-center gap-3">
               <a
