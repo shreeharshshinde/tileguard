@@ -1,0 +1,284 @@
+/**
+ * TileGuard Documentation — Custom Theme
+ *
+ * Overrides VitePress default CSS variables with TileGuard's design system
+ * to match the Inspector homepage aesthetic:
+ *   - Pure black background
+ *   - Neon green (#a3ff00) accent
+ *   - Inter + JetBrains Mono typography
+ *   - Dark-only (no light mode)
+ */
+
+/* ─── Brand & Color Tokens ─────────────────────────────────────────────── */
+
+:root {
+  --vp-c-brand-1: #a3ff00;
+  --vp-c-brand-2: #bef264;
+  --vp-c-brand-3: #a3ff00;
+  --vp-c-brand-soft: rgba(163, 255, 0, 0.14);
+
+  --vp-c-tip-1: #a3ff00;
+  --vp-c-tip-2: #bef264;
+  --vp-c-tip-3: rgba(163, 255, 0, 0.14);
+  --vp-c-tip-soft: rgba(163, 255, 0, 0.08);
+
+  --vp-c-warning-1: #f59e0b;
+  --vp-c-warning-2: #fbbf24;
+  --vp-c-warning-3: rgba(245, 158, 11, 0.14);
+  --vp-c-warning-soft: rgba(245, 158, 11, 0.08);
+
+  --vp-c-danger-1: #ef4444;
+  --vp-c-danger-2: #f87171;
+  --vp-c-danger-3: rgba(239, 68, 68, 0.14);
+  --vp-c-danger-soft: rgba(239, 68, 68, 0.08);
+}
+
+/* ─── Dark Mode (forced) ────────────────────────────────────────────────── */
+
+html {
+  color-scheme: dark;
+}
+
+.dark {
+  --vp-c-bg: #000000;
+  --vp-c-bg-alt: #09090b;
+  --vp-c-bg-elv: #121214;
+  --vp-c-bg-soft: #1f1f22;
+
+  --vp-c-text-1: #ffffff;
+  --vp-c-text-2: #a1a1aa;
+  --vp-c-text-3: #71717a;
+
+  --vp-c-border: #27272a;
+  --vp-c-divider: #27272a;
+  --vp-c-gutter: #09090b;
+
+  --vp-code-block-bg: #09090b;
+  --vp-code-bg: #121214;
+  --vp-code-color: #e4e4e7;
+
+  --vp-c-brand-1: #a3ff00;
+  --vp-c-brand-2: #bef264;
+  --vp-c-brand-3: #a3ff00;
+  --vp-c-brand-soft: rgba(163, 255, 0, 0.14);
+
+  --vp-button-brand-bg: #a3ff00;
+  --vp-button-brand-text: #000000;
+  --vp-button-brand-hover-bg: #bef264;
+  --vp-button-brand-hover-text: #000000;
+  --vp-button-brand-active-bg: #a3ff00;
+  --vp-button-brand-active-text: #000000;
+
+  --vp-button-alt-bg: #1f1f22;
+  --vp-button-alt-text: #a1a1aa;
+  --vp-button-alt-hover-bg: #27272a;
+  --vp-button-alt-hover-text: #ffffff;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #ffffff 40%,
+    #a3ff00
+  );
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle,
+    rgba(163, 255, 0, 0.2) 0%,
+    transparent 60%
+  );
+  --vp-home-hero-image-filter: blur(68px);
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────── */
+
+:root {
+  --vp-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code',
+    monospace;
+}
+
+/* ─── Selection ─────────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(163, 255, 0, 0.25);
+  color: #ffffff;
+}
+
+/* ─── Navigation ────────────────────────────────────────────────────────── */
+
+.VPNav {
+  border-bottom-color: #27272a !important;
+}
+
+.dark .VPNav {
+  background: #09090b !important;
+}
+
+.dark .VPNavBar {
+  background: #09090b !important;
+  border-bottom-color: #27272a !important;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────────────────── */
+
+.dark .VPSidebar {
+  background: #09090b !important;
+  border-right-color: #27272a !important;
+}
+
+.VPSidebarItem.is-active > .item > .link > .text {
+  color: #a3ff00 !important;
+  font-weight: 600;
+}
+
+/* Sidebar link hover */
+.dark .VPSidebarItem .link:hover .text {
+  color: #bef264 !important;
+}
+
+/* ─── Content ───────────────────────────────────────────────────────────── */
+
+/* Inline code */
+.dark .vp-doc :not(pre) > code {
+  background: #121214;
+  color: #a3ff00;
+  border: 1px solid #27272a;
+}
+
+/* Code blocks */
+.dark div[class*='language-'] {
+  border: 1px solid #27272a;
+  background: #09090b !important;
+}
+
+/* Code block tab active */
+.dark .vp-code-group .tabs label.active {
+  color: #a3ff00;
+  border-bottom-color: #a3ff00;
+}
+
+/* ─── Home Hero ─────────────────────────────────────────────────────────── */
+
+.VPHero .name {
+  font-weight: 800 !important;
+  letter-spacing: -0.03em;
+}
+
+.VPHero .text {
+  font-weight: 600 !important;
+}
+
+.VPHero .tagline {
+  color: #a1a1aa !important;
+}
+
+/* Hero image glow effect */
+.VPImage.image-src {
+  filter: drop-shadow(0 0 40px rgba(163, 255, 0, 0.25));
+}
+
+/* ─── Feature Cards ─────────────────────────────────────────────────────── */
+
+.dark .VPFeature {
+  background: #09090b !important;
+  border: 1px solid #27272a !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .VPFeature:hover {
+  border-color: #a3ff00 !important;
+  box-shadow: 0 0 20px rgba(163, 255, 0, 0.08);
+}
+
+.dark .VPFeature .title {
+  color: #ffffff !important;
+}
+
+.dark .VPFeature .details {
+  color: #a1a1aa !important;
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────── */
+
+.dark .VPFooter {
+  background: #09090b !important;
+  border-top-color: #27272a !important;
+}
+
+/* ─── Tables ────────────────────────────────────────────────────────────── */
+
+.dark .vp-doc table {
+  border-collapse: collapse;
+}
+
+.dark .vp-doc th {
+  background: #121214;
+  border-color: #27272a;
+  color: #a1a1aa;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dark .vp-doc td {
+  border-color: #27272a;
+}
+
+.dark .vp-doc tr:hover td {
+  background: #09090b;
+}
+
+/* ─── Custom Containers (tip/warning/danger) ────────────────────────────── */
+
+.dark .custom-block.tip {
+  border-color: rgba(163, 255, 0, 0.4);
+  background: rgba(163, 255, 0, 0.04);
+}
+
+.dark .custom-block.warning {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.04);
+}
+
+.dark .custom-block.danger {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a3ff00;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+/* ─── Misc ──────────────────────────────────────────────────────────────── */
+
+/* Hide the light mode toggle button */
+.VPSwitch {
+  display: none !important;
+}
+
+/* Badge styling */
+.dark .VPBadge {
+  background: rgba(163, 255, 0, 0.1);
+  color: #a3ff00;
+  border: 1px solid rgba(163, 255, 0, 0.3);
+}
