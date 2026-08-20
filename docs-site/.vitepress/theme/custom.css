@@ -105,17 +105,161 @@ html {
 
 /* ─── Navigation ────────────────────────────────────────────────────────── */
 
-.VPNav {
-  border-bottom-color: #27272a !important;
-}
-
+/* Navbar container — fixed height, glassmorphism */
 .dark .VPNav {
-  background: #09090b !important;
+  border-bottom: 1px solid rgba(163, 255, 0, 0.06) !important;
 }
 
 .dark .VPNavBar {
-  background: #09090b !important;
-  border-bottom-color: #27272a !important;
+  background: rgba(0, 0, 0, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(1.3) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.3) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  height: 64px !important;
+}
+
+
+/* Logo — subtle glow, proper sizing */
+.VPNavBarTitle .logo {
+  height: 28px !important;
+  width: 28px !important;
+  filter: drop-shadow(0 0 6px rgba(163, 255, 0, 0.4)) !important;
+  transition: filter 0.2s ease;
+}
+
+.VPNavBarTitle:hover .logo {
+  filter: drop-shadow(0 0 12px rgba(163, 255, 0, 0.7)) !important;
+}
+
+/* Site title — bold, clean */
+.dark .VPNavBarTitle .title {
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+}
+
+/* Nav links — clean, spaced, with animated underline */
+.dark .VPNavBarMenu .VPNavBarMenuLink,
+.dark .VPNavBarMenu .VPNavBarMenuGroup .text {
+  color: #a1a1aa !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  transition: color 0.15s ease !important;
+  position: relative;
+  padding: 0 12px !important;
+}
+
+.dark .VPNavBarMenu .VPNavBarMenuLink::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  margin-top: 12px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: #a3ff00;
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .VPNavBarMenu .VPNavBarMenuLink:hover,
+.dark .VPNavBarMenu .VPNavBarMenuGroup:hover .text {
+  color: #ffffff !important;
+}
+
+.dark .VPNavBarMenu .VPNavBarMenuLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* Active nav link */
+.dark .VPNavBarMenu .VPNavBarMenuLink.active {
+  color: #a3ff00 !important;
+}
+
+.dark .VPNavBarMenu .VPNavBarMenuLink.active::after {
+  transform: scaleX(1);
+}
+
+/* Dropdown menu styling */
+.dark .VPNavBarMenu .VPFlyout .VPMenu {
+  background: rgba(9, 9, 11, 0.98) !important;
+  border: 1px solid #27272a !important;
+  border-radius: 10px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(163, 255, 0, 0.03) !important;
+  padding: 6px !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.dark .VPNavBarMenu .VPFlyout .VPMenuLink a {
+  color: #a1a1aa !important;
+  font-size: 0.825rem !important;
+  font-weight: 500 !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  transition: all 0.12s ease !important;
+}
+
+.dark .VPNavBarMenu .VPFlyout .VPMenuLink a:hover {
+  color: #ffffff !important;
+  background: rgba(163, 255, 0, 0.06) !important;
+}
+
+/* Social links in nav — GitHub icon */
+.dark .VPSocialLinks .VPSocialLink {
+  color: #71717a !important;
+  transition: color 0.15s ease, transform 0.15s ease !important;
+}
+
+.dark .VPSocialLinks .VPSocialLink:hover {
+  color: #a3ff00 !important;
+  transform: scale(1.1);
+}
+
+/* Search button in nav */
+.dark .VPNavBarSearch .DocSearch-Button {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.dark .VPNavBarSearch .DocSearch-Button:hover {
+  border-color: rgba(163, 255, 0, 0.4) !important;
+}
+
+/* Local search button */
+.dark .VPNavBarSearchButton {
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  transition: border-color 0.15s ease, background 0.15s ease !important;
+}
+
+.dark .VPNavBarSearchButton:hover {
+  border-color: rgba(163, 255, 0, 0.3) !important;
+  background: rgba(163, 255, 0, 0.04) !important;
+}
+
+/* Hamburger menu (mobile) */
+.dark .VPNavBarHamburger .container span {
+  background: #a1a1aa !important;
+}
+
+.dark .VPNavBarHamburger:hover .container span {
+  background: #a3ff00 !important;
+}
+
+/* GitHub icon link in socialLinks area */
+.dark .VPNavBarSocialLinks a {
+  color: #71717a !important;
+  transition: color 0.15s ease;
+}
+
+.dark .VPNavBarSocialLinks a:hover {
+  color: #a3ff00 !important;
 }
 
 /* ─── Sidebar ───────────────────────────────────────────────────────────── */
@@ -136,6 +280,42 @@ html {
 }
 
 /* ─── Content ───────────────────────────────────────────────────────────── */
+
+/* Heading hierarchy — mostly white with subtle green tint to distinguish from body */
+.dark .vp-doc h1 {
+  color: #f0fff0 !important;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.dark .vp-doc h2 {
+  color: rgba(240, 255, 240, 0.92) !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dark .vp-doc h3 {
+  color: rgba(235, 255, 235, 0.82) !important;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.dark .vp-doc h4 {
+  color: rgba(230, 255, 230, 0.72) !important;
+  font-weight: 600;
+}
+
+.dark .vp-doc h5,
+.dark .vp-doc h6 {
+  color: rgba(225, 255, 225, 0.6) !important;
+  font-weight: 600;
+}
+
+/* Body text stays white/gray for contrast */
+.dark .vp-doc p,
+.dark .vp-doc li {
+  color: #d4d4d8;
+}
 
 /* Inline code */
 .dark .vp-doc :not(pre) > code {
