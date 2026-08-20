@@ -229,6 +229,6 @@ No component crosses these boundaries:
 
 ## What Next?
 
-- [**Validation Pipeline →**](/architecture/validation-pipeline) — The full execution flow
-- [**Rule Engine →**](/architecture/rule-engine) — How rules are structured
-- [**Concepts →**](/learn/concepts) — Simplified explanation
+- [**Validation Pipeline ›**](/architecture/validation-pipeline) — The full execution flow
+- [**Rule Engine ›**](/architecture/rule-engine) — How rules are structured
+- [**Concepts ›**](/learn/concepts) — Simplified explanation

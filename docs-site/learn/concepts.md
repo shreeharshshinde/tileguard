@@ -195,6 +195,6 @@ This separation is what makes TileGuard reliable and extensible.
 
 ## What Next?
 
-- [**Validating Tiles →**](/guides/validating-tiles) — Practical tile validation guide
-- [**Rules Reference →**](/rules/) — All 21 rules with configuration
-- [**How It Works →**](/learn/how-it-works) — Full architecture
+- [**Validating Tiles ›**](/guides/validating-tiles) — Practical tile validation guide
+- [**Rules Reference ›**](/rules/) — All 21 rules with configuration
+- [**How It Works ›**](/learn/how-it-works) — Full architecture

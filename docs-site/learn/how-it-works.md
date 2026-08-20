@@ -188,6 +188,6 @@ const result = await engine.run(['./tiles/', './styles/']);
 
 ## What Next?
 
-- [**View All Rules →**](/rules/) — What TileGuard catches
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Automated quality gates
-- [**Quick Start →**](/getting-started/quick-start) — Run it yourself
+- [**View All Rules ›**](/rules/) — What TileGuard catches
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated quality gates
+- [**Quick Start ›**](/getting-started/quick-start) — Run it yourself

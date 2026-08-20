@@ -134,6 +134,6 @@ This creates `tileguard.config.ts` with all recommended rules enabled at their d
 
 ## What Next?
 
-- [**Your First Tile Check →**](/getting-started/first-check) — Walk through a real validation
-- [**Quick Start →**](/getting-started/quick-start) — Run common commands
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Set up automated quality gates
+- [**Your First Tile Check ›**](/getting-started/first-check) — Walk through a real validation
+- [**Quick Start ›**](/getting-started/quick-start) — Run common commands
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Set up automated quality gates

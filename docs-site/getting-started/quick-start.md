@@ -221,16 +221,16 @@ Creates `tileguard.config.ts` with all recommended rules at default severities.
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
 
-[**View All Rules →**](/rules/)\
+[**View All Rules ›**](/rules/)\
 21 built-in rules for tiles and styles
 
-[**Set Up CI →**](/guides/ci-github-actions)\
+[**Set Up CI ›**](/guides/ci-github-actions)\
 Fail PRs on quality gate violations
 
-[**How It Works →**](/learn/how-it-works)\
+[**How It Works ›**](/learn/how-it-works)\
 Understand the architecture
 
-[**What is TileGuard? →**](/learn/what-is-tileguard)\
+[**What is TileGuard? ›**](/learn/what-is-tileguard)\
 The problem we solve
 
 </div>

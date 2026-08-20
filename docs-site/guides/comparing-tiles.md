@@ -144,6 +144,6 @@ Compare tiles in your pull request workflow:
 
 ## What Next?
 
-- [**Generating Reports →**](/guides/generating-reports) — Produce engineering reports
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Automated pipelines
-- [**Inspecting Findings →**](/guides/inspecting-findings) — Visual debugging
+- [**Generating Reports ›**](/guides/generating-reports) — Produce engineering reports
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated pipelines
+- [**Inspecting Findings ›**](/guides/inspecting-findings) — Visual debugging

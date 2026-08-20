@@ -197,6 +197,6 @@ if (!result.summary.pass) {
 
 ## What Next?
 
-- [**Inspecting Findings →**](/guides/inspecting-findings) — Visual debugging in the Inspector
-- [**Comparing Tiles →**](/guides/comparing-tiles) — Diff between tile versions
-- [**Rules Reference →**](/rules/) — Detailed per-rule documentation
+- [**Inspecting Findings ›**](/guides/inspecting-findings) — Visual debugging in the Inspector
+- [**Comparing Tiles ›**](/guides/comparing-tiles) — Diff between tile versions
+- [**Rules Reference ›**](/rules/) — Detailed per-rule documentation

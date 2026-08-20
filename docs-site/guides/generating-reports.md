@@ -196,6 +196,6 @@ The Inspector can also generate reports directly from the UI:
 
 ## What Next?
 
-- [**Comparing Tiles →**](/guides/comparing-tiles) — How to compare tile versions
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Automated pipelines
-- [**Quick Start →**](/getting-started/quick-start) — Getting started
+- [**Comparing Tiles ›**](/guides/comparing-tiles) — How to compare tile versions
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated pipelines
+- [**Quick Start ›**](/getting-started/quick-start) — Getting started

@@ -156,6 +156,6 @@ interface EngineResult {
 
 ## What Next?
 
-- [**Rule Engine →**](/architecture/rule-engine) — How rules are structured
-- [**Decoder & Diagnostics →**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
-- [**How It Works →**](/learn/how-it-works) — High-level overview
+- [**Rule Engine ›**](/architecture/rule-engine) — How rules are structured
+- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
+- [**How It Works ›**](/learn/how-it-works) — High-level overview

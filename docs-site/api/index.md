@@ -145,6 +145,6 @@ if (!result.summary.pass) {
 
 ## What Next?
 
-- [**Rule Engine →**](/architecture/rule-engine) — How rules are structured internally
-- [**Decoder & Diagnostics →**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models in detail
-- [**Writing Rules →**](/rules/#writing-custom-rules) — Create your own rules
+- [**Rule Engine ›**](/architecture/rule-engine) — How rules are structured internally
+- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models in detail
+- [**Writing Rules ›**](/rules/#writing-custom-rules) — Create your own rules

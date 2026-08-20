@@ -154,6 +154,6 @@ TileGuard sits between your tile generation pipeline and your deployment — the
 
 ## What Next?
 
-- [**Quick Start →**](/getting-started/quick-start) — Run TileGuard in 5 minutes
-- [**How It Works →**](/learn/how-it-works) — Architecture and pipeline
-- [**View All Rules →**](/rules/) — See what TileGuard catches
+- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard in 5 minutes
+- [**How It Works ›**](/learn/how-it-works) — Architecture and pipeline
+- [**View All Rules ›**](/rules/) — See what TileGuard catches

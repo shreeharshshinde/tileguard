@@ -155,6 +155,6 @@ tileguard check ./tile.pbf --reporter json
 
 ## What Next?
 
-- [**Concepts →**](/learn/concepts) — Understand rules and diagnostics in depth
-- [**Validating Tiles →**](/guides/validating-tiles) — Deep dive into tile validation
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Automate quality gates
+- [**Concepts ›**](/learn/concepts) — Understand rules and diagnostics in depth
+- [**Validating Tiles ›**](/guides/validating-tiles) — Deep dive into tile validation
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automate quality gates

@@ -135,6 +135,6 @@ Switch to **Statistics** (`Ctrl+3`) for aggregate views:
 
 ## What Next?
 
-- [**Comparing Tiles →**](/guides/comparing-tiles) — Diff between tile versions
-- [**Validating Tiles →**](/guides/validating-tiles) — CLI validation guide
-- [**Rules Reference →**](/rules/) — All 21 rules
+- [**Comparing Tiles ›**](/guides/comparing-tiles) — Diff between tile versions
+- [**Validating Tiles ›**](/guides/validating-tiles) — CLI validation guide
+- [**Rules Reference ›**](/rules/) — All 21 rules

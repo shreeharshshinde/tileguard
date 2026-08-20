@@ -154,6 +154,6 @@ export const myPlugin: Plugin = {
 
 ## What Next?
 
-- [**Quick Start →**](/getting-started/quick-start) — Run TileGuard in 5 minutes
-- [**CI / GitHub Actions →**](/guides/ci-github-actions) — Fail PRs on violations
-- [**How It Works →**](/learn/how-it-works) — Architecture overview
+- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard in 5 minutes
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Fail PRs on violations
+- [**How It Works ›**](/learn/how-it-works) — Architecture overview

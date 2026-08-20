@@ -229,6 +229,6 @@ The `--reporter` flag overrides the config file reporter. Use `--reporter json` 
 
 ## What Next?
 
-- [**Quick Start →**](/getting-started/quick-start) — Run TileGuard locally first
-- [**View All Rules →**](/rules/) — See what's being validated
-- [**How It Works →**](/learn/how-it-works) — Understand the pipeline
+- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard locally first
+- [**View All Rules ›**](/rules/) — See what's being validated
+- [**How It Works ›**](/learn/how-it-works) — Understand the pipeline

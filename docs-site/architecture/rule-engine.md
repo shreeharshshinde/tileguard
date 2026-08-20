@@ -192,6 +192,6 @@ A rule can support multiple artifact types (rare) or a single type (common).
 
 ## What Next?
 
-- [**Validation Pipeline →**](/architecture/validation-pipeline) — The full execution flow
-- [**Decoder & Diagnostics →**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
-- [**Rules Reference →**](/rules/) — All 21 built-in rules
+- [**Validation Pipeline ›**](/architecture/validation-pipeline) — The full execution flow
+- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
+- [**Rules Reference ›**](/rules/) — All 21 built-in rules
