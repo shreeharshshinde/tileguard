@@ -64,6 +64,8 @@ export function renderHtml(report: EngineeringReport): string {
 
   const w = new HtmlWriter();
   w.setTitle('TileGuard Engineering Report');
+  w.setVersion(metadata.tileguardVersion);
+  w.setTimestamp(metadata.generatedAt);
 
   // Register sidebar nav links
   w.addNavLink('executive-summary', '📋 Executive Summary');
@@ -86,6 +88,23 @@ export function renderHtml(report: EngineeringReport): string {
     { label: 'Source:', value: metadata.sourceTile },
     { label: 'Target:', value: metadata.targetTile },
   ]);
+
+  // Investigation metadata (collapsible — matches Markdown format)
+  const metaFields: Array<{ label: string; value: string }> = [
+    { label: 'Report ID', value: metadata.reportId ?? '—' },
+    { label: 'Generated', value: metadata.generatedAt },
+    { label: 'TileGuard Version', value: metadata.tileguardVersion },
+    { label: 'Duration', value: `${metadata.totalDurationMs}ms` },
+    { label: 'Source Tile', value: metadata.sourceTile },
+    { label: 'Target Tile', value: metadata.targetTile },
+  ];
+  if (metadata.platform) metaFields.push({ label: 'Platform', value: metadata.platform });
+  if (metadata.nodeVersion) metaFields.push({ label: 'Node.js', value: metadata.nodeVersion });
+  if (metadata.cliVersion) metaFields.push({ label: 'CLI Version', value: metadata.cliVersion });
+  if (metadata.configPath) metaFields.push({ label: 'Config', value: metadata.configPath });
+  if (metadata.sourceTileHash) metaFields.push({ label: 'Source Hash', value: metadata.sourceTileHash });
+  if (metadata.targetTileHash) metaFields.push({ label: 'Target Hash', value: metadata.targetTileHash });
+  w.investigationMeta(metaFields);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 1 — EXECUTIVE SUMMARY
@@ -283,6 +302,13 @@ export function renderHtml(report: EngineeringReport): string {
 
   if (diagnosticsSummary.topRules.length > 0) {
     w.h3('Top Rules');
+    w.barChart(
+      diagnosticsSummary.topRules.map((r) => ({
+        label: r.ruleId,
+        value: r.count,
+        color: r.severity === 'error' ? 'red' as const : r.severity === 'warning' ? 'yellow' as const : 'blue' as const,
+      })),
+    );
     w.table(
       ['Rule', 'Count', 'Severity'],
       diagnosticsSummary.topRules.map((r) => [
@@ -535,6 +561,12 @@ export function renderHtml(report: EngineeringReport): string {
       ]),
     );
     w.detailsClose();
+  } else if (comparison.features.removed > 0) {
+    w.detailsOpen(
+      `C — Removed Features (${comparison.features.removed.toLocaleString()})`,
+    );
+    w.p('<em>Per-layer breakdown not available.</em>');
+    w.detailsClose();
   }
 
   // D — All new diagnostics
@@ -555,7 +587,7 @@ export function renderHtml(report: EngineeringReport): string {
               : 'blue',
         ),
         escapeHtml(
-          d.message.slice(0, 120) + (d.message.length > 120 ? '…' : ''),
+          d.message.slice(0, 100) + (d.message.length > 100 ? '…' : ''),
         ),
       ]),
     );

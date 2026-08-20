@@ -290,7 +290,7 @@ export function renderMarkdown(report: EngineeringReport): string {
       diagnostics.newDiagnostics.map((d) => [
         md.code(d.ruleId),
         d.severity,
-        d.message.slice(0, 80) + (d.message.length > 80 ? '…' : ''),
+        d.message.slice(0, 100) + (d.message.length > 100 ? '…' : ''),
       ]),
     );
   }
