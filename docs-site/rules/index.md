@@ -35,13 +35,13 @@ These rules validate the geometric integrity of vector tile features.
 
 | Rule | Default | What it catches |
 |:-----|:--------|:----------------|
-| `tile/self-intersection` | error | Polygon edges that cross themselves — causes invalid topology and unpredictable fill rendering |
-| `tile/unclosed-ring` | error | Polygon rings where the last vertex ≠ first vertex — produces open polygons |
-| `tile/zero-area-ring` | warning | Degenerate polygon rings with zero or near-zero area — invisible but wasteful |
-| `tile/winding-order` | error | Rings wound in the wrong direction — convention-aware (auto-detects MVT vs OGC) |
-| `tile/hole-containment` | error | Hole rings that extend outside their parent shell — multi-polygon aware |
-| `tile/degenerate-geometry` | warning | Lines with < 2 vertices or polygons with < 4 vertices — structurally invalid |
-| `tile/coordinate-range` | error | Vertices outside the valid tile extent (0–4096 by default) |
+| [`tile/self-intersection`](/rules/tile/self-intersection) | error | Polygon edges that cross themselves — causes invalid topology and unpredictable fill rendering |
+| [`tile/unclosed-ring`](/rules/tile/unclosed-ring) | error | Polygon rings where the last vertex ≠ first vertex — produces open polygons |
+| [`tile/zero-area-ring`](/rules/tile/zero-area-ring) | warning | Degenerate polygon rings with zero or near-zero area — invisible but wasteful |
+| [`tile/winding-order`](/rules/tile/winding-order) | error | Rings wound in the wrong direction — convention-aware (auto-detects MVT vs OGC) |
+| [`tile/hole-containment`](/rules/tile/hole-containment) | error | Hole rings that extend outside their parent shell — multi-polygon aware |
+| [`tile/degenerate-geometry`](/rules/tile/degenerate-geometry) | warning | Lines with < 2 vertices or polygons with < 4 vertices — structurally invalid |
+| [`tile/coordinate-range`](/rules/tile/coordinate-range) | error | Vertices outside the valid tile extent (0–4096 by default) |
 
 ### Structural Rules
 
@@ -49,11 +49,11 @@ These rules validate tile-level structure and feature metadata.
 
 | Rule | Default | What it catches |
 |:-----|:--------|:----------------|
-| `tile/required-layers` | error | Missing expected layers (configurable list) |
-| `tile/required-properties` | error | Features missing declared properties |
-| `tile/feature-count` | warning | Total feature count exceeds configured maximum |
-| `tile/layer-feature-count` | warning | Per-layer feature count exceeds configured maximum |
-| `tile/no-empty` | warning | Tiles containing zero features |
+| [`tile/required-layers`](/rules/tile/required-layers) | error | Missing expected layers (configurable list) |
+| [`tile/required-properties`](/rules/tile/required-properties) | error | Features missing declared properties |
+| [`tile/feature-count`](/rules/tile/feature-count) | warning | Total feature count exceeds configured maximum |
+| [`tile/layer-feature-count`](/rules/tile/layer-feature-count) | warning | Per-layer feature count exceeds configured maximum |
+| [`tile/no-empty`](/rules/tile/no-empty) | warning | Tiles containing zero features |
 
 ---
 
@@ -65,15 +65,15 @@ These rules validate MapLibre Style Specification JSON files.
 
 | Rule | Default | What it catches |
 |:-----|:--------|:----------------|
-| `style/valid-json` | error | Style file is not valid JSON — parsing fails entirely |
-| `style/version` | error | Style `version` field is not `8` — only version 8 is supported |
-| `style/sources-present` | error | Missing top-level `sources` object |
-| `style/layers-present` | error | Missing top-level `layers` array |
-| `style/layer-id-required` | error | Layers without an `id` field |
-| `style/unique-layer-id` | error | Duplicate layer IDs — causes rendering conflicts |
-| `style/known-source` | error | Layers referencing a source not declared in `sources` |
-| `style/zoom-range` | warning | `minzoom` greater than `maxzoom` — layer can never be visible |
-| `style/no-deprecated-ref` | warning | Usage of deprecated `ref` property — removed in modern MapLibre |
+| [`style/valid-json`](/rules/style/valid-json) | error | Style file is not valid JSON — parsing fails entirely |
+| [`style/version`](/rules/style/version) | error | Style `version` field is not `8` — only version 8 is supported |
+| [`style/sources-present`](/rules/style/sources-present) | error | Missing top-level `sources` object |
+| [`style/layers-present`](/rules/style/layers-present) | error | Missing top-level `layers` array |
+| [`style/layer-id-required`](/rules/style/layer-id-required) | error | Layers without an `id` field |
+| [`style/unique-layer-id`](/rules/style/unique-layer-id) | error | Duplicate layer IDs — causes rendering conflicts |
+| [`style/known-source`](/rules/style/known-source) | error | Layers referencing a source not declared in `sources` |
+| [`style/zoom-range`](/rules/style/zoom-range) | warning | `minzoom` greater than `maxzoom` — layer can never be visible |
+| [`style/no-deprecated-ref`](/rules/style/no-deprecated-ref) | warning | Usage of deprecated `ref` property — removed in modern MapLibre |
 
 ---
 
