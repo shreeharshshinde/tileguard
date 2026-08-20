@@ -4,22 +4,22 @@ TileGuard's architecture follows a strict pipeline with clear separation of conc
 
 ## The Pipeline
 
-```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                         TileGuard Pipeline                          │
-│                                                                     │
-│   Artifacts        Providers        Rules         Output            │
-│   ─────────        ─────────        ─────        ──────            │
-│                                                                     │
-│   tile.pbf    →    MVT Decoder  →   12 Tile   →  Diagnostics       │
-│                         │           Rules           │               │
-│   style.json  →    JSON Parser  →   9 Style   →    ├── CLI         │
-│                         │           Rules           ├── JSON        │
-│                         ▼                           ├── Inspector   │
-│                    Artifact                         └── Reports     │
-│                    (decoded,                                        │
-│                     typed)                                          │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    A[".pbf / .json files"] --> B["Providers\n(decode)"]
+    B --> C["Artifacts\n(immutable)"]
+    C --> D["Rules\n(validate)"]
+    D --> E["Diagnostics\n(structured)"]
+    E --> F["Reporters\n(format)"]
+    F --> G["CLI / JSON / Inspector / Reports"]
+
+    style A fill:#121214,stroke:#27272a,color:#fff
+    style B fill:#121214,stroke:#27272a,color:#fff
+    style C fill:#121214,stroke:#a3ff00,color:#a3ff00
+    style D fill:#121214,stroke:#27272a,color:#fff
+    style E fill:#121214,stroke:#a3ff00,color:#a3ff00
+    style F fill:#121214,stroke:#27272a,color:#fff
+    style G fill:#121214,stroke:#27272a,color:#fff
 ```
 
 ### Stage 1: Artifacts
@@ -105,41 +105,41 @@ Diagnostics are the **universal interface contract** — everything downstream c
 
 ## Package Architecture
 
-```text
-┌──────────────────────────────────────────────────────────────────┐
-│                          @tileguard/cli                           │
-│                     (10 commands, entry point)                    │
-└────────┬──────────┬──────────┬──────────┬──────────┬─────────────┘
-         │          │          │          │          │
-         ▼          ▼          ▼          ▼          ▼
-   ┌──────────┐ ┌──────────┐ ┌───────────┐ ┌──────────┐ ┌──────────┐
-   │  config  │ │reporters │ │tile-rules │ │style-rules│ │ analysis │
-   │          │ │          │ │           │ │           │ │          │
-   │ discover │ │ text     │ │ 12 rules  │ │ 9 rules   │ │ compare  │
-   │ load     │ │ json     │ │ provider  │ │ provider  │ │ regress  │
-   │ validate │ │ reports  │ │ geometry  │ │ parser    │ │ snapshot │
-   └────┬─────┘ └────┬─────┘ └────┬──────┘ └────┬──────┘ └────┬─────┘
-        │             │            │              │             │
-        └─────────────┴────────────┴──────────────┴─────────────┘
-                                   │
-                                   ▼
-                          ┌────────────────┐
-                          │  @tileguard/core│
-                          │                │
-                          │  Diagnostic    │
-                          │  Artifact      │
-                          │  Rule          │
-                          │  Plugin        │
-                          │  Engine        │
-                          └───────┬────────┘
-                                  │
-                                  ▼
-                          ┌────────────────┐
-                          │ @tileguard/    │
-                          │   shared       │
-                          │                │
-                          │ utilities      │
-                          └────────────────┘
+```mermaid
+graph TD
+    CLI["@tileguard/cli"]
+    CONFIG["@tileguard/config"]
+    REPORTERS["@tileguard/reporters"]
+    TILE["@tileguard/tile-rules"]
+    STYLE["@tileguard/style-rules"]
+    ANALYSIS["@tileguard/analysis"]
+    CORE["@tileguard/core"]
+    SHARED["@tileguard/shared"]
+
+    CLI --> CONFIG
+    CLI --> REPORTERS
+    CLI --> TILE
+    CLI --> STYLE
+    CLI --> ANALYSIS
+    CLI --> CORE
+
+    CONFIG --> CORE
+    REPORTERS --> CORE
+    TILE --> CORE
+    TILE --> SHARED
+    STYLE --> CORE
+    STYLE --> SHARED
+    ANALYSIS --> CORE
+    SHARED --> CORE
+
+    style CLI fill:#1f1f22,stroke:#a3ff00,color:#fff
+    style CORE fill:#09090b,stroke:#a3ff00,color:#a3ff00
+    style SHARED fill:#09090b,stroke:#27272a,color:#a1a1aa
+    style CONFIG fill:#121214,stroke:#27272a,color:#fff
+    style REPORTERS fill:#121214,stroke:#27272a,color:#fff
+    style TILE fill:#121214,stroke:#27272a,color:#fff
+    style STYLE fill:#121214,stroke:#27272a,color:#fff
+    style ANALYSIS fill:#121214,stroke:#27272a,color:#fff
 ```
 
 **Dependencies flow strictly inward.** Core has zero runtime dependencies. Domain packages depend only on Core. The CLI depends on everything but nothing depends on the CLI.
