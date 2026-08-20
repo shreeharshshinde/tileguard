@@ -68,19 +68,31 @@ layout: page
   margin-bottom: 4rem;
 }
 
-.tg-hero-badge {
+.tg-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border-radius: 100px;
-  border: 1px solid rgba(163, 255, 0, 0.2);
-  background: rgba(163, 255, 0, 0.04);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #a3ff00;
-  letter-spacing: 0.02em;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  padding: 6px 16px 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(30, 30, 35, 0.7) 0%, rgba(20, 20, 22, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #e4e4e7;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tg-badge .indicator {
+  width: 6px;
+  height: 6px;
+  background: #a3ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 1px rgba(163, 255, 0, 0.8), inset 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
 .tg-hero h1 {
@@ -112,83 +124,150 @@ layout: page
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 12px 16px 12px 20px;
   margin: 0 auto 2rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.875rem;
-  color: #d4d4d8;
+  background: linear-gradient(145deg, rgba(9, 9, 11, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 8px 24px -6px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', var(--vp-font-family-mono);
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   position: relative;
-  max-width: 360px;
+  backdrop-filter: blur(12px);
 }
 
 .tg-install:hover {
   border-color: rgba(163, 255, 0, 0.3);
-  background: rgba(163, 255, 0, 0.04);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 12px 28px -8px rgba(163, 255, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+.tg-install .prompt {
+  color: #a3ff00;
+  user-select: none;
+  font-weight: 600;
+  opacity: 0.9;
+  margin-right: -4px;
 }
 
 .tg-install .pkg { color: #a1a1aa; }
-.tg-install .cmd { color: #ffffff; font-weight: 500; }
+.tg-install .cmd { color: #e4e4e7; font-weight: 500; letter-spacing: -0.02em; }
+
+.tg-install .copy-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 4px 0 8px;
+  transition: background 0.25s;
+}
+
+.tg-install:hover .copy-divider {
+  background: rgba(163, 255, 0, 0.25);
+}
+
+.tg-install::after {
+  content: 'Copied!';
+  position: absolute;
+  top: -34px;
+  right: 0;
+  background: #a3ff00;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(163, 255, 0, 0.3);
+  font-family: var(--vp-font-family-base);
+}
+
+.tg-install.copied::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .tg-install .copy-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
   padding: 4px;
   background: none;
   border: none;
   color: #71717a;
   cursor: pointer;
-  transition: color 0.15s;
-  font-size: 0.8rem;
+  transition: all 0.2s;
 }
 .tg-install:hover .copy-btn { color: #a3ff00; }
 .tg-install-wrap { display: flex; justify-content: center; margin-bottom: 2.25rem; }
 
 .tg-hero-links {
   display: flex;
-  gap: 10px;
+  gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .tg-hero-links a {
-  padding: 11px 24px;
-  border-radius: 8px;
+  padding: 12px 28px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tg-hero-links .btn-primary {
-  background: #a3ff00;
-  color: #000;
-  box-shadow: 0 4px 14px rgba(163, 255, 0, 0.25);
+  background: linear-gradient(180deg, #b8ff33 0%, #a3ff00 100%);
+  color: #09090b;
+  border: 1px solid #99f000;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.6), 
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    0 8px 16px -6px rgba(163, 255, 0, 0.3);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .tg-hero-links .btn-primary:hover {
-  background: #bef264;
-  box-shadow: 0 0 24px rgba(163, 255, 0, 0.45);
+  background: linear-gradient(180deg, #c4ff4d 0%, #aeff1a 100%);
+  border-color: #a4ff00;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.7), 
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+    0 12px 24px -8px rgba(163, 255, 0, 0.5);
   transform: translateY(-2px);
 }
 
 .tg-hero-links .btn-ghost {
-  color: #e4e4e7;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(8px);
+  color: #f4f4f5;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 8px 16px -6px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
 }
 
 .tg-hero-links .btn-ghost:hover {
-  border-color: rgba(163, 255, 0, 0.5);
-  color: #a3ff00;
-  background: rgba(163, 255, 0, 0.06);
-  transform: translateY(-1px);
+  border-color: rgba(163, 255, 0, 0.4);
+  background: linear-gradient(180deg, rgba(163, 255, 0, 0.12) 0%, rgba(163, 255, 0, 0.04) 100%);
+  color: #fff;
+  box-shadow: 
+    inset 0 1px 0 rgba(163, 255, 0, 0.2),
+    0 12px 24px -8px rgba(163, 255, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 /* ─── Feature highlights ────────────────── */
@@ -374,14 +453,19 @@ layout: page
 }
 
 .tg-section-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #a3ff00;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   padding: 0 !important;
   border: none !important;
+}
+
+.tg-section-title h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin: 0;
+  border: none !important;
+  padding: 0 !important;
 }
 
 /* ─── Glass Cards ───────────────────────── */
@@ -393,12 +477,17 @@ layout: page
 
 .tg-card {
   padding: 2.25rem;
-  background: rgba(18, 18, 20, 0.4);
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 35%),
+    linear-gradient(145deg, rgba(30, 30, 35, 0.4) 0%, rgba(18, 18, 20, 0.2) 100%);
   backdrop-filter: blur(24px) saturate(1.2);
   -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 1px 0 1px rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -415,10 +504,15 @@ layout: page
 }
 
 .tg-card:hover {
-  background: rgba(24, 24, 27, 0.6);
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 40%),
+    linear-gradient(145deg, rgba(36, 36, 42, 0.5) 0%, rgba(24, 24, 27, 0.3) 100%);
   border-color: rgba(163, 255, 0, 0.2);
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 1px 0 1px rgba(255, 255, 255, 0.1),
+    0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 .tg-card:hover::before {
@@ -443,17 +537,28 @@ layout: page
 .tg-card .desc {
   font-size: 0.9rem;
   color: #a1a1aa;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1rem;
   line-height: 1.6;
 }
 
 .tg-card ul {
   list-style: none;
-  padding: 0;
+  padding: 1rem 0 0 0;
   margin: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.tg-card ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(163, 255, 0, 0.5) 0%, rgba(163, 255, 0, 0.05) 100%);
 }
 
 .tg-card ul li {
@@ -576,16 +681,20 @@ layout: page
 <div class="tg-tubelight"></div>
 
 <div class="tg-hero">
-  <div class="tg-hero-badge">◆ v0.5.0-rc.1 · 21 rules · MIT</div>
+  <div class="tg-badge" style="margin-bottom: 1.5rem;"><span class="indicator"></span> v0.5.0-rc.1 · 21 rules · MIT</div>
   <h1>TileGuard <span class="accent">Docs</span></h1>
   <p class="subtitle">
     Rule-based validation for vector tiles and MapLibre styles. Quality gates for your geospatial pipeline — from local dev to CI.
   </p>
   <div class="tg-install-wrap">
-    <div class="tg-install" onclick="(function(el){navigator.clipboard&&navigator.clipboard.writeText('npm install @tileguard/cli');el.querySelector('.copy-btn').textContent='✓';setTimeout(()=>el.querySelector('.copy-btn').textContent='📋',1500)})(this)">
+    <div class="tg-install" onclick="(function(el){navigator.clipboard&&navigator.clipboard.writeText('npm install @tileguard/cli');el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),2000)})(this)">
+      <span class="prompt">$</span>
       <span class="pkg">npm install</span>
       <span class="cmd">@tileguard/cli</span>
-      <button class="copy-btn" title="Copy to clipboard">📋</button>
+      <div class="copy-divider"></div>
+      <button class="copy-btn" title="Copy to clipboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
     </div>
   </div>
   <div class="tg-hero-links">
@@ -678,7 +787,7 @@ layout: page
 
 <div class="tg-section">
   <div class="tg-section-title">
-    <span style="display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:100px;border:1px solid rgba(163,255,0,0.2);background:rgba(163,255,0,0.05);font-size:0.7rem;font-weight:700;color:#a3ff00;letter-spacing:0.12em;text-transform:uppercase;">◆ Navigate the Docs</span>
+    <h2>Navigate the Docs</h2>
   </div>
   <div class="tg-cards">
     <div class="tg-card">
@@ -752,9 +861,9 @@ layout: page
   <p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:rgba(163,255,0,0.7);margin:0 0 1rem;">◆ Ready to validate your tiles?</p>
   <h2 style="font-size:2.25rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin:0 0 1rem;line-height:1.1;border:none!important;padding:0!important;">Start in under <span style="color:#a3ff00;">60 seconds</span></h2>
   <p style="color:#a1a1aa;max-width:480px;margin:0 auto 2rem;font-size:1rem;line-height:1.6;">Install TileGuard, run <code style="background:rgba(163,255,0,0.08);color:#a3ff00;padding:2px 8px;border-radius:5px;font-size:0.9em;">tileguard doctor</code>, and validate your first tile in one command.</p>
-  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-    <a href="/getting-started/quick-start" style="padding:13px 28px;background:#a3ff00;color:#000;border-radius:9px;font-weight:700;font-size:0.95rem;text-decoration:none;box-shadow:0 4px 20px rgba(163,255,0,0.3);transition:all 0.2s;">Get Started →</a>
-    <a href="/rules/" style="padding:13px 28px;background:rgba(255,255,255,0.06);color:#e4e4e7;border-radius:9px;font-weight:600;font-size:0.95rem;text-decoration:none;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s;">Browse Rules</a>
+  <div class="tg-hero-links">
+    <a href="/getting-started/quick-start" class="btn-primary">Get Started →</a>
+    <a href="/rules/" class="btn-ghost">Browse Rules</a>
   </div>
   <p style="margin:2.5rem 0 0;font-size:0.75rem;color:#3f3f46;">MIT Licensed · Made by <a href="https://github.com/shreeharshshinde" style="color:#71717a;text-decoration:none;">Shreeharsh Shinde</a> · FOSS4G 2026 Hiroshima</p>
 </div>
