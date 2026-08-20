@@ -131,6 +131,92 @@ export default config;
 
 Without a config file, all recommended rules run at their default severities.
 
+## Useful Commands
+
+### Check your installation
+
+```bash
+tileguard version
+```
+
+```text
+@tileguard/cli 0.5.0
+  @tileguard/core        0.5.0
+  @tileguard/tile-rules  0.5.0
+  @tileguard/style-rules 0.5.0
+  @tileguard/reporters   0.5.0
+  @tileguard/analysis    0.5.0
+  @tileguard/config      0.5.0
+  node                   v22.x.x
+```
+
+### Diagnose your environment
+
+```bash
+tileguard doctor
+```
+
+```text
+✓ Node.js version    v22.x.x (≥20 required)
+✓ Core loaded        @tileguard/core 0.5.0
+✓ Tile rules         12 rules registered
+✓ Style rules        9 rules registered
+✓ Config discovery   tileguard.config.ts found
+✓ Reporter           text (default)
+
+All checks passed.
+```
+
+### List all available rules
+
+```bash
+tileguard rules list
+```
+
+```text
+Tile Rules (12):
+  tile/required-layers        error    Required layers must be present
+  tile/self-intersection      error    Geometry must not self-intersect
+  tile/winding-order          error    Rings must follow correct winding
+  tile/hole-containment       error    Holes must stay inside outer ring
+  ...
+
+Style Rules (9):
+  style/valid-json            error    Style must be valid JSON
+  style/known-source          error    Layers must reference declared sources
+  style/zoom-range            error    minzoom must not exceed maxzoom
+  ...
+```
+
+### Get tile statistics
+
+```bash
+tileguard stats ./tile.pbf
+```
+
+```text
+File: ./tile.pbf
+
+  Layers:    5
+  Features:  4,217
+  Extent:    4096
+
+  Layer Breakdown:
+    water        312 features   (polygons)
+    roads      1,891 features   (lines)
+    buildings  1,456 features   (polygons)
+    landuse      401 features   (polygons)
+    poi          157 features   (points)
+```
+
+### Scaffold a config file
+
+```bash
+tileguard init
+```
+
+Creates `tileguard.config.ts` with all recommended rules at default severities.
+
 ## What Next?
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
