@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress';
+import { withMermaid } from 'vitepress-plugin-mermaid';
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: 'TileGuard',
   description: 'Automated quality gates for geospatial software.',
   lang: 'en-US',
@@ -28,20 +29,30 @@ export default defineConfig({
     siteTitle: 'TileGuard',
 
     nav: [
-      { text: 'Get Started', link: '/getting-started/quick-start' },
+      { text: 'Docs', link: '/getting-started/quick-start' },
+      {
+        text: 'Guides',
+        items: [
+          { text: 'Validating Tiles', link: '/guides/validating-tiles' },
+          { text: 'Inspecting Findings', link: '/guides/inspecting-findings' },
+          { text: 'Comparing Tiles', link: '/guides/comparing-tiles' },
+          { text: 'MapLibre Styles', link: '/guides/maplibre-styles' },
+          { text: 'CI / GitHub Actions', link: '/guides/ci-github-actions' },
+          { text: 'Generating Reports', link: '/guides/generating-reports' },
+        ],
+      },
       { text: 'Rules', link: '/rules/' },
       { text: 'Architecture', link: '/architecture/overview' },
-      {
-        text: 'GitHub',
-        link: 'https://github.com/shreeharshshinde/tileguard',
-      },
+      { text: 'API', link: '/api/' },
     ],
 
     sidebar: [
       {
         text: 'Get Started',
         items: [
+          { text: 'Installation', link: '/getting-started/installation' },
           { text: 'Quick Start', link: '/getting-started/quick-start' },
+          { text: 'Your First Check', link: '/getting-started/first-check' },
         ],
       },
       {
@@ -49,12 +60,18 @@ export default defineConfig({
         items: [
           { text: 'What is TileGuard?', link: '/learn/what-is-tileguard' },
           { text: 'How It Works', link: '/learn/how-it-works' },
+          { text: 'Concepts', link: '/learn/concepts' },
         ],
       },
       {
         text: 'Guides',
         items: [
+          { text: 'Validating Tiles', link: '/guides/validating-tiles' },
+          { text: 'Inspecting Findings', link: '/guides/inspecting-findings' },
+          { text: 'Comparing Tiles', link: '/guides/comparing-tiles' },
+          { text: 'MapLibre Styles', link: '/guides/maplibre-styles' },
           { text: 'CI / GitHub Actions', link: '/guides/ci-github-actions' },
+          { text: 'Generating Reports', link: '/guides/generating-reports' },
         ],
       },
       {
@@ -62,12 +79,65 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: 'Overview', link: '/rules/' },
+          {
+            text: 'Tile Rules',
+            collapsed: true,
+            items: [
+              { text: 'required-layers', link: '/rules/tile/required-layers' },
+              { text: 'required-properties', link: '/rules/tile/required-properties' },
+              { text: 'coordinate-range', link: '/rules/tile/coordinate-range' },
+              { text: 'feature-count', link: '/rules/tile/feature-count' },
+              { text: 'layer-feature-count', link: '/rules/tile/layer-feature-count' },
+              { text: 'unclosed-ring', link: '/rules/tile/unclosed-ring' },
+              { text: 'zero-area-ring', link: '/rules/tile/zero-area-ring' },
+              { text: 'winding-order', link: '/rules/tile/winding-order' },
+              { text: 'hole-containment', link: '/rules/tile/hole-containment' },
+              { text: 'self-intersection', link: '/rules/tile/self-intersection' },
+              { text: 'degenerate-geometry', link: '/rules/tile/degenerate-geometry' },
+              { text: 'no-empty', link: '/rules/tile/no-empty' },
+            ],
+          },
+          {
+            text: 'Style Rules',
+            collapsed: true,
+            items: [
+              { text: 'valid-json', link: '/rules/style/valid-json' },
+              { text: 'version', link: '/rules/style/version' },
+              { text: 'sources-present', link: '/rules/style/sources-present' },
+              { text: 'layers-present', link: '/rules/style/layers-present' },
+              { text: 'layer-id-required', link: '/rules/style/layer-id-required' },
+              { text: 'unique-layer-id', link: '/rules/style/unique-layer-id' },
+              { text: 'known-source', link: '/rules/style/known-source' },
+              { text: 'zoom-range', link: '/rules/style/zoom-range' },
+              { text: 'no-deprecated-ref', link: '/rules/style/no-deprecated-ref' },
+            ],
+          },
         ],
       },
       {
         text: 'Architecture',
         items: [
           { text: 'Overview', link: '/architecture/overview' },
+          { text: 'Validation Pipeline', link: '/architecture/validation-pipeline' },
+          { text: 'Rule Engine', link: '/architecture/rule-engine' },
+          { text: 'Decoder & Diagnostics', link: '/architecture/decoder-diagnostics' },
+        ],
+      },
+      {
+        text: 'Decisions (ADRs)',
+        collapsed: true,
+        items: [
+          { text: 'ADR-001: Why TileGuard Exists', link: '/decisions/adr-001-why-tileguard-exists' },
+          { text: 'ADR-002: Local-First Processing', link: '/decisions/adr-002-local-first-processing' },
+          { text: 'ADR-003: Rule-Based Architecture', link: '/decisions/adr-003-rule-based-architecture' },
+          { text: 'ADR-004: Structured Diagnostics', link: '/decisions/adr-004-structured-diagnostics' },
+          { text: 'ADR-005: Validation ≠ Visualization', link: '/decisions/adr-005-validation-visualization-separation' },
+        ],
+      },
+      {
+        text: 'API Reference',
+        items: [
+          { text: 'Overview', link: '/api/' },
         ],
       },
       {
@@ -75,7 +145,9 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: 'Contributing', link: '/project/contributing' },
+          { text: 'Development', link: '/project/development' },
           { text: 'Roadmap', link: '/project/roadmap' },
+          { text: 'Releases', link: '/project/releases' },
         ],
       },
     ],
@@ -102,4 +174,14 @@ export default defineConfig({
       copyright: 'Copyright © 2026 Shreeharsh Shinde',
     },
   },
-});
+
+  mermaid: {
+    theme: 'dark',
+  },
+
+  vite: {
+    optimizeDeps: {
+      include: ['mermaid', 'dayjs'],
+    },
+  },
+}));
