@@ -4,17 +4,20 @@ TileGuard is designed to run in CI pipelines as an automated quality gate. Fail 
 
 ## How It Works
 
-```text
-Pull Request
-    ↓
-GitHub Actions triggers
-    ↓
-TileGuard validates tiles + styles
-    ↓
-Diagnostics produced
-    ↓
-Exit code 1 if errors → ❌ PR fails
-Exit code 0 if clean  → ✅ PR passes
+```mermaid
+flowchart LR
+    PR["Pull Request"] --> GHA["GitHub Actions"]
+    GHA --> TG["TileGuard\ncheck"]
+    TG --> D{"Errors?"}
+    D -->|Yes| FAIL["❌ PR Blocked\nexit code 1"]
+    D -->|No| PASS["✅ PR Passes\nexit code 0"]
+
+    style PR fill:#121214,stroke:#27272a,color:#fff
+    style GHA fill:#121214,stroke:#27272a,color:#fff
+    style TG fill:#09090b,stroke:#a3ff00,color:#a3ff00
+    style D fill:#1f1f22,stroke:#f59e0b,color:#f59e0b
+    style FAIL fill:#121214,stroke:#ef4444,color:#ef4444
+    style PASS fill:#121214,stroke:#22c55e,color:#22c55e
 ```
 
 ## Basic Workflow
