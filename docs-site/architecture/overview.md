@@ -66,5 +66,7 @@ Dependencies flow strictly inward. Core has zero runtime dependencies. Domain pa
 
 ## What Next?
 
-- [**Validation Pipeline ›**](/architecture/validation-pipeline) — Start with the engine's execution flow
-- [**How It Works ›**](/learn/how-it-works) — Simplified overview for newcomers
+- [**Validation Pipeline ›**](/architecture/validation-pipeline)
+Start with the engine's execution flow
+- [**How It Works ›**](/learn/how-it-works)
+Simplified overview for newcomers
