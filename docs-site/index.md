@@ -520,18 +520,32 @@ layout: page
 }
 
 .tg-card h3 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: rgba(163, 255, 0, 0.75);
-  letter-spacing: -0.02em;
-  margin: 0 0 0.85rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
   border: none !important;
   padding: 0 !important;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.tg-card h3.highlight {
+  background: linear-gradient(135deg, #ffffff 30%, #a3ff00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .tg-card:hover h3 {
-  color: rgba(163, 255, 0, 1);
+  background: linear-gradient(135deg, #ffffff 10%, #a3ff00 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: translateY(-2px);
 }
 
 .tg-card .desc {
@@ -623,8 +637,7 @@ layout: page
   top: 15%;
   height: 70%;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(163, 255, 0, 0.5), transparent);
-  box-shadow: 0 0 8px rgba(163, 255, 0, 0.4);
+  background: linear-gradient(to bottom, transparent, rgba(163, 255, 0, 1), transparent);
 }
 
 .tg-stat .num {
@@ -791,7 +804,7 @@ layout: page
   </div>
   <div class="tg-cards">
     <div class="tg-card">
-      <h3>Get Started</h3>
+      <h3 class="highlight">Get Started</h3>
       <p class="desc">Install, run your first check, understand the output.</p>
       <ul>
         <li><a href="/getting-started/installation">Installation</a></li>
@@ -830,7 +843,7 @@ layout: page
       </ul>
     </div>
     <div class="tg-card">
-      <h3>Architecture</h3>
+      <h3 class="highlight">Architecture</h3>
       <p class="desc">System design, internals, and key engineering decisions.</p>
       <ul>
         <li><a href="/architecture/overview">System Overview</a></li>
