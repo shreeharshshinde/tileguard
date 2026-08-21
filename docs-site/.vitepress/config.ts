@@ -136,8 +136,16 @@ export default withMermaid(defineConfig({
       },
       {
         text: 'API Reference',
+        collapsed: false,
         items: [
           { text: 'Overview', link: '/api/' },
+          { text: '@tileguard/core', link: '/api/core' },
+          { text: '@tileguard/tile-rules', link: '/api/tile-rules' },
+          { text: '@tileguard/style-rules', link: '/api/style-rules' },
+          { text: '@tileguard/analysis', link: '/api/analysis' },
+          { text: '@tileguard/reporters', link: '/api/reporters' },
+          { text: '@tileguard/config', link: '/api/config' },
+          { text: '@tileguard/cli', link: '/api/cli' },
         ],
       },
       {
