@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- **Node.js ≥ 20** — TileGuard uses modern JavaScript features (ES2022+)
-- **npm, pnpm, or yarn** — any package manager works
+- **Node.js ≥ 20**: TileGuard uses modern JavaScript features (ES2022+)
+- **npm, pnpm, or yarn**: any package manager works
 - No native dependencies, no Docker, no server, no database
 
 Verify your Node version:
@@ -134,6 +134,9 @@ This creates `tileguard.config.ts` with all recommended rules enabled at their d
 
 ## What Next?
 
-- [**Your First Tile Check ›**](/getting-started/first-check) — Walk through a real validation
-- [**Quick Start ›**](/getting-started/quick-start) — Run common commands
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Set up automated quality gates
+- [**Your First Tile Check ›**](/getting-started/first-check)
+Walk through a real validation
+- [**Quick Start ›**](/getting-started/quick-start)
+Run common commands
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Set up automated quality gates

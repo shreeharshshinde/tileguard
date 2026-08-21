@@ -1,6 +1,6 @@
 # Your First Tile Check
 
-This tutorial walks you through validating a vector tile from start to finish — understanding what TileGuard finds, what the output means, and what to do about it.
+This tutorial walks you through validating a vector tile from start to finish, understanding what TileGuard finds, what the output means, and what to do about it.
 
 ## Step 1: Get a Tile
 
@@ -72,9 +72,9 @@ Every finding has the same structure:
 
 | Severity | Icon | Meaning | Exit Code |
 |:---------|:-----|:--------|:----------|
-| **Error** | `✗` | Must fix — blocks CI | `1` |
-| **Warning** | `⚠` | Should investigate — doesn't block CI | `0` |
-| **Info** | `ℹ` | Informational — no action required | `0` |
+| **Error** | `✗` | Must fix. Blocks CI | `1` |
+| **Warning** | `⚠` | Should investigate. Doesn't block CI | `0` |
+| **Info** | `ℹ` | Informational. No action required | `0` |
 
 Only **errors** cause TileGuard to exit with code `1` (fail the build). Warnings are reported but don't fail.
 
@@ -120,7 +120,7 @@ tileguard check ./tile.pbf
   0 errors, 0 warnings in 1 file (28ms)
 ```
 
-Exit code `0` — CI will pass.
+Exit code `0`. CI will pass.
 
 ## JSON Output
 
@@ -155,6 +155,9 @@ tileguard check ./tile.pbf --reporter json
 
 ## What Next?
 
-- [**Concepts ›**](/learn/concepts) — Understand rules and diagnostics in depth
-- [**Validating Tiles ›**](/guides/validating-tiles) — Deep dive into tile validation
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automate quality gates
+- [**Concepts ›**](/learn/concepts)
+Understand rules and diagnostics in depth
+- [**Validating Tiles ›**](/guides/validating-tiles)
+Deep dive into tile validation
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Automate quality gates
