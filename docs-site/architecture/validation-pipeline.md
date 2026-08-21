@@ -100,9 +100,9 @@ Providers handle:
 
 For each Artifact, the engine:
 
-1. **Filters** — only rules whose `artifactTypes` includes the artifact type
-2. **Skips** — rules configured as `'off'`
-3. **Executes** — calls `rule.create(context)` with a RuleContext
+1. **Filters**: only rules whose `artifactTypes` includes the artifact type
+2. **Skips**: rules configured as `'off'`
+3. **Executes**: calls `rule.create(context)` with a RuleContext
 
 The RuleContext provides:
 - `context.artifact` — the immutable decoded data
@@ -149,13 +149,16 @@ interface EngineResult {
 
 ## Performance Characteristics
 
-- **Single traversal per file** — each file is decoded once, then all matching rules execute against the same Artifact
-- **No inter-rule dependencies** — rules cannot observe each other's results
-- **Synchronous rule execution** — rules are CPU-bound geometry checks, not I/O
-- **Streaming-friendly** — diagnostics are collected into an array but could be streamed in future
+- **Single traversal per file**: each file is decoded once, then all matching rules execute against the same Artifact
+- **No inter-rule dependencies**: rules cannot observe each other's results
+- **Synchronous rule execution**: rules are CPU-bound geometry checks, not I/O
+- **Streaming-friendly**: diagnostics are collected into an array but could be streamed in future
 
 ## What Next?
 
-- [**Rule Engine ›**](/architecture/rule-engine) — How rules are structured
-- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
-- [**How It Works ›**](/learn/how-it-works) — High-level overview
+- [**Rule Engine ›**](/architecture/rule-engine)
+How rules are structured
+- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics)
+Artifact and Diagnostic models
+- [**How It Works ›**](/learn/how-it-works)
+High-level overview
