@@ -134,9 +134,9 @@ rules: {
 ```
 
 The engine resolves this into:
-1. **Severity** — overrides the rule's `meta.defaultSeverity`
-2. **Options** — passed as `context.options` to the rule's `create()` function
-3. **Disabled** — `'off'` means the rule is never executed
+1. **Severity**: overrides the rule's `meta.defaultSeverity`
+2. **Options**: passed as `context.options` to the rule's `create()` function
+3. **Disabled**: `'off'` means the rule is never executed
 
 ## Plugin Registration
 
@@ -192,6 +192,9 @@ A rule can support multiple artifact types (rare) or a single type (common).
 
 ## What Next?
 
-- [**Validation Pipeline ›**](/architecture/validation-pipeline) — The full execution flow
-- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models
-- [**Rules Reference ›**](/rules/) — All 21 built-in rules
+- [**Validation Pipeline ›**](/architecture/validation-pipeline)
+The full execution flow
+- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics)
+Artifact and Diagnostic models
+- [**Rules Reference ›**](/rules/)
+All 21 built-in rules
