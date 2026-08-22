@@ -8,9 +8,9 @@ TileGuard follows [Semantic Versioning](https://semver.org/). This page document
 
 ### Fixed
 
-- **tile/winding-order** — No longer produces false positives on tiles using the OGC/GeoJSON winding convention (outer=CCW, holes=CW). Auto-detects convention from the first ring and only flags inconsistencies.
-- **tile/hole-containment** — No longer produces false positives on multi-polygon features. Groups rings into logical polygons using convention-aware winding detection before checking containment.
-- **Inspector diagnostics** — Browser tile validation now runs actual rules instead of passing a hardcoded empty array.
+- **tile/winding-order**: No longer produces false positives on tiles using the OGC/GeoJSON winding convention (outer=CCW, holes=CW). Auto-detects convention from the first ring and only flags inconsistencies.
+- **tile/hole-containment**: No longer produces false positives on multi-polygon features. Groups rings into logical polygons using convention-aware winding detection before checking containment.
+- **Inspector diagnostics**: Browser tile validation now runs actual rules instead of passing a hardcoded empty array.
 
 ### Added
 
@@ -26,17 +26,21 @@ TileGuard follows [Semantic Versioning](https://semver.org/). This page document
 
 ### Highlights
 
-- **Visual Inspector** — Browser-based debugging with canvas geometry rendering, diagnostic overlays, and investigation workflows
-- **Engineering Reports** — Markdown, HTML, JSON with executive summary, key findings, and prioritized recommendations
-- **Compare Workflow** — Structural tile diff with regression analysis and evidence panel
-- **10 CLI Commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `version`
+- **Visual Inspector**: Browser-based debugging with canvas geometry rendering, diagnostic overlays, and investigation workflows
+- **Engineering Reports**: Markdown, HTML, JSON with executive summary, key findings, and prioritized recommendations
+- **Compare Workflow**: Structural tile diff with regression analysis and evidence panel
+- **10 CLI Commands**: `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `version`
 
 ### Added
 
-- Command Palette (`Ctrl+K`) — VS Code-style command access
-- Global Search (`Ctrl+/`) — search across features, layers, diagnostics
-- Engineering Console (`Ctrl+\``) — logs, diagnostics, timeline, performance
-- Presentation Mode (`Ctrl+Shift+P`) — conference-optimized display
+- Command Palette (`Ctrl+K`)
+VS Code-style command access
+- Global Search (`Ctrl+/`)
+search across features, layers, diagnostics
+- Engineering Console (`Ctrl+\``)
+logs, diagnostics, timeline, performance
+- Presentation Mode (`Ctrl+Shift+P`)
+conference-optimized display
 - Demo datasets — 6 bundled Tokyo demo tiles
 - Keyboard shortcuts — full `Ctrl+1`–`7` workspace navigation
 - Breadcrumb navigation — context-aware path

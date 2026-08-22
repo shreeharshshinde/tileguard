@@ -2,7 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-08-03  
-**Deciders:** @shreeharshshinde  
+**Deciders:** @shindeshreeharsh  
 
 ---
 

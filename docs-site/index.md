@@ -878,5 +878,5 @@ layout: page
     <a href="/getting-started/quick-start" class="btn-primary">Get Started →</a>
     <a href="/rules/" class="btn-ghost">Browse Rules</a>
   </div>
-  <p style="margin:2.5rem 0 0;font-size:0.75rem;color:#3f3f46;">MIT Licensed · Made by <a href="https://github.com/shreeharshshinde" style="color:#71717a;text-decoration:none;">Shreeharsh Shinde</a> · FOSS4G 2026 Hiroshima</p>
+  <p style="margin:2.5rem 0 0;font-size:0.75rem;color:#3f3f46;">MIT Licensed · Made by <a href="https://github.com/shindeshreeharsh" style="color:#71717a;text-decoration:none;">Shreeharsh Shinde</a> · FOSS4G 2026 Hiroshima</p>
 </div>

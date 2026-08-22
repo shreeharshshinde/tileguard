@@ -3,7 +3,7 @@
 **MapLibre style specification validation rules for TileGuard.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/style-rules)](https://www.npmjs.com/package/@tileguard/style-rules)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 9 configurable rules that validate MapLibre/Mapbox GL style specifications. Catches dangling source references, duplicate layer IDs, invalid zoom ranges, and structural issues before they silently break your map rendering.
@@ -115,13 +115,13 @@ Includes: expression parser, layer resolver, style validator, and statistics ext
 
 ## Documentation
 
-- [Rule Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/rules/style) — Per-rule docs with examples
-- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
+- [Rule Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/rules/style) — Per-rule docs with examples
+- [API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api) — Generated TypeDoc
 - [MapLibre Style Spec](https://maplibre.org/maplibre-style-spec/) — The specification this package validates
-- [Repository](https://github.com/shreeharshshinde/tileguard)
+- [Repository](https://github.com/shindeshreeharsh/tileguard)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
+[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)

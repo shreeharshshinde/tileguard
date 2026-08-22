@@ -59,7 +59,7 @@ Every report contains these sections in order:
   "generator": {
     "name": "TileGuard",
     "version": "0.4.5",
-    "url": "https://github.com/shreeharshshinde/tileguard"
+    "url": "https://github.com/shindeshreeharsh/tileguard"
   },
   "metadata": { /* ReportMetadata */ },
   "executiveSummary": { /* ExecutiveSummary */ },

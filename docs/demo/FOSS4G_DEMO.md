@@ -232,7 +232,7 @@ jobs:
 >
 > If you've ever shipped a tile regression that you caught too late, I'd love to talk after the session. Thank you."
 
-**What to click:** Show the GitHub link: `github.com/shreeharshshinde/tileguard`
+**What to click:** Show the GitHub link: `github.com/shindeshreeharsh/tileguard`
 
 ---
 

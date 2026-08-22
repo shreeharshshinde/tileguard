@@ -4,7 +4,7 @@ TileGuard follows a dual-track strategy: internal **Phases** (engineering milest
 
 ## Current Status
 
-**v0.5.0-rc.1** — All core functionality complete and tested. ~1,838 tests passing across 9 packages.
+**v0.5.0-rc.1**: All core functionality complete and tested. ~1,838 tests passing across 9 packages.
 
 ## Release Timeline
 
@@ -56,22 +56,22 @@ The release presented at FOSS4G 2026. Everything needed to demo and adopt:
 
 Expand the framework based on community feedback:
 
-- **SARIF export** — GitHub Code Scanning integration
-- **PMTiles support** — validate tiles directly from PMTiles archives
-- **Render regression testing** — perceptual pixel comparison (Playwright-based)
-- **IDE integration** — VS Code extension showing inline diagnostics
-- **PDF reports** — formatted engineering reports for stakeholders
-- **Performance** — 10,000 tiles in under 60 seconds
+- **SARIF export**: GitHub Code Scanning integration
+- **PMTiles support**: validate tiles directly from PMTiles archives
+- **Render regression testing**: perceptual pixel comparison (Playwright-based)
+- **IDE integration**: VS Code extension showing inline diagnostics
+- **PDF reports**: formatted engineering reports for stakeholders
+- **Performance**: 10,000 tiles in under 60 seconds
 
 ## v1.0.0 — Production Stable
 
 The first stable release with backward-compatibility guarantees:
 
-- **Stable API** — no breaking changes to Diagnostic, Rule, Plugin interfaces
-- **Python SDK** — consume TileGuard from Python pipelines
-- **Plugin marketplace** — community-contributed rule packages
-- **Enterprise features** — custom reporters, shared configurations
-- **Performance benchmarks** — published and tracked in CI
+- **Stable API**: no breaking changes to Diagnostic, Rule, Plugin interfaces
+- **Python SDK**: consume TileGuard from Python pipelines
+- **Plugin marketplace**: community-contributed rule packages
+- **Enterprise features**: custom reporters, shared configurations
+- **Performance benchmarks**: published and tracked in CI
 
 ## Success Criteria
 

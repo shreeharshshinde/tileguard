@@ -41,7 +41,7 @@ export function renderJson(
     generator: {
       name: 'TileGuard',
       version: report.metadata.tileguardVersion,
-      url: 'https://github.com/shreeharshshinde/tileguard',
+      url: 'https://github.com/shindeshreeharsh/tileguard',
     },
     // Full report content
     ...report,

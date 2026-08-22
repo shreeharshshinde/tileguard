@@ -3,7 +3,7 @@
 **Output reporters and engineering report engine for TileGuard.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/reporters)](https://www.npmjs.com/package/@tileguard/reporters)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 Two real-time diagnostic reporters (text + JSON) for terminal and CI output, plus a full engineering report engine that generates Markdown, HTML, and JSON analysis reports from comparison and regression data.
@@ -132,12 +132,12 @@ Reports include: executive summary, key findings, layer impact analysis, regress
 
 ## Documentation
 
-- [Reporter System Architecture](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture/05-reporter-system.md)
-- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api)
-- [Repository](https://github.com/shreeharshshinde/tileguard)
+- [Reporter System Architecture](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/architecture/05-reporter-system.md)
+- [API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api)
+- [Repository](https://github.com/shindeshreeharsh/tileguard)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
+[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)

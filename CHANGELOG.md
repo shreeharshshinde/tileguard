@@ -208,7 +208,7 @@ Python prototype (`validate.py`). Superseded by the JavaScript implementation.
 
 ---
 
-[Unreleased]: https://github.com/shreeharshshinde/tileguard/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/shreeharshshinde/tileguard/releases/tag/v0.3.0
-[0.2.0]: https://github.com/shreeharshshinde/tileguard/releases/tag/v0.2.0
-[0.1.0]: https://github.com/shreeharshshinde/tileguard/releases/tag/v0.1.0
+[Unreleased]: https://github.com/shindeshreeharsh/tileguard/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/shindeshreeharsh/tileguard/releases/tag/v0.3.0
+[0.2.0]: https://github.com/shindeshreeharsh/tileguard/releases/tag/v0.2.0
+[0.1.0]: https://github.com/shindeshreeharsh/tileguard/releases/tag/v0.1.0

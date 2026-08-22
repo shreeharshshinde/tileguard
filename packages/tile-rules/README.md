@@ -3,7 +3,7 @@
 **Vector tile validation rules for Mapbox Vector Tiles.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/tile-rules)](https://www.npmjs.com/package/@tileguard/tile-rules)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 12 configurable rules that validate vector tile structure, geometry integrity, and feature-level constraints. Catches self-intersections, unclosed rings, incorrect winding order, holes outside shells, missing layers, and coordinate range violations before they reach production rendering.
@@ -139,12 +139,12 @@ Beyond the plugin, this package exports utilities for advanced use:
 
 ## Documentation
 
-- [Rule Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/rules/tile) — Per-rule docs with examples
-- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
-- [Repository](https://github.com/shreeharshshinde/tileguard)
+- [Rule Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/rules/tile) — Per-rule docs with examples
+- [API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api) — Generated TypeDoc
+- [Repository](https://github.com/shindeshreeharsh/tileguard)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
+[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)

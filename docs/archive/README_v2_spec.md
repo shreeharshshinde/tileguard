@@ -693,7 +693,7 @@ npm publish  # tileguard@0.1.0 — re-exports all packages
 pip publish packages/python  # tileguard@0.1.0 on PyPI
 ```
 
-**The GitHub repo:** `github.com/shreeharshshinde/tileguard`
+**The GitHub repo:** `github.com/shindeshreeharsh/tileguard`
 - Public from day one
 - MIT license
 - Issues enabled — let people file bugs during development
@@ -740,7 +740,7 @@ $ cat .github/workflows/tile-quality.yml
 
 "Copy this one file. That's it. Every PR on your project now runs all three checks automatically."
 
-SLIDE: "TileGuard — github.com/shreeharshshinde/tileguard"
+SLIDE: "TileGuard — github.com/shindeshreeharsh/tileguard"
 [QR code]
 ```
 

@@ -91,4 +91,4 @@ Approachable contributions for newcomers:
 
 ## License
 
-By contributing to TileGuard, you agree that your contributions will be licensed under the [MIT License](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE).
+By contributing to TileGuard, you agree that your contributions will be licensed under the [MIT License](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE).

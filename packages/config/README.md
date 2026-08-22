@@ -3,7 +3,7 @@
 **Configuration file discovery, loading, and validation for TileGuard.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/config)](https://www.npmjs.com/package/@tileguard/config)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 Finds, loads, and validates `tileguard.config.ts` files. Handles TypeScript, ESM, CommonJS, and JSON config formats with clear, actionable error messages when something is wrong.
@@ -117,12 +117,12 @@ try {
 
 ## Documentation
 
-- [Configuration Guide](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture/06-configuration.md)
-- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api)
-- [Repository](https://github.com/shreeharshshinde/tileguard)
+- [Configuration Guide](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/architecture/06-configuration.md)
+- [API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api)
+- [Repository](https://github.com/shindeshreeharsh/tileguard)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
+[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)

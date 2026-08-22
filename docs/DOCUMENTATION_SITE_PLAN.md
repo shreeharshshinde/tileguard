@@ -191,7 +191,7 @@ hero:
       link: /rules/
     - theme: alt
       text: GitHub
-      link: https://github.com/shreeharshshinde/tileguard
+      link: https://github.com/shindeshreeharsh/tileguard
 
 features:
   - icon: 🗺️
