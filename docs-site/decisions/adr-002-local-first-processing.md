@@ -6,8 +6,8 @@
 
 Validation tools can be architected as:
 
-1. **Client-server** — upload tiles to a service, get results back (like SonarQube)
-2. **Local-first** — all processing happens on the developer's machine or CI runner (like ESLint)
+1. **Client-server**: upload tiles to a service, get results back (like SonarQube)
+2. **Local-first**: all processing happens on the developer's machine or CI runner (like ESLint)
 
 Geospatial data is often large (tiles can be multi-MB), sensitive (proprietary map data), and needs fast feedback (developer inner loop).
 
@@ -27,17 +27,18 @@ TileGuard processes all data locally. There is no TileGuard server, no cloud upl
 ## Consequences
 
 **Positive:**
-- **Zero data privacy concerns** — proprietary tile data never leaves the organization
-- **No latency** — validation is as fast as the local CPU (typically <100ms per tile)
-- **No vendor lock-in** — no service dependency, no account, MIT licensed
-- **CI-friendly** — runs in any environment with Node.js ≥ 20
-- **Offline capable** — no network required after installation
-- **Predictable costs** — no per-tile pricing or usage metering
+- **Zero data privacy concerns**: proprietary tile data never leaves the organization
+- **No latency**: validation is as fast as the local CPU (typically <100ms per tile)
+- **No vendor lock-in**: no service dependency, no account, MIT licensed
+- **CI-friendly**: runs in any environment with Node.js ≥ 20
+- **Offline capable**: no network required after installation
+- **Predictable costs**: no per-tile pricing or usage metering
 
 **Negative:**
-- **No shared dashboards** (yet) — teams can't view aggregate quality metrics without building custom tooling on top of JSON output
-- **No server-side caching** — each CI run re-validates from scratch
-- **No automatic updates** — users must update the package manually
+- **No shared dashboards** (yet)
+teams can't view aggregate quality metrics without building custom tooling on top of JSON output
+- **No server-side caching**: each CI run re-validates from scratch
+- **No automatic updates**: users must update the package manually
 
 ## Alternatives Considered
 
