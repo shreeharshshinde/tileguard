@@ -8,10 +8,11 @@ Modern web maps depend on vector tiles — binary-encoded geospatial data render
 
 Before TileGuard, the geospatial stack had:
 
-- **Rendering tests** (pixel comparison) — detect that something *looks* different, but can't tell you *what* changed in the data or *where* the geometry error is
-- **Ad-hoc scripts** — project-specific validators that check one thing, aren't reusable, and produce unstructured output
-- **QGIS manual inspection** — requires a human to open a tile, zoom to the problem, and identify the issue visually
-- **No CI integration** — tile quality is never gated in pull requests
+- **Rendering tests** (pixel comparison)
+detect that something *looks* different, but can't tell you *what* changed in the data or *where* the geometry error is
+- **Ad-hoc scripts**: project-specific validators that check one thing, aren't reusable, and produce unstructured output
+- **QGIS manual inspection**: requires a human to open a tile, zoom to the problem, and identify the issue visually
+- **No CI integration**: tile quality is never gated in pull requests
 
 The gap: **no tool exists that validates vector tile geometry and structure with the same rigour that ESLint validates JavaScript.**
 
