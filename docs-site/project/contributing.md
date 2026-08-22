@@ -4,11 +4,11 @@ Thank you for your interest in contributing to TileGuard! The most common contri
 
 ## Ways to Contribute
 
-- **Write a new rule** — the primary extension point
-- **Improve diagnostics** — better error messages, suggestions
-- **Add test fixtures** — real `.pbf` tiles that exercise edge cases
-- **Improve documentation** — corrections, examples, guides
-- **Report bugs** — with a minimal reproduction
+- **Write a new rule**: the primary extension point
+- **Improve diagnostics**: better error messages, suggestions
+- **Add test fixtures**: real `.pbf` tiles that exercise edge cases
+- **Improve documentation**: corrections, examples, guides
+- **Report bugs**: with a minimal reproduction
 
 ## Writing a Rule
 
@@ -66,10 +66,10 @@ test(reporters): add edge case for empty diagnostics
 
 ### What Makes a Good PR
 
-- **Focused** — one concern per PR
-- **Tested** — new tests for new behavior
-- **Documented** — update docs if behavior changes
-- **Small** — prefer multiple small PRs over one large PR
+- **Focused**: one concern per PR
+- **Tested**: new tests for new behavior
+- **Documented**: update docs if behavior changes
+- **Small**: prefer multiple small PRs over one large PR
 
 ## Architecture Guidelines
 

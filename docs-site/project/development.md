@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - **Node.js ≥ 20**
-- **pnpm ≥ 9** — `npm install -g pnpm`
+- **pnpm ≥ 9**: `npm install -g pnpm`
 
 ## Clone and Install
 
