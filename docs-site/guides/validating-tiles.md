@@ -1,6 +1,6 @@
 # Validating Vector Tiles
 
-This guide covers everything about validating MVT (Mapbox Vector Tile) files with TileGuard — from basic checks to advanced configuration.
+This guide covers everything about validating MVT (Mapbox Vector Tile) files with TileGuard. Covers basic checks to advanced configuration.
 
 ## Basic Validation
 
@@ -49,8 +49,8 @@ These rules validate the tile's content meets expectations:
 
 TileGuard auto-detects the winding convention used in your tiles:
 
-- **MVT convention** — Outer rings clockwise, holes counter-clockwise (MapLibre native)
-- **OGC/GeoJSON convention** — Outer rings counter-clockwise, holes clockwise (Planetiler, OpenMapTiles)
+- **MVT convention**: Outer rings clockwise, holes counter-clockwise (MapLibre native)
+- **OGC/GeoJSON convention**: Outer rings counter-clockwise, holes clockwise (Planetiler, OpenMapTiles)
 
 You don't need to configure this. TileGuard inspects the first ring and determines which convention is in use, then validates all other rings against it. No false positives on Planetiler output.
 
@@ -197,6 +197,9 @@ if (!result.summary.pass) {
 
 ## What Next?
 
-- [**Inspecting Findings ›**](/guides/inspecting-findings) — Visual debugging in the Inspector
-- [**Comparing Tiles ›**](/guides/comparing-tiles) — Diff between tile versions
-- [**Rules Reference ›**](/rules/) — Detailed per-rule documentation
+- [**Inspecting Findings ›**](/guides/inspecting-findings)
+Visual debugging in the Inspector
+- [**Comparing Tiles ›**](/guides/comparing-tiles)
+Diff between tile versions
+- [**Rules Reference ›**](/rules/)
+Detailed per-rule documentation

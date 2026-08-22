@@ -1,6 +1,6 @@
 # Validating MapLibre Styles
 
-TileGuard validates MapLibre Style Specification JSON files with 9 dedicated rules — catching configuration errors before they reach production rendering.
+TileGuard validates MapLibre Style Specification JSON files with 9 dedicated rules, catching configuration errors before they reach production rendering.
 
 ## Basic Usage
 
@@ -150,6 +150,9 @@ This gives you end-to-end validation of the tile + style contract.
 
 ## What Next?
 
-- [**Validating Tiles ›**](/guides/validating-tiles) — Tile-specific validation
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automate in your pipeline
-- [**Rules Reference ›**](/rules/) — All 21 rules
+- [**Validating Tiles ›**](/guides/validating-tiles)
+Tile-specific validation
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Automate in your pipeline
+- [**Rules Reference ›**](/rules/)
+All 21 rules
