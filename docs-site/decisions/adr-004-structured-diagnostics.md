@@ -6,9 +6,9 @@
 
 When a validator finds a problem, it needs to communicate that finding. Common approaches:
 
-1. **Print to stdout** — `console.log("Error: polygon is invalid")`
-2. **Throw exceptions** — `throw new Error("self-intersection at feature 42")`
-3. **Return structured data** — `{ ruleId, severity, message, location, suggestion }`
+1. **Print to stdout**: `console.log("Error: polygon is invalid")`
+2. **Throw exceptions**: `throw new Error("self-intersection at feature 42")`
+3. **Return structured data**: `{ ruleId, severity, message, location, suggestion }`
 
 The original prototype printed strings. This made output readable for humans but useless for:
 - CI automation (can't parse structured data from formatted text)
@@ -18,7 +18,7 @@ The original prototype printed strings. This made output readable for humans but
 
 ## Decision
 
-Every finding is a **Diagnostic** — a typed data structure with well-defined fields:
+Every finding is a **Diagnostic**: a typed data structure with well-defined fields:
 
 ```typescript
 interface Diagnostic {
@@ -38,16 +38,16 @@ Rules produce Diagnostics. Reporters format Diagnostics. The Inspector visualize
 
 **Positive:**
 - **Multiple output formats** from the same source — text, JSON, HTML, Markdown reports
-- **CI gates** — exit code derived from `diagnostics.filter(d => d.severity === 'error').length`
-- **Visual debugging** — Inspector uses `location` to select features and `data` to render overlays
-- **Aggregation** — reports can group by rule, severity, layer, or file
-- **Forward-compatible** — new consumers (IDE plugins, SARIF export, dashboards) work without changing rules
-- **Testable** — rule tests assert on structured objects, not string matching
+- **CI gates**: exit code derived from `diagnostics.filter(d => d.severity === 'error').length`
+- **Visual debugging**: Inspector uses `location` to select features and `data` to render overlays
+- **Aggregation**: reports can group by rule, severity, layer, or file
+- **Forward-compatible**: new consumers (IDE plugins, SARIF export, dashboards) work without changing rules
+- **Testable**: rule tests assert on structured objects, not string matching
 
 **Negative:**
-- **Rules must fill all fields** — more work than `console.log`
-- **Location must be computed** — rules track layer/feature/part indices during traversal
-- **`data` field is untyped** — consumers must know each rule's data schema
+- **Rules must fill all fields**: more work than `console.log`
+- **Location must be computed**: rules track layer/feature/part indices during traversal
+- **`data` field is untyped**: consumers must know each rule's data schema
 
 ## Key Design Choices
 
@@ -109,8 +109,8 @@ Adding a new consumer never requires changing rules. Adding a new rule never req
 
 ## Prior Art
 
-- **ESLint** — `LintMessage` with `ruleId`, `severity`, `message`, `line`, `column`, `fix`
-- **TypeScript** — `Diagnostic` with `code`, `category`, `messageText`, `file`, `start`
-- **Rust (rustc)** — JSON diagnostic with `code`, `level`, `message`, `spans[]`
+- **ESLint**: `LintMessage` with `ruleId`, `severity`, `message`, `line`, `column`, `fix`
+- **TypeScript**: `Diagnostic` with `code`, `category`, `messageText`, `file`, `start`
+- **Rust (rustc)**: JSON diagnostic with `code`, `level`, `message`, `spans[]`
 
 TileGuard's model is closest to ESLint's but adds geospatial-specific `location` (layer/feature/part instead of line/column) and a `data` bag for tooling metadata.
