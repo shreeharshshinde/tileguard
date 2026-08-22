@@ -1,6 +1,6 @@
 # Rules
 
-TileGuard ships with **21 built-in rules** — 12 for vector tile validation and 9 for MapLibre style linting. All rules are independently configurable.
+TileGuard ships with **21 built-in rules**: 12 for vector tile validation and 9 for MapLibre style linting. All rules are independently configurable.
 
 ## Configuration
 
@@ -35,12 +35,12 @@ These rules validate the geometric integrity of vector tile features.
 
 | Rule | Default | What it catches |
 |:-----|:--------|:----------------|
-| [`tile/self-intersection`](/rules/tile/self-intersection) | error | Polygon edges that cross themselves — causes invalid topology and unpredictable fill rendering |
-| [`tile/unclosed-ring`](/rules/tile/unclosed-ring) | error | Polygon rings where the last vertex ≠ first vertex — produces open polygons |
-| [`tile/zero-area-ring`](/rules/tile/zero-area-ring) | warning | Degenerate polygon rings with zero or near-zero area — invisible but wasteful |
-| [`tile/winding-order`](/rules/tile/winding-order) | error | Rings wound in the wrong direction — convention-aware (auto-detects MVT vs OGC) |
-| [`tile/hole-containment`](/rules/tile/hole-containment) | error | Hole rings that extend outside their parent shell — multi-polygon aware |
-| [`tile/degenerate-geometry`](/rules/tile/degenerate-geometry) | warning | Lines with < 2 vertices or polygons with < 4 vertices — structurally invalid |
+| [`tile/self-intersection`](/rules/tile/self-intersection) | error | Polygon edges that cross themselves: causes invalid topology and unpredictable fill rendering |
+| [`tile/unclosed-ring`](/rules/tile/unclosed-ring) | error | Polygon rings where the last vertex ≠ first vertex: produces open polygons |
+| [`tile/zero-area-ring`](/rules/tile/zero-area-ring) | warning | Degenerate polygon rings with zero or near-zero area: invisible but wasteful |
+| [`tile/winding-order`](/rules/tile/winding-order) | error | Rings wound in the wrong direction: convention-aware (auto-detects MVT vs OGC) |
+| [`tile/hole-containment`](/rules/tile/hole-containment) | error | Hole rings that extend outside their parent shell: multi-polygon aware |
+| [`tile/degenerate-geometry`](/rules/tile/degenerate-geometry) | warning | Lines with < 2 vertices or polygons with < 4 vertices: structurally invalid |
 | [`tile/coordinate-range`](/rules/tile/coordinate-range) | error | Vertices outside the valid tile extent (0–4096 by default) |
 
 ### Structural Rules
@@ -65,15 +65,15 @@ These rules validate MapLibre Style Specification JSON files.
 
 | Rule | Default | What it catches |
 |:-----|:--------|:----------------|
-| [`style/valid-json`](/rules/style/valid-json) | error | Style file is not valid JSON — parsing fails entirely |
-| [`style/version`](/rules/style/version) | error | Style `version` field is not `8` — only version 8 is supported |
+| [`style/valid-json`](/rules/style/valid-json) | error | Style file is not valid JSON: parsing fails entirely |
+| [`style/version`](/rules/style/version) | error | Style `version` field is not `8`: only version 8 is supported |
 | [`style/sources-present`](/rules/style/sources-present) | error | Missing top-level `sources` object |
 | [`style/layers-present`](/rules/style/layers-present) | error | Missing top-level `layers` array |
 | [`style/layer-id-required`](/rules/style/layer-id-required) | error | Layers without an `id` field |
-| [`style/unique-layer-id`](/rules/style/unique-layer-id) | error | Duplicate layer IDs — causes rendering conflicts |
+| [`style/unique-layer-id`](/rules/style/unique-layer-id) | error | Duplicate layer IDs: causes rendering conflicts |
 | [`style/known-source`](/rules/style/known-source) | error | Layers referencing a source not declared in `sources` |
-| [`style/zoom-range`](/rules/style/zoom-range) | warning | `minzoom` greater than `maxzoom` — layer can never be visible |
-| [`style/no-deprecated-ref`](/rules/style/no-deprecated-ref) | warning | Usage of deprecated `ref` property — removed in modern MapLibre |
+| [`style/zoom-range`](/rules/style/zoom-range) | warning | `minzoom` greater than `maxzoom`: layer can never be visible |
+| [`style/no-deprecated-ref`](/rules/style/no-deprecated-ref) | warning | Usage of deprecated `ref` property: removed in modern MapLibre |
 
 ---
 
@@ -99,10 +99,10 @@ Every rule produces diagnostics in the same format:
 ```
 
 This structure enables:
-- **CLI** — formatted text output with colors and icons
-- **CI** — JSON output for automated gates
-- **Inspector** — visual overlay on the exact geometry
-- **Reports** — aggregation by rule, severity, or layer
+- **CLI**: formatted text output with colors and icons
+- **CI**: JSON output for automated gates
+- **Inspector**: visual overlay on the exact geometry
+- **Reports**: aggregation by rule, severity, or layer
 
 ---
 
@@ -154,6 +154,9 @@ export const myPlugin: Plugin = {
 
 ## What Next?
 
-- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard in 5 minutes
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Fail PRs on violations
-- [**How It Works ›**](/learn/how-it-works) — Architecture overview
+- [**Quick Start ›**](/getting-started/quick-start)
+Run TileGuard in 5 minutes
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Fail PRs on violations
+- [**How It Works ›**](/learn/how-it-works)
+Architecture overview

@@ -48,6 +48,9 @@ rules: {
 
 ## Related rules
 
-- [`tile/hole-containment`](/rules/tile/hole-containment) — Validates holes lie within their parent outer ring
-- [`tile/zero-area-ring`](/rules/tile/zero-area-ring) — Catches degenerate rings with no area
-- [`tile/self-intersection`](/rules/tile/self-intersection) — Catches rings that cross themselves
+- [`tile/hole-containment`](/rules/tile/hole-containment)
+Validates holes lie within their parent outer ring
+- [`tile/zero-area-ring`](/rules/tile/zero-area-ring)
+Catches degenerate rings with no area
+- [`tile/self-intersection`](/rules/tile/self-intersection)
+Catches rings that cross themselves

@@ -47,6 +47,9 @@ rules: {
 
 ## Related rules
 
-- [`tile/winding-order`](/rules/tile/winding-order) — Validates ring winding direction
-- [`tile/self-intersection`](/rules/tile/self-intersection) — Catches rings that cross themselves
-- [`tile/unclosed-ring`](/rules/tile/unclosed-ring) — Catches unclosed rings
+- [`tile/winding-order`](/rules/tile/winding-order)
+Validates ring winding direction
+- [`tile/self-intersection`](/rules/tile/self-intersection)
+Catches rings that cross themselves
+- [`tile/unclosed-ring`](/rules/tile/unclosed-ring)
+Catches unclosed rings

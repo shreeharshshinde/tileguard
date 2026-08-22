@@ -47,4 +47,5 @@ Layers not listed in the config are not checked. Layers listed but absent from t
 
 ## Related rules
 
-- [`tile/feature-count`](/rules/tile/feature-count) — Total feature count bounds
+- [`tile/feature-count`](/rules/tile/feature-count)
+Total feature count bounds

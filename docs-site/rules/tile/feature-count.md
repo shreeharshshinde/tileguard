@@ -50,5 +50,7 @@ When neither `min` nor `max` is configured, this rule is a no-op.
 
 ## Related rules
 
-- [`tile/layer-feature-count`](/rules/tile/layer-feature-count) — Per-layer count bounds
-- [`tile/no-empty`](/rules/tile/no-empty) — Zero-feature detection
+- [`tile/layer-feature-count`](/rules/tile/layer-feature-count)
+Per-layer count bounds
+- [`tile/no-empty`](/rules/tile/no-empty)
+Zero-feature detection

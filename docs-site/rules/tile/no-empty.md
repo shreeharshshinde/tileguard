@@ -43,4 +43,5 @@ For sparse datasets (e.g., ocean tiles, polar regions), some tiles are legitimat
 
 ## Related rules
 
-- [`tile/feature-count`](/rules/tile/feature-count) — Configurable min/max total feature count
+- [`tile/feature-count`](/rules/tile/feature-count)
+Configurable min/max total feature count
