@@ -188,7 +188,7 @@ on:
 
 ## Caching
 
-TileGuard has no build step — it runs directly via `npx`. For faster execution, cache npm:
+TileGuard has no build step; it runs directly via `npx`. For faster execution, cache npm:
 
 ```yaml
       - uses: actions/setup-node@v4
@@ -199,7 +199,7 @@ TileGuard has no build step — it runs directly via `npx`. For faster execution
 
 ## Configuration in CI
 
-TileGuard automatically picks up `tileguard.config.ts` from your repository root. No special CI configuration is needed — the same rules run locally and in CI.
+TileGuard automatically picks up `tileguard.config.ts` from your repository root. No special CI configuration is needed, the same rules run locally and in CI.
 
 ```typescript
 // tileguard.config.ts
@@ -229,6 +229,9 @@ The `--reporter` flag overrides the config file reporter. Use `--reporter json` 
 
 ## What Next?
 
-- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard locally first
-- [**View All Rules ›**](/rules/) — See what's being validated
-- [**How It Works ›**](/learn/how-it-works) — Understand the pipeline
+- [**Quick Start ›**](/getting-started/quick-start)
+Run TileGuard locally first
+- [**View All Rules ›**](/rules/)
+See what's being validated
+- [**How It Works ›**](/learn/how-it-works)
+Understand the pipeline

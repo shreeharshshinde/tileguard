@@ -1,6 +1,6 @@
 # Generating Reports
 
-TileGuard generates structured engineering reports from comparison and regression data — Markdown for documentation, HTML for sharing, JSON for automation.
+TileGuard generates structured engineering reports from comparison and regression data: Markdown for documentation, HTML for sharing, JSON for automation.
 
 ## CLI Usage
 
@@ -35,13 +35,13 @@ Ranked by confidence and severity:
 ```markdown
 ### Key Findings
 
-1. **92% confidence** — Building footprint area reduced by 73% in layer "buildings"
+1. **92% confidence**: Building footprint area reduced by 73% in layer "buildings"
    (feature 42, geometry regression)
 
-2. **85% confidence** — Property "class" changed from "primary" to "tertiary"
+2. **85% confidence**: Property "class" changed from "primary" to "tertiary"
    on 4 road features (attribute regression)
 
-3. **71% confidence** — Feature moved 200+ tile units with property changes
+3. **71% confidence**: Feature moved 200+ tile units with property changes
    (mixed regression)
 ```
 
@@ -70,13 +70,13 @@ Prioritized action items:
 ```markdown
 ### Recommendations
 
-1. **Investigate buildings layer** — 47 features modified with significant
+1. **Investigate buildings layer**: 47 features modified with significant
    area reductions. Likely a simplification threshold change.
 
-2. **Review road classification** — 4 features downgraded from "primary"
+2. **Review road classification**: 4 features downgraded from "primary"
    to "tertiary". May be a data source update or processing error.
 
-3. **Verify feature migration** — 1 feature moved >200 tile units.
+3. **Verify feature migration**: 1 feature moved >200 tile units.
    Check for coordinate system issues in the pipeline.
 ```
 
@@ -105,7 +105,7 @@ Best for:
 tileguard report ./v1.pbf ./v2.pbf --format html > report.html
 ```
 
-The HTML report is self-contained — all styles are inlined, no external dependencies.
+The HTML report is self-contained. All styles are inlined, no external dependencies.
 
 ### JSON
 
@@ -196,6 +196,9 @@ The Inspector can also generate reports directly from the UI:
 
 ## What Next?
 
-- [**Comparing Tiles ›**](/guides/comparing-tiles) — How to compare tile versions
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated pipelines
-- [**Quick Start ›**](/getting-started/quick-start) — Getting started
+- [**Comparing Tiles ›**](/guides/comparing-tiles)
+How to compare tile versions
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Automated pipelines
+- [**Quick Start ›**](/getting-started/quick-start)
+Getting started
