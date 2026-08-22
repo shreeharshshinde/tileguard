@@ -1,122 +1,40 @@
 # API Reference
 
-TileGuard's public API is distributed across focused packages. Each package has a single responsibility and exports only what consumers need.
+TileGuard's public API is distributed across 7 packages. Each has a focused responsibility and exports only what consumers need.
 
-## Core Interfaces
+## Packages
 
-**Package:** `@tileguard/core`
+| Package | Purpose | Install |
+|:--------|:--------|:--------|
+| [`@tileguard/core`](/api/core) | Framework contracts — Engine, Diagnostic, Rule, Plugin, Artifact | `npm i @tileguard/core` |
+| [`@tileguard/tile-rules`](/api/tile-rules) | MVT provider + 12 tile validation rules | `npm i @tileguard/tile-rules` |
+| [`@tileguard/style-rules`](/api/style-rules) | Style provider + 9 lint rules + parser/resolver/validator | `npm i @tileguard/style-rules` |
+| [`@tileguard/analysis`](/api/analysis) | Comparison engine, regression detection, statistics | `npm i @tileguard/analysis` |
+| [`@tileguard/reporters`](/api/reporters) | Text & JSON CLI reporters + engineering report engine | `npm i @tileguard/reporters` |
+| [`@tileguard/config`](/api/config) | Config file discovery, loading, and validation | `npm i @tileguard/config` |
+| [`@tileguard/cli`](/api/cli) | CLI with 10 commands (includes all packages) | `npm i -g @tileguard/cli` |
 
-The foundation — all other packages depend on these contracts.
+## Dependency Graph
 
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `createEngine` | Function | Create a validation engine with plugins and config |
-| `Diagnostic` | Interface | Structured validation finding |
-| `Rule` | Interface | Validation rule contract |
-| `RuleContext` | Interface | Context passed to `rule.create()` |
-| `Plugin` | Interface | Package of providers + rules |
-| `Artifact` | Interface | Decoded, typed source file |
-| `Provider` | Interface | File decoder contract |
-| `EngineResult` | Interface | Result of `engine.run()` |
-| `Severity` | Type | `'error' \| 'warning' \| 'info'` |
+```mermaid
+graph TD
+    CLI["@tileguard/cli"] --> CORE["@tileguard/core"]
+    CLI --> TILE["@tileguard/tile-rules"]
+    CLI --> STYLE["@tileguard/style-rules"]
+    CLI --> ANALYSIS["@tileguard/analysis"]
+    CLI --> REPORTERS["@tileguard/reporters"]
+    CLI --> CONFIG["@tileguard/config"]
+    TILE --> CORE
+    STYLE --> CORE
+    ANALYSIS --> CORE
+    REPORTERS --> CORE
+    CONFIG --> CORE
 
-```typescript
-import { createEngine } from '@tileguard/core';
-import type { Diagnostic, Rule, Plugin } from '@tileguard/core';
+    style CORE fill:#09090b,stroke:#a3ff00,color:#a3ff00
+    style CLI fill:#1f1f22,stroke:#a3ff00,color:#fff
 ```
 
----
-
-## Tile Rules
-
-**Package:** `@tileguard/tile-rules`
-
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `tilePlugin` | Plugin | All 12 tile rules + tile provider |
-| `tileProvider` | Provider | Decodes `.pbf` → `VectorTileArtifact` |
-| `VectorTileArtifact` | Interface | Decoded MVT tile |
-| `VectorTileLayer` | Interface | Single layer with features |
-| `VectorTileFeature` | Interface | Feature with type, properties, geometry |
-
-```typescript
-import { tilePlugin, tileProvider } from '@tileguard/tile-rules';
-import type { VectorTileArtifact } from '@tileguard/tile-rules';
-```
-
----
-
-## Style Rules
-
-**Package:** `@tileguard/style-rules`
-
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `stylePlugin` | Plugin | All 9 style rules + style provider |
-| `styleProvider` | Provider | Parses `.json` → `StyleSpecArtifact` |
-
-```typescript
-import { stylePlugin } from '@tileguard/style-rules';
-```
-
----
-
-## Analysis
-
-**Package:** `@tileguard/analysis`
-
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `createComparisonEngine` | Function | Create a tile comparison engine |
-| `createRegressionEngine` | Function | Create a regression detector |
-| `createSnapshotFactory` | Function | Create tile snapshots for comparison |
-| `TileComparison` | Interface | Comparison result |
-| `RegressionAnalysis` | Interface | Regression detection result |
-| `TileSnapshot` | Interface | Snapshot of a tile version |
-
-```typescript
-import {
-  createComparisonEngine,
-  createRegressionEngine,
-  createSnapshotFactory,
-} from '@tileguard/analysis';
-```
-
----
-
-## Reporters
-
-**Package:** `@tileguard/reporters`
-
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `textReporter` | Reporter | Colored terminal output |
-| `jsonReporter` | Reporter | Machine-readable JSON |
-| `createReportEngine` | Function | Generate Markdown/HTML/JSON reports |
-
-```typescript
-import { textReporter, jsonReporter, createReportEngine } from '@tileguard/reporters';
-```
-
----
-
-## Config
-
-**Package:** `@tileguard/config`
-
-| Export | Type | Description |
-|:-------|:-----|:------------|
-| `loadConfig` | Function | Discover and load `tileguard.config.ts` |
-| `TileGuardConfig` | Interface | Configuration schema |
-
-```typescript
-import { loadConfig } from '@tileguard/config';
-import type { TileGuardConfig } from '@tileguard/config';
-```
-
----
-
-## Common Usage Pattern
+## Quick Example
 
 ```typescript
 import { createEngine } from '@tileguard/core';
@@ -128,23 +46,13 @@ const engine = createEngine({
   rules: {
     'tile/self-intersection': 'error',
     'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
-    'style/known-source': 'error',
   },
 });
 
 const result = await engine.run(['./tiles/', './styles/']);
 
 if (!result.summary.pass) {
-  console.error(`${result.summary.errors} errors, ${result.summary.warnings} warnings`);
-  for (const d of result.diagnostics) {
-    console.error(`  ${d.ruleId}: ${d.message}`);
-  }
+  console.error(`${result.summary.errors} errors found`);
   process.exit(1);
 }
 ```
-
-## What Next?
-
-- [**Rule Engine ›**](/architecture/rule-engine) — How rules are structured internally
-- [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics) — Artifact and Diagnostic models in detail
-- [**Writing Rules ›**](/rules/#writing-custom-rules) — Create your own rules
