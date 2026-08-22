@@ -5,10 +5,10 @@
 ## Context
 
 TileGuard has two major capabilities:
-1. **Validation** — decode tiles, apply rules, produce diagnostics
-2. **Visualization** — render geometry on canvas, show diagnostic overlays, enable investigation
+1. **Validation**: decode tiles, apply rules, produce diagnostics
+2. **Visualization**: render geometry on canvas, show diagnostic overlays, enable investigation
 
-A natural temptation is to combine them: have the Inspector run rules directly, or have rules produce visual annotations. Many GIS tools take this approach — validation logic lives inside the GUI.
+A natural temptation is to combine them: have the Inspector run rules directly, or have rules produce visual annotations. Many GIS tools take this approach. Validation logic lives inside the GUI.
 
 ## Decision
 
@@ -16,8 +16,8 @@ Validation and visualization are **strictly separated**:
 
 - The **validation engine** (core, tile-rules, style-rules) produces Diagnostics
 - The **Inspector** (inspector package) consumes Diagnostics and renders them visually
-- The Inspector **never runs rules** — it receives pre-computed diagnostics
-- Rules **never produce visual output** — they return structured data
+- The Inspector **never runs rules**: it receives pre-computed diagnostics
+- Rules **never produce visual output**: they return structured data
 
 ```text
 ┌─────────────────────┐         ┌─────────────────────┐
@@ -56,17 +56,17 @@ The **Diagnostic** is the only interface between the two sides.
 ## Consequences
 
 **Positive:**
-- **CLI works without the Inspector** — validation runs headless in CI with zero UI dependencies
-- **Inspector works without re-running rules** — load diagnostics from JSON, no tile-rules needed
-- **Independent deployment** — ship validation as `@tileguard/cli`, ship Inspector as a separate app
-- **Independent evolution** — improve rendering without touching validation logic
-- **Testable in isolation** — test rules without DOM/canvas, test rendering without rule logic
-- **Multiple visualizers possible** — a future IDE plugin could consume the same diagnostics
+- **CLI works without the Inspector**: validation runs headless in CI with zero UI dependencies
+- **Inspector works without re-running rules**: load diagnostics from JSON, no tile-rules needed
+- **Independent deployment**: ship validation as `@tileguard/cli`, ship Inspector as a separate app
+- **Independent evolution**: improve rendering without touching validation logic
+- **Testable in isolation**: test rules without DOM/canvas, test rendering without rule logic
+- **Multiple visualizers possible**: a future IDE plugin could consume the same diagnostics
 
 **Negative:**
-- **Two decode paths** — the CLI's Provider decodes for rules; the Inspector decodes for rendering (different but compatible)
-- **Diagnostic must carry enough context** — the `location` and `data` fields must enable visualization without the Inspector knowing rule internals
-- **No real-time validation in Inspector** — diagnostics are computed once at load time, not updated live
+- **Two decode paths**: the CLI's Provider decodes for rules; the Inspector decodes for rendering (different but compatible)
+- **Diagnostic must carry enough context**: the `location` and `data` fields must enable visualization without the Inspector knowing rule internals
+- **No real-time validation in Inspector**: diagnostics are computed once at load time, not updated live
 
 ## The Overlay Bridge
 
@@ -99,8 +99,8 @@ This mirrors how Chrome DevTools relates to V8: the engine executes JavaScript a
 
 ## Prior Art
 
-- **ESLint + VS Code** — ESLint produces diagnostics; VS Code's extension renders squiggly underlines. ESLint doesn't know about VS Code.
-- **TypeScript + IDE** — tsc produces diagnostics; the IDE renders inline errors. The compiler has no UI code.
-- **Rust + rust-analyzer** — rustc produces diagnostics; the language server presents them. Different processes, same diagnostic format.
+- **ESLint + VS Code**: ESLint produces diagnostics; VS Code's extension renders squiggly underlines. ESLint doesn't know about VS Code.
+- **TypeScript + IDE**: tsc produces diagnostics; the IDE renders inline errors. The compiler has no UI code.
+- **Rust + rust-analyzer**: rustc produces diagnostics; the language server presents them. Different processes, same diagnostic format.
 
 TileGuard follows the same pattern applied to geospatial validation.
