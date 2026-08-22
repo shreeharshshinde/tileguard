@@ -37,8 +37,8 @@ Artifacts are **immutable** after decoding. Rules receive them read-only.
 
 A **Provider** loads and decodes source files into Artifacts:
 
-- **Tile Provider** — Reads `.pbf`, decodes protobuf, extracts layers/features/geometry
-- **Style Provider** — Reads `.json`, parses structure, resolves source references
+- **Tile Provider**: Reads `.pbf`, decodes protobuf, extracts layers/features/geometry
+- **Style Provider**: Reads `.json`, parses structure, resolves source references
 
 Providers handle I/O. Rules never touch the filesystem.
 
@@ -88,7 +88,7 @@ interface Diagnostic {
 }
 ```
 
-Diagnostics are the **universal interface contract** — everything downstream consumes them.
+Diagnostics are the **universal interface contract**: everything downstream consumes them.
 
 ### Stage 5: Reporters & Output
 
@@ -188,6 +188,9 @@ const result = await engine.run(['./tiles/', './styles/']);
 
 ## What Next?
 
-- [**View All Rules ›**](/rules/) — What TileGuard catches
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated quality gates
-- [**Quick Start ›**](/getting-started/quick-start) — Run it yourself
+- [**View All Rules ›**](/rules/)
+What TileGuard catches
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Automated quality gates
+- [**Quick Start ›**](/getting-started/quick-start)
+Run it yourself

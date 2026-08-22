@@ -1,10 +1,10 @@
 # What is TileGuard?
 
-TileGuard is a **rule-based validation framework** for vector tiles and MapLibre style specifications. It applies the same engineering discipline that ESLint brings to JavaScript — to the geospatial stack.
+TileGuard is a **rule-based validation framework** for vector tiles and MapLibre style specifications. It applies the same engineering discipline that ESLint brings to JavaScript, applied to the geospatial stack.
 
 ## The Problem
 
-Modern web maps render vector tiles client-side. The tile data is the truth — if a polygon has an unclosed ring, a self-intersection, or incorrect winding order, the rendering engine has to guess. Different renderers guess differently. The result: visual glitches, broken extrusions, missing features, and silent data corruption.
+Modern web maps render vector tiles client-side. The tile data is the truth. If a polygon has an unclosed ring, a self-intersection, or incorrect winding order, the rendering engine has to guess. Different renderers guess differently. The result: visual glitches, broken extrusions, missing features, and silent data corruption.
 
 **Rendering tests** can tell you something *looks* wrong. But they can't tell you:
 
@@ -17,18 +17,18 @@ You're left manually inspecting tiles in QGIS, writing ad-hoc scripts, or hoping
 
 ### Real-World Examples
 
-These aren't hypothetical — they're the kinds of issues tile pipelines produce daily:
+These aren't hypothetical. They're the kinds of issues tile pipelines produce daily:
 
 | Symptom in the map | Root cause in the tile |
 |:-------------------|:-----------------------|
-| Building footprint has a spike/artifact | `tile/self-intersection` — polygon edges cross |
-| Filled polygon appears hollow | `tile/winding-order` — hole wound like an outer ring |
-| Lake has a chunk missing | `tile/hole-containment` — hole vertices escaped the shell |
-| Polygon outline renders but fill is empty | `tile/unclosed-ring` — ring not closed |
-| Label layer breaks the entire map | `style/known-source` — typo in source reference |
-| Tile loads slowly, map lags on zoom | `tile/feature-count` — 80k features in one tile |
+| Building footprint has a spike/artifact | `tile/self-intersection`: polygon edges cross |
+| Filled polygon appears hollow | `tile/winding-order`: hole wound like an outer ring |
+| Lake has a chunk missing | `tile/hole-containment`: hole vertices escaped the shell |
+| Polygon outline renders but fill is empty | `tile/unclosed-ring`: ring not closed |
+| Label layer breaks the entire map | `style/known-source`: typo in source reference |
+| Tile loads slowly, map lags on zoom | `tile/feature-count`: 80k features in one tile |
 
-None of these produce a runtime error. The map still loads. It just looks wrong — silently, in production, to your users.
+None of these produce a runtime error. The map still loads. It just looks wrong. Silently, in production, to your users.
 
 ## The Solution
 
@@ -81,7 +81,7 @@ Found in 34 milliseconds. Exact layer, exact feature, exact segments. Actionable
 
 ### Rules, Not Monolithic Validators
 
-TileGuard doesn't have a single `validate()` function that checks everything. Each concern is a separate **rule** — a plain TypeScript object under 25 lines:
+TileGuard doesn't have a single `validate()` function that checks everything. Each concern is a separate **rule**: a plain TypeScript object under 25 lines:
 
 | Rule | What it catches |
 |:-----|:----------------|
@@ -115,7 +115,7 @@ This means:
 - **Reports** can aggregate findings by severity and layer
 - **Custom tooling** can consume it programmatically
 
-The diagnostic is the product — not the CLI output, not the visual overlay. Those are just views of the same underlying data.
+The diagnostic is the product. Not the CLI output, not the visual overlay. Those are just views of the same underlying data.
 
 ### Convention-Aware
 
@@ -133,27 +133,30 @@ The Inspector never runs rules.
 
 Adding a rule never touches formatting. Adding a reporter never touches validation. Adding a visualization never touches diagnostics. Each layer has one job.
 
-This is what makes TileGuard reliable — a bug in one component cannot corrupt another. A rule can't accidentally break the CLI. A new reporter can't introduce false positives.
+This is what makes TileGuard reliable. A bug in one component cannot corrupt another. A rule can't accidentally break the CLI. A new reporter can't introduce false positives.
 
 ## What TileGuard Is Not
 
-- **Not a renderer** — it doesn't draw maps, it validates the data maps consume
-- **Not a tile server** — it doesn't serve tiles, it checks them before they're served
-- **Not a geometry library** — it doesn't create or transform geometry, it validates existing geometry
-- **Not a MapLibre plugin** — it runs before MapLibre ever sees the data
+- **Not a renderer**: it doesn't draw maps, it validates the data maps consume
+- **Not a tile server**: it doesn't serve tiles, it checks them before they're served
+- **Not a geometry library**: it doesn't create or transform geometry, it validates existing geometry
+- **Not a MapLibre plugin**: it runs before MapLibre ever sees the data
 
-TileGuard sits between your tile generation pipeline and your deployment — the quality gate.
+TileGuard sits between your tile generation pipeline and your deployment: the quality gate.
 
 ## Who Is It For?
 
-- **Tile pipeline engineers** — Catch geometry errors before production
-- **Style authors** — Validate styles match your source definitions
-- **CI/CD systems** — Automated quality gates on pull requests
-- **Data teams** — Compare tile versions, detect regressions, generate evidence
-- **Open-source contributors** — Extend with custom rules in ~25 lines
+- **Tile pipeline engineers**: Catch geometry errors before production
+- **Style authors**: Validate styles match your source definitions
+- **CI/CD systems**: Automated quality gates on pull requests
+- **Data teams**: Compare tile versions, detect regressions, generate evidence
+- **Open-source contributors**: Extend with custom rules in ~25 lines
 
 ## What Next?
 
-- [**Quick Start ›**](/getting-started/quick-start) — Run TileGuard in 5 minutes
-- [**How It Works ›**](/learn/how-it-works) — Architecture and pipeline
-- [**View All Rules ›**](/rules/) — See what TileGuard catches
+- [**Quick Start ›**](/getting-started/quick-start)
+Run TileGuard in 5 minutes
+- [**How It Works ›**](/learn/how-it-works)
+Architecture and pipeline
+- [**View All Rules ›**](/rules/)
+See what TileGuard catches

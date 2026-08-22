@@ -1,6 +1,6 @@
 # Concepts
 
-Understanding two core concepts — **Rules** and **Diagnostics** — gives you a mental model for everything TileGuard does.
+Understanding two core concepts (**Rules** and **Diagnostics**) gives you a mental model for everything TileGuard does.
 
 ## Rules
 
@@ -35,25 +35,25 @@ Rules follow a `namespace/name` pattern:
 ### Rule Categories
 
 **Geometry rules** validate the shape of features:
-- `tile/self-intersection` — edges that cross
-- `tile/unclosed-ring` — open polygons
-- `tile/winding-order` — ring direction
-- `tile/hole-containment` — holes outside shells
-- `tile/zero-area-ring` — collapsed polygons
-- `tile/degenerate-geometry` — too few vertices
-- `tile/coordinate-range` — vertices outside bounds
+- `tile/self-intersection`: edges that cross
+- `tile/unclosed-ring`: open polygons
+- `tile/winding-order`: ring direction
+- `tile/hole-containment`: holes outside shells
+- `tile/zero-area-ring`: collapsed polygons
+- `tile/degenerate-geometry`: too few vertices
+- `tile/coordinate-range`: vertices outside bounds
 
 **Structural rules** validate tile-level properties:
-- `tile/required-layers` — expected layers present
-- `tile/required-properties` — feature metadata exists
-- `tile/feature-count` — total feature budget
-- `tile/layer-feature-count` — per-layer budget
-- `tile/no-empty` — tile has content
+- `tile/required-layers`: expected layers present
+- `tile/required-properties`: feature metadata exists
+- `tile/feature-count`: total feature budget
+- `tile/layer-feature-count`: per-layer budget
+- `tile/no-empty`: tile has content
 
 **Style rules** validate MapLibre JSON:
-- `style/valid-json` — parseable
-- `style/version` — spec version 8
-- `style/known-source` — sources declared
+- `style/valid-json`: parseable
+- `style/version`: spec version 8
+- `style/known-source`: sources declared
 - _(and 6 more)_
 
 ### Rule Configuration
@@ -86,7 +86,7 @@ This means you can safely enable, disable, or add rules without side effects.
 
 ## Diagnostics
 
-A **Diagnostic** is the structured output of a rule. When a rule finds a problem, it produces a diagnostic — not a printed message, not an exception, but a typed data structure.
+A **Diagnostic** is the structured output of a rule. When a rule finds a problem, it produces a diagnostic. Not a printed message, not an exception, but a typed data structure.
 
 ### Anatomy of a Diagnostic
 
@@ -120,7 +120,7 @@ A **Diagnostic** is the structured output of a rule. When a rule finds a problem
 
 ### Why Structured?
 
-Diagnostics are data — not strings. This single design decision enables:
+Diagnostics are data. Not strings. This single design decision enables:
 
 | Consumer | Uses diagnostics to... |
 |:---------|:-----------------------|
@@ -187,14 +187,17 @@ flowchart TD
     style H fill:#121214,stroke:#27272a,color:#fff
 ```
 
-The **Artifact** is immutable — rules can't modify it.
-The **Rules** only produce diagnostics — they never print.
-The **Reporters** only format diagnostics — they never validate.
+The **Artifact** is immutable. Rules can't modify it.
+The **Rules** only produce diagnostics. They never print.
+The **Reporters** only format diagnostics. They never validate.
 
 This separation is what makes TileGuard reliable and extensible.
 
 ## What Next?
 
-- [**Validating Tiles ›**](/guides/validating-tiles) — Practical tile validation guide
-- [**Rules Reference ›**](/rules/) — All 21 rules with configuration
-- [**How It Works ›**](/learn/how-it-works) — Full architecture
+- [**Validating Tiles ›**](/guides/validating-tiles)
+Practical tile validation guide
+- [**Rules Reference ›**](/rules/)
+All 21 rules with configuration
+- [**How It Works ›**](/learn/how-it-works)
+Full architecture
