@@ -1,6 +1,6 @@
 # Comparing Tiles
 
-TileGuard can structurally diff two vector tile versions and detect regressions — answering "what changed between v1 and v2?" at the feature level.
+TileGuard can structurally diff two vector tile versions and detect regressions, answering "what changed between v1 and v2?" at the feature level.
 
 ## CLI Comparison
 
@@ -48,23 +48,24 @@ Features are matched by:
 ### Modification Detection
 
 For modified features, TileGuard reports what changed:
-- **Geometry changes** — vertex count, area, centroid position, bounding box
-- **Property changes** — added, removed, or modified attributes
-- **Mixed** — both geometry and properties changed
+- **Geometry changes**: vertex count, area, centroid position, bounding box
+- **Property changes**: added, removed, or modified attributes
+- **Mixed**: both geometry and properties changed
 
 ## Regression Detection
 
-After comparison, TileGuard can analyze modifications to find **regressions** — changes that are likely bugs rather than intentional updates:
+After comparison, TileGuard can analyze modifications to find **regressions**: changes that are likely bugs rather than intentional updates:
 
 ```bash
 tileguard compare ./baseline.pbf ./updated.pbf --analyze
 ```
 
 Each regression candidate includes:
-- **Confidence score** (0–100%) — how likely it's a real issue
-- **Kind** — geometry, attribute, or mixed
-- **Summary** — human-readable description
-- **Evidence** — specific measurements backing the finding
+- **Confidence score** (0–100%)
+how likely it's a real issue
+- **Kind**: geometry, attribute, or mixed
+- **Summary**: human-readable description
+- **Evidence**: specific measurements backing the finding
 
 ### High-Confidence Signals
 
@@ -85,9 +86,9 @@ tileguard report ./baseline.pbf ./updated.pbf --format markdown
 ```
 
 Formats available:
-- `markdown` — For documentation, pull request descriptions
-- `html` — Self-contained page with styled tables
-- `json` — Machine-readable for dashboards and automation
+- `markdown`: for documentation, pull request descriptions
+- `html`: self-contained page with styled tables
+- `json`: machine-readable for dashboards and automation
 
 See [Generating Reports →](/guides/generating-reports) for details.
 
@@ -144,6 +145,9 @@ Compare tiles in your pull request workflow:
 
 ## What Next?
 
-- [**Generating Reports ›**](/guides/generating-reports) — Produce engineering reports
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions) — Automated pipelines
-- [**Inspecting Findings ›**](/guides/inspecting-findings) — Visual debugging
+- [**Generating Reports ›**](/guides/generating-reports)
+Produce engineering reports
+- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+Automated pipelines
+- [**Inspecting Findings ›**](/guides/inspecting-findings)
+Visual debugging

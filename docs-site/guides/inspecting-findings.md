@@ -1,6 +1,6 @@
 # Inspecting Findings
 
-The TileGuard Inspector is a browser-based visual debugging environment. When the CLI tells you *what* is wrong, the Inspector shows you *where* — rendering geometry on canvas with diagnostic overlays pinpointing the exact problem.
+The TileGuard Inspector is a browser-based visual debugging environment. When the CLI tells you *what* is wrong, the Inspector shows you *where*, rendering geometry on canvas with diagnostic overlays pinpointing the exact problem.
 
 ## Opening the Inspector
 
@@ -42,24 +42,24 @@ Once a tile is loaded, the workspace provides:
 
 ### Left Panel: Layer Explorer
 
-Lists all layers in the tile with feature counts. Click a layer to isolate it visually — other layers dim to reduced opacity.
+Lists all layers in the tile with feature counts. Click a layer to isolate it visually, other layers dim to reduced opacity.
 
 ### Center: Canvas
 
 Renders all geometry using the HTML5 Canvas 2D API with:
-- **Polygons** — filled with layer-specific colors
-- **Lines** — stroked paths
-- **Points** — circular markers
-- **Diagnostic overlays** — error highlights on top
+- **Polygons**: filled with layer-specific colors
+- **Lines**: stroked paths
+- **Points**: circular markers
+- **Diagnostic overlays**: error highlights on top
 
 ### Right Panel: Feature Inspector
 
 When you select a feature, shows:
-- **Summary** — layer, type, vertex count
-- **Properties** — all feature attributes
-- **Geometry** — ring structure, winding direction
-- **Coordinates** — raw vertex data
-- **JSON** — full feature as JSON
+- **Summary**: layer, type, vertex count
+- **Properties**: all feature attributes
+- **Geometry**: ring structure, winding direction
+- **Coordinates**: raw vertex data
+- **JSON**: full feature as JSON
 
 ## Navigating Diagnostics
 
@@ -105,12 +105,12 @@ The overlays render as a **top pass** above all geometry, ensuring they're alway
 
 The Inspector supports a structured investigation workflow:
 
-1. **Load tile** — See the full geometry rendered
-2. **Check health** — Switch to Diagnose to see findings
-3. **Inspect finding** — Click a diagnostic to zoom to it
-4. **Examine feature** — View properties, geometry, coordinates
-5. **Understand rule** — Read the rule documentation in the right panel
-6. **Compare** — If needed, compare against a baseline tile
+1. **Load tile**: See the full geometry rendered
+2. **Check health**: Switch to Diagnose to see findings
+3. **Inspect finding**: Click a diagnostic to zoom to it
+4. **Examine feature**: View properties, geometry, coordinates
+5. **Understand rule**: Read the rule documentation in the right panel
+6. **Compare**: If needed, compare against a baseline tile
 
 ## Keyboard Shortcuts
 
@@ -135,6 +135,9 @@ Switch to **Statistics** (`Ctrl+3`) for aggregate views:
 
 ## What Next?
 
-- [**Comparing Tiles ›**](/guides/comparing-tiles) — Diff between tile versions
-- [**Validating Tiles ›**](/guides/validating-tiles) — CLI validation guide
-- [**Rules Reference ›**](/rules/) — All 21 rules
+- [**Comparing Tiles ›**](/guides/comparing-tiles)
+Diff between tile versions
+- [**Validating Tiles ›**](/guides/validating-tiles)
+CLI validation guide
+- [**Rules Reference ›**](/rules/)
+All 21 rules
