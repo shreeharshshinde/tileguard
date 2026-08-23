@@ -152,19 +152,19 @@ function _DocsRail(): JSX.Element {
   const links = [
     {
       label: 'Quick Start',
-      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start',
+      href: 'https://docs-tileguard.vercel.app/getting-started/quick-start',
     },
     {
       label: 'Rules Reference',
-      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/rules/',
+      href: 'https://docs-tileguard.vercel.app/rules/',
     },
     {
       label: 'Architecture',
-      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/learn/how-it-works',
+      href: 'https://docs-tileguard.vercel.app/learn/how-it-works',
     },
     {
       label: 'CI / GitHub Actions',
-      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/guides/ci-github-actions',
+      href: 'https://docs-tileguard.vercel.app/guides/ci-github-actions',
     },
     { label: 'GitHub', href: 'https://github.com/shreeharshshinde/tileguard' },
   ];
@@ -553,7 +553,7 @@ export function HomePage({
           {/* Right: Docs, GitHub Star & Version */}
           <div className="flex items-center gap-8">
             <a
-              href="https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start"
+              href="https://docs-tileguard.vercel.app/getting-started/quick-start"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-semibold text-[var(--tg-text-secondary)] hover:text-white transition-colors"
