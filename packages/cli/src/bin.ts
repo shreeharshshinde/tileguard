@@ -26,6 +26,7 @@ import { runAnalyze } from './commands/analyze.js';
 import { runCheck } from './commands/check.js';
 import { runCompare } from './commands/compare.js';
 import { runDoctor } from './commands/doctor.js';
+import { runHelp } from './commands/help.js';
 import { runInit } from './commands/init.js';
 import { runReport } from './commands/report.js';
 import {
@@ -319,6 +320,16 @@ program
   .option('--json', 'Output as JSON')
   .action((flags) => {
     const result = runVersion({ format: flags.json ? 'json' : 'text' });
+    present(result);
+  });
+
+// ── help ──────────────────────────────────────────────────────────────────
+program
+  .command('help')
+  .description('Show comprehensive usage guide with examples')
+  .argument('[command]', 'Show help for a specific command')
+  .action((command?: string) => {
+    const result = runHelp(command);
     present(result);
   });
 

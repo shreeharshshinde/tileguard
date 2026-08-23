@@ -29,6 +29,36 @@ Node.js ≥ 20. That's it. No native dependencies, no Docker, no server.
 Check that TileGuard is installed and working:
 
 ```bash
+tileguard help
+```
+
+```text
+TileGuard — Automated quality gates for geospatial software.
+
+USAGE
+  tileguard <command> [options]
+
+VALIDATION
+  check <sources...>          Validate tiles/styles against configured rules
+  style <file>                Analyze a MapLibre style specification
+  rules list                  List all available rules
+  rules explain <ruleId>      Show detailed explanation for a rule
+
+ANALYSIS
+  compare <before> <after>    Compare two vector tiles (structural diff)
+  analyze <before> <after>    Full analysis: comparison + regression detection
+  report <before> <after>     Generate an engineering report (MD/HTML/JSON)
+  stats <file>                Display tile statistics (layers, geometry, counts)
+
+SETUP & DIAGNOSTICS
+  init                        Scaffold a tileguard.config.ts in your project
+  doctor                      Health check: config, rules, parser, reporters
+  ver                         Display version information
+```
+
+Get detailed version info:
+
+```bash
 tileguard ver
 ```
 
