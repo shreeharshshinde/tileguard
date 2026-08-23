@@ -6,14 +6,14 @@
  */
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { motion } from 'framer-motion';
-import { FileJson, PlayCircle, Upload } from 'lucide-react';
+import { BookOpen, ExternalLink, FileJson, Upload } from 'lucide-react';
 import { useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 export interface QuickActionsProps {
   readonly onFileSelected: (file: File) => void;
-  readonly onOpenDemo: () => void;
+  readonly onOpenDemo?: () => void;
 }
 
 const container = {
@@ -163,7 +163,6 @@ function TileDropZone({
 
 export function QuickActions({
   onFileSelected,
-  onOpenDemo,
 }: QuickActionsProps): JSX.Element {
   const styleInputRef = useRef<HTMLInputElement>(null);
 
@@ -238,11 +237,14 @@ export function QuickActions({
           )}
 
           {secondaryCard(
-            <PlayCircle className="h-6 w-6" aria-hidden="true" />,
-            'Open Demo',
-            'Explore curated Tokyo datasets',
-            onOpenDemo,
-            'Browse demo datasets',
+            <div className="relative">
+              <BookOpen className="h-6 w-6" aria-hidden="true" />
+              <ExternalLink className="absolute -right-1 -top-1 h-3 w-3 opacity-60" aria-hidden="true" />
+            </div>,
+            'View Docs',
+            'Quick-start guide & rule reference',
+            () => window.open('https://shreeharshshinde.github.io/tileguard/', '_blank', 'noopener,noreferrer'),
+            'Open TileGuard documentation',
             'md:col-span-2 lg:col-span-1 lg:row-span-1',
           )}
         </motion.div>

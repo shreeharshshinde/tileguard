@@ -37,9 +37,9 @@ const logoAnim = {
 };
 
 const STAT_ITEMS = [
-  { value: '10', label: 'Tile Rules', icon: Layers },
+  { value: '12', label: 'Tile Rules', icon: Layers },
   { value: '9', label: 'Style Rules', icon: Zap },
-  { value: '1,635', label: 'Tests Passing', icon: Shield },
+  { value: '1,678', label: 'Tests Passing', icon: Shield },
   { value: 'CI', label: 'Ready', icon: GitCompare },
 ];
 
@@ -47,7 +47,7 @@ export function HomeHeader(): JSX.Element {
   return (
     <header className="relative mb-16 flex flex-col items-center text-center">
       {/* Background geospatial dotted map */}
-      <div className="pointer-events-none absolute left-1/2 top-[-100px] -z-10 h-[600px] w-[1000px] -translate-x-1/2 opacity-[0.15] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]">
+      <div className="pointer-events-none absolute left-1/2 top-[-100px] -z-10 h-[600px] w-[1000px] -translate-x-1/2 opacity-[0.35] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]">
         <img
           src="/dotted_map.svg"
           alt=""

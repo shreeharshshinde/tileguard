@@ -12,10 +12,10 @@ const CAPABILITIES = [
     icon: Layers,
     title: 'Tile Validation',
     description:
-      '10 rules validating MVT structure, geometry, and feature metadata against real .pbf fixtures.',
+      '12 rules validating MVT structure, geometry, and feature metadata against real .pbf fixtures.',
     color: 'text-[var(--tg-success)]',
     bg: 'bg-[var(--tg-success)]/10',
-    badge: '10 rules',
+    badge: '12 rules',
   },
   {
     icon: Palette,

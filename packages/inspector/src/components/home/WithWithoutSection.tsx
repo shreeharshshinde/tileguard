@@ -110,7 +110,7 @@ export function WithWithoutSection(): JSX.Element {
             className={`group relative z-0 grid grid-cols-2 transition-all duration-500 hover:bg-[#121214] hover:scale-[1.03] hover:-translate-y-1 hover:z-20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:ring-1 hover:ring-white/10 hover:rounded-2xl overflow-hidden ${i < COMPARISONS.length - 1 ? 'border-b border-white/[0.02] hover:border-transparent' : ''} ${i === COMPARISONS.length - 1 ? 'rounded-b-3xl' : ''} group-hover/table:opacity-40 group-hover/table:blur-[2px] hover:!opacity-100 hover:!blur-none`}
           >
             {/* Without */}
-            <div className="relative flex items-center gap-4 border-r border-white/5 bg-[var(--tg-error)]/[0.01] px-8 py-5 transition-all duration-300 group-hover:bg-[var(--tg-error)]/[0.02]">
+            <div className="relative flex items-center gap-4 border-r border-white/5 bg-[var(--tg-error)]/[0.01] px-8 py-5 transition-all duration-300 opacity-60 blur-[0.3px] group-hover:opacity-100 group-hover:blur-none group-hover:bg-[var(--tg-error)]/[0.02]">
               <X
                 className="h-4 w-4 shrink-0 text-[var(--tg-error)]/40 transition-all duration-300 group-hover:text-[var(--tg-error)] group-hover:shadow-[0_0_10px_rgba(255,51,102,0.3)]"
                 aria-hidden="true"

@@ -40,8 +40,8 @@ const DIFFERENTIATORS = [
 ];
 
 const PROOF_POINTS = [
-  '10 tile rules · 9 style rules · MIT licensed',
-  '1,635 automated tests · CI validated',
+  '12 tile rules · 9 style rules · MIT licensed',
+  '1,678 automated tests · CI validated',
   'Local analysis · no TileGuard cloud service required',
   'Tested against real-world vector tile fixtures',
 ];

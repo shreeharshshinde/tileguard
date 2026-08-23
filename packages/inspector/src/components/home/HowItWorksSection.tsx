@@ -86,8 +86,12 @@ export function HowItWorksSection(): JSX.Element {
 
       {/* Steps grid */}
       <div className="relative mx-auto max-w-[1360px]">
-        {/* Continuous horizontal connector line (desktop only) */}
-        <div className="absolute left-[10%] right-[10%] top-[140px] z-0 hidden h-px bg-gradient-to-r from-transparent via-white/10 to-transparent lg:block" />
+        {/* Continuous horizontal connector glowing line (desktop only) */}
+        <div className="absolute left-[10%] right-[10%] top-[140px] z-0 hidden h-px lg:block">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--tg-accent)] to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--tg-accent)] to-transparent blur-[4px] opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--tg-accent)] to-transparent blur-[12px] opacity-40" />
+        </div>
 
         <motion.div
           variants={container}
