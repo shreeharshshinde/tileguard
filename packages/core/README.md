@@ -3,7 +3,7 @@
 **Framework contracts for the TileGuard quality analysis engine.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/core)](https://www.npmjs.com/package/@tileguard/core)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 This package defines every interface and type that TileGuard's runtime is built on: Diagnostic, Artifact, Rule, Plugin, Reporter, Engine. It has **zero runtime dependencies** and serves as the stable kernel that all other TileGuard packages depend on.
@@ -128,12 +128,12 @@ export const myRule: Rule = {
 
 ## Documentation
 
-- [Full API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api) — Generated TypeDoc
-- [Architecture Handbook](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/architecture) — System design + ADRs
-- [Rule Authoring Guide](https://github.com/shindeshreeharsh/tileguard/blob/main/CONTRIBUTING.md)
+- [Full API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
+- [Architecture Handbook](https://github.com/shreeharshshinde/tileguard/tree/main/docs/architecture) — System design + ADRs
+- [Rule Authoring Guide](https://github.com/shreeharshshinde/tileguard/blob/main/CONTRIBUTING.md)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)
+[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)

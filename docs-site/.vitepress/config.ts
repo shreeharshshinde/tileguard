@@ -163,7 +163,7 @@ export default withMermaid(defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/shindeshreeharsh/tileguard',
+        link: 'https://github.com/shreeharshshinde/tileguard',
       },
     ],
 
@@ -173,7 +173,7 @@ export default withMermaid(defineConfig({
 
     editLink: {
       pattern:
-        'https://github.com/shindeshreeharsh/tileguard/edit/main/docs-site/:path',
+        'https://github.com/shreeharshshinde/tileguard/edit/main/docs-site/:path',
       text: 'Edit this page on GitHub',
     },
 

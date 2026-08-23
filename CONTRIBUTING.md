@@ -8,7 +8,7 @@ Thank you for your interest in contributing to TileGuard! This document explains
 
 ```bash
 # Clone the repository
-git clone https://github.com/shindeshreeharsh/tileguard.git
+git clone https://github.com/shreeharshshinde/tileguard.git
 cd tileguard
 
 # Install dependencies (requires pnpm >= 9, Node.js >= 20)
@@ -186,7 +186,7 @@ See [docs/architecture/](docs/architecture/) for the full architecture handbook.
 
 ## Good First Issues
 
-Look for issues labeled [`good first issue`](https://github.com/shindeshreeharsh/tileguard/labels/good%20first%20issue). These are selected to be approachable for newcomers:
+Look for issues labeled [`good first issue`](https://github.com/shreeharshshinde/tileguard/labels/good%20first%20issue). These are selected to be approachable for newcomers:
 
 - Adding a new validation rule
 - Improving error messages

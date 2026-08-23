@@ -32,11 +32,11 @@
   "author": "Shreeharsh Shinde",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shindeshreeharsh/tileguard.git",
+    "url": "https://github.com/shreeharshshinde/tileguard.git",
     "directory": "packages/config"
   },
-  "homepage": "https://github.com/shindeshreeharsh/tileguard/tree/main/packages/config#readme",
-  "bugs": "https://github.com/shindeshreeharsh/tileguard/issues",
+  "homepage": "https://github.com/shreeharshshinde/tileguard/tree/main/packages/config#readme",
+  "bugs": "https://github.com/shreeharshshinde/tileguard/issues",
   "engines": {
     "node": ">=20.0.0"
   },

@@ -33,7 +33,7 @@ export function HomeFooter(): JSX.Element {
         {/* Links */}
         <div className="flex items-center gap-8">
           <a
-            href="https://github.com/shindeshreeharsh/tileguard"
+            href="https://github.com/shreeharshshinde/tileguard"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-[var(--tg-text-muted)] transition-colors hover:text-white"
@@ -41,7 +41,7 @@ export function HomeFooter(): JSX.Element {
             GitHub
           </a>
           <a
-            href="https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE"
+            href="https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-[var(--tg-text-muted)] transition-colors hover:text-white"

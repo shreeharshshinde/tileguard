@@ -25,7 +25,7 @@ const stagger = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.2 } },
 };
 
-const DOCS_URL = 'https://tileguard-docs-shindeshreeharsh.vercel.app';
+const DOCS_URL = 'https://dist-rho-three-iej1rtdssc.vercel.app';
 
 const QUICK_LINKS = [
   {

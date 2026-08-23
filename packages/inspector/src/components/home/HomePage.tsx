@@ -17,13 +17,13 @@
  */
 
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { BookOpen, Clock, ExternalLink, File, FolderOpen } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { toast } from 'sonner';
 import { getWorkspaceService } from '../../services/WorkspaceService.js';
 import { CapabilitiesSection } from './CapabilitiesSection.js';
-
+import { DemoGallery } from './DemoGallery.js';
 import { GuidedDemoCard } from './GuidedDemoCard.js';
 import { HomeFooter } from './HomeFooter.js';
 import { HomeHeader } from './HomeHeader.js';
@@ -151,21 +151,21 @@ function _DocsRail(): JSX.Element {
   const links = [
     {
       label: 'Quick Start',
-      href: 'https://tileguard-docs-shindeshreeharsh.vercel.app/getting-started/quick-start',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start',
     },
     {
       label: 'Rules Reference',
-      href: 'https://tileguard-docs-shindeshreeharsh.vercel.app/rules/',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/rules/',
     },
     {
       label: 'Architecture',
-      href: 'https://tileguard-docs-shindeshreeharsh.vercel.app/learn/how-it-works',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/learn/how-it-works',
     },
     {
       label: 'CI / GitHub Actions',
-      href: 'https://tileguard-docs-shindeshreeharsh.vercel.app/guides/ci-github-actions',
+      href: 'https://dist-rho-three-iej1rtdssc.vercel.app/guides/ci-github-actions',
     },
-    { label: 'GitHub', href: 'https://github.com/shindeshreeharsh/tileguard' },
+    { label: 'GitHub', href: 'https://github.com/shreeharshshinde/tileguard' },
   ];
 
   return (
@@ -251,22 +251,20 @@ function _AboutRail(): JSX.Element {
 }
 
 // ---------------------------------------------------------------------------
-// ANIMATION VARIANTS
-//
+// HomePage
+// ---------------------------------------------------------------------------
+
 const pageContainer = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
+  hidden: {},
+  show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 15 },
+  hidden: { opacity: 0, y: 30 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8 },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -274,105 +272,9 @@ const fadeIn = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.8 },
   },
 };
-
-function AnimatedTerminal() {
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(terminalRef, { once: true, margin: '-50px' });
-  const [typedCommand, setTypedCommand] = useState('');
-  const [showOutput, setShowOutput] = useState(false);
-  const fullCommand = 'tileguard check ./tiles/14/8741/5476.pbf';
-
-  useEffect(() => {
-    if (!isInView) return;
-    
-    let currentIndex = 0;
-    const intervalId = setInterval(() => {
-      setTypedCommand(fullCommand.slice(0, currentIndex + 1));
-      currentIndex++;
-      
-      if (currentIndex >= fullCommand.length) {
-        clearInterval(intervalId);
-        setTimeout(() => setShowOutput(true), 300);
-      }
-    }, 40);
-
-    return () => clearInterval(intervalId);
-  }, [isInView]);
-
-  return (
-    <div ref={terminalRef} className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/90 to-black/90 backdrop-blur-3xl shadow-2xl relative group transition-all duration-300 hover:border-[var(--tg-accent)]/30 hover:shadow-[0_0_40px_rgba(163,255,0,0.1)]">
-      {/* Subtle top glow */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--tg-accent)]/30 to-transparent"></div>
-      
-      {/* Terminal header */}
-      <div className="flex items-center gap-2 border-b border-white/5 bg-black/40 px-5 py-4">
-        <div className="h-3 w-3 rounded-full bg-red-500/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"></div>
-        <div className="h-3 w-3 rounded-full bg-amber-500/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"></div>
-        <div className="h-3 w-3 rounded-full bg-green-500/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"></div>
-        <div className="ml-2 flex-1 text-center font-mono text-[11px] font-medium tracking-wider text-zinc-500">
-          bash
-        </div>
-      </div>
-      
-      {/* Terminal body */}
-      <div className="p-6 font-mono text-sm leading-relaxed text-zinc-200 overflow-x-auto text-left min-h-[340px]">
-        <div className="flex items-start">
-          <span className="mr-3 select-none text-[var(--tg-accent)] font-bold">$</span>
-          <span className="text-white">
-            {typedCommand}
-            {!showOutput && <span className="inline-block w-[7px] h-4 ml-1 bg-zinc-400 animate-pulse align-middle" />}
-          </span>
-        </div>
-        
-        {showOutput && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
-            <div className="mt-6">
-              <span className="text-red-500 font-bold mr-2">✗</span>
-              <span className="text-white font-medium">tile/self-intersection</span>
-            </div>
-            <div className="pl-6 mt-1 text-zinc-400">
-              Geometry in layer "landuse", feature 42<br/>
-              has intersecting segments 1 and 4.<br/>
-              <span className="text-zinc-500">→ layer: landuse · feature: 42 · part: 0</span><br/>
-              <span className="text-zinc-500">ℹ Simplify or repair this geometry.</span>
-            </div>
-            
-            <div className="mt-6">
-              <span className="text-amber-500 font-bold mr-2">⚠</span>
-              <span className="text-white font-medium">tile/winding-order</span>
-            </div>
-            <div className="pl-6 mt-1 text-zinc-400">
-              Ring 0 in "buildings", feature 17 has incorrect winding.<br/>
-              <span className="text-zinc-500">→ layer: buildings · feature: 17</span>
-            </div>
-            
-            <div className="mt-6 flex flex-col gap-1">
-              <div>
-                <span className="text-green-500 font-bold mr-2">✓</span>
-                <span className="text-zinc-500">tile/required-layers</span>
-              </div>
-              <div>
-                <span className="text-green-500 font-bold mr-2">✓</span>
-                <span className="text-zinc-500">tile/coordinate-range</span>
-              </div>
-              <div>
-                <span className="text-green-500 font-bold mr-2">✓</span>
-                <span className="text-zinc-500">tile/hole-containment</span>
-              </div>
-            </div>
-            
-            <div className="mt-6 pt-4 border-t border-zinc-800/50 text-zinc-400">
-              1 error · 1 warning · 1 file · 34ms
-            </div>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export function HomePage({
   onFileSelected,
@@ -429,7 +331,7 @@ export function HomePage({
           {/* Right: Docs, GitHub Star & Version */}
           <div className="flex items-center gap-8">
             <a
-              href="https://tileguard-docs-shindeshreeharsh.vercel.app"
+              href="https://dist-rho-three-iej1rtdssc.vercel.app/getting-started/quick-start"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-semibold text-[var(--tg-text-secondary)] hover:text-white transition-colors"
@@ -439,7 +341,7 @@ export function HomePage({
 
             <div className="flex items-center gap-3">
               <a
-                href="https://github.com/shindeshreeharsh/tileguard"
+                href="https://github.com/shreeharshshinde/tileguard"
                 target="_blank"
                 rel="noreferrer"
                 className="group flex h-8 items-center gap-2 rounded-full border border-white/5 bg-[#09090b] px-4 shadow-[inset_0_1px_0px_rgba(255,255,255,0.05)] transition-all duration-300 hover:border-[var(--tg-accent)]/50 hover:shadow-[0_0_15px_rgba(163,255,0,0.15)]"
@@ -534,22 +436,28 @@ export function HomePage({
           <motion.div variants={fadeUp} className="w-full mt-8">
             <div className="mb-12 flex flex-col items-center text-center">
               <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--tg-accent)]/20 bg-[var(--tg-accent)]/5 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[var(--tg-accent)]">
-                CLI Tool
+                Live Demo
               </span>
               <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
                 Try it now,
                 <br />
                 <span className="text-[var(--tg-text-muted)]">
-                  locally in your terminal.
+                  no file needed.
                 </span>
               </h2>
               <p className="mt-4 max-w-lg text-base text-[var(--tg-text-secondary)]">
-                Run tileguard check directly in your CI/CD pipeline or local
-                environment to instantly validate vector tiles.
+                Explore pre-loaded Tokyo vector tile datasets straight in the
+                browser — real data, real rules, zero setup.
               </p>
             </div>
-            
-            <AnimatedTerminal />
+            <DemoGallery
+              onFileSelected={onFileSelected}
+              {...(onComparisonSelected !== undefined
+                ? { onComparisonSelected }
+                : {})}
+              galleryRef={galleryRef as React.RefObject<HTMLElement>}
+              hideSectionHeader
+            />
           </motion.div>
         </motion.div>
 

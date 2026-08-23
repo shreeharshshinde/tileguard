@@ -5,7 +5,7 @@
 TileGuard is a rule-based validation framework for vector tiles and MapLibre style specifications — the same engineering discipline ESLint brings to JavaScript, applied to the geospatial stack.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CI](https://github.com/shindeshreeharsh/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shindeshreeharsh/tileguard/actions/workflows/tile-quality.yml)
+[![CI](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![FOSS4G 2026](https://img.shields.io/badge/FOSS4G%202026-Hiroshima-red)](https://2026.foss4g.org)
 
@@ -243,7 +243,7 @@ Each package includes its own README with detailed API documentation:
 The primary extension point is writing new rules — plain TypeScript objects, typically under 25 lines. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and code review expectations.
 
 ```bash
-git clone https://github.com/shindeshreeharsh/tileguard.git
+git clone https://github.com/shreeharshshinde/tileguard.git
 cd tileguard && pnpm install && pnpm build && pnpm test
 ```
 
@@ -251,4 +251,4 @@ cd tileguard && pnpm install && pnpm build && pnpm test
 
 ## License
 
-[MIT](LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)
+[MIT](LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)

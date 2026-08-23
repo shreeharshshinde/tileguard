@@ -220,7 +220,7 @@ export function HelpOverlay({ onClose }: HelpOverlayProps): JSX.Element {
                 {
                   label: 'TileGuard on GitHub',
                   description: 'Source code, issues, and contributions',
-                  href: 'https://github.com/shindeshreeharsh/tileguard',
+                  href: 'https://github.com/shreeharshshinde/tileguard',
                   icon: GitBranch,
                 },
                 {

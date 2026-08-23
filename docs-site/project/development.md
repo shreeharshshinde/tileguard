@@ -8,7 +8,7 @@
 ## Clone and Install
 
 ```bash
-git clone https://github.com/shindeshreeharsh/tileguard.git
+git clone https://github.com/shreeharshshinde/tileguard.git
 cd tileguard
 pnpm install
 ```

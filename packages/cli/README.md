@@ -3,7 +3,7 @@
 **The command-line interface for TileGuard — automated quality gates for geospatial software.**
 
 [![npm](https://img.shields.io/npm/v/@tileguard/cli)](https://www.npmjs.com/package/@tileguard/cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
 Validate vector tiles and MapLibre styles from your terminal or CI pipeline. 19 built-in rules, zero-config defaults, JSON output for automation.
@@ -165,12 +165,12 @@ console.log(result.exitCode); // 0 | 1 | 2
 
 ## Documentation
 
-- [Rule Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/rules) — All 19 rules documented
-- [API Reference](https://github.com/shindeshreeharsh/tileguard/tree/main/docs/api) — Generated TypeDoc
-- [Repository](https://github.com/shindeshreeharsh/tileguard)
+- [Rule Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/rules) — All 19 rules documented
+- [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
+- [Repository](https://github.com/shreeharshshinde/tileguard)
 
 ---
 
 ## License
 
-[MIT](https://github.com/shindeshreeharsh/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shindeshreeharsh)
+[MIT](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
