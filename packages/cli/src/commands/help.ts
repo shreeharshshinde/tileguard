@@ -54,7 +54,7 @@ const HELP_TEXT = `
   tileguard check ./tiles/ ./styles/ --reporter json
 
 \x1b[1mDOCUMENTATION\x1b[0m
-  https://docs-tileguard.vercel.app/getting-started/quick-start
+  https://docs-tileguard.vercel.app/
 
 \x1b[1mSOURCE\x1b[0m
   https://github.com/shreeharshshinde/tileguard

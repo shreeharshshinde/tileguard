@@ -553,7 +553,7 @@ export function HomePage({
           {/* Right: Docs, GitHub Star & Version */}
           <div className="flex items-center gap-8">
             <a
-              href="https://docs-tileguard.vercel.app/getting-started/quick-start"
+              href="https://docs-tileguard.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-semibold text-[var(--tg-text-secondary)] hover:text-white transition-colors"
