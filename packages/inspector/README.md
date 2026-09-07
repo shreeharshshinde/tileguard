@@ -66,6 +66,45 @@ React App (main.tsx)
 
 ---
 
+## Viewport Engine
+
+The viewport maps between two coordinate spaces:
+
+```
+Tile Space   (integer grid 0 … extent, default 4096)
+    │  tileToScreen(point)
+    ▼
+Screen Space (0 … canvas.width, 0 … canvas.height)
+    │  screenToTile(point)
+    ▲
+```
+
+The transform is a 2×3 affine matrix (uniform scale + translation):
+
+```
+screenX = tileX × zoom + panX
+screenY = tileY × zoom + panY
+
+tileX = (screenX − panX) / zoom
+tileY = (screenY − panY) / zoom
+```
+
+**Round-trip invariant:** `screenToTile(tileToScreen(P)) ≈ P` within ±1e-6 tile units.
+
+**Focal-point zoom:** when zooming by factor `f` around a screen-space focal point `F`, the focal tile coordinate must remain fixed on screen:
+
+```
+focalTile = screenToTile(F)
+newPanX   = F.x − focalTile.x × newZoom
+newPanY   = F.y − focalTile.y × newZoom
+```
+
+The `Viewport` API is immutable — every mutation (`pan`, `zoomAt`, `fitBounds`, `resize`) returns a new instance. The original is never modified, making it safe to pass as React state.
+
+Zoom is clamped to `[minZoom, maxZoom]` (defaults: 0.25 – 64). Tile coordinates outside the extent (negative or > 4096) are valid — they represent the clipping buffer region used by MVT tile generators.
+
+---
+
 ## Development
 
 ```bash
