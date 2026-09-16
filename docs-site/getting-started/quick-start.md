@@ -132,6 +132,104 @@ tileguard check ./styles/map.json
   1 error in 1 file (12ms)
 ```
 
+## Analyze a Style in Depth
+
+While `tileguard check` runs the style lint rules as a pass/fail gate, the
+dedicated `tileguard style` command parses a MapLibre style and reports a full
+breakdown — version, sources, layers by type, expression/filter counts, and
+any diagnostics — in one view.
+
+```bash
+tileguard style ./styles/map.json
+```
+
+```text
+TileGuard Style — ./styles/map.json
+═════════════════════════════════════════════
+
+  ✓ Valid
+
+
+Overview
+────────────────────────────────────────
+  Version      8
+  Name         My Basemap
+  Sources      1
+  Layers       5
+  Expressions  0
+  Filters      0
+
+
+Sources
+────────────────────────────────────────
+  vector  1
+
+
+Layers
+────────────────────────────────────────
+  background  1
+  fill        2
+  line        1
+  symbol      1
+```
+
+When the style has problems, they appear under a **Findings** section:
+
+```text
+  ✗ Issues found
+
+  ...
+
+Diagnostics
+────────────────────────────────────────
+  Errors    1
+  Warnings  0
+  Info      0
+
+Findings
+────────────────────────────────────────
+  ✗ [known-source] Layer "buildings-3d" references unknown source "composite".
+    → Declare the source in the top-level "sources" object, or correct the layer's "source" field.
+```
+
+Add `--json` for machine-readable output with the full statistics object:
+
+```bash
+tileguard style ./styles/map.json --json
+```
+
+```json
+{
+  "file": "./styles/map.json",
+  "valid": true,
+  "version": 8,
+  "name": "My Basemap",
+  "statistics": {
+    "sources": 1,
+    "sourcesByType": { "vector": 1 },
+    "layers": 5,
+    "layersByType": { "background": 1, "fill": 2, "line": 1, "symbol": 1 },
+    "expressions": 0,
+    "filters": 0,
+    "paintProperties": 6,
+    "layoutProperties": 1,
+    "dataDrivenLayers": 0
+  },
+  "diagnostics": [],
+  "errors": 0,
+  "warnings": 0,
+  "info": 0
+}
+```
+
+::: tip When to use which
+Use `tileguard check` in CI for a simple pass/fail gate across tiles **and**
+styles. Use `tileguard style` when you want to inspect a single style's
+structure and statistics during development.
+:::
+
+Exit codes: `0` valid, `1` warnings only, `2` errors (or parse failure), `3` file read failure.
+
 ## Validate Multiple Files
 
 ```bash
