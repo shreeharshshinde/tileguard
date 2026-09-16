@@ -835,4 +835,217 @@ v1.x  Validate → Diagnose → Profile → Compare → Govern → Observe → A
 
 ---
 
+---
+
+## PMTiles Support & Production-Scale Architecture
+
+> **Origin:** This section captures an architectural discussion that arose from a question at FOSS4G 2026 Hiroshima — *"Can TileGuard validate all tiles in a PMTiles file, or even all tiles in the world?"*
+
+---
+
+### The PMTiles Problem Statement
+
+A full global `planet.pmtiles` at zoom 14 contains approximately **268 million tiles**. At TileGuard's best measured throughput of 187 tiles/second (CARTO Streets, v0.5.2), exhaustive validation would take **~16.5 days** of continuous processing. Exhaustive validation is therefore the wrong goal.
+
+The right goal: **statistically sound, zoom-tiered validation with streaming output.**
+
+---
+
+### Layer O: PMTiles Provider
+
+**When:** v0.8.0 (Q1 2027)
+**Why:** PMTiles is the modern cloud-optimized tile archive format. Supporting it as an input source opens TileGuard to the full MapLibre + Protomaps ecosystem.
+
+#### What This Means
+
+Instead of validating individual `.pbf` files:
+
+```bash
+tileguard validate ./tiles/14-12345-67890.pbf
+```
+
+You pass a PMTiles archive directly:
+
+```bash
+tileguard validate --pmtiles planet.pmtiles --max-zoom 8
+```
+
+#### Implementation
+
+A new `PMTilesProvider` implementing the existing `ArtifactProvider` interface:
+
+```typescript
+// New provider — no changes to the rule engine or diagnostic model
+export class PMTilesProvider implements ArtifactProvider {
+  async *tiles(options: PMTilesOptions): AsyncIterable<VectorTileArtifact> {
+    const source = new PMTiles(options.path);
+    for await (const tile of source.iterateTiles({ maxZoom: options.maxZoom })) {
+      yield decodeTile(tile);
+    }
+  }
+}
+```
+
+**Architecture principle:** The rule engine, all rules, and all reporters are completely unaware that input came from a PMTiles archive. Only the provider changes.
+
+---
+
+### Layer P: Tiered Zoom Validation
+
+**When:** v0.8.0 (alongside PMTiles support)
+**Why:** Not all zoom levels deserve equal scrutiny. Global/regional tiles (z0–z6) have the highest impact per tile. Leaf tiles (z13+) have too many tiles and diminishing returns per individual tile.
+
+#### Validation Tiers
+
+| Zoom Level | Strategy | Rationale |
+|:-----------|:---------|:----------|
+| **z0 – z6** | Validate 100% | Few tiles (~4K), highest impact if broken |
+| **z7 – z10** | 10% random sample | Statistically representative of pipeline behavior |
+| **z11 – z12** | 1% random sample | Systematic error detection only |
+| **z13+** | Skip by default | 268M tiles at z14 — impractical, low marginal value |
+
+```bash
+# Explicit control via CLI flags
+tileguard validate \
+  --pmtiles planet.pmtiles \
+  --max-zoom 10 \
+  --sample-rate 0.1 \
+  --reporter jsonl \
+  --output results.jsonl
+```
+
+This reduces the problem from 268M tiles to **~100K meaningful checks**, completable in under 15 minutes.
+
+---
+
+### Layer Q: Streaming Reporter (Required for Scale)
+
+**When:** v0.8.0 (prerequisite for any scale work)
+**Why:** The current reporter accumulates all diagnostics in RAM before writing output. On large corpora (10,000+ tiles), this causes significant GC pressure and memory exhaustion. This was explicitly identified in [BENCHMARK_ASSESSMENT.md](docs/engineering/phase1/BENCHMARK_ASSESSMENT.md).
+
+#### Architecture Change
+
+```text
+Current:
+  validate all tiles → hold ALL diagnostics in RAM → flush to reporter at end
+
+Streaming:
+  validate tile → emit diagnostic immediately → discard → next tile
+```
+
+#### Interface Change
+
+The `Reporter` interface gains a streaming `write()` method alongside the existing `flush()`:
+
+```typescript
+interface Reporter {
+  write(diagnostic: Diagnostic): Promise<void>;  // NEW — called per diagnostic
+  flush(): Promise<void>;                          // existing — end-of-run summary
+}
+```
+
+**Output:** A `.jsonl` file with one diagnostic per line — appendable, resumable, and readable while validation is still running. Memory usage stays flat regardless of corpus size.
+
+---
+
+### Layer R: Stateless CLI — External Work Distribution
+
+**When:** v0.8.0 (design principle, no code change required)
+**Why:** Worker threads inside Node.js buy parallelism on one machine only. The moment you need multi-machine scale, you have two competing parallelism systems. The correct answer is to keep TileGuard stateless and let external infrastructure handle distribution.
+
+#### Core Design Principle
+
+> **TileGuard is a fast, stateless, single-process CLI tool. Work distribution is entirely the caller's problem.**
+
+This is the Unix philosophy: `grep` doesn't manage its own thread pool. TileGuard shouldn't either.
+
+#### What TileGuard Exposes (Required for External Orchestration)
+
+Two CLI capabilities that enable any external orchestration strategy:
+
+**1. Batch input mode** — accept a list of tile paths or coordinate ranges:
+
+```bash
+# Via file list
+cat tile-batch-001.txt | tileguard validate --stdin
+
+# Via explicit range (for PMTiles)
+tileguard validate --pmtiles planet.pmtiles --zoom 8 --x-range 0-127 --y-range 0-63
+```
+
+**2. Clean exit codes + JSONL streaming output:**
+
+```bash
+tileguard validate batch-001/ --reporter jsonl >> results.jsonl
+echo $?  # 0 = clean, 1 = errors found, 2 = tool failure
+```
+
+#### What External Orchestration Can Then Be
+
+| Orchestration Tool | Use Case |
+|:-------------------|:---------|
+| `GNU parallel` / `xargs -P` | Single developer machine, no infrastructure |
+| **BullMQ + Redis** | Multi-machine, same data centre |
+| **AWS SQS + ECS Tasks** | Cloud horizontal scale |
+| **Kubernetes Jobs** | Self-healing, quota-managed, any cloud |
+| **GitHub Actions matrix** | CI/CD parallel validation across runners |
+
+**None of these require any changes inside TileGuard.** You run `tileguard validate <batch>` as the worker command in each case.
+
+#### Simplest Proof It Works Today (No Code Changes)
+
+```bash
+# Split 10,000 tiles into batches of 1,000, validate 8 in parallel
+ls tiles/ | split -l 1000 - batch-
+ls batch-* | parallel -j 8 \
+  'tileguard validate $(cat {}) --reporter jsonl >> results-$(basename {}).jsonl'
+
+# Merge results
+cat results-*.jsonl > all-results.jsonl
+```
+
+Scale to N machines by pointing those workers at a shared queue instead of a local file list — zero TileGuard changes required.
+
+#### Effective Throughput at Scale
+
+| Configuration | Throughput |
+|:--------------|:-----------|
+| Single process (current) | 187 tiles/sec |
+| 8 parallel processes (one machine) | ~1,500 tiles/sec |
+| 100 pods (Kubernetes) | ~18,700 tiles/sec |
+| 100 pods — 10,000 tiles | **< 1 second** |
+
+---
+
+### Delta Validation for CI/CD Pipelines
+
+For production tile pipeline CI — validating every tile on every push is impractical for large tilesets. The practical version: **only validate what changed between releases.**
+
+```bash
+tileguard validate \
+  --pmtiles planet-v2.pmtiles \
+  --diff-against planet-v1.pmtiles \
+  --max-zoom 10 \
+  --reporter jsonl \
+  --output delta-results.jsonl
+```
+
+This combines with the stateless design: the diff is computed externally (two PMTiles archives), producing a list of changed tile coordinates, which is then fed to a tileguard batch run. Fast feedback on every release — not a 16-day full re-scan.
+
+---
+
+### Summary: What Needs to Change in TileGuard
+
+| Change | Effort | Enables |
+|:-------|:------:|:--------|
+| Streaming JSONL reporter | Low | Flat memory on any corpus size |
+| `PMTilesProvider` | Medium | Archive-based input |
+| `--max-zoom` + `--sample-rate` CLI flags | Low | Tiered validation |
+| Batch/stdin input mode | Low | External orchestration |
+| `--diff-against` for PMTiles | Medium | Delta CI/CD validation |
+
+Everything else (parallelism, distribution, scheduling, result aggregation) is handled by existing infrastructure tools — deliberately outside TileGuard's scope.
+
+---
+
 *Last updated: August 2026 · Aligned with FOSS4G 2026 presentation and v0.5.0 release.*
