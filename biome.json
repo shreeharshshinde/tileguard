@@ -16,7 +16,9 @@
       "!**/legacy",
       "!**/fixtures",
       "!**/pnpm-lock.yaml",
-      "!packages/inspector"
+      "!packages/inspector",
+      "!docs-site/.vitepress/theme/*.css",
+      "!docs-site/public/**"
     ]
   },
   "formatter": {
