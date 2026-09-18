@@ -101,7 +101,8 @@
         "**/tileguard.config.mjs",
         "playwright.config.ts",
         "**/pages/**",
-        "**/app/**"
+        "**/app/**",
+        "docs-site/.vitepress/**"
       ],
       "linter": {
         "rules": {

@@ -62,30 +62,48 @@ import { unclosedRingRule } from './rules/unclosed-ring.js';
 import { windingOrderRule } from './rules/winding-order.js';
 import { zeroAreaRingRule } from './rules/zero-area-ring.js';
 
+// ── Error types ───────────────────────────────────────────────────────────
+export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
+export type { LogicalPolygon, WindingConvention } from './geometry.js';
+// ── Geometry utilities (for custom rules and analysis) ────────────────────
+export {
+  detectWindingConvention,
+  findCoordinateRangeIssues,
+  findDegenerateGeometryIssues,
+  findHoleContainmentIssues,
+  findSelfIntersectionIssues,
+  findUnclosedRingIssues,
+  findWindingOrderIssues,
+  findZeroAreaRingIssues,
+  groupRingsIntoPolygons,
+  segmentsIntersect,
+  signedArea,
+  uniquePointCount,
+} from './geometry.js';
+// ── Low-level decoder (advanced use) ─────────────────────────────────────
+export { decodeMvt, PbfReader } from './pbf-decoder.js';
 // ── Provider ──────────────────────────────────────────────────────────────
 export { tileProvider } from './provider.js';
-
+export type { CoordinateRangeOptions } from './rules/coordinate-range.js';
 // ── Rules ─────────────────────────────────────────────────────────────────
 export { coordinateRangeRule } from './rules/coordinate-range.js';
-export type { CoordinateRangeOptions } from './rules/coordinate-range.js';
 export { degenerateGeometryRule } from './rules/degenerate-geometry.js';
-export { featureCountRule } from './rules/feature-count.js';
 export type { FeatureCountOptions } from './rules/feature-count.js';
+export { featureCountRule } from './rules/feature-count.js';
 export { holeContainmentRule } from './rules/hole-containment.js';
-export { layerFeatureCountRule } from './rules/layer-feature-count.js';
 export type { LayerFeatureCountOptions } from './rules/layer-feature-count.js';
-export { noEmptyRule } from './rules/no-empty.js';
+export { layerFeatureCountRule } from './rules/layer-feature-count.js';
 export type { NoEmptyOptions } from './rules/no-empty.js';
-export { requiredLayersRule } from './rules/required-layers.js';
+export { noEmptyRule } from './rules/no-empty.js';
 export type { RequiredLayersOptions } from './rules/required-layers.js';
-export { requiredPropertiesRule } from './rules/required-properties.js';
+export { requiredLayersRule } from './rules/required-layers.js';
 export type { RequiredPropertiesOptions } from './rules/required-properties.js';
+export { requiredPropertiesRule } from './rules/required-properties.js';
 export { selfIntersectionRule } from './rules/self-intersection.js';
 export { unclosedRingRule } from './rules/unclosed-ring.js';
 export { windingOrderRule } from './rules/winding-order.js';
-export { zeroAreaRingRule } from './rules/zero-area-ring.js';
 export type { ZeroAreaRingOptions } from './rules/zero-area-ring.js';
-
+export { zeroAreaRingRule } from './rules/zero-area-ring.js';
 // ── Domain types ──────────────────────────────────────────────────────────
 export type {
   GeometryType,
@@ -105,29 +123,6 @@ export {
   totalFeatureCount,
   VECTOR_TILE_ARTIFACT_TYPE,
 } from './types.js';
-
-// ── Error types ───────────────────────────────────────────────────────────
-export { type DecodeDiagnosticData, DecodeError } from './decode-error.js';
-
-// ── Geometry utilities (for custom rules and analysis) ────────────────────
-export {
-  detectWindingConvention,
-  findCoordinateRangeIssues,
-  findDegenerateGeometryIssues,
-  findHoleContainmentIssues,
-  findSelfIntersectionIssues,
-  findUnclosedRingIssues,
-  findWindingOrderIssues,
-  findZeroAreaRingIssues,
-  groupRingsIntoPolygons,
-  segmentsIntersect,
-  signedArea,
-  uniquePointCount,
-} from './geometry.js';
-export type { LogicalPolygon, WindingConvention } from './geometry.js';
-
-// ── Low-level decoder (advanced use) ─────────────────────────────────────
-export { decodeMvt, PbfReader } from './pbf-decoder.js';
 
 /**
  * All tile validation rules in recommended execution order.

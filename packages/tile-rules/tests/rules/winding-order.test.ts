@@ -257,11 +257,7 @@ describe('tile/winding-order', () => {
           },
           {
             type: 1,
-            points: [
-              [
-                { x: 5, y: 5 },
-              ],
-            ],
+            points: [[{ x: 5, y: 5 }]],
             props: {},
           },
         ],

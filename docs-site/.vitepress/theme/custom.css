@@ -75,21 +75,21 @@ html {
   --vp-button-alt-hover-text: #ffffff;
 
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(135deg,
-      #ffffff 40%,
-      #a3ff00);
-  --vp-home-hero-image-background-image: radial-gradient(circle,
-      rgba(163, 255, 0, 0.2) 0%,
-      transparent 60%);
+  --vp-home-hero-name-background: linear-gradient(135deg, #ffffff 40%, #a3ff00);
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle,
+    rgba(163, 255, 0, 0.2) 0%,
+    transparent 60%
+  );
   --vp-home-hero-image-filter: blur(68px);
 }
 
 /* ─── Typography ────────────────────────────────────────────────────────── */
 
 :root {
-  --vp-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code',
-    monospace;
+  --vp-font-family-base: "Inter", system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono:
+    "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
 }
 
 /* ─── Selection ─────────────────────────────────────────────────────────── */
@@ -113,7 +113,6 @@ html {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
   height: 64px !important;
 }
-
 
 /* Logo — subtle glow, proper sizing */
 .VPNavBarTitle .logo {
@@ -151,7 +150,7 @@ html {
 }
 
 .dark .VPNavBarMenu .VPNavBarMenuLink::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   margin-top: 12px;
@@ -188,7 +187,9 @@ html {
   background: rgba(9, 9, 11, 0.98) !important;
   border: 1px solid #27272a !important;
   border-radius: 10px !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(163, 255, 0, 0.03) !important;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(163, 255, 0, 0.03) !important;
   padding: 6px !important;
   backdrop-filter: blur(12px) !important;
 }
@@ -210,7 +211,9 @@ html {
 /* Social links in nav — GitHub icon */
 .dark .VPSocialLinks .VPSocialLink {
   color: #71717a !important;
-  transition: color 0.15s ease, transform 0.15s ease !important;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease !important;
 }
 
 .dark .VPSocialLinks .VPSocialLink:hover {
@@ -235,7 +238,9 @@ html {
   border: 1px solid #27272a !important;
   border-radius: 8px !important;
   background: rgba(255, 255, 255, 0.03) !important;
-  transition: border-color 0.15s ease, background 0.15s ease !important;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease !important;
 }
 
 .dark .VPNavBarSearchButton:hover {
@@ -269,7 +274,7 @@ html {
   border-right-color: #27272a !important;
 }
 
-.VPSidebarItem.is-active>.item>.link>.text {
+.VPSidebarItem.is-active > .item > .link > .text {
   color: #a3ff00 !important;
   font-weight: 600;
 }
@@ -318,14 +323,14 @@ html {
 }
 
 /* Inline code */
-.dark .vp-doc :not(pre)>code {
+.dark .vp-doc :not(pre) > code {
   background: #121214;
   color: #a3ff00;
   border: 1px solid #27272a;
 }
 
 /* Code blocks */
-.dark div[class*='language-'] {
+.dark div[class*="language-"] {
   border: 1px solid #27272a;
   background: #09090b !important;
 }
@@ -361,7 +366,9 @@ html {
 .dark .VPFeature {
   background: #09090b !important;
   border: 1px solid #27272a !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .dark .VPFeature:hover {
@@ -422,7 +429,11 @@ html {
 /* Tip — green accent (neon) */
 .dark .custom-block.tip {
   border-left-color: #a3ff00;
-  background: linear-gradient(to right, rgba(163, 255, 0, 0.1), rgba(0, 0, 0, 0));
+  background: linear-gradient(
+    to right,
+    rgba(163, 255, 0, 0.1),
+    rgba(0, 0, 0, 0)
+  );
 }
 
 .dark .custom-block.tip .custom-block-title {
@@ -437,7 +448,7 @@ html {
 }
 
 .dark .custom-block.tip .custom-block-title::before {
-  content: '';
+  content: "";
   display: block;
   width: 14px;
   height: 14px;
@@ -449,7 +460,11 @@ html {
 /* Warning — amber/yellow */
 .dark .custom-block.warning {
   border-left-color: #f59e0b;
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(0, 0, 0, 0));
+  background: linear-gradient(
+    to right,
+    rgba(245, 158, 11, 0.1),
+    rgba(0, 0, 0, 0)
+  );
 }
 
 .dark .custom-block.warning .custom-block-title {
@@ -464,7 +479,7 @@ html {
 }
 
 .dark .custom-block.warning .custom-block-title::before {
-  content: '';
+  content: "";
   display: block;
   width: 14px;
   height: 14px;
@@ -476,7 +491,11 @@ html {
 /* Danger — red */
 .dark .custom-block.danger {
   border-left-color: #ef4444;
-  background: linear-gradient(to right, rgba(239, 68, 68, 0.1), rgba(0, 0, 0, 0));
+  background: linear-gradient(
+    to right,
+    rgba(239, 68, 68, 0.1),
+    rgba(0, 0, 0, 0)
+  );
 }
 
 .dark .custom-block.danger .custom-block-title {
@@ -491,7 +510,7 @@ html {
 }
 
 .dark .custom-block.danger .custom-block-title::before {
-  content: '';
+  content: "";
   display: block;
   width: 14px;
   height: 14px;
@@ -503,7 +522,11 @@ html {
 /* Info — blue */
 .dark .custom-block.info {
   border-left-color: #3b82f6;
-  background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(0, 0, 0, 0));
+  background: linear-gradient(
+    to right,
+    rgba(59, 130, 246, 0.1),
+    rgba(0, 0, 0, 0)
+  );
 }
 
 .dark .custom-block.info .custom-block-title {
@@ -518,7 +541,7 @@ html {
 }
 
 .dark .custom-block.info .custom-block-title::before {
-  content: '';
+  content: "";
   display: block;
   width: 14px;
   height: 14px;

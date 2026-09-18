@@ -34,8 +34,7 @@ import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 export const holeContainmentRule: Rule = {
   id: 'tile/hole-containment',
   meta: {
-    description:
-      'Polygon hole rings must be contained within the outer ring.',
+    description: 'Polygon hole rings must be contained within the outer ring.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/tile/hole-containment',
     recommended: true,

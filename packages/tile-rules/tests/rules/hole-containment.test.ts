@@ -1,6 +1,6 @@
 import { createEngine } from '@tileguard/core';
 import { describe, expect, it } from 'vitest';
-import { tileProvider, holeContainmentRule } from '../../src/index.js';
+import { holeContainmentRule, tileProvider } from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
 const plugin = {

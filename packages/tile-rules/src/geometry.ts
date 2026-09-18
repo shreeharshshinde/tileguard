@@ -369,7 +369,14 @@ export function groupRingsIntoPolygons(
   const isOuter = (area: number): boolean =>
     conv === 'mvt' ? area < 0 : area > 0;
 
-  let current: { outerIndex: number; outer: readonly Point[]; holeIndices: number[]; holes: (readonly Point[])[] } | undefined;
+  let current:
+    | {
+        outerIndex: number;
+        outer: readonly Point[];
+        holeIndices: number[];
+        holes: (readonly Point[])[];
+      }
+    | undefined;
 
   for (let i = 0; i < parts.length; i += 1) {
     const ring = parts[i]!;
@@ -450,7 +457,8 @@ export function findWindingOrderIssues(
     if (outerPoints.length >= 3) {
       const area = signedArea(outerPoints);
       if (area !== 0 && !isOuterArea(area)) {
-        const expected = convention === 'mvt' ? 'clockwise' : 'counter-clockwise';
+        const expected =
+          convention === 'mvt' ? 'clockwise' : 'counter-clockwise';
         issues.push({
           code: 'WRONG_WINDING',
           message: `Outer ring at index ${poly.outerIndex} has inconsistent winding; expected ${expected} per detected ${convention.toUpperCase()} convention.`,
@@ -467,7 +475,8 @@ export function findWindingOrderIssues(
 
       const area = signedArea(holePoints);
       if (area !== 0 && isOuterArea(area)) {
-        const expected = convention === 'mvt' ? 'counter-clockwise' : 'clockwise';
+        const expected =
+          convention === 'mvt' ? 'counter-clockwise' : 'clockwise';
         issues.push({
           code: 'WRONG_WINDING',
           message: `Hole ring at index ${holeIdx} has inconsistent winding; expected ${expected} per detected ${convention.toUpperCase()} convention.`,

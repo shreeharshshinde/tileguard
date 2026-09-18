@@ -98,12 +98,18 @@ export function renderHtml(report: EngineeringReport): string {
     { label: 'Source Tile', value: metadata.sourceTile },
     { label: 'Target Tile', value: metadata.targetTile },
   ];
-  if (metadata.platform) metaFields.push({ label: 'Platform', value: metadata.platform });
-  if (metadata.nodeVersion) metaFields.push({ label: 'Node.js', value: metadata.nodeVersion });
-  if (metadata.cliVersion) metaFields.push({ label: 'CLI Version', value: metadata.cliVersion });
-  if (metadata.configPath) metaFields.push({ label: 'Config', value: metadata.configPath });
-  if (metadata.sourceTileHash) metaFields.push({ label: 'Source Hash', value: metadata.sourceTileHash });
-  if (metadata.targetTileHash) metaFields.push({ label: 'Target Hash', value: metadata.targetTileHash });
+  if (metadata.platform)
+    metaFields.push({ label: 'Platform', value: metadata.platform });
+  if (metadata.nodeVersion)
+    metaFields.push({ label: 'Node.js', value: metadata.nodeVersion });
+  if (metadata.cliVersion)
+    metaFields.push({ label: 'CLI Version', value: metadata.cliVersion });
+  if (metadata.configPath)
+    metaFields.push({ label: 'Config', value: metadata.configPath });
+  if (metadata.sourceTileHash)
+    metaFields.push({ label: 'Source Hash', value: metadata.sourceTileHash });
+  if (metadata.targetTileHash)
+    metaFields.push({ label: 'Target Hash', value: metadata.targetTileHash });
   w.investigationMeta(metaFields);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -306,7 +312,12 @@ export function renderHtml(report: EngineeringReport): string {
       diagnosticsSummary.topRules.map((r) => ({
         label: r.ruleId,
         value: r.count,
-        color: r.severity === 'error' ? 'red' as const : r.severity === 'warning' ? 'yellow' as const : 'blue' as const,
+        color:
+          r.severity === 'error'
+            ? ('red' as const)
+            : r.severity === 'warning'
+              ? ('yellow' as const)
+              : ('blue' as const),
       })),
     );
     w.table(

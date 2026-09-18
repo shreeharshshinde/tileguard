@@ -55,8 +55,12 @@ export const windingOrderRule: Rule = {
       ) {
         const feature = layer.features[featureIndex]!;
         for (const issue of findWindingOrderIssues(feature)) {
-          const ringType = issue.partIndex === 0 ? 'Outer ring' : `Hole ring ${issue.partIndex}`;
-          const expected = issue.partIndex === 0 ? 'clockwise' : 'counter-clockwise';
+          const ringType =
+            issue.partIndex === 0
+              ? 'Outer ring'
+              : `Hole ring ${issue.partIndex}`;
+          const expected =
+            issue.partIndex === 0 ? 'clockwise' : 'counter-clockwise';
           context.report({
             message: `${ringType} in layer "${layerName}", feature ${featureIndex} has incorrect winding order.`,
             location: {

@@ -532,7 +532,11 @@ export class HtmlWriter {
   // ---------------------------------------------------------------------------
 
   barChart(
-    items: readonly { label: string; value: number; color: 'red' | 'yellow' | 'blue' | 'green' | 'orange' | 'brand' }[],
+    items: readonly {
+      label: string;
+      value: number;
+      color: 'red' | 'yellow' | 'blue' | 'green' | 'orange' | 'brand';
+    }[],
   ): this {
     const maxVal = Math.max(...items.map((i) => i.value), 1);
     this._body.push('<div class="bar-chart">');
@@ -554,9 +558,7 @@ export class HtmlWriter {
   // Investigation metadata (collapsible)
   // ---------------------------------------------------------------------------
 
-  investigationMeta(
-    fields: readonly { label: string; value: string }[],
-  ): this {
+  investigationMeta(fields: readonly { label: string; value: string }[]): this {
     this._body.push('<div class="investigation-meta">');
     this.detailsOpen('📋 Investigation Metadata');
     this._body.push('<table><tbody>');

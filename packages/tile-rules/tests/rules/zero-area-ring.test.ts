@@ -124,7 +124,7 @@ describe('tile/zero-area-ring', () => {
       },
     });
     // Thin triangle with area = 0.5: (0,0)→(2,0)→(1,1)→(0,0)
-    // area = |0*0 - 2*0 + 2*1 - 1*0 + 1*0 - 0*1| / 2 = |2 - 0 + 0 - 0| / 2... 
+    // area = |0*0 - 2*0 + 2*1 - 1*0 + 1*0 - 0*1| / 2 = |2 - 0 + 0 - 0| / 2...
     // Actually: (0*0 - 2*0) + (2*1 - 1*0) + (1*0 - 0*1) = 0 + 2 + 0 = 2 → area = 1.0
     // area = 1.0 < minArea 2.0 → should flag
     const source = await makeTile([
@@ -159,7 +159,7 @@ describe('tile/zero-area-ring', () => {
       },
     });
     // Triangle with area = 50: (0,0)→(10,0)→(10,10)→(0,0)
-    // area = |(0*0 - 10*0) + (10*10 - 10*0) + (10*0 - 0*10)| / 2 = |0 + 100 - 10| ... 
+    // area = |(0*0 - 10*0) + (10*10 - 10*0) + (10*0 - 0*10)| / 2 = |0 + 100 - 10| ...
     // Actually: signedArea = (0*0 - 10*0 + 10*10 - 10*0 + 10*0 - 0*10) / 2 = 90/2 = 45
     // |45| > 1.0 → should pass
     const source = await makeTile([
