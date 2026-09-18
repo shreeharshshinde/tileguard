@@ -18,6 +18,7 @@
       "@tileguard/shared": ["./packages/shared/src/index.ts"],
       "@tileguard/config": ["./packages/config/src/index.ts"],
       "@tileguard/reporters": ["./packages/reporters/src/index.ts"],
+      "@tileguard/analysis": ["./packages/analysis/src/index.ts"],
       "@tileguard/tile-rules": ["./packages/tile-rules/src/index.ts"],
       "@tileguard/style-rules": ["./packages/style-rules/src/index.ts"]
     }
