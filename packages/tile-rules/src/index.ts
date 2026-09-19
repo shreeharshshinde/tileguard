@@ -6,8 +6,9 @@
  * - **Provider**: Loads `.pbf`/`.mvt` files (local or remote), handles gzip
  *   decompression, and decodes the MVT protobuf format into typed artifacts.
  *
- * - **12 validation rules**: Each rule checks one specific aspect of tile
- *   geometry or structure, producing structured diagnostics with layer/feature
+ * - **16 validation rules**: 12 geometry/structure rules + 4 performance rules.
+ *   Each rule checks one specific aspect of tile geometry, structure, or
+ *   rendering performance, producing structured diagnostics with layer/feature
  *   location context.
  *
  * - **Geometry utilities**: Pure functions for coordinate validation, ring
@@ -29,6 +30,8 @@
  *
  * ## Rules
  *
+ * ### Geometry & Structure Rules
+ *
  * | Rule ID | Default Severity | What it catches |
  * |---------|-----------------|-----------------|
  * | `tile/required-layers` | error | Missing expected layers |
@@ -44,6 +47,15 @@
  * | `tile/degenerate-geometry` | error | Insufficient vertices |
  * | `tile/no-empty` | warning | Tiles with zero features |
  *
+ * ### Performance Rules
+ *
+ * | Rule ID | Default Severity | What it catches |
+ * |---------|-----------------|-----------------|
+ * | `perf/tile-size` | warning | Tile byte size exceeding budget (recommended) |
+ * | `perf/vertex-budget` | warning | Feature/tile vertex count exceeding budget (recommended) |
+ * | `perf/feature-density` | warning | Per-layer feature count for render performance (opt-in) |
+ * | `perf/layer-size` | info | Single layer dominating tile vertex cost (opt-in) |
+ *
  * @packageDocumentation
  */
 
@@ -55,6 +67,10 @@ import { featureCountRule } from './rules/feature-count.js';
 import { holeContainmentRule } from './rules/hole-containment.js';
 import { layerFeatureCountRule } from './rules/layer-feature-count.js';
 import { noEmptyRule } from './rules/no-empty.js';
+import { perfFeatureDensityRule } from './rules/perf-feature-density.js';
+import { perfLayerSizeRule } from './rules/perf-layer-size.js';
+import { perfTileSizeRule } from './rules/perf-tile-size.js';
+import { perfVertexBudgetRule } from './rules/perf-vertex-budget.js';
 import { requiredLayersRule } from './rules/required-layers.js';
 import { requiredPropertiesRule } from './rules/required-properties.js';
 import { selfIntersectionRule } from './rules/self-intersection.js';
@@ -104,6 +120,15 @@ export { unclosedRingRule } from './rules/unclosed-ring.js';
 export { windingOrderRule } from './rules/winding-order.js';
 export type { ZeroAreaRingOptions } from './rules/zero-area-ring.js';
 export { zeroAreaRingRule } from './rules/zero-area-ring.js';
+// ── Performance Rules ─────────────────────────────────────────────────────
+export type { FeatureDensityOptions } from './rules/perf-feature-density.js';
+export { perfFeatureDensityRule } from './rules/perf-feature-density.js';
+export type { LayerSizeOptions } from './rules/perf-layer-size.js';
+export { perfLayerSizeRule } from './rules/perf-layer-size.js';
+export type { TileSizeOptions } from './rules/perf-tile-size.js';
+export { perfTileSizeRule } from './rules/perf-tile-size.js';
+export type { VertexBudgetOptions } from './rules/perf-vertex-budget.js';
+export { perfVertexBudgetRule } from './rules/perf-vertex-budget.js';
 // ── Domain types ──────────────────────────────────────────────────────────
 export type {
   GeometryType,
@@ -130,8 +155,11 @@ export {
  * This array is used by the `tilePlugin` to register all rules with the engine.
  * You can also import it directly to iterate rules for documentation generation
  * or custom rule selection logic.
+ *
+ * Contains 12 geometry/structure rules followed by 4 performance rules.
  */
 export const tileRules: readonly Rule[] = [
+  // Geometry & structure rules
   requiredLayersRule,
   featureCountRule,
   layerFeatureCountRule,
@@ -144,14 +172,19 @@ export const tileRules: readonly Rule[] = [
   holeContainmentRule,
   selfIntersectionRule,
   noEmptyRule,
+  // Performance rules
+  perfTileSizeRule,
+  perfVertexBudgetRule,
+  perfFeatureDensityRule,
+  perfLayerSizeRule,
 ];
 
 /**
  * The tile validation plugin for TileGuard.
  *
- * Bundles the vector tile provider and all 12 tile validation rules into a
- * single registerable unit. Pass this to `createEngine()` to enable tile
- * validation.
+ * Bundles the vector tile provider and all 16 tile validation rules (12
+ * geometry/structure rules + 4 performance rules) into a single registerable
+ * unit. Pass this to `createEngine()` to enable tile validation.
  *
  * @example
  * ```ts
@@ -162,6 +195,7 @@ export const tileRules: readonly Rule[] = [
  *   plugins: [tilePlugin],
  *   rules: {
  *     'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
+ *     'perf/tile-size': ['warning', { maxBytes: 500_000 }],
  *   },
  * });
  * ```
@@ -169,7 +203,7 @@ export const tileRules: readonly Rule[] = [
 export const tilePlugin: Plugin = {
   id: 'tile-rules',
   name: 'TileGuard Tile Rules',
-  version: '0.3.0',
+  version: '0.6.0',
   providers: [tileProvider],
   rules: tileRules,
 };
