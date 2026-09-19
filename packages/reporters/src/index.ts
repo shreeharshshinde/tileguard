@@ -5,12 +5,11 @@
  *
  *   textReporter  — Human-readable colored terminal output (default)
  *   jsonReporter  — Structured JSON output for CI and programmatic consumption
+ *   sarifReporter — SARIF 2.1.0 file output for GitHub Code Scanning
  *
- * Both reporters conform to the Reporter interface from @tileguard/core.
+ * All reporters conform to the Reporter interface from @tileguard/core.
  * They are plain objects with a report() method that receives the complete
  * diagnostic list and run context.
- *
- * Future reporters (SARIF, GitHub Annotations) will be added here.
  *
  * @packageDocumentation
  */
@@ -87,3 +86,6 @@ export type {
 } from './text-reporter.js';
 // Text reporter — the default, human-readable terminal output
 export { createTextReporter, textReporter } from './text-reporter.js';
+// SARIF reporter — GitHub Code Scanning / OASIS SARIF 2.1.0 output
+export type { SarifReporterOptions } from './sarif-reporter.js';
+export { createSarifReporter, sarifReporter } from './sarif-reporter.js';
