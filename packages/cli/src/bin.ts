@@ -27,7 +27,9 @@ import { runCheck } from './commands/check.js';
 import { runCompare } from './commands/compare.js';
 import { runDoctor } from './commands/doctor.js';
 import { runHelp } from './commands/help.js';
+import { runHook } from './commands/hook.js';
 import { runInit } from './commands/init.js';
+import { runProfile } from './commands/profile.js';
 import { runReport } from './commands/report.js';
 import {
   runRulesDocs,
@@ -72,7 +74,7 @@ const program = new Command();
 program
   .name('tileguard')
   .description('Quality analysis framework for geospatial artifacts')
-  .version('0.5.0');
+  .version('0.6.0');
 
 // ── check ─────────────────────────────────────────────────────────────────
 program
@@ -330,6 +332,56 @@ program
   .argument('[command]', 'Show help for a specific command')
   .action((command?: string) => {
     const result = runHelp(command);
+    present(result);
+  });
+
+// ── profile ───────────────────────────────────────────────────────────────
+program
+  .command('profile')
+  .description('Profile a vector tile: size, vertex cost, layer breakdown')
+  .argument('<file>', 'Path to a vector tile (.pbf / .mvt)')
+  .option('--json', 'Output as JSON')
+  .option(
+    '--top-n <n>',
+    'Number of top layers to show in breakdown (default: 5)',
+    (v: string) => parseInt(v, 10),
+    5,
+  )
+  .option('-v, --verbose', 'Verbose output')
+  .option('--debug', 'Debug output')
+  .option('-q, --quiet', 'Suppress progress output')
+  .option('-c, --config <path>', 'Path to tileguard.yml')
+  .action(async (file: string, flags) => {
+    const ctx = buildContext(flags);
+    const result = await runCommand({
+      name: 'profile',
+      args: {
+        file,
+        format: flags.json ? 'json' : 'text',
+        topN: flags.topN ?? 5,
+      },
+      ctx,
+      fn: runProfile,
+    });
+    present(result);
+  });
+
+// ── hook ──────────────────────────────────────────────────────────────────
+program
+  .command('hook')
+  .description('Manage TileGuard pre-commit hooks for staged .pbf files')
+  .argument('<action>', 'Action: install | uninstall | status')
+  .action(async (action: string) => {
+    if (action !== 'install' && action !== 'uninstall' && action !== 'status') {
+      present({
+        exitCode: 1,
+        message: `Unknown hook action "${action}". Use: install, uninstall, or status.`,
+      });
+    }
+    const result = await runHook(
+      { action: action as 'install' | 'uninstall' | 'status' },
+      { cwd: process.cwd() },
+    );
     present(result);
   });
 

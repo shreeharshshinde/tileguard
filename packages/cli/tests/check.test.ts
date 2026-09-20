@@ -110,7 +110,7 @@ describe('runCheck', () => {
   });
 
   it('returns exitCode 2 when the resolved reporter ID is unknown', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'sarif' } });
+    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'junit' } });
     // Nonexistent path passes through expandSources unchanged
     const result = await runCheck(['/nonexistent/tile.pbf'], {});
 

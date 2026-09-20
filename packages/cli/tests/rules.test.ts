@@ -132,7 +132,10 @@ describe('runRulesList', () => {
     // Every entry must have the required fields
     for (const entry of parsed) {
       expect(typeof entry.id).toBe('string');
-      expect(entry.id.startsWith('tile/')).toBe(true);
+      // tilePlugin includes both tile/* geometry rules and perf/* performance rules
+      expect(
+        entry.id.startsWith('tile/') || entry.id.startsWith('perf/'),
+      ).toBe(true);
       expect(typeof entry.description).toBe('string');
       expect(typeof entry.defaultSeverity).toBe('string');
       expect(typeof entry.recommended).toBe('boolean');
