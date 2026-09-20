@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
-Validate vector tiles and MapLibre styles from your terminal or CI pipeline. 19 built-in rules, zero-config defaults, JSON output for automation.
+Validate vector tiles and MapLibre styles from your terminal or CI pipeline. 25 built-in rules, zero-config defaults, JSON and SARIF output for automation.
 
 ---
 
@@ -40,6 +40,12 @@ tileguard check ./tiles/ ./styles/
 # JSON output for CI
 tileguard check ./tiles/ --reporter json
 
+# SARIF output for GitHub Code Scanning
+tileguard check ./tiles/ --reporter sarif
+
+# Profile a tile (size, vertex cost, layer breakdown)
+tileguard profile ./tile.pbf
+
 # Compare two tile versions
 tileguard compare ./v1.pbf ./v2.pbf
 
@@ -48,6 +54,9 @@ tileguard report ./v1.pbf ./v2.pbf --format markdown
 
 # View all available rules
 tileguard rules list
+
+# Install a pre-commit hook (auto-check staged .pbf files)
+tileguard hook install
 
 # Scaffold a config file
 tileguard init
@@ -116,7 +125,7 @@ const config: TileGuardConfig = {
 export default config;
 ```
 
-Without a config file, all 19 recommended rules run at default severities.
+Without a config file, all 25 rules run at their default severities (performance rules are opt-in and require explicit thresholds).
 
 ---
 
@@ -129,6 +138,8 @@ Without a config file, all 19 recommended rules run at default severities.
 | `analyze <a> <b>` | Regression analysis with confidence scores |
 | `report <a> <b>` | Generate Markdown/HTML/JSON engineering report |
 | `stats <source>` | Show tile statistics (layers, features, geometry) |
+| `profile <file>` | Profile a tile: size, vertex cost, per-layer breakdown |
+| `hook <action>` | Manage pre-commit hook (`install` \| `uninstall` \| `status`) |
 | `rules list` | List all available rules with severity |
 | `init` | Scaffold a starter config file |
 | `doctor` | Check environment and config health |
@@ -155,17 +166,17 @@ console.log(result.exitCode); // 0 | 1 | 2
 |:--------|:--------|
 | **@tileguard/cli** | Command-line interface (this package) |
 | [`@tileguard/core`](https://www.npmjs.com/package/@tileguard/core) | Framework contracts |
-| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | 10 vector tile validation rules |
+| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | 16 vector tile validation + performance rules |
 | [`@tileguard/style-rules`](https://www.npmjs.com/package/@tileguard/style-rules) | 9 MapLibre style lint rules |
 | [`@tileguard/config`](https://www.npmjs.com/package/@tileguard/config) | Config file discovery + validation |
-| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON reporters + report engine |
+| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON & SARIF reporters + report engine |
 | [`@tileguard/analysis`](https://www.npmjs.com/package/@tileguard/analysis) | Tile comparison + regression detection |
 
 ---
 
 ## Documentation
 
-- [Rule Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/rules) — All 19 rules documented
+- [Rule Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/rules) — All 25 rules documented
 - [API Reference](https://github.com/shreeharshshinde/tileguard/tree/main/docs/api) — Generated TypeDoc
 - [Repository](https://github.com/shreeharshshinde/tileguard)
 
