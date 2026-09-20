@@ -1,6 +1,6 @@
 # Rule Docs: `docs/rules/`
 
-This directory contains per-rule reference documentation for all 21 built-in TileGuard rules.
+This directory contains per-rule reference documentation for all 25 built-in TileGuard rules.
 
 ## Style Rules (`@tileguard/style-rules`)
 <!-- TODO: INSERT DIAGRAM 5: Non-Short-Circuiting Schema Validation -->
@@ -81,6 +81,17 @@ This directory contains per-rule reference documentation for all 21 built-in Til
 | `tile/hole-containment` | [hole-containment.md](./tile/hole-containment.md) | Hole rings must be inside their parent outer ring |
 | `tile/self-intersection` | [self-intersection.md](./tile/self-intersection.md) | Geometries must not self-intersect |
 | `tile/no-empty` | [no-empty.md](./tile/no-empty.md) | Tiles must contain at least one feature |
+
+## Performance Rules (`@tileguard/tile-rules` · v0.6.0)
+
+Performance rules detect tiles that will cause rendering bottlenecks — oversized payloads, geometry-heavy features, or layer-level cost dominance. All four rules are opt-in: they ship with no default thresholds to avoid false positives on legitimate high-density tile sets. Enable them explicitly when you know your tile pipeline's performance budget.
+
+| Rule ID | File | Default Severity | Description |
+|:--------|:-----|:----------------|:------------|
+| `perf/tile-size` | [perf/tile-size.md](./perf/tile-size.md) | `warning` | Raw and/or gzip-compressed tile byte size must stay within configured budgets |
+| `perf/vertex-budget` | [perf/vertex-budget.md](./perf/vertex-budget.md) | `warning` | Per-feature and/or tile-wide vertex count must not exceed configured limits |
+| `perf/feature-density` | [perf/feature-density.md](./perf/feature-density.md) | `warning` | Per-layer feature count must not exceed configured limits |
+| `perf/layer-size` | [perf/layer-size.md](./perf/layer-size.md) | `info` | No single layer should dominate the tile's vertex budget beyond a configured fraction |
 
 ---
 
