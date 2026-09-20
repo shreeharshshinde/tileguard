@@ -101,7 +101,7 @@ export default {
   --vp-c-text-3: #71717a;
 
   --vp-c-border: #27272a;
-  --vp-c-divider: #27272a;
+  --vp-c-divider: rgba(255, 255, 255, 0.05);
   --vp-c-gutter: #09090b;
 
   --vp-c-tip-1: #a3ff00;
@@ -510,6 +510,7 @@ Existing content that maps to docs site pages:
 | `docs/architecture/02-diagnostic-model.md` | learn/concepts.md + architecture/decoder-diagnostics.md |
 | `docs/architecture/07-engine.md` | architecture/validation-pipeline.md |
 | `docs/rules/tile/*.md` (12 files) | rules/tile/*.md |
+| `docs/rules/perf/*.md` (4 files) | rules/perf/*.md |
 | `docs/rules/style/*.md` (9 files) | rules/style/*.md |
 | `docs/architecture/adr/001-*.md` | decisions/adr-001-*.md |
 | `docs/architecture/adr/002-*.md` | decisions/adr-003-*.md |
@@ -554,6 +555,7 @@ sidebar: {
         { text: 'Inspect Findings', link: '/guides/inspecting-findings' },
         { text: 'Compare Tiles', link: '/guides/comparing-tiles' },
         { text: 'MapLibre Styles', link: '/guides/maplibre-styles' },
+        { text: 'Profiling Tiles', link: '/guides/profiling-tiles' },
         { text: 'CI / GitHub Actions', link: '/guides/ci-github-actions' },
         { text: 'Reports', link: '/guides/generating-reports' },
       ],
@@ -564,6 +566,7 @@ sidebar: {
       items: [
         { text: 'Overview', link: '/rules/' },
         { text: 'Tile Rules', link: '/rules/tile/' },
+        { text: 'Performance Rules', link: '/rules/perf/' },
         { text: 'Style Rules', link: '/rules/style/' },
       ],
     },
@@ -625,8 +628,8 @@ sidebar: {
 | Phase | Scope | Effort |
 |:------|:------|:-------|
 | Phase 1 | VitePress scaffold + 7 essential pages + deploy | 2–3 days |
-| Phase 2 | Learn + Guide sections (8 pages) | 2 days |
-| Phase 3 | 21 rule pages (template + migrate existing) | 1–2 days |
+| Phase 2 | Learn + Guide sections (9 pages) | 2 days |
+| Phase 3 | 25 rule pages (template + migrate existing) | 1–2 days |
 | Phase 4 | Architecture + 5 ADRs | 1–2 days |
 | Phase 5 | API reference + project pages | 1 day |
 
@@ -642,6 +645,6 @@ After Phase 1, a FOSS4G attendee should be able to:
 1. ✅ Land on docs.tileguard and understand what it does in 10 seconds
 2. ✅ Run `tileguard check` on their own tile in under 5 minutes
 3. ✅ Understand the architecture at a high level
-4. ✅ Know all 21 rules exist and what they catch
+4. ✅ Know all 25 rules exist and what they catch
 5. ✅ Copy a GitHub Actions workflow into their project
 6. ✅ Find the GitHub repo and star it
