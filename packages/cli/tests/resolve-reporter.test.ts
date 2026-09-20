@@ -31,8 +31,14 @@ describe('resolveReporterById', () => {
     expect(reporter.id).toBe('text');
   });
 
+  it('resolves "sarif" to the sarif reporter', () => {
+    const reporter = resolveReporterById('sarif');
+    expect(reporter).toBeDefined();
+    expect(reporter.id).toBe('sarif');
+  });
+
   it('throws CliUsageError for an unknown reporter ID', () => {
-    expect(() => resolveReporterById('sarif')).toThrow(CliUsageError);
+    expect(() => resolveReporterById('junit')).toThrow(CliUsageError);
   });
 
   it('includes all available reporter IDs in the CliUsageError message', () => {
@@ -41,7 +47,7 @@ describe('resolveReporterById', () => {
     // automatically as reporters are added.
     let caught: unknown;
     try {
-      resolveReporterById('html');
+      resolveReporterById('junit');
     } catch (err) {
       caught = err;
     }
@@ -50,6 +56,7 @@ describe('resolveReporterById', () => {
     const message = (caught as CliUsageError).message;
     expect(message).toContain('text');
     expect(message).toContain('json');
+    expect(message).toContain('sarif');
   });
 });
 

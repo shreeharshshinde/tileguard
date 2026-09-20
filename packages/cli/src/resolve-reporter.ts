@@ -16,7 +16,7 @@
  */
 
 import type { Reporter } from '@tileguard/core';
-import { jsonReporter, textReporter } from '@tileguard/reporters';
+import { createSarifReporter, jsonReporter, textReporter } from '@tileguard/reporters';
 import { CliUsageError } from './errors.js';
 
 /**
@@ -28,6 +28,9 @@ import { CliUsageError } from './errors.js';
 const BUILTIN_REPORTERS = new Map<string, Reporter>([
   ['text', textReporter],
   ['json', jsonReporter],
+  // SARIF 2.1.0 — writes to ./tileguard-results.sarif by default.
+  // Users can override the output path via --sarif-output (future flag).
+  ['sarif', createSarifReporter()],
 ]);
 
 /**
