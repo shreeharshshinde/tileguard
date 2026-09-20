@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   BarChart3,
+  Gauge,
   GitCompare,
   Layers,
   Palette,
@@ -12,10 +13,10 @@ const CAPABILITIES = [
     icon: Layers,
     title: 'Tile Validation',
     description:
-      '12 rules validating MVT structure, geometry, and feature metadata against real .pbf fixtures.',
+      '16 rules validating MVT structure, geometry, feature metadata, and performance budgets (tile size, vertex count, feature density).',
     color: 'text-[var(--tg-success)]',
     bg: 'bg-[var(--tg-success)]/10',
-    badge: '12 rules',
+    badge: '16 rules',
   },
   {
     icon: Palette,
@@ -61,6 +62,15 @@ const CAPABILITIES = [
     color: 'text-[var(--tg-text-secondary)]',
     bg: 'bg-[var(--tg-border)]',
     badge: 'DevOps',
+  },
+  {
+    icon: Gauge,
+    title: 'Performance Profiling',
+    description:
+      'Profile tile size, vertex budget, and layer cost. Four opt-in rules surface rendering bottlenecks before they hit production.',
+    color: 'text-purple-400',
+    bg: 'bg-purple-400/10',
+    badge: '4 rules',
   },
 ];
 

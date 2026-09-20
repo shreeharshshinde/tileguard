@@ -37,8 +37,8 @@ const logoAnim = {
 };
 
 const STAT_ITEMS = [
-  { value: '12', label: 'Tile Rules', icon: Layers },
-  { value: '9', label: 'Style Rules', icon: Zap },
+  { value: '25', label: 'Rules', icon: Layers },
+  { value: '12', label: 'CLI Commands', icon: Zap },
   { value: '1,678', label: 'Tests Passing', icon: Shield },
   { value: 'CI', label: 'Ready', icon: GitCompare },
 ];
