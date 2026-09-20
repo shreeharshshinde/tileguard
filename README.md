@@ -13,7 +13,7 @@ TileGuard is a rule-based validation framework for vector tiles and MapLibre sty
 
 ## Features
 
-- **21 built-in rules** — 12 tile validation + 9 style lint rules, all configurable
+- **25 built-in rules** — 12 tile validation + 4 performance + 9 style lint rules, all configurable
 - **Visual Inspector** — browser-based debugging environment with canvas geometry rendering, diagnostic overlays, and investigation workflows
 - **Plugin architecture** — write custom rules in ~25 lines of TypeScript
 - **Zero-config defaults** — works out of the box, customize when you need to
@@ -22,7 +22,7 @@ TileGuard is a rule-based validation framework for vector tiles and MapLibre sty
 - **Comparison & regression detection** — diff tiles across versions, rank regressions by confidence
 - **Report generation** — Markdown, HTML, and JSON engineering reports
 - **Convention-aware geometry validation** — auto-detects MVT (CW) vs OGC/GeoJSON (CCW) winding conventions
-- **10 CLI commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `version`
+- **12 CLI commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `profile`, `hook`, `version`
 - **Modular** — install only what you need (tile rules, style rules, or both)
 
 ---
@@ -38,6 +38,15 @@ npx @tileguard/cli check ./style.json
 
 # Multiple sources, JSON output for CI
 npx @tileguard/cli check ./tiles/ ./styles/ --reporter json
+
+# SARIF output for GitHub Code Scanning
+npx @tileguard/cli check ./tiles/ --reporter sarif
+
+# Profile a tile: size, vertex cost, per-layer breakdown
+npx @tileguard/cli profile ./tile.pbf
+
+# Install pre-commit hook (auto-check staged .pbf files)
+npx @tileguard/cli hook install
 
 # Compare two tile versions
 npx @tileguard/cli compare ./v1.pbf ./v2.pbf
@@ -98,6 +107,17 @@ Without a config file, all recommended rules run at their default severities.
 | `tile/degenerate-geometry` | Lines/polygons with insufficient vertices |
 | `tile/no-empty` | Tiles with zero features |
 
+### Performance Rules (`@tileguard/tile-rules` · v0.6.0)
+
+All performance rules are opt-in — configure thresholds explicitly to fit your tile pipeline.
+
+| Rule | Default | What it catches |
+|:-----|:--------|:----------------|
+| `perf/tile-size` | warning | Raw and/or gzip-compressed tile byte size exceeds budget |
+| `perf/vertex-budget` | warning | Per-feature or tile-level vertex count exceeds limit |
+| `perf/feature-density` | warning | Per-layer feature count exceeds configured maximum |
+| `perf/layer-size` | info | Single layer dominates the tile's vertex budget |
+
 ### Style Linting (`@tileguard/style-rules`)
 
 | Rule | What it catches |
@@ -130,6 +150,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npx @tileguard/cli check ./tiles/ ./styles/ --reporter json
+      # Optional: surface findings inline on the PR diff
+      - run: npx @tileguard/cli check ./tiles/ --reporter sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with: { sarif_file: tileguard-results.sarif }
 ```
 
 ---
@@ -171,12 +195,12 @@ Rules never print. Reporters never validate. Adding a rule never touches formatt
 |:--------|:--------|
 | [`@tileguard/core`](packages/core) | Framework contracts — Diagnostic, Artifact, Rule, Plugin, Reporter, Engine |
 | [`@tileguard/shared`](packages/shared) | Cross-package utilities |
-| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation rules |
+| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation rules + 4 performance rules |
 | [`@tileguard/style-rules`](packages/style-rules) | Style provider + 9 lint rules + parser/resolver/validator |
 | [`@tileguard/config`](packages/config) | Config file discovery, loading, and schema validation |
-| [`@tileguard/reporters`](packages/reporters) | Text & JSON reporters + report engine (Markdown, HTML, JSON) |
+| [`@tileguard/reporters`](packages/reporters) | Text, JSON & SARIF reporters + report engine (Markdown, HTML, JSON) |
 | [`@tileguard/analysis`](packages/analysis) | Comparison and regression analysis engine |
-| [`@tileguard/cli`](packages/cli) | CLI with 10 commands |
+| [`@tileguard/cli`](packages/cli) | CLI with 12 commands |
 | [`@tileguard/inspector`](packages/inspector) | Visual debugging environment — canvas rendering, diagnostic overlays, investigation workflows |
 
 Dependencies flow strictly inward. Core has zero runtime dependencies. Domain packages depend only on Core. Install only what you need.
