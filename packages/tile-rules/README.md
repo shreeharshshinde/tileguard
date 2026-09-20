@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
-12 configurable rules that validate vector tile structure, geometry integrity, and feature-level constraints. Catches self-intersections, unclosed rings, incorrect winding order, holes outside shells, missing layers, and coordinate range violations before they reach production rendering.
+16 configurable rules for vector tile validation and performance budgeting. Catches self-intersections, unclosed rings, incorrect winding order, holes outside shells, missing layers, coordinate range violations, oversized tiles, and vertex-heavy features before they reach production rendering.
 
 ---
 
@@ -70,7 +70,31 @@ for (const d of result.diagnostics) {
 | `tile/layer-feature-count` | warning | Per-layer feature count outside bounds |
 | `tile/no-empty` | warning | Tiles with zero features |
 
-All rules are enabled by default at their listed severity. Override any rule via configuration:
+### Performance Rules (v0.6.0 · opt-in)
+
+All performance rules ship with **no default thresholds** — enable them and set budgets explicitly.
+
+| Rule | Default | What it catches |
+|:-----|:--------|:----------------|
+| `perf/tile-size` | warning | Raw and/or gzip-compressed byte size exceeds budget |
+| `perf/vertex-budget` | warning | Per-feature or tile-level vertex count too high |
+| `perf/feature-density` | warning | Per-layer feature count too high |
+| `perf/layer-size` | info | Single layer dominates tile's vertex budget |
+
+```typescript
+rules: {
+  // Flag tiles over 500 KB raw or 150 KB gzip-compressed
+  'perf/tile-size': ['warning', { maxBytes: 500_000, maxGzipBytes: 150_000 }],
+  // Flag any feature with more than 5,000 vertices
+  'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 5_000 }],
+  // Flag layers with more than 10,000 features
+  'perf/feature-density': ['warning', { maxFeaturesPerLayer: 10_000 }],
+  // Flag any layer that accounts for more than 50% of tile vertices
+  'perf/layer-size': ['info', { maxLayerFraction: 0.5 }],
+}
+```
+
+> **Tip:** Run `tileguard profile <tile.pbf>` first to see the actual vertex distribution before setting budgets.
 
 ```typescript
 rules: {
