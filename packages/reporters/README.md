@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/shreeharshshinde/tileguard/blob/main/LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
-Two real-time diagnostic reporters (text + JSON) for terminal and CI output, plus a full engineering report engine that generates Markdown, HTML, and JSON analysis reports from comparison and regression data.
+Three real-time diagnostic reporters (text, JSON, SARIF) for terminal, CI, and GitHub Code Scanning output, plus a full engineering report engine that generates Markdown, HTML, and JSON analysis reports from comparison and regression data.
 
 ---
 
@@ -104,8 +104,10 @@ Reports include: executive summary, key findings, layer impact analysis, regress
 |:---------|:-------|:---------|
 | `textReporter` | Colored terminal | Human review |
 | `jsonReporter` | Structured JSON | CI pipelines, programmatic consumption |
+| `sarifReporter` | SARIF 2.1.0 file | GitHub Code Scanning (`upload-sarif`) |
 | `createTextReporter(opts)` | Configurable text | Custom write functions |
 | `createJsonReporter(opts)` | Configurable JSON | Custom indentation, output targets |
+| `createSarifReporter(opts)` | Configurable SARIF | Custom output path |
 
 ## Report formats
 
