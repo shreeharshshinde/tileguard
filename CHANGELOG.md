@@ -22,6 +22,30 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `WindingConvention` type and `LogicalPolygon` interface exported from `@tileguard/tile-rules`.
 - `runBrowserDiagnostics()` service in Inspector — executes all browser-safe tile rules against decoded artifacts.
 
+#### Pillar 1 — Performance & Profiling (v0.6.0)
+
+**Performance Rules (`@tileguard/tile-rules`)**
+- `perf/tile-size` — Validates raw and/or gzip-compressed tile byte size against configurable budgets. Reads existing `metadata.bytes` / `metadata.gzipped` fields — zero extra I/O.
+- `perf/vertex-budget` — Validates per-feature vertex counts and total tile vertex count. Each oversized feature emits an individual diagnostic with layer/feature-index location.
+- `perf/feature-density` — Validates per-layer feature count with global default and per-layer overrides. Performance-scoped companion to `tile/layer-feature-count`.
+- `perf/layer-size` — Flags layers whose vertex share exceeds a configured fraction of total tile vertices. Uses vertex-count proxy (deterministic, zero I/O, GPU-correlated).
+
+**SARIF Reporter (`@tileguard/reporters`)**
+- `createSarifReporter()` — Produces a SARIF 2.1.0 JSON file compatible with GitHub Code Scanning (`github/codeql-action/upload-sarif`). Maps TileGuard diagnostics to SARIF `results`, `rules`, and `locations`.
+- `sarifReporter` — Default SARIF reporter instance (writes to `./tileguard-results.sarif`).
+- `sarif` reporter now registered in the CLI reporter registry (`--reporter sarif`).
+
+**CLI Commands**
+- `tileguard profile <file>` — Read-only tile profiler: displays tile byte size, vertex count, per-layer breakdown by vertex share, and actionable warnings. Supports `--json` and `--top-n <n>` flags.
+- `tileguard hook install|uninstall|status` — Manages a `pre-commit` git hook that automatically runs `tileguard check` on staged `.pbf` files. Auto-detects Husky. Idempotent install/uninstall. Appends a delimited block to existing hooks without overwriting them.
+
+**Documentation**
+- `docs/rules/perf/tile-size.md` — Full rule reference with configuration, diagnostics, examples, and remediation steps.
+- `docs/rules/perf/vertex-budget.md` — Full rule reference for per-feature and tile-level vertex limit checks.
+- `docs/rules/perf/feature-density.md` — Full rule reference for layer feature density enforcement.
+- `docs/rules/perf/layer-size.md` — Full rule reference for single-layer vertex dominance detection.
+- `docs/rules/README.md` — Updated index with new `Performance Rules` section; rule count updated to 25.
+
 ---
 
 ## [0.5.0-rc.1] — 2026-08-07
