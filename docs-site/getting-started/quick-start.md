@@ -54,8 +54,9 @@ tileguard doctor
 
 ```text
 ✓ Node.js version    v22.x.x (≥20 required)
-✓ Core loaded        @tileguard/core 0.5.0
+✓ Core loaded        @tileguard/core 0.6.0
 ✓ Tile rules         12 rules registered
+✓ Performance rules  4 rules registered (opt-in)
 ✓ Style rules        9 rules registered
 ✓ Config discovery   tileguard.config.ts found
 ✓ Reporter           text (default)
@@ -76,6 +77,12 @@ Tile Rules (12):
   tile/winding-order          error    Rings must follow correct winding
   tile/hole-containment       error    Holes must stay inside outer ring
   ...
+
+Performance Rules (4 — opt-in, off by default):
+  perf/tile-size              off      Tile size must not exceed budget
+  perf/vertex-budget          off      Vertex count per layer must be within budget
+  perf/feature-density        off      Feature density per layer must be within budget
+  perf/layer-size             off      Compressed layer size must not exceed budget
 
 Style Rules (9):
   style/valid-json            error    Style must be valid JSON
@@ -238,6 +245,21 @@ tileguard check ./tiles/ ./styles/ --reporter json
 
 JSON output is machine-readable. Pipe it into CI gates, dashboards, or custom tooling.
 
+### SARIF output for GitHub Code Scanning
+
+```bash
+tileguard check ./tiles/ --reporter sarif
+```
+
+Writes `./tileguard-results.sarif`. Upload it to GitHub Code Scanning to surface findings as PR annotations:
+
+```yaml
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: tileguard-results.sarif
+```
+
 ## Compare Two Tile Versions
 
 ```bash
@@ -316,6 +338,33 @@ File: ./tile.pbf
     poi          157 features   (points)
 ```
 
+### Profile a tile for performance bottlenecks
+
+```bash
+tileguard profile ./tile.pbf
+```
+
+```text
+Profile: ./tile.pbf  (88 KB compressed)
+
+  Layer          Features  Vertices   Size (raw)  % of tile
+  ─────────────────────────────────────────────────────────
+  roads          1,891      98,432     142 KB      48%
+  buildings      1,456      41,201      89 KB      30%
+  water            312      15,980      32 KB      11%
+  landuse          401       8,120      22 KB       7%
+  poi              157         157       4 KB       1%
+
+  Total vertices:   163,890
+  Vertex budget:    100,000  ⚠ EXCEEDED by 63%
+
+  Recommendation: Simplify "roads" geometry — it accounts for 60% of vertex cost.
+```
+
+::: tip When to use
+`tileguard profile` is your performance microscope. Run it when tiles feel slow to render or when you want to set a budget before scaling to production.
+:::
+
 ### Scaffold a config file
 
 ```bash
@@ -324,20 +373,37 @@ tileguard init
 
 Creates `tileguard.config.ts` with all recommended rules at default severities.
 
+### Install a pre-commit hook
+
+```bash
+tileguard hook install
+```
+
+Automatically checks any staged `.pbf` or `.mvt` files before every commit. Fast — only validates changed files.
+
+```bash
+tileguard hook status   # check whether the hook is installed
+tileguard hook uninstall  # remove the hook
+```
+
+::: warning Git repo required
+`tileguard hook install` must be run from inside a git repository.
+:::
+
 ## What Next?
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
 
 [**View All Rules ›**](/rules/)\
-21 built-in rules for tiles and styles
+25 built-in rules — tile, perf, and style
 
 [**Set Up CI ›**](/guides/ci-github-actions)\
 Fail PRs on quality gate violations
 
+[**Profile Tiles ›**](/guides/profiling-tiles)\
+Find rendering bottlenecks before production
+
 [**How It Works ›**](/learn/how-it-works)\
 Understand the architecture
-
-[**What is TileGuard? ›**](/learn/what-is-tileguard)\
-The problem we solve
 
 </div>
