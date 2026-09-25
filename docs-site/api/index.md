@@ -12,7 +12,7 @@ TileGuard's public API is distributed across 7 packages. Each has a focused resp
 | [`@tileguard/analysis`](/api/analysis) | Comparison engine, regression detection, statistics | `npm i @tileguard/analysis` |
 | [`@tileguard/reporters`](/api/reporters) | Text & JSON CLI reporters + engineering report engine | `npm i @tileguard/reporters` |
 | [`@tileguard/config`](/api/config) | Config file discovery, loading, and validation | `npm i @tileguard/config` |
-| [`@tileguard/cli`](/api/cli) | CLI with 10 commands (includes all packages) | `npm i -g @tileguard/cli` |
+| [`@tileguard/cli`](/api/cli) | CLI with 12 commands (includes all packages) | `npm i -g @tileguard/cli` |
 
 ## Dependency Graph
 
