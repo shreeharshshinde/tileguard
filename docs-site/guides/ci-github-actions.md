@@ -46,7 +46,7 @@ That's it. If any rule reports an `error`-level diagnostic, the step fails and t
 
 ## JSON Output for Automation
 
-For structured output (dashboards, custom reporting, SARIF integration):
+For structured output (dashboards, custom reporting):
 
 ```yaml
       - name: Validate with JSON output
@@ -83,6 +83,29 @@ The JSON output contains every diagnostic as a machine-readable object:
   ]
 }
 ```
+
+## SARIF Output for GitHub Code Scanning
+
+Use `--reporter sarif` to get inline PR annotations via GitHub Code Scanning:
+
+```yaml
+      - name: Run TileGuard (SARIF)
+        run: npx @tileguard/cli check ./tiles/ ./styles/ --reporter sarif
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()   # upload even on failure so findings appear on the PR
+        with:
+          sarif_file: tileguard-results.sarif
+```
+
+This surfaces every `error` and `warning` as an annotation directly on the diff,
+without needing to read a JSON artifact.
+
+::: tip SARIF vs JSON
+Use **SARIF** when you want GitHub PR annotations. Use **JSON** when you want to
+pipe results into a dashboard or custom tooling.
+:::
 
 ## Comparison on Pull Request
 
