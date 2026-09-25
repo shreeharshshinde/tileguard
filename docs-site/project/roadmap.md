@@ -42,9 +42,9 @@ gantt
 
 The release presented at FOSS4G 2026. Everything needed to demo and adopt:
 
-- ✅ 21 built-in rules (12 tile + 9 style)
+- ✅ 25 built-in rules (12 tile + 4 perf + 9 style)
 - ✅ Visual Inspector with diagnostic overlays
-- ✅ CLI with 10 commands
+- ✅ CLI with 12 commands (inc. profile, hook)
 - ✅ Comparison and regression detection
 - ✅ Engineering report generation (Markdown, HTML, JSON)
 - ✅ Convention-aware validation (MVT + OGC)
@@ -56,7 +56,7 @@ The release presented at FOSS4G 2026. Everything needed to demo and adopt:
 
 Expand the framework based on community feedback:
 
-- **SARIF export** — GitHub Code Scanning integration
+- ✅ **SARIF reporter** — GitHub Code Scanning integration
 - **PMTiles support** — validate tiles directly from PMTiles archives
 - **Render regression testing** — perceptual pixel comparison (Playwright-based)
 - **IDE integration** — VS Code extension showing inline diagnostics
