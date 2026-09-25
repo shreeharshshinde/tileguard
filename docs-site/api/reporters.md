@@ -1,6 +1,6 @@
 # @tileguard/reporters
 
-Text & JSON CLI reporters for terminal output, plus a full engineering report engine generating Markdown, HTML, and JSON reports.
+Text, JSON, and SARIF CLI reporters for terminal and CI output, plus a full engineering report engine generating Markdown, HTML, and JSON reports.
 
 ```bash
 npm install @tileguard/reporters @tileguard/core
@@ -16,8 +16,10 @@ Real-time diagnostic output for terminal and CI.
 |:-------|:-----|:------------|
 | `textReporter` | Reporter | Colored terminal output (default) |
 | `jsonReporter` | Reporter | Machine-readable JSON output |
+| `sarifReporter` | Reporter | SARIF 2.1.0 file output for GitHub Code Scanning |
 | `createTextReporter` | Function | Create text reporter with custom options |
 | `createJsonReporter` | Function | Create JSON reporter with custom options |
+| `createSarifReporter` | Function | Create SARIF reporter with custom output path |
 
 ```typescript
 import { textReporter, jsonReporter } from '@tileguard/reporters';
@@ -40,6 +42,43 @@ const prettyJson = createJsonReporter({ indent: 2 });
 | `color` | boolean | `true` | Enable ANSI colors |
 | `showSuggestions` | boolean | `true` | Show `ℹ` suggestion lines |
 | `showDocsUrl` | boolean | `true` | Show rule documentation URLs |
+
+### JSON Reporter Options
+
+| Option | Type | Default | Description |
+|:-------|:-----|:--------|:------------|
+| `indent` | number | `0` | JSON indentation (0 = minified) |
+
+### SARIF Reporter Options
+
+The SARIF reporter writes a `.sarif` file rather than printing to stdout. Upload the
+file to GitHub Code Scanning for inline PR annotations.
+
+| Option | Type | Default | Description |
+|:-------|:-----|:--------|:------------|
+| `outputPath` | string | `./tileguard-results.sarif` | Output file path |
+| `toolVersion` | string | `'0.6.0'` | Version embedded in the SARIF envelope |
+
+```typescript
+import { createSarifReporter, sarifReporter } from '@tileguard/reporters';
+
+// Default: writes ./tileguard-results.sarif
+const engine = createEngine({ plugins: [...], reporter: sarifReporter });
+
+// Custom output path
+const customSarif = createSarifReporter({ outputPath: './ci/results.sarif' });
+```
+
+::: tip GitHub Code Scanning
+```yaml
+- name: Run TileGuard
+  run: tileguard check ./tiles/ --reporter sarif
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: tileguard-results.sarif
+```
+:::
 
 ### JSON Reporter Options
 
