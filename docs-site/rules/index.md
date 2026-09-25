@@ -1,6 +1,6 @@
 # Rules
 
-TileGuard ships with **21 built-in rules**: 12 for vector tile validation and 9 for MapLibre style linting. All rules are independently configurable.
+TileGuard ships with **25 built-in rules**: 12 for vector tile validation, 4 performance profiling rules (opt-in), and 9 for MapLibre style linting. All rules are independently configurable.
 
 ## Configuration
 
@@ -54,6 +54,23 @@ These rules validate tile-level structure and feature metadata.
 | [`tile/feature-count`](/rules/tile/feature-count) | warning | Total feature count exceeds configured maximum |
 | [`tile/layer-feature-count`](/rules/tile/layer-feature-count) | warning | Per-layer feature count exceeds configured maximum |
 | [`tile/no-empty`](/rules/tile/no-empty) | warning | Tiles containing zero features |
+
+---
+
+## Performance Rules
+
+**Package:** `@tileguard/tile-rules` · 4 rules · **opt-in (off by default)**
+
+These rules enforce rendering performance budgets. Enable them by setting explicit
+thresholds in your config. Run `tileguard profile` to find appropriate values for
+your tiles.
+
+| Rule | Default | What it catches |
+|:-----|:--------|:----------------|
+| [`perf/tile-size`](/rules/perf/tile-size) | off | Compressed tile exceeds byte budget |
+| [`perf/vertex-budget`](/rules/perf/vertex-budget) | off | Total vertex count exceeds budget — primary GPU cost driver |
+| [`perf/feature-density`](/rules/perf/feature-density) | off | Single layer has too many features |
+| [`perf/layer-size`](/rules/perf/layer-size) | off | Individual layer byte size exceeds budget |
 
 ---
 
@@ -154,9 +171,11 @@ export const myPlugin: Plugin = {
 
 ## What Next?
 
-- [**Quick Start ›**](/getting-started/quick-start)
+- [**Quick Start →**](/getting-started/quick-start)
 Run TileGuard in 5 minutes
-- [**CI / GitHub Actions ›**](/guides/ci-github-actions)
+- [**Profiling Tiles →**](/guides/profiling-tiles)
+Use `tileguard profile` to understand performance budgets
+- [**CI / GitHub Actions →**](/guides/ci-github-actions)
 Fail PRs on violations
-- [**How It Works ›**](/learn/how-it-works)
+- [**How It Works →**](/learn/how-it-works)
 Architecture overview
