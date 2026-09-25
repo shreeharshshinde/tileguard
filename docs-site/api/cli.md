@@ -20,7 +20,7 @@ tileguard check <sources...> [options]
 
 | Option | Description |
 |:-------|:------------|
-| `--reporter <format>` | Output format: `text` (default) or `json` |
+| `--reporter <format>` | Output format: `text` (default), `json`, or `sarif` |
 | `--config <path>` | Explicit config file path |
 
 ```bash
@@ -136,6 +136,49 @@ tileguard style ./styles/map.json
 ```
 
 Shows: version, sources, layers by type, expression count, filter count, and runs all 9 style rules.
+
+---
+
+### `tileguard profile`
+
+Profile a single tile: compressed size, vertex count, per-layer breakdown.
+
+```bash
+tileguard profile <file>
+```
+
+```bash
+tileguard profile ./tiles/14/8741/5476.pbf
+```
+
+Shows: compressed tile size, total vertices, per-layer feature/vertex/byte counts,
+and identifies the largest contributors. Does not fail — informational only.
+
+See [Profiling Tiles](/guides/profiling-tiles) for a full guide.
+
+---
+
+### `tileguard hook`
+
+Manage a `pre-commit` Git hook that automatically validates staged tile files.
+
+```bash
+tileguard hook <action>
+```
+
+| Action | Description |
+|:-------|:------------|
+| `install` | Install the pre-commit hook into `.git/hooks/pre-commit` |
+| `uninstall` | Remove the TileGuard hook |
+| `status` | Check whether the hook is currently installed |
+
+```bash
+tileguard hook install    # one-time setup
+tileguard hook status     # check current state
+tileguard hook uninstall  # remove hook
+```
+
+See [Git Hooks](/guides/git-hooks) for a full guide.
 
 ---
 
