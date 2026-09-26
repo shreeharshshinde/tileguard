@@ -197,4 +197,4 @@ The full execution flow
 - [**Decoder & Diagnostics ›**](/architecture/decoder-diagnostics)
 Artifact and Diagnostic models
 - [**Rules Reference ›**](/rules/)
-All 21 built-in rules
+All 25 built-in rules
