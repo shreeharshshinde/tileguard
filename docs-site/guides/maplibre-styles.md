@@ -155,4 +155,4 @@ Tile-specific validation
 - [**CI / GitHub Actions ›**](/guides/ci-github-actions)
 Automate in your pipeline
 - [**Rules Reference ›**](/rules/)
-All 21 rules
+All 25 rules
