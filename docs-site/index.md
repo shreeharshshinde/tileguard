@@ -694,7 +694,7 @@ layout: page
 <div class="tg-tubelight"></div>
 
 <div class="tg-hero">
-  <div class="tg-badge" style="margin-bottom: 1.5rem;"><span class="indicator"></span> v0.5.0-rc.1 · 21 rules · MIT</div>
+  <div class="tg-badge" style="margin-bottom: 1.5rem;"><span class="indicator"></span> v0.5.0-rc.1 · 25 rules · MIT</div>
   <h1>TileGuard <span class="accent">Docs</span></h1>
   <p class="subtitle">
     Rule-based validation for vector tiles and MapLibre styles. Quality gates for your geospatial pipeline — from local dev to CI.
@@ -835,7 +835,7 @@ layout: page
     </div>
     <div class="tg-card">
       <h3>Rules</h3>
-      <p class="desc">All 21 rules with configuration, examples, and remediation.</p>
+      <p class="desc">All 25 rules with configuration, examples, and remediation.</p>
       <ul>
         <li><a href="/rules/#tile-validation-rules">Tile Validation (12)</a></li>
         <li><a href="/rules/#style-lint-rules">Style Linting (9)</a></li>
