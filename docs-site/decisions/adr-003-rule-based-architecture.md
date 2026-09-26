@@ -44,7 +44,7 @@ Each rule:
 **Negative:**
 - **No cross-rule analysis**: rules can't benefit from each other's findings (e.g., "only check winding if the ring is closed")
 - **Some redundant traversal**: multiple rules may iterate the same geometry independently
-- **Configuration surface**: 21 rules × 3 severity levels = many possible configurations
+- **Configuration surface**: 25 rules × 3 severity levels = many possible configurations
 
 ## Design Constraints
 
