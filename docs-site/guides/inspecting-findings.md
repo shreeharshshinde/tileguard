@@ -140,4 +140,4 @@ Diff between tile versions
 - [**Validating Tiles ›**](/guides/validating-tiles)
 CLI validation guide
 - [**Rules Reference ›**](/rules/)
-All 21 rules
+All 25 rules
