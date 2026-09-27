@@ -35,12 +35,13 @@ System design, interface specifications, and decision records. Start here to und
 ---
 
 ## [rules/](./rules/)
-Per-rule reference documentation for all 21 built-in rules.
+Per-rule reference documentation for all 25 built-in rules.
 
 | Document | Contents |
 |:---------|:---------|
 | [README.md](./rules/README.md) | Rules index with descriptions and severity |
 | [tile/](./rules/tile/) | 12 vector tile validation rules |
+| [perf/](./rules/perf/) | 4 performance budget rules |
 | [style/](./rules/style/) | 9 MapLibre style lint rules |
 
 ---

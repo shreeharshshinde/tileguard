@@ -475,9 +475,9 @@ The single most important page. Must show:
 
 ### Step 7: Rules Index
 
-- Table of all 21 rules with one-line descriptions
+- Table of all 25 rules with one-line descriptions
 - Links to individual rule pages (Phase 3)
-- Group by category: Tile Structural, Tile Geometry, Style
+- Group by category: Tile Structural, Tile Geometry, Performance, Style
 
 ### Step 8: CI / GitHub Actions
 

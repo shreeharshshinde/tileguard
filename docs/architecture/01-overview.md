@@ -131,7 +131,7 @@ graph TD
     end
 
     subgraph CLI["@tileguard/cli"]
-        CLIApp["CLI Application (10 commands)"]
+        CLIApp["CLI Application (12 commands)"]
     end
 
     subgraph InspectorPkg["@tileguard/inspector (private)"]

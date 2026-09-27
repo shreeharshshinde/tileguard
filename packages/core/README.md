@@ -117,11 +117,11 @@ export const myRule: Rule = {
 | Package | Purpose |
 |:--------|:--------|
 | **@tileguard/core** | Framework contracts (this package) |
-| [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) | CLI with 10 commands |
-| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | 10 vector tile validation rules |
+| [`@tileguard/cli`](https://www.npmjs.com/package/@tileguard/cli) | CLI with 12 commands |
+| [`@tileguard/tile-rules`](https://www.npmjs.com/package/@tileguard/tile-rules) | 12 vector tile validation rules + 4 perf rules |
 | [`@tileguard/style-rules`](https://www.npmjs.com/package/@tileguard/style-rules) | 9 MapLibre style lint rules |
 | [`@tileguard/config`](https://www.npmjs.com/package/@tileguard/config) | Config file discovery + validation |
-| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON reporters + report engine |
+| [`@tileguard/reporters`](https://www.npmjs.com/package/@tileguard/reporters) | Text, JSON, SARIF reporters + report engine |
 | [`@tileguard/analysis`](https://www.npmjs.com/package/@tileguard/analysis) | Tile comparison + regression detection |
 
 ---

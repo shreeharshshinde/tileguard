@@ -791,10 +791,11 @@ layout: page
 </div>
 
 <div class="tg-stats">
-  <div class="tg-stat"><div class="num">21</div><div class="label">Built-in Rules</div></div>
+  <div class="tg-stat"><div class="num">25</div><div class="label">Built-in Rules</div></div>
   <div class="tg-stat"><div class="num">12</div><div class="label">Tile Rules</div></div>
+  <div class="tg-stat"><div class="num">4</div><div class="label">Perf Rules</div></div>
   <div class="tg-stat"><div class="num">9</div><div class="label">Style Rules</div></div>
-  <div class="tg-stat"><div class="num">10</div><div class="label">CLI Commands</div></div>
+  <div class="tg-stat"><div class="num">12</div><div class="label">CLI Commands</div></div>
   <div class="tg-stat"><div class="num">1,838</div><div class="label">Tests Passing</div></div>
 </div>
 

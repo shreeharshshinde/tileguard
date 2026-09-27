@@ -37,7 +37,7 @@ const QUICK_LINKS = [
   {
     icon: Layers,
     title: 'Rules Reference',
-    description: '21 built-in rules for tiles & styles',
+    description: '25 built-in rules for tiles, performance & styles',
     href: `${DOCS_URL}/rules/`,
   },
   {

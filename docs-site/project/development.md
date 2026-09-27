@@ -54,12 +54,12 @@ tileguard/
 ├── packages/
 │   ├── core/           ← Framework contracts (zero dependencies)
 │   ├── shared/         ← Cross-package utilities
-│   ├── tile-rules/     ← MVT provider + 12 tile rules
+│   ├── tile-rules/     ← MVT provider + 12 tile validation + 4 perf rules
 │   ├── style-rules/    ← Style provider + 9 lint rules
 │   ├── config/         ← Config discovery and loading
-│   ├── reporters/      ← Text, JSON, report engine
+│   ├── reporters/      ← Text, JSON, SARIF, report engine
 │   ├── analysis/       ← Comparison + regression
-│   ├── cli/            ← 10 CLI commands
+│   ├── cli/            ← 12 CLI commands
 │   └── inspector/      ← Visual debugging (Vite + React)
 ├── demo/               ← Demo tile fixtures (Tokyo)
 ├── docs/               ← Internal engineering docs

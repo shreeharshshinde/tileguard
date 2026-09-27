@@ -221,7 +221,7 @@ tileguard/
 | `config` | `@tileguard/config` | Configuration file discovery, loading, and schema validation |
 | `reporters` | `@tileguard/reporters` | Output reporters: text, JSON, plus report engine (Markdown, HTML, JSON reports) |
 | `analysis` | `@tileguard/analysis` | Comparison and regression analysis engine (ComparisonEngine, RegressionEngine, FeatureMatcher, GeometryDiffer) |
-| `cli` | `@tileguard/cli` | CLI application: 10 commands (analyze, check, compare, doctor, init, report, rules, stats, style, version) |
+| `cli` | `@tileguard/cli` | CLI application: 12 commands (analyze, check, compare, doctor, hook, init, profile, report, rules, stats, style, version) |
 | `inspector` | `@tileguard/inspector` | Private visual debugging environment (React + Canvas, not published to npm) |
 
 ### Why `cli` Is Published as `@tileguard/cli`
