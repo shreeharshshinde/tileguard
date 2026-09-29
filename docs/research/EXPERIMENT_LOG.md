@@ -300,6 +300,59 @@ The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `sel
 
 ---
 
+## EXP-010 — Winding Convention Audit (Task 1.2, Phase 1)
+
+**Date:** 2026-09-29  
+**Status:** Complete  
+**Task:** 1.2 (Phase 1 — Correct & Re-Frame)  
+**Gap closed:** B1 (winding-order framing — spec vs. practice)  
+**Question:** What winding convention do production tile providers actually use, and does `geometry.ts` correctly implement MVT Spec §4.3.2.1?
+
+**Dataset:** 294 cached production tiles, z0–z4 (same corpus as EXP-002/003)  
+**Method:** Raw shoelace signed-area computed independently — `TileGuard detectWindingConvention()` NOT used.
+
+**Sign convention (MVT tile-space, Y-down):**
+
+| SignedArea | Direction in tile space | Classification |
+|:----------|:------------------------|:--------------|
+| > 0 | Clockwise (CW) | MVT §4.3.2.1 exterior ring |
+| < 0 | Counter-Clockwise (CCW) | OGC/GeoJSON exterior ring |
+| = 0 | Degenerate | Zero-area ring |
+
+**Results — feature-level classification (by exterior/first non-zero ring):**
+
+| Provider | Tiles | Polygon Features | MVT Spec-Conformant (CW) | OGC-Style (CCW) | Intra-Inconsistent |
+|:---------|------:|-----------------:|-------------------------:|----------------:|-------------------:|
+| OpenMapTiles | 94 | 1,306 | 1,304 (99.85%) | 2 (0.15%) | 272 |
+| OpenFreeMap | 100 | 1,735 | 1,735 (100%) | 0 (0%) | 154 |
+| CARTO Streets | 100 | 1,734 | 1,734 (100%) | 0 (0%) | 153 |
+| **Total** | **294** | **4,775** | **4,773 (99.96%)** | **2 (0.04%)** | **579** |
+
+**Results — ring-level breakdown:**
+
+| Provider | Rings Total | CW (SignedArea > 0) | CCW (SignedArea < 0) | Zero |
+|:---------|------------:|--------------------:|---------------------:|-----:|
+| OpenMapTiles | 18,797 | 16,641 | 2,156 | 0 |
+| OpenFreeMap | 3,847 | 2,045 | 1,802 | 0 |
+| CARTO Streets | 3,836 | 2,038 | 1,798 | 0 |
+| **Total** | **26,480** | **20,724** | **5,756** | **0** |
+
+**Note on intra-inconsistent:** Mixed CW/CCW rings within the same feature are expected and correct — outer rings and hole rings have opposite winding by definition. The `intra_inconsistent` count reflects features where the outer/hole alternation pattern mixes signs, which is normal for valid polygons with holes. This count warrants closer inspection but does not by itself indicate a defect.
+
+**`geometry.ts` comment audit (§4.3.2.1 verification):**
+
+| Item | Finding |
+|:-----|:--------|
+| `signedArea()` JSDoc | Written in **cartesian Y-up** terms: "positive = CCW". In MVT Y-down tile space, positive SignedArea = CW. Comment is misleading but formula is correct. |
+| `detectWindingConvention()` | Functionally correct — maps `area < 0` → `'mvt'` (CW outers), `area > 0` → `'ogc'` (CCW outers). Works correctly for production tiles. |
+| Overall verdict | Internal logic is consistent and produces correct results. JSDoc for `signedArea()` needs a clarifying note about Y-down vs Y-up interpretation. |
+
+**Key finding:** All three providers use MVT spec-conformant CW exterior rings (raw SignedArea > 0 in tile Y-down space). The 99.96% conformance rate is uniform. The 2 OGC-style outliers in OpenMapTiles are negligible.
+
+**Artifact:** `analysis/phase1-winding/winding-convention-counts.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.

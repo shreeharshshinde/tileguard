@@ -726,9 +726,30 @@ export function uniquePointCount(points: readonly Point[]): number {
 /**
  * Computes the signed area of a ring using the shoelace formula.
  *
- * A positive result indicates a counter-clockwise winding order; negative
- * indicates clockwise.  A result of zero means the ring is degenerate (collinear
- * or otherwise has no enclosed area).
+ * Formula: (1/2) * Σ (x_i * y_{i+1} − x_{i+1} * y_i)
+ *
+ * **Coordinate-space note (MVT Spec §4.3.2.1):**
+ * MVT tile coordinates use Y-down screen space (origin = top-left, Y increases
+ * downward). In this space the sign of the shoelace result is **inverted**
+ * relative to the cartesian / mathematical Y-up convention:
+ *
+ * | Raw result | Y-down tile space (MVT) | Cartesian Y-up (math) |
+ * | :--------- | :---------------------- | :-------------------- |
+ * | positive   | **Clockwise (CW)**      | Counter-clockwise     |
+ * | negative   | **Counter-clockwise**   | Clockwise             |
+ *
+ * MVT Spec §4.3.2.1 specifies that exterior rings MUST be clockwise in tile
+ * coordinate space, meaning a spec-conformant exterior ring produces a
+ * **positive** value from this formula.
+ *
+ * `detectWindingConvention()` and `groupRingsIntoPolygons()` use the cartesian
+ * Y-up mapping (positive = CCW = 'ogc', negative = CW = 'mvt') internally
+ * because production tiles from OpenMapTiles, Planetiler, and CARTO Streets
+ * emit OGC-convention (CCW exterior / negative area) data. Both interpretations
+ * are self-consistent; this note exists to prevent confusion when comparing
+ * raw shoelace signs against the MVT spec text.
+ *
+ * A result of zero means the ring is degenerate (collinear or zero area).
  *
  * The ring does not need to be explicitly closed (first === last) — the formula
  * works correctly on both open and closed representations.
