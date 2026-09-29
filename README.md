@@ -1,68 +1,67 @@
-# TileGuard 🛡️
-
-**Automated quality gates for geospatial software.**
-
-TileGuard is a rule-based validation framework for vector tiles and MapLibre style specifications — the same engineering discipline ESLint brings to JavaScript, applied to the geospatial stack.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/shreeharshshinde/tileguard/main/public/tileguard_horizontal.png" alt="TileGuard" width="480" style="background:#000;border-radius:8px;padding:16px;" />
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![FOSS4G 2026](https://img.shields.io/badge/FOSS4G%202026-Hiroshima-red)](https://2026.foss4g.org)
 
----
-
-## Features
-
-- **25 built-in rules** — 12 tile validation + 4 performance + 9 style lint rules, all configurable
-- **Visual Inspector** — browser-based debugging environment with canvas geometry rendering, diagnostic overlays, and investigation workflows
-- **Plugin architecture** — write custom rules in ~25 lines of TypeScript
-- **Zero-config defaults** — works out of the box, customize when you need to
-- **CI-native** — exit codes, JSON output, GitHub Actions ready
-- **Structured diagnostics** — every finding has a rule ID, severity, location, and suggestion
-- **Comparison & regression detection** — diff tiles across versions, rank regressions by confidence
-- **Report generation** — Markdown, HTML, and JSON engineering reports
-- **Convention-aware geometry validation** — auto-detects MVT (CW) vs OGC/GeoJSON (CCW) winding conventions
-- **12 CLI commands** — `check`, `init`, `compare`, `analyze`, `report`, `stats`, `doctor`, `style`, `rules`, `profile`, `hook`, `version`
-- **Modular** — install only what you need (tile rules, style rules, or both)
+Rule-based validation for vector tiles and MapLibre style files.
 
 ---
 
-## Quick Start
+Vector tile bugs are silent. A self-intersecting polygon in your `countries` layer renders fine at z3, breaks earcut triangulation at z8, and nobody notices until a user files a report. A style referencing an undeclared source loads without error in development and fails in production. TileGuard catches these things before they ship.
 
 ```bash
-# Validate a vector tile
-npx @tileguard/cli check ./tile.pbf
+npx @tileguard/cli check ./tiles/ ./style.json
+```
 
-# Lint a MapLibre style
-npx @tileguard/cli check ./style.json
+```
+✖  tile/self-intersection  countries[0] ring 91 — segments 3 and 7 cross
+✖  style/known-source      layer "roads" references undeclared source "streets"
+✔  tile/winding-order      pass (94 tiles)
+✔  tile/coordinate-range   pass (94 tiles)
 
-# Multiple sources, JSON output for CI
-npx @tileguard/cli check ./tiles/ ./styles/ --reporter json
+2 errors, 0 warnings
+```
 
-# SARIF output for GitHub Code Scanning
-npx @tileguard/cli check ./tiles/ --reporter sarif
+---
 
-# Profile a tile: size, vertex cost, per-layer breakdown
-npx @tileguard/cli profile ./tile.pbf
+## Install
 
-# Install pre-commit hook (auto-check staged .pbf files)
-npx @tileguard/cli hook install
+```bash
+# Run without installing
+npx @tileguard/cli check ./tiles/
 
-# Compare two tile versions
-npx @tileguard/cli compare ./v1.pbf ./v2.pbf
+# Or install globally
+npm install -g @tileguard/cli
 
-# Generate an engineering report
-npx @tileguard/cli report ./v1.pbf ./v2.pbf --format markdown
+# Programmatic use
+npm install @tileguard/core @tileguard/tile-rules @tileguard/style-rules
+```
 
-# Scaffold a config file
-npx @tileguard/cli init
+---
+
+## Usage
+
+```bash
+tileguard check ./tiles/ ./style.json          # validate tiles and styles
+tileguard check ./tiles/ --reporter json        # JSON output for CI
+tileguard check ./tiles/ --reporter sarif       # SARIF for GitHub Code Scanning
+tileguard compare ./v1.pbf ./v2.pbf            # diff two tile versions
+tileguard profile ./tile.pbf                   # size, vertex count, layer breakdown
+tileguard report ./v1.pbf ./v2.pbf --format markdown
+tileguard check ./tiles/ --rule tile/self-intersection
+tileguard hook install                         # pre-commit hook for staged .pbf files
+tileguard init                                 # scaffold a config file
 ```
 
 ---
 
 ## Configuration
 
-Create `tileguard.config.ts` at your project root (or run `tileguard init`):
+`tileguard init` writes a `tileguard.config.ts` at your project root. Without one, all recommended rules run at their default severities.
 
 ```typescript
 import type { TileGuardConfig } from '@tileguard/core';
@@ -77,6 +76,10 @@ const config: TileGuardConfig = {
     'tile/winding-order': 'error',
     'tile/no-empty': 'off',
     'style/known-source': 'error',
+
+    // Performance rules are opt-in — set your own thresholds
+    'perf/tile-size': ['warning', { maxBytes: 500_000, maxGzipBytes: 100_000 }],
+    'perf/vertex-budget': ['warning', { maxPerFeature: 10_000 }],
   },
   reporter: 'text',
 };
@@ -84,57 +87,55 @@ const config: TileGuardConfig = {
 export default config;
 ```
 
-Without a config file, all recommended rules run at their default severities.
-
 ---
 
 ## Rules
 
-### Tile Validation (`@tileguard/tile-rules`)
+### Tile validation
 
-| Rule | What it catches |
-|:-----|:----------------|
-| `tile/required-layers` | Missing expected layers |
-| `tile/required-properties` | Features missing declared properties |
-| `tile/coordinate-range` | Coordinates outside valid tile extent |
+| Rule | Catches |
+|:-----|:--------|
+| `tile/self-intersection` | Polygon rings that cross themselves |
+| `tile/winding-order` | Ring winding inconsistent with detected convention (MVT or OGC) |
+| `tile/hole-containment` | Hole rings outside their outer ring |
+| `tile/unclosed-ring` | Polygon rings where first ≠ last vertex |
+| `tile/zero-area-ring` | Degenerate polygons with zero or near-zero area |
+| `tile/degenerate-geometry` | Lines or polygons with too few vertices to be meaningful |
+| `tile/coordinate-range` | Coordinates outside the tile extent + buffer |
+| `tile/required-layers` | Missing layers you declared as required |
+| `tile/required-properties` | Features missing properties you declared as required |
 | `tile/feature-count` | Total feature count outside configured bounds |
 | `tile/layer-feature-count` | Per-layer feature count outside configured bounds |
-| `tile/unclosed-ring` | Polygon rings not closed (first ≠ last vertex) |
-| `tile/zero-area-ring` | Degenerate polygons with zero/near-zero area |
-| `tile/winding-order` | Incorrect ring winding order (convention-aware: MVT & OGC) |
-| `tile/hole-containment` | Hole rings outside the outer ring (multi-polygon aware) |
-| `tile/self-intersection` | Geometry that crosses itself |
-| `tile/degenerate-geometry` | Lines/polygons with insufficient vertices |
-| `tile/no-empty` | Tiles with zero features |
+| `tile/no-empty` | Tiles that contain zero features |
 
-### Performance Rules (`@tileguard/tile-rules` · v0.6.0)
+### Performance (opt-in)
 
-All performance rules are opt-in — configure thresholds explicitly to fit your tile pipeline.
+All four rules are off by default. Set thresholds to match your pipeline.
 
-| Rule | Default | What it catches |
-|:-----|:--------|:----------------|
-| `perf/tile-size` | warning | Raw and/or gzip-compressed tile byte size exceeds budget |
-| `perf/vertex-budget` | warning | Per-feature or tile-level vertex count exceeds limit |
-| `perf/feature-density` | warning | Per-layer feature count exceeds configured maximum |
-| `perf/layer-size` | info | Single layer dominates the tile's vertex budget |
+| Rule | Catches |
+|:-----|:--------|
+| `perf/tile-size` | Raw or gzip byte size over budget |
+| `perf/vertex-budget` | Per-feature or total vertex count over limit |
+| `perf/feature-density` | Feature count per layer over maximum |
+| `perf/layer-size` | Single layer dominating the tile's vertex budget |
 
-### Style Linting (`@tileguard/style-rules`)
+### Style linting
 
-| Rule | What it catches |
-|:-----|:----------------|
+| Rule | Catches |
+|:-----|:--------|
 | `style/valid-json` | Style file is not valid JSON |
-| `style/version` | Version must be `8` |
+| `style/version` | Version field is not `8` |
 | `style/sources-present` | Missing top-level `sources` object |
 | `style/layers-present` | Missing top-level `layers` array |
 | `style/layer-id-required` | Layers without an `id` field |
 | `style/unique-layer-id` | Duplicate layer IDs |
 | `style/known-source` | Layers referencing undeclared sources |
 | `style/zoom-range` | `minzoom` greater than `maxzoom` |
-| `style/no-deprecated-ref` | Usage of deprecated `ref` property |
+| `style/no-deprecated-ref` | Use of the deprecated `ref` property |
 
 ---
 
-## CI Integration
+## CI
 
 ```yaml
 # .github/workflows/tile-quality.yml
@@ -143,18 +144,20 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  quality-gate:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npx @tileguard/cli check ./tiles/ ./styles/ --reporter json
-      # Optional: surface findings inline on the PR diff
+      # Surface findings inline on the PR diff
       - run: npx @tileguard/cli check ./tiles/ --reporter sarif
       - uses: github/codeql-action/upload-sarif@v3
         with: { sarif_file: tileguard-results.sarif }
 ```
+
+Exit code is `1` if any `error`-severity rule fires, `0` otherwise. `warning` and `info` don't fail the build unless you configure them to.
 
 ---
 
@@ -167,13 +170,63 @@ import { stylePlugin } from '@tileguard/style-rules';
 
 const engine = createEngine({
   plugins: [tilePlugin, stylePlugin],
-  rules: { 'tile/required-layers': ['error', { layers: ['water', 'roads'] }] },
+  rules: {
+    'tile/required-layers': ['error', { layers: ['water', 'roads'] }],
+    'tile/self-intersection': 'error',
+  },
 });
 
 const result = await engine.run(['./tile.pbf', './style.json']);
-console.log(result.summary.pass);       // true | false
-console.log(result.diagnostics.length); // number of findings
+
+console.log(result.summary.pass);        // true | false
+console.log(result.summary.errorCount);  // number of errors
+console.log(result.diagnostics);         // full structured findings
 ```
+
+Each diagnostic has a rule ID, severity, file path, layer, feature index, message, and suggestion. No parsing required.
+
+---
+
+## Writing a Rule
+
+Rules are plain objects. No base classes, no decorators, no registration ceremony.
+
+```typescript
+import type { Rule } from '@tileguard/core';
+
+export const noNullIsland: Rule = {
+  id: 'tile/no-null-island',
+  meta: {
+    description: 'Flag features suspiciously close to (0, 0).',
+    defaultSeverity: 'warning',
+    recommended: false,
+  },
+  artifactTypes: ['VectorTile'],
+  create(context) {
+    const tile = context.artifact.content;
+    for (const layerName of Object.keys(tile.layers)) {
+      const layer = tile.layers[layerName];
+      for (let i = 0; i < layer.length; i++) {
+        const feature = layer.feature(i);
+        const geom = feature.loadGeometry();
+        for (const ring of geom) {
+          for (const pt of ring) {
+            if (Math.abs(pt.x) < 10 && Math.abs(pt.y) < 10) {
+              context.report({
+                message: `Feature near (0, 0) — likely a null island.`,
+                location: { layer: layerName, featureIndex: i },
+                suggestion: 'Verify the source coordinate and re-export.',
+              });
+            }
+          }
+        }
+      }
+    }
+  },
+};
+```
+
+Add it to your config under `plugins` and it runs alongside every built-in rule. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
 
 ---
 
@@ -181,9 +234,9 @@ console.log(result.diagnostics.length); // number of findings
 
 <img width="1448" height="1086" alt="TileGuard Pipeline" src="https://github.com/user-attachments/assets/33770335-1602-4ce5-9273-1ff0cc184871" />
 
-**Artifacts** (tiles, styles) → **Providers** (load & decode) → **Rules** (validate one concern each) → **Diagnostics** (structured results) → **Reporters** (present output)
+Artifacts (tiles, styles) are loaded by Providers, passed to Rules, which emit Diagnostics, which Reporters format for output.
 
-Rules never print. Reporters never validate. Adding a rule never touches formatting. Adding a reporter never touches validation.
+Rules never print. Reporters never validate. The separation is strict — adding a rule doesn't touch formatting, and adding a reporter doesn't touch validation logic.
 
 ---
 
@@ -193,86 +246,34 @@ Rules never print. Reporters never validate. Adding a rule never touches formatt
 
 | Package | Purpose |
 |:--------|:--------|
-| [`@tileguard/core`](packages/core) | Framework contracts — Diagnostic, Artifact, Rule, Plugin, Reporter, Engine |
-| [`@tileguard/shared`](packages/shared) | Cross-package utilities |
-| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation rules + 4 performance rules |
-| [`@tileguard/style-rules`](packages/style-rules) | Style provider + 9 lint rules + parser/resolver/validator |
-| [`@tileguard/config`](packages/config) | Config file discovery, loading, and schema validation |
-| [`@tileguard/reporters`](packages/reporters) | Text, JSON & SARIF reporters + report engine (Markdown, HTML, JSON) |
-| [`@tileguard/analysis`](packages/analysis) | Comparison and regression analysis engine |
-| [`@tileguard/cli`](packages/cli) | CLI with 12 commands |
-| [`@tileguard/inspector`](packages/inspector) | Visual debugging environment — canvas rendering, diagnostic overlays, investigation workflows |
+| [`@tileguard/core`](packages/core) | Contracts — Diagnostic, Artifact, Rule, Plugin, Reporter, Engine |
+| [`@tileguard/shared`](packages/shared) | Utilities shared across packages |
+| [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation + 4 performance rules |
+| [`@tileguard/style-rules`](packages/style-rules) | Style provider + 9 lint rules |
+| [`@tileguard/config`](packages/config) | Config file discovery, loading, validation |
+| [`@tileguard/reporters`](packages/reporters) | Text, JSON, SARIF reporters + Markdown/HTML/JSON report engine |
+| [`@tileguard/analysis`](packages/analysis) | Tile comparison and regression detection |
+| [`@tileguard/cli`](packages/cli) | CLI — 12 commands |
+| [`@tileguard/inspector`](packages/inspector) | Browser-based tile debugger — canvas geometry, diagnostic overlays |
 
-Dependencies flow strictly inward. Core has zero runtime dependencies. Domain packages depend only on Core. Install only what you need.
-
----
-
-## Writing a Rule
-
-A rule is a plain object — no base classes, no decorators:
-
-```typescript
-import type { Rule } from '@tileguard/core';
-
-export const myRule: Rule = {
-  id: 'tile/my-check',
-  meta: { description: 'Validates something.', defaultSeverity: 'error', recommended: true },
-  artifactTypes: ['VectorTile'],
-  create(context) {
-    const tile = context.artifact.content;
-    // Inspect tile, call context.report() for each finding
-    context.report({
-      message: 'Something is wrong.',
-      location: { layer: 'buildings', featureIndex: 0 },
-      suggestion: 'Fix it by doing X.',
-    });
-  },
-};
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full rule authoring guide.
-
----
-
-## Documentation
-
-| Document | Contents |
-|:---------|:---------|
-| [API Reference](docs/api/) | Generated TypeDoc API documentation |
-| [Architecture Handbook](docs/architecture/) | System design, interface specs, decision records |
-| [Rule Reference](docs/rules/) | Per-rule documentation with examples and remediation |
-| [Project Vision](docs/PROJECT_VISION.md) | Why TileGuard exists and where it's going |
-| [Problem Statement](docs/PROBLEM_STATEMENT.md) | The concrete problem TileGuard solves |
-| [Execution Roadmap](ROADMAP.md) | Phase-by-phase delivery plan |
-
-### Package Documentation
-
-Each package includes its own README with detailed API documentation:
-
-| Package | README |
-|:--------|:-------|
-| `@tileguard/core` | [Core Contracts](packages/core/README.md) |
-| `@tileguard/tile-rules` | [Tile Validation](packages/tile-rules/README.md) |
-| `@tileguard/style-rules` | [Style Linting](packages/style-rules/README.md) |
-| `@tileguard/config` | [Configuration](packages/config/README.md) |
-| `@tileguard/reporters` | [Reporters & Reports](packages/reporters/README.md) |
-| `@tileguard/analysis` | [Comparison & Regression](packages/analysis/README.md) |
-| `@tileguard/cli` | [CLI Commands](packages/cli/README.md) |
-| `@tileguard/inspector` | [Visual Inspector](packages/inspector/README.md) |
+`@tileguard/core` has zero runtime dependencies. Install only the packages you need.
 
 ---
 
 ## Contributing
 
-The primary extension point is writing new rules — plain TypeScript objects, typically under 25 lines. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and code review expectations.
-
 ```bash
 git clone https://github.com/shreeharshshinde/tileguard.git
-cd tileguard && pnpm install && pnpm build && pnpm test
+cd tileguard
+pnpm install
+pnpm build
+pnpm test        # 1,847 tests across 9 packages
 ```
+
+The main extension point is writing rules. They're small (typically under 25 lines), isolated, and testable without the full engine. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## License
 
-[MIT](LICENSE) · Created by [Shreeharsh Shinde](https://github.com/shreeharshshinde)
+[MIT](LICENSE) · [Shreeharsh Shinde](https://github.com/shreeharshshinde)
