@@ -217,6 +217,32 @@ Node: v22.22.0
 
 ---
 
+### EXP-003 Update — Task 1.3 Geometry-Type Split on Cat B1 Crossings
+
+**Date:** 2026-09-29  
+**Task:** 1.3 (Phase 1 — Correct & Re-Frame)  
+**Gap closed:** C1 (conflated geometry types in headline number)
+
+The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `self-intersection-rings.json`) were split by OGC geometry type using `scripts/phase1-geometry-type-split.mjs`.
+
+**OGC classification:**
+- A self-crossing **Polygon** ring is **invalid** under OGC Simple Features — it breaks planar partitioning and earcut triangulation. This is a true structural defect.
+- A self-crossing **LineString** is **non-simple but valid** under OGC Simple Features. TileGuard reports it, but OGC does not classify it as an error.
+
+**Geometry-type split results:**
+
+| Geometry Type | Count | % of Cat B1 | OGC Status | Dataset(s) | Layer(s) |
+|:-------------|------:|:-----------:|:-----------|:-----------|:---------|
+| Polygon | 154 | 90.59% | **Invalid** (true defect) | OpenMapTiles | `countries` |
+| LineString | 16 | 9.41% | Non-simple (valid) | CARTO Streets, OpenFreeMap | `boundary` |
+| **Total Cat B1** | **170** | **100%** | | | |
+
+**Corrected headline:** 154 Polygon crossings (OGC invalid, genuine structural defects) + 16 LineString crossings (OGC non-simple, valid structure — optional diagnostic). Render impact of Polygon crossings is untested until EXP-007 (Phase 3).
+
+**Artifact:** `analysis/phase1-corpus/geometry-type-split.json`
+
+---
+
 ## EXP-004 — Tokyo Production Tile Analysis
 
 **Date:** 2026-08-08 (finding documented)  
