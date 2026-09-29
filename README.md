@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/shreeharshshinde/tileguard/main/public/tileguard_horizontal.png" alt="TileGuard" width="480" style="background:#000;border-radius:8px;padding:16px;" />
+  <img src="https://raw.githubusercontent.com/shreeharshshinde/tileguard/main/public/tileguard_horizontal.png" alt="TileGuard" width="480" />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
