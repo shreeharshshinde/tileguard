@@ -115,6 +115,33 @@ Note: Diagnostics count did not drop to 0 here because Phase 2 (self-intersectio
 
 ---
 
+### EXP-002 Update — Task 1.1 Compiler Provenance Table
+
+**Date:** 2026-09-29  
+**Task:** 1.1 (Phase 1 — Correct & Re-Frame)  
+**Gap closed:** D1 ("format-wide" generalization overclaim)
+
+Compiler pipeline attribution for all 3 providers in the 294-tile corpus, established via URL analysis, raw PBF inspection, layer schema fingerprinting, and provider documentation cross-reference.
+
+| Provider | Tiles | Tile Endpoint | Compiler / Pipeline | Schema | Extent | Buffer | MVT v |
+|:---------|------:|:--------------|:--------------------|:-------|-------:|-------:|------:|
+| OpenMapTiles | 94 | `demotiles.maplibre.org` | PostGIS + imposm3 + custom tile-server SQL (**not** Tippecanoe) | OpenMapTiles Schema v3.x (simplified world) | 4096 | 80 units | 2 |
+| OpenFreeMap | 100 | `tiles.openfreemap.org/planet/20260621_080001_pt/` | **Planetiler** (confirmed via `_pt` URL suffix + GitHub repo) | OpenFreeMap / OpenMapTiles-compatible | 4096 | 64 units | 2 |
+| CARTO Streets | 100 | `basemaps.cartocdn.com/vectortiles/carto.streets/v1/` | CARTO proprietary pipeline (PostGIS-based, internals not public) | CARTO Streets v1 | 4096 | 64 units | 2 |
+
+**Key findings:**
+- No embedded generator tags in raw PBF bytes across any provider. Attribution relies on URL structure and provider docs.
+- OpenMapTiles uses a PostGIS/imposm3 pipeline — **not Tippecanoe**. Any prior mention of Tippecanoe for OpenMapTiles is incorrect.
+- OpenFreeMap URL path suffix `_pt` = Planetiler build. GitHub: `github.com/hyperknot/openfreemap`.
+- All three providers emit extent=4096, MVT v2. No 8192-extent tiles in this corpus.
+- OpenFreeMap and CARTO Streets share ~95% layer schema (both derived from OpenMapTiles-compatible spec).
+
+**Corpus narrowing note (Gap D1):** Claims must be scoped to "3 specific production pipelines (OpenMapTiles/PostGIS, OpenFreeMap/Planetiler, CARTO/proprietary) at z0–z4" rather than "format-wide".
+
+**Artifact:** `analysis/phase1-corpus/compiler-provenance-table.json`
+
+---
+
 ## EXP-003 — Self-Intersection False-Positive Classification (Phase 2)
 
 **Date:** 2026-07-21  
@@ -350,6 +377,58 @@ The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `sel
 **Key finding:** All three providers use MVT spec-conformant CW exterior rings (raw SignedArea > 0 in tile Y-down space). The 99.96% conformance rate is uniform. The 2 OGC-style outliers in OpenMapTiles are negligible.
 
 **Artifact:** `analysis/phase1-winding/winding-convention-counts.json`
+
+---
+
+## EXP-002 / EXP-003 Update — Task 1.5 Four-Way Taxonomy Relabeling
+
+**Date:** 2026-09-29  
+**Task:** 1.5 (Phase 1 — Correct & Re-Frame)  
+**Gap closed:** C1 (full diagnostic taxonomy classification)  
+**Question:** What is the complete 4-way taxonomy breakdown of all EXP-002 and EXP-003 diagnostics?
+
+**Taxonomy definitions:**
+
+| Category | Definition |
+|:---------|:-----------|
+| **Checker Error** | Diagnostic caused by a TileGuard rule bug or edge case. Tile data is valid. |
+| **Quantization Artifact** | Caused by float→integer coordinate snapping during tile compilation. Source geometry is valid. |
+| **Spec-Permitted Convention** | Encoding choice explicitly permitted by MVT spec or established tile compiler practice. |
+| **Genuine Defect** | True topological/structural defect in tile data. Persists with corrected rule on correctly compiled tile. |
+
+**EXP-002 relabeling (148,268 coordinate-range diagnostics):**
+
+| Subcategory | Count | % | Taxonomy |
+|:------------|------:|--:|:---------|
+| Label point duplication (place/water_name/centroids layers) | 63,944 | 43.1% | Spec-Permitted Convention |
+| Geometry clipping buffer (64–80 units, all Polygon/LineString layers) | 84,324 | 56.9% | Spec-Permitted Convention |
+| **Total** | **148,268** | **100%** | **100% Spec-Permitted Convention** |
+
+**EXP-003 relabeling (619 self-intersection diagnostics):**
+
+| EXP-003 Cat | Subcategory | Count | % | Taxonomy |
+|:------------|:------------|------:|--:|:---------|
+| B2 | Closed LineString closure skip (Guard 2) | 282 | 45.6% | Checker Error |
+| C | Collinear closing pair (Guard 2) | 6 | 1.0% | Checker Error |
+| A | Duplicate-vertex quantization spike (Guard 3) | 161 | 26.0% | Quantization Artifact |
+| B1 (LineString) | Boundary crossing loops — OGC non-simple, valid | 16 | 2.6% | Spec-Permitted Convention |
+| B1 (Polygon) | Polygon interior crossing — OGC invalid | 154 | 24.9% | Genuine Defect |
+| **Total** | | **619** | **100%** | |
+
+**Combined across EXP-002 + EXP-003 (148,887 total):**
+
+| Taxonomy | Count | % |
+|:---------|------:|--:|
+| Checker Error | 288 | 0.19% |
+| Quantization Artifact | 161 | 0.11% |
+| Spec-Permitted Convention | 148,284 | 99.59% |
+| Genuine Defect | 154 | 0.10% |
+
+**Key correction:** Prior claim of "170 genuine defects (27.5%)" included 16 OGC-valid LineString crossings. Corrected genuine defect count is **154 Polygon crossings (24.9%)**.
+
+**Artifacts:**
+- `analysis/phase1-corpus/exp002-exp003-taxonomy-relabeling.json`
+- `docs/RESEARCH_BRIEF.md` Section 6 updated
 
 ---
 

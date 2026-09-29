@@ -314,23 +314,27 @@ Three controlled experiments have been conducted on production tile data. The ex
 
 **Method:** Extracted all 619 flagged ring geometries; classified by visual and algorithmic inspection; designed four algorithmic suppression guards; re-ran benchmark.
 
-**Classification result (4-Way Diagnostic Taxonomy):**
+**Classification result (4-Way Diagnostic Taxonomy — Updated Task 1.5):**
 
-| Category | Cause / Description | Count | % | Classification |
-|:---------|:--------------------|------:|--:|:---------------|
-| **Cat B2** | Closed LineString closure skip: Naïve checker compared $P_0$ and $P_{N-1}$ at closure point | 282 | 45.6% | **Checker implementation error** |
-| **Cat A** | Duplicate-vertex quantization spike: Integer grid snapping ($P_i = P_{i+1}$) | 161 | 26.0% | **Quantization artifact** |
-| **Cat B1** | Genuine topological crossing: Non-adjacent segment crossing in tile geometry | 170 | 27.5% | **Genuine defect** |
-| **Cat C** | Collinear overlap at closing pair | 6 | 1.0% | **Checker implementation error** |
+| EXP-003 Cat | Cause / Description | Count | % | 4-Way Taxonomy |
+|:------------|:--------------------|------:|--:|:---------------|
+| **Cat B2** | Closed LineString closure skip: checker compared $(P_0, P_{N-1})$ at closure point | 282 | 45.6% | **Checker Error** |
+| **Cat C** | Collinear overlap at closing pair | 6 | 1.0% | **Checker Error** |
+| **Cat A** | Duplicate-vertex quantization spike: integer grid snapping ($P_i = P_{i+1}$) | 161 | 26.0% | **Quantization Artifact** |
+| **Cat B1 (LineString)** | LineString crossing: OGC non-simple but valid (boundary overpasses/loops) | 16 | 2.6% | **Spec-Permitted Convention** |
+| **Cat B1 (Polygon)** | Genuine polygon interior crossing: non-adjacent segments cross, OGC invalid | 154 | 24.9% | **Genuine Defect** |
 | **Total** | | **619** | **100%** | |
 
-**Diagnostic breakdown:**
-- **46.5% Checker Errors (288 diagnostics):** Resolved by Guard 2 (skip closure pair on closed loops).
-- **26.0% Quantization Artifacts (161 diagnostics):** Resolved by Guard 3 (duplicate-vertex pre-scan skip).
-- **27.5% Genuine Defects (170 diagnostics):** Preserved 100% without false suppression across the 294-tile corpus.
+**Diagnostic breakdown (corrected):**
+- **46.5% Checker Errors (288 diagnostics):** Guard 2 in v0.5.2 resolves (skip closure pair on closed loops).
+- **26.0% Quantization Artifacts (161 diagnostics):** Guard 3 in v0.5.2 resolves (duplicate-vertex pre-scan skip).
+- **2.6% Spec-Permitted Convention (16 diagnostics):** OGC-valid self-crossing LineStrings in boundary layers. Rule fires but crossing LineStrings are geometrically valid per OGC Simple Features §6.1.7.
+- **24.9% Genuine Defects (154 diagnostics):** Polygon interior crossings in OpenMapTiles `countries` layer. OGC invalid per §6.1.11.2. Render impact untested until EXP-007.
+
+> **Correction from prior claim:** The original "27.5% genuine defects" (170 diagnostics) conflated OGC-invalid Polygon crossings (154, genuine defects) with OGC-valid LineString crossings (16, spec-permitted conventions). After Task 1.3 geometry-type split, the true genuine defect rate is **24.9%** (154/619).
 
 **Methodological hardening (EXP-003b — Planned):**
-To eliminate circular ground-truth labeling bias (where manual/algorithmic trace inspection by the author was used as oracle), all 619 extracted ring geometries will be evaluated against **GEOS / JTS / Shapely as an automated, independent external oracle** to quantify exact algorithm-to-oracle agreement.
+To eliminate circular ground-truth labeling bias, all 619 extracted ring geometries will be evaluated against **GEOS / JTS / Shapely as an automated, independent external oracle** to quantify exact algorithm-to-oracle agreement.
 
 **Key observation (EXP-004):** A z14 Tokyo tile was confirmed by TileGuard to contain one genuine self-intersection in the `transportation` layer. The tile renders correctly in MapLibre at all tested zoom levels. This is the central open empirical question: whether detected geometric defects produce observable rendering anomalies.
 
@@ -528,9 +532,10 @@ Interests: geospatial computing, spatial data quality, automated validation, ope
 | Initial coordinate-range diagnostics | 148,268 | EXP-002 |
 | Post-fix coordinate-range diagnostics | 0 | EXP-002 |
 | Initial self-intersection diagnostics | 619 | EXP-003 |
-| Checker implementation errors suppressed | 288 (46.5%) | EXP-003 (Cat B2 + C) |
+| Checker errors suppressed | 288 (46.5%) | EXP-003 (Cat B2 + C) |
 | Quantization artifacts suppressed | 161 (26.0%) | EXP-003 (Cat A) |
-| Genuine self-intersections confirmed | 170 (27.5%) | EXP-003 (Cat B1) |
+| Spec-permitted conventions (LineString crossings) | 16 (2.6%) | EXP-003 (Cat B1 LineString) — Task 1.3 |
+| Genuine defects confirmed (Polygon crossings) | 154 (24.9%) | EXP-003 (Cat B1 Polygon) — Task 1.3 |
 
 ---
 
