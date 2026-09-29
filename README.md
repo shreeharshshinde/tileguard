@@ -1,5 +1,5 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/shreeharshshinde/tileguard/main/public/tileguard_horizontal.png" alt="TileGuard" width="480" />
+<p>
+  <img src="https://raw.githubusercontent.com/shreeharshshinde/tileguard/main/public/tileguard_horizontal_transparent.png" alt="TileGuard" width="540px" />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -9,7 +9,6 @@
 
 Rule-based validation for vector tiles and MapLibre style files.
 
----
 
 Vector tile bugs are silent. A self-intersecting polygon in your `countries` layer renders fine at z3, breaks earcut triangulation at z8, and nobody notices until a user files a report. A style referencing an undeclared source loads without error in development and fails in production. TileGuard catches these things before they ship.
 
@@ -26,7 +25,6 @@ npx @tileguard/cli check ./tiles/ ./style.json
 2 errors, 0 warnings
 ```
 
----
 
 ## Install
 
@@ -41,7 +39,6 @@ npm install -g @tileguard/cli
 npm install @tileguard/core @tileguard/tile-rules @tileguard/style-rules
 ```
 
----
 
 ## Usage
 
@@ -57,7 +54,6 @@ tileguard hook install                         # pre-commit hook for staged .pbf
 tileguard init                                 # scaffold a config file
 ```
 
----
 
 ## Configuration
 
@@ -87,7 +83,6 @@ const config: TileGuardConfig = {
 export default config;
 ```
 
----
 
 ## Rules
 
@@ -133,7 +128,6 @@ All four rules are off by default. Set thresholds to match your pipeline.
 | `style/zoom-range` | `minzoom` greater than `maxzoom` |
 | `style/no-deprecated-ref` | Use of the deprecated `ref` property |
 
----
 
 ## CI
 
@@ -185,7 +179,6 @@ console.log(result.diagnostics);         // full structured findings
 
 Each diagnostic has a rule ID, severity, file path, layer, feature index, message, and suggestion. No parsing required.
 
----
 
 ## Writing a Rule
 
@@ -228,7 +221,6 @@ export const noNullIsland: Rule = {
 
 Add it to your config under `plugins` and it runs alongside every built-in rule. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
 
----
 
 ## How It Works
 
@@ -238,7 +230,6 @@ Artifacts (tiles, styles) are loaded by Providers, passed to Rules, which emit D
 
 Rules never print. Reporters never validate. The separation is strict — adding a rule doesn't touch formatting, and adding a reporter doesn't touch validation logic.
 
----
 
 ## Packages
 
@@ -258,7 +249,6 @@ Rules never print. Reporters never validate. The separation is strict — adding
 
 `@tileguard/core` has zero runtime dependencies. Install only the packages you need.
 
----
 
 ## Contributing
 
