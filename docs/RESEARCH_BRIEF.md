@@ -104,7 +104,7 @@ Tools that operate on source geographic data before tile generation.
 
 **vtvalidate** (Mapbox) — PBF syntax and spec conformance. Limited to structural rules; no geometry content rules; no plugin architecture.
 
-**TileGuard** — Configurable rule-based validation of decoded tile geometry and content. Currently the only tool that validates decoded polygon topology (winding, hole containment, self-intersection) in the MVT-specific context with false-positive suppression for encoding artifacts.
+**TileGuard** — Configurable rule-based validation of decoded tile geometry and content. Among publicly available open-source tools, TileGuard is the only one that validates decoded polygon topology (winding, hole containment, self-intersection) in the MVT-specific context with false-positive suppression for encoding artifacts. *Note: commercial tools (1Integrate, GeoLint) provide rule-engine QA for vector data generally, but not with MVT-specific encoding artifact suppression. This claim is scoped to open-source MVT-specific tooling pending formal literature verification (Task 1.0).*
 
 **Gap:** The classification of tile-level diagnostics into genuine defects vs. encoding artifacts is not formally studied. TileGuard's Phase 1 and Phase 2 investigations are the first quantified attempt at this classification on production tiles.
 
@@ -422,15 +422,15 @@ Across preliminary searches, no peer-reviewed literature has addressed:
 
 ### 9.2 The Gap Register (Self-Audit Summary)
 
-| ID | Category | Gap Description | Severity | Remediating Action |
-|:---|:---------|:----------------|:---------|:-------------------|
-| **A1** | Novelty | Rule-engine architecture claimed as unaddressed gap | **High** | Restrict novelty strictly to MVT empirical diagnostic classification |
-| **A3** | Scope | Broad question ("tiled geospatial data generally") | **High** | Narrow scope specifically to MVT vector geometry diagnostics |
-| **B1** | Technical | Winding order described as non-standard | **High** | Document as MVT Spec (Screen CW) vs. Production Compiler Practice (OGC CCW) |
-| **C1** | Method | "72.5% FP" conflated multiple distinct causes | **High** | Adopt 4-way taxonomy: (1) Checker error, (2) Quantization artifact, (3) Spec-permitted convention, (4) Genuine defect |
-| **C2** | Method | Circular ground truth (author trace inspection) | **High** | Run **GEOS / Shapely / JTS** as an automated, independent external oracle (EXP-003b) |
-| **C3** | Method | No recall measurement (only FP counted) | **High** | Execute synthetic defect injection experiment (EXP-009) to measure precision and recall |
-| **D1** | Corpus | "Format-wide" generalization claim from z0–z4 | **High** | Re-frame to "three production pipelines at low zoom" until higher zooms are sampled |
+| ID | Category | Gap Description | Severity | Remediating Action | Status |
+|:---|:---------|:----------------|:---------|:-------------------|:-------|
+| **A1** | Novelty | Rule-engine architecture claimed as unaddressed gap | **High** | Restrict novelty strictly to MVT empirical diagnostic classification | ✅ Resolved — Task 1.4 |
+| **A3** | Scope | Broad question ("tiled geospatial data generally") | **High** | Narrow scope specifically to MVT vector geometry diagnostics | ✅ Resolved — Task 1.4 |
+| **B1** | Technical | Winding order described as non-standard | **High** | Document as MVT Spec (Screen CW) vs. Production Compiler Practice (OGC CCW) | ✅ Resolved — Task 1.2 |
+| **C1** | Method | "72.5% FP" conflated multiple distinct causes | **High** | 4-way taxonomy applied: Checker Error / Quantization Artifact / Spec-Permitted / Genuine Defect | ✅ Resolved — Tasks 1.3, 1.5 |
+| **C2** | Method | Circular ground truth (author trace inspection) | **High** | Run **GEOS / Shapely / JTS** as an automated, independent external oracle (EXP-003b) | 🔴 Phase 2 |
+| **C3** | Method | No recall measurement (only FP counted) | **High** | Execute synthetic defect injection experiment (EXP-009) to measure precision and recall | 🔴 Phase 2 |
+| **D1** | Corpus | "Format-wide" generalization claim from z0–z4 | **High** | Re-framed to "3 specific production pipelines (PostGIS/imposm3, Planetiler, CARTO proprietary) at z0–z4" | ✅ Resolved — Task 1.1 |
 
 ---
 
@@ -458,7 +458,7 @@ Across preliminary searches, no peer-reviewed literature has addressed:
 
 ```
 Phase 1: Correct & Re-Frame (Weeks 1–2)
-├── Verify compiler provenance (Tippecanoe, Planetiler, CARTO)
+├── Verify compiler provenance (PostGIS/imposm3, Planetiler, CARTO proprietary) ✅ Task 1.1
 ├── Re-frame winding order (MVT Spec vs. Compiler Practice)
 └── Update research dossier & proposal claims [COMPLETED]
 
@@ -545,6 +545,8 @@ This section records the chronological progression, self-audits, and methodologi
 
 ### Audit Entry 001 — Pre-Research Gap Assessment (September 2026)
 
+**Status: ✅ CLOSED — September 2026 (Phase 1 complete)**
+
 - **Audit Trigger:** Comprehensive review of initial research framing and experimental claims prior to academic outreach.
 - **Key Vulnerabilities Identified:**
   1. *Circular Ground Truth:* EXP-003 ring classification relied on manual/algorithmic trace inspection by the author rather than an independent external oracle.
@@ -556,6 +558,24 @@ This section records the chronological progression, self-audits, and methodologi
   - Adopted the **4-Way Diagnostic Taxonomy** (Checker Error, Quantization Artifact, Spec-Permitted Convention, Genuine Defect).
   - Commissioned **EXP-003b** (GEOS/Shapely independent oracle validation) and **EXP-009** (Synthetic defect injection for Precision/Recall).
   - Adopted the 8-Week Research Execution Plan.
+
+---
+
+### Audit Entry 002 — Phase 1 Corrections Applied (September 2026)
+
+**Status: ✅ FILED — September 2026**
+
+All Phase 1 corrections from Audit Entry 001 have been implemented. Summary of changes:
+
+| Gap | Correction Made | Task | Artifact |
+|:----|:----------------|:-----|:---------|
+| A1 — Novelty overclaim | Softened "only tool" claim; scoped to open-source MVT-specific tooling pending lit search | 1.4 | This document §8.2 |
+| A3 — Broad RQ scope | RQ narrowed to MVT vector geometry diagnostics specifically | 1.4 | This document §10.1 |
+| B1 — Winding framing | Independent signed-area audit confirms 99.96% CW conformance. `geometry.ts` JSDoc updated with Y-down/Y-up clarification table | 1.2 | `analysis/phase1-winding/winding-convention-counts.json` |
+| C1 — Conflated 72.5% FP | 4-way taxonomy applied: 154 genuine Polygon defects (24.9%), 16 spec-permitted LineString (2.6%), 161 quantization (26.0%), 288 checker errors (46.5%) | 1.3, 1.5 | `analysis/phase1-corpus/exp002-exp003-taxonomy-relabeling.json` |
+| D1 — Format-wide claim | 3 pipelines attributed: OpenMapTiles/PostGIS+imposm3, OpenFreeMap/Planetiler, CARTO/proprietary. Tippecanoe attribution corrected. | 1.1 | `analysis/phase1-corpus/compiler-provenance-table.json` |
+
+**Remaining open gaps:** C2 (circular ground truth), C3 (no recall), C4 (defect origin), C5 (10 rules unaudited), D2 (higher zooms), D3 (render impact), E1/A2 (literature search) — all addressed in Phases 2–4.
 
 ---
 
