@@ -5,7 +5,7 @@
 **Author:** TileGuard maintainers
 
 > **Migration fully executed.** All phases described below have been completed.
-> The framework is now at v0.5.0-beta.1 with 9 packages, ~1,838 tests, and 10 CLI
+> The framework is now at v0.6.0 with 9 packages, ~1,838 tests, and 10 CLI
 > commands. This document is retained as a historical record of the migration process.
 
 ---

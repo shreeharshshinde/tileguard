@@ -15,7 +15,7 @@
 | Field | Value | Source |
 |:------|:------|:-------|
 | Name | `tileguard-monorepo` | `package.json` → `name` |
-| Version | `0.5.0-beta.1` | `package.json` → `version` |
+| Version | `0.6.0` | `package.json` → `version` |
 | Description | "TileGuard — the quality analysis framework for geospatial software" | `package.json` → `description` |
 | License | MIT | `package.json` → `license` |
 | Package Manager | pnpm 9.15.9 | `package.json` → `packageManager` |
@@ -25,15 +25,15 @@
 
 | Package | Version | Published | Description (from package.json) |
 |:--------|:--------|:----------|:-------------------------------|
-| `@tileguard/core` | 0.5.0-beta.1 | public | Framework contracts: Diagnostic, Artifact, Rule, Reporter, Engine — the foundation of TileGuard |
-| `@tileguard/shared` | 0.5.0-beta.1 | public | Shared utilities and helpers used across TileGuard packages |
-| `@tileguard/tile-rules` | 0.5.0-beta.1 | public | Vector tile (MVT) provider and 10 validation rules for TileGuard |
-| `@tileguard/style-rules` | 0.5.0-beta.1 | public | MapLibre style specification provider and 9 style lint rules for TileGuard |
-| `@tileguard/config` | 0.5.0-beta.1 | public | Configuration loading, schema validation, and preset resolution for TileGuard |
-| `@tileguard/reporters` | 0.5.0-beta.1 | public | Output reporters for TileGuard: text, JSON, Markdown, and HTML engineering reports |
-| `@tileguard/analysis` | 0.5.0-beta.1 | public | Comparison and regression analysis engine for TileGuard |
-| `@tileguard/cli` | 0.5.0-beta.1 | public | Command-line interface for TileGuard — automated quality gates for geospatial software |
-| `@tileguard/inspector` | 0.5.0-beta.1 | **private** | Visual debugging environment for TileGuard — renders MVT geometry and diagnostic overlays in the browser |
+| `@tileguard/core` | 0.6.0 | public | Framework contracts: Diagnostic, Artifact, Rule, Reporter, Engine — the foundation of TileGuard |
+| `@tileguard/shared` | 0.6.0 | public | Shared utilities and helpers used across TileGuard packages |
+| `@tileguard/tile-rules` | 0.6.0 | public | Vector tile (MVT) provider and 10 validation rules for TileGuard |
+| `@tileguard/style-rules` | 0.6.0 | public | MapLibre style specification provider and 9 style lint rules for TileGuard |
+| `@tileguard/config` | 0.6.0 | public | Configuration loading, schema validation, and preset resolution for TileGuard |
+| `@tileguard/reporters` | 0.6.0 | public | Output reporters for TileGuard: text, JSON, Markdown, and HTML engineering reports |
+| `@tileguard/analysis` | 0.6.0 | public | Comparison and regression analysis engine for TileGuard |
+| `@tileguard/cli` | 0.6.0 | public | Command-line interface for TileGuard — automated quality gates for geospatial software |
+| `@tileguard/inspector` | 0.6.0 | **private** | Visual debugging environment for TileGuard — renders MVT geometry and diagnostic overlays in the browser |
 
 ### Actual Dependency Graph (Import-Verified)
 
@@ -625,7 +625,7 @@ The README itself is **accurately backed by implemented code**. It claims 19 rul
 
 ## 12. One-Paragraph Elevator Pitch (Grounded Only in Sections 1–10)
 
-TileGuard is a rule-based validation framework for vector tiles (MVT/PBF) and MapLibre style specifications, shipping 19 built-in rules (10 tile geometry/structure checks, 9 style lint rules) across a 9-package TypeScript monorepo at v0.5.0-beta.1. Its plugin architecture lets users write custom rules as plain objects in ~25 lines of TypeScript. The CLI provides 10 top-level commands with CI-native exit codes, JSON output, and zero-config defaults; the engine supports comparison of tile versions with confidence-scored regression detection and generates Markdown/HTML/JSON engineering reports. A private browser-based inspector renders tile geometry and diagnostic overlays on Canvas 2D with hit-testing, pan/zoom, and full analysis integration. The project has 1,635 passing tests across 99 files, CI enforcement of dependency boundaries and rule-test coverage, and has completed two major false-positive reduction investigations (coordinate-range label-layer exclusion, self-intersection 72.54% FP reduction via four algorithmic guards in ADR-007).
+TileGuard is a rule-based validation framework for vector tiles (MVT/PBF) and MapLibre style specifications, shipping 19 built-in rules (10 tile geometry/structure checks, 9 style lint rules) across a 9-package TypeScript monorepo at v0.6.0. Its plugin architecture lets users write custom rules as plain objects in ~25 lines of TypeScript. The CLI provides 10 top-level commands with CI-native exit codes, JSON output, and zero-config defaults; the engine supports comparison of tile versions with confidence-scored regression detection and generates Markdown/HTML/JSON engineering reports. A private browser-based inspector renders tile geometry and diagnostic overlays on Canvas 2D with hit-testing, pan/zoom, and full analysis integration. The project has 1,635 passing tests across 99 files, CI enforcement of dependency boundaries and rule-test coverage, and has completed two major false-positive reduction investigations (coordinate-range label-layer exclusion, self-intersection 72.54% FP reduction via four algorithmic guards in ADR-007).
 
 ---
 
@@ -638,7 +638,7 @@ TileGuard is a rule-based validation framework for vector tiles (MVT/PBF) and Ma
 | 3 | **CLI command count: README says "10 commands"** | Actual: 10 top-level commands + 3 subcommands under `rules` = 12 distinct actions. The 2 extra are `style` and `ver` top-level commands (README likely written before these were added). |
 | 4 | **`@tileguard/shared` described as "Cross-package utilities"** | Package exists but is a placeholder with zero exports and zero consumers. No package imports from it. |
 | 5 | **Inspector → style-rules dependency exists** | Inspector's package.json lists `@tileguard/style-rules` as a dependency, and 2 component files (`StyleExplorerPage.tsx`, `StylePage.tsx`) import from `@tileguard/style-rules/analysis`. The dependency graph in earlier analysis initially missed this. |
-| 6 | **Plugin version mismatches** | `tilePlugin` declares version `'0.3.0'`, `stylePlugin` declares version `'0.4.0'`, but both packages' `package.json` are at `0.5.0-beta.1`. These internal plugin version strings haven't been updated to match the package version. |
+| 6 | **Plugin version mismatches** | `tilePlugin` declares version `'0.3.0'`, `stylePlugin` declares version `'0.4.0'`, but both packages' `package.json` are at `0.6.0`. These internal plugin version strings haven't been updated to match the package version. |
 
 ### Recommendations Before Talk
 

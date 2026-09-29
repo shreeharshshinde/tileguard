@@ -2,7 +2,7 @@
 
 > **Status: Historical Reference (Migration Complete)**  
 > This document assessed the pre-migration prototype state. The migration described here
-> is fully complete as of v0.5.0-beta.1 — all validation logic has been migrated to the
+> is fully complete as of v0.6.0 — all validation logic has been migrated to the
 > new rule-based framework architecture. The legacy code in `legacy/js/` and `legacy/python/`
 > is frozen and retained only as a behavioral regression oracle.
 

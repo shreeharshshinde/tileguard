@@ -96,6 +96,6 @@ Superseded and completed documents. Retained for historical reference — not ac
 | [README_v2_spec.md](./archive/README_v2_spec.md) | Superseded v2 remodified specification |
 | [ARCHITECTURE_legacy.md](./archive/ARCHITECTURE_legacy.md) | Legacy architecture document (pre-framework) |
 | [PROJECT_OUTCOMES.md](./archive/PROJECT_OUTCOMES.md) | 174 desired outcomes mapped to semantic versions |
-| [CURRENT_CODEBASE_ASSESSMENT.md](./archive/CURRENT_CODEBASE_ASSESSMENT.md) | Pre-migration prototype assessment (migration complete as of v0.5.0-beta.1) |
+| [CURRENT_CODEBASE_ASSESSMENT.md](./archive/CURRENT_CODEBASE_ASSESSMENT.md) | Pre-migration prototype assessment (migration complete as of v0.6.0) |
 | [MIGRATION_PLAN.md](./archive/MIGRATION_PLAN.md) | Legacy-to-framework migration plan (completed) |
 | [MIGRATION_COVERAGE.md](./archive/MIGRATION_COVERAGE.md) | Proof of coverage — every legacy check mapped to a framework rule |

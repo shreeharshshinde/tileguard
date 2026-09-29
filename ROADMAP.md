@@ -98,7 +98,7 @@ To ensure engineering discipline, we separate how we build the software (Phases)
 
 ### v0.5.0: FOSS4G Release & CLI (Target: August 15, 2026)
 *   **Goal:** The public launch of TileGuard at FOSS4G. A stable, extensible toolchain demonstrating the framework's architecture, default rule sets, CLI commands, and GitHub Actions integration.
-*   **Status:** ✅ Complete. All 9 packages implemented, ~1,838 tests passing. CLI delivers 10 commands (analyze, check, compare, doctor, init, report, rules, stats, style, version). Report engine supports Markdown, HTML, and JSON output. Analysis package provides tile comparison and regression detection. Inspector provides visual debugging. Published as `v0.5.0-beta.1`.
+*   **Status:** ✅ Complete. All 9 packages implemented, ~1,838 tests passing. CLI delivers 10 commands (analyze, check, compare, doctor, init, report, rules, stats, style, version). Report engine supports Markdown, HTML, and JSON output. Analysis package provides tile comparison and regression detection. Inspector provides visual debugging. Published as `v0.6.0`.
 *   **API Stability:** Internal APIs may still change, but the user-facing CLI, configuration schema, and the core Plugin API are frozen for the conference.
 
 ### v0.6.0 – v0.9.0: Post-Conference Beta Cycles
