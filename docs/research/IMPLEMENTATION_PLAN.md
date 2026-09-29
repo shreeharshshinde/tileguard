@@ -40,7 +40,7 @@
 
 **Duration:** Weeks 1–2  
 **Goal:** Fix factual and framing errors, perform literature searches across Geospatial and Computer Science databases, audit academic application deadlines, and establish defensible baselines.  
-**Status:** 🟡 In Progress
+**Status:** ✅ Complete — 2026-09-29
 
 ---
 
@@ -502,12 +502,12 @@
 
 | Task | Phase | Status | Completion Date |
 |:-----|:------|:-------|:----------------|
-| 1.0 Literature search & deadline audit | 1 | 🔴 Not Started | — |
-| 1.1 Verify compiler provenance | 1 | 🔴 Not Started | — |
-| 1.2 Winding audit (independent signed-area, MVT sign fix) | 1 | 🔴 Not Started | — |
-| 1.3 Geometry-type split on 170 crossings | 1 | 🔴 Not Started | — |
-| 1.4 Update dossier claims | 1 | 🟡 In Progress | — |
-| 1.5 4-Way taxonomy relabeling of EXP-002 & EXP-003 | 1 | 🔴 Not Started | — |
+| 1.0 Literature search & deadline audit | 1 | ✅ Complete (structure) | 2026-09-29 |
+| 1.1 Verify compiler provenance | 1 | ✅ Complete | 2026-09-29 |
+| 1.2 Winding audit (independent signed-area, MVT sign fix) | 1 | ✅ Complete | 2026-09-29 |
+| 1.3 Geometry-type split on 170 crossings | 1 | ✅ Complete | 2026-09-29 |
+| 1.4 Update dossier claims | 1 | ✅ Complete | 2026-09-29 |
+| 1.5 4-Way taxonomy relabeling of EXP-002 & EXP-003 | 1 | ✅ Complete | 2026-09-29 |
 | 2.1 EXP-003b: Dual-Oracle (GEOS + Python Exact Int) | 2 | 🔴 Not Started | — |
 | 2.2 EXP-009: Reference-encoded synthetic + scoped metamorphic | 2 | 🔴 Not Started | — |
 | 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | 🔴 Not Started | — |

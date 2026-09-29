@@ -358,7 +358,7 @@ TileGuard was presented at FOSS4G 2026 in Hiroshima, Japan — the primary inter
 
 ## 8. Literature Survey (Preliminary)
 
-The following is a preliminary mapping of the existing tool and paper landscape, organized by layer. A formal literature search on academic databases (ACM DL, IEEE Xplore, ISPRS Archives, MDPI IJGI) has not yet been completed. The table below reflects tool-level knowledge from practitioner sources.
+The following is a preliminary mapping of the existing tool and paper landscape, organized by layer. A formal literature search on academic databases (ACM DL, IEEE Xplore, ISPRS Archives, MDPI IJGI) has been structured in **Task 1.0** — all 9 queries are logged and ready for execution in `analysis/phase1-literature/LITERATURE_LOG.md`. Results will be filled in as queries are run. The table below reflects tool-level knowledge from practitioner sources; academic citation verification is pending.
 
 ### 8.1 Vector Tile Tooling
 
