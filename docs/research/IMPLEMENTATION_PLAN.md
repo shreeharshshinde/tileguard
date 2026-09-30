@@ -508,9 +508,9 @@
 | 1.3 Geometry-type split on 170 crossings | 1 | ✅ Complete | 2026-09-29 |
 | 1.4 Update dossier claims | 1 | ✅ Complete | 2026-09-29 |
 | 1.5 4-Way taxonomy relabeling of EXP-002 & EXP-003 | 1 | ✅ Complete | 2026-09-29 |
-| 2.1 EXP-003b: Dual-Oracle (GEOS + Python Exact Int) | 2 | 🔴 Not Started | — |
-| 2.2 EXP-009: Reference-encoded synthetic + scoped metamorphic | 2 | 🔴 Not Started | — |
-| 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | 🔴 Not Started | — |
+| 2.1 EXP-003b: Dual-Oracle (GEOS + Python Exact Int) | 2 | ✅ Complete | 2026-09-30 |
+| 2.2 EXP-009: Reference-encoded synthetic + scoped metamorphic | 2 | ✅ Complete | 2026-09-30 |
+| 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | ✅ Complete | 2026-09-30 |
 | 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | 🔴 Not Started | — |
 | 3.2 Note on Overpass source tracing | 3 | ⚪ Dropped | — |
 | 3.3 EXP-008: z5–z14 corpus extension | 3 | 🔴 Not Started | — |
