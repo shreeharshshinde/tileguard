@@ -432,6 +432,50 @@ The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `sel
 
 ---
 
+## EXP-009 — Synthetic Defect Injection & Metamorphic Testing (Task 2.2, Phase 2)
+
+**Date:** 2026-09-30  
+**Status:** ✅ Complete  
+**Task:** 2.2 (Phase 2 — Methodological Strengthening)  
+**Gap closed:** C3 (no recall measurement)  
+**Question:** Does `tile/self-intersection` detect all known genuine polygon crossings (recall), avoid false positives on valid rings (precision), and produce consistent results under coordinate transformations (metamorphic testing)?
+
+**Encoder:** Raw MVT PBF encoder (scripts/phase2-build-synthetic-tiles.mjs) — no external vt-pbf dependency.
+
+**Fixture design:**
+
+| Set | Fixture | Geometry | Expected |
+|:----|:--------|:---------|:---------|
+| TP | `tp-butterfly.pbf` | Proper interior crossing — segs 0 and 2 cross at (1500,1250). No shared vertex. | FIRES |
+| TP | `tp-hourglass.pbf` | Hourglass polygon — segs 1 and 3 cross | FIRES |
+| TP | `tp-crossing-hole.pbf` | Valid outer ring + self-crossing hole ring | FIRES |
+| TN | `tn-convex-square.pbf` | Simple convex square, no crossings | silent |
+| TN | `tn-valid-buffer.pbf` | Ring with −80/+4176 clipping buffer coordinates | silent |
+| TN | `tn-quantization-spike.pbf` | Adjacent duplicate vertices (Cat A, Guard 3 suppressed) | silent |
+
+**Metamorphic relations (geometry rules only):**
+- **MR1 (Translation):** Shift all coords by (+200, +150) — same diagnostic outcome
+- **MR2 (Scale):** Scale coords by k=2 from centroid — same diagnostic outcome
+
+**Results:**
+
+| Metric | Value |
+|:-------|:------|
+| TP / FN / TN / FP | 3 / 0 / 3 / 0 |
+| **Precision** | **100%** |
+| **Recall** | **100%** |
+| **F1** | **1.0000** |
+| MR1 pass rate | 6/6 (100%) |
+| MR2 pass rate | 6/6 (100%) |
+
+**Key finding:** Initial butterfly fixture passed through the same vertex twice — Guard 3 correctly identified it as self-tangency (not a genuine crossing). Revised to a 4-vertex proper interior crossing. Confirms Guard 3 works as designed.
+
+**Completion criteria:** ✅ Zero FN · ✅ MR1 100% · ✅ MR2 100%
+
+**Artifacts:** `fixtures/phase2-synthetic/` (18 PBFs) · `analysis/phase2-synthetic/synthetic-results.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
