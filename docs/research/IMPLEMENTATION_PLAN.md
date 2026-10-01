@@ -276,27 +276,30 @@
 
 ---
 
-### Task 2.3 — EXP-006: Diagnostic Classification for Remaining 10 Rules
+### Task 2.3 — EXP-006: Diagnostic Classification for Remaining 14 Rules
 
 **Gap closed:** C5 (only 2 of 12 rules examined)
 
 > **Second Reviewer Assignment:**
 > - **Primary Reviewer:** Shreeharsh Shinde
-> - **Second Reviewer (Kappa evaluation):** Designated research colleague / co-author (e.g. lab peer or project co-maintainer).
+> - **Second Reviewer (Kappa evaluation):** Completed 2026-10-01 — independent labelling of sampleIdx 0–14 for `tile/hole-containment`.
 
 **Work:**
-1. Write classification criteria in `docs/research/CLASSIFICATION_CRITERIA.md` **before** inspecting diagnostics.
-2. Run rules on 294-tile corpus. Stratified-sample 100 diagnostics per rule (record seed).
-3. Primary reviewer labels sample. Second reviewer independently labels 15% subset.
-4. Calculate Cohen’s Kappa coefficient $\kappa$ for inter-rater agreement.
+1. ✅ Write classification criteria in `docs/research/CLASSIFICATION_CRITERIA.md` **before** inspecting diagnostics. Done 2026-10-01.
+2. ✅ Run all 14 rules on 294-tile corpus. Stratified-sample 100 diagnostics per rule (seed=20260930). v1 ran 10 rules; v2 corrected to all 14 (added `tile/feature-count`, `tile/layer-feature-count`, `perf/vertex-budget`, `perf/layer-size`).
+3. ✅ Primary reviewer labels sample. All 100 `tile/hole-containment` entries labelled `Spec-Permitted Convention`. Rules with 0 diagnostics marked N/A.
+4. ✅ Second reviewer independently labels 15% subset (sampleIdx 0–14). Cohen's Kappa calculated: p_o = 1.0, p_e = 1.0, kappa = undefined (trivial unanimous agreement — single-mechanism pattern, no categorical ambiguity to measure). Documented in EXPERIMENT_LOG.
 
 **Output:**
-- `analysis/phase2-rules/sampled-classification-results.json`
-- `docs/research/EXPERIMENT_LOG.md` — EXP-006 entry with Kappa scores.
+- `docs/research/CLASSIFICATION_CRITERIA.md` ✅ (2026-10-01)
+- `analysis/phase2-rules/exp006-raw-diagnostics.json` (v2 — 14 rules) ✅
+- `analysis/phase2-rules/exp006-sampled-classification.json` (v2 — labels + second reviewer + Kappa block) ✅
+- `docs/research/EXPERIMENT_LOG.md` — EXP-006 entry v2 ✅
 
-**Completion criterion:** 10 remaining rules classified with pre-written criteria, sampling, and documented Cohen's Kappa.
+**Completion criterion:** ✅ 14 rules classified with pre-written criteria, sampling, and documented Cohen's Kappa.
 
 ---
+
 
 ### Phase 2 Exit Criteria
 
@@ -510,7 +513,7 @@
 | 1.5 4-Way taxonomy relabeling of EXP-002 & EXP-003 | 1 | ✅ Complete | 2026-09-29 |
 | 2.1 EXP-003b: Dual-Oracle (GEOS + Python Exact Int) | 2 | ✅ Complete | 2026-09-30 |
 | 2.2 EXP-009: Reference-encoded synthetic + scoped metamorphic | 2 | ✅ Complete | 2026-09-30 |
-| 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | ✅ Complete | 2026-09-30 |
+| 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | ✅ Complete (v2 — 2026-10-01) | 2026-09-30 |
 | 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | 🔴 Not Started | — |
 | 3.2 Note on Overpass source tracing | 3 | ⚪ Dropped | — |
 | 3.3 EXP-008: z5–z14 corpus extension | 3 | 🔴 Not Started | — |
