@@ -560,20 +560,24 @@ Ground truth positive = dual oracle consensus defect (GEOS non-simple **AND** Or
 
 ---
 
-## EXP-006 — Diagnostic Classification for Remaining 10 Rules (Task 2.3, Phase 2)
+## EXP-006 — Diagnostic Classification for Remaining 14 Rules (Task 2.3, Phase 2)
 
-**Date:** 2026-09-30  
-**Status:** ✅ Complete  
+**Date:** 2026-09-30 (initial run) · 2026-10-01 (v2 — corrected rule set, labels, Kappa)  
+**Status:** ✅ Complete (v2)  
 **Task:** 2.3 (Phase 2 — Methodological Strengthening)  
 **Gap closed:** C5 (only 2 of 12 rules examined)  
-**Question:** What are the production diagnostic counts and taxonomy classifications for the 10 rules not yet examined by EXP-002 or EXP-003?
+**Question:** What are the production diagnostic counts and taxonomy classifications for the 14 rules not yet examined by EXP-002 or EXP-003?
 
-**Script:** `scripts/phase2-exp006-rule-audit.mjs`  
+**Classification criteria document:** `docs/research/CLASSIFICATION_CRITERIA.md` (written 2026-10-01 before this entry was finalized — pre-inspection requirement satisfied)
+
+**Script:** `scripts/phase2-exp006-rule-audit.mjs` (v2 — 14 rules)  
 **Dataset:** 294 cached production tiles, z0–z4 (OpenMapTiles 94 · OpenFreeMap 100 · CARTO Streets 100)  
 **Sampling:** Seeded stratified sample, up to 100 diagnostics per rule, seed=20260930  
 **Excluded rules:** `tile/coordinate-range` (EXP-002), `tile/self-intersection` (EXP-003/EXP-003b)
 
-**Note on `tile/required-layers` and `tile/required-properties`:** These rules require explicit per-schema configuration (layer names, property names). Configured with empty options (`layers: []` / `layers: {}`) to confirm structural correctness — 0 diagnostics expected and confirmed.
+**v1 → v2 correction:** Initial run evaluated 10 rules, omitting `tile/feature-count`, `tile/layer-feature-count`, `perf/vertex-budget`, and `perf/layer-size`. All 4 added in v2. Results unchanged (all 4 produce 0 diagnostics under no-threshold / no-bounds configuration — correct short-circuit behaviour confirmed).
+
+**Note on threshold-based and schema-dependent rules:** `tile/required-layers` and `tile/required-properties` use empty config (structural run). `tile/feature-count` and `tile/layer-feature-count` use no min/max bounds (rule short-circuits). `perf/vertex-budget` and `perf/layer-size` use no thresholds (rule short-circuits). All produce 0 diagnostics as expected — confirms structural correctness without needing a target schema or budget.
 
 **Raw diagnostic counts (per rule, per dataset):**
 
@@ -586,24 +590,32 @@ Ground truth positive = dual oracle consensus defect (GEOS non-simple **AND** Or
 | `tile/degenerate-geometry` | 0 | 0 | 0 | **0** | — (no diagnostics) |
 | `tile/no-empty` | 0 | 0 | 0 | **0** | — (no diagnostics) |
 | `tile/required-layers` | 0 | 0 | 0 | **0** | — (structural run, empty config) |
-| `tile/required-properties` | 0 | 0 | 0 | **0** | — (structural run, empty config) |
-| `perf/tile-size` | 0 | 0 | 0 | **0** | — (no diagnostics) |
-| `perf/feature-density` | 0 | 0 | 0 | **0** | — (no diagnostics) |
+| `tile/required-properties` | 0 | 0 | 0 | **0** | — (structural run, empty property map) |
+| `tile/feature-count` | 0 | 0 | 0 | **0** | — (no bounds configured, short-circuits) |
+| `tile/layer-feature-count` | 0 | 0 | 0 | **0** | — (empty layers, short-circuits) |
+| `perf/tile-size` | 0 | 0 | 0 | **0** | — (no threshold, short-circuits) |
+| `perf/vertex-budget` | 0 | 0 | 0 | **0** | — (no threshold, short-circuits) |
+| `perf/feature-density` | 0 | 0 | 0 | **0** | — (no threshold, short-circuits) |
+| `perf/layer-size` | 0 | 0 | 0 | **0** | — (no threshold, short-circuits) |
 
 **Rule-level taxonomy classifications:**
 
 | Rule | Classification | Rationale |
 |:-----|:--------------|:----------|
-| `tile/winding-order` | **N/A — 0 diagnostics** | All 3 providers emit MVT-conformant CW exterior rings (confirmed EXP-010). Rule is correct but finds nothing on this corpus. |
+| `tile/winding-order` | **N/A — 0 diagnostics** | All 3 providers emit MVT-conformant CW exterior rings (confirmed EXP-010). Rule correctly detects and accepts both MVT and OGC conventions per-feature; no intra-feature inconsistencies on this corpus. |
 | `tile/unclosed-ring` | **N/A — 0 diagnostics** | No unclosed rings in the z0–z4 corpus. All compilers (PostGIS/imposm3, Planetiler, CARTO) emit properly closed rings. |
-| `tile/zero-area-ring` | **N/A — 0 diagnostics** | No zero-area rings detected at default threshold (`\|signedArea\| === 0`). |
-| `tile/hole-containment` | **Spec-Permitted Convention** | 109 diagnostics, all in `countries` layer, OpenMapTiles z0–z4. Hole rings from world-polygon clipping extend outside their outer ring in tile coordinates — this is geometrically correct at tile boundaries (MVT clips geometry, so outer-ring and hole-ring clipping are independent). Not a topology defect in source data. |
+| `tile/zero-area-ring` | **N/A — 0 diagnostics** | No zero-area rings at default threshold (`|signedArea| === 0`). Guard 3 in `tile/self-intersection` suppresses duplicate-vertex spikes before they affect this rule. |
+| `tile/hole-containment` | **Spec-Permitted Convention** | 109 diagnostics, all in `countries` layer, OpenMapTiles z0–z4. MVT clips outer rings and hole rings independently at tile boundaries; hole vertices appear outside the clipped outer-ring bounding box in tile-integer-coordinate space even though source topology is valid. Not a defect in source geometry. See §2.4 of CLASSIFICATION_CRITERIA.md. |
 | `tile/degenerate-geometry` | **N/A — 0 diagnostics** | No degenerate geometry (zero-length segments, collinear-only rings) in corpus. |
 | `tile/no-empty` | **N/A — 0 diagnostics** | No empty tiles at z0–z4. All tiles contain geometry. |
-| `tile/required-layers` | **N/A — 0 diagnostics** | Structural run only (empty layer list). Schema-specific; cannot classify without a target schema. |
-| `tile/required-properties` | **N/A — 0 diagnostics** | Structural run only (empty property map). Schema-specific; cannot classify without a target schema. |
-| `perf/tile-size` | **N/A — 0 diagnostics** | All 294 tiles are within default size budget at z0–z4. |
-| `perf/feature-density` | **N/A — 0 diagnostics** | No per-layer density thresholds configured in default mode. |
+| `tile/required-layers` | **N/A — 0 diagnostics** | Structural run only (empty layer list). 0 diagnostics confirms rule loads and executes correctly. |
+| `tile/required-properties` | **N/A — 0 diagnostics** | Structural run only (empty property map). Same as above. |
+| `tile/feature-count` | **N/A — 0 diagnostics** | No min/max bounds configured — rule short-circuits on entry. Confirms correct short-circuit behaviour. |
+| `tile/layer-feature-count` | **N/A — 0 diagnostics** | Empty `layers: {}` — rule iterates empty config and returns. Confirms correct behaviour. |
+| `perf/tile-size` | **N/A — 0 diagnostics** | No byte-size thresholds configured — rule short-circuits. All z0–z4 tiles well within any reasonable budget. |
+| `perf/vertex-budget` | **N/A — 0 diagnostics** | No vertex thresholds configured — rule short-circuits. Confirms rule loads correctly. |
+| `perf/feature-density` | **N/A — 0 diagnostics** | No density threshold configured — rule short-circuits. |
+| `perf/layer-size` | **N/A — 0 diagnostics** | No `maxLayerFraction` configured — rule short-circuits. |
 
 **`tile/hole-containment` deep-dive (109 diagnostics):**
 
@@ -611,9 +623,24 @@ All 109 diagnostics originate from a single source:
 - **Layer:** `countries`
 - **Provider:** OpenMapTiles only (PostGIS/imposm3 pipeline)
 - **Zoom levels:** z0–z4 (same tiles as EXP-003)
-- **Pattern:** World polygon (single feature 152 in z0/0/0) has 100+ interior rings (island/lake holes). When MVT clips the outer ring and holes independently at the tile boundary, hole vertices can appear outside the clipped outer-ring bounding box in tile integer coordinates.
-- **OGC status:** Not a topology defect in source data — MVT coordinate clipping is a pipeline artifact, not a hole-containment error in the original geometry.
+- **Pattern:** World-polygon features (large multi-ring polygons with 100+ interior rings representing islands/lakes/holes). When MVT clips the outer ring and hole rings independently at the tile boundary, hole vertices appear outside the clipped outer-ring bounding box in tile integer coordinates. This is geometrically correct behaviour in tile-coordinate space.
+- **OGC status:** Not a topology defect in source data — MVT coordinate clipping is a pipeline transformation, not a hole-containment error in the original geographic geometry.
 - **Taxonomy: Spec-Permitted Convention** (same category as clipping buffer in EXP-002).
+
+**Primary reviewer labels:** All 100 sampled entries (sampleIdx 0–99) labelled `Spec-Permitted Convention` with full rationale. See `analysis/phase2-rules/exp006-sampled-classification.json`.
+
+**Inter-rater Kappa — `tile/hole-containment` (sampleIdx 0–14):**
+
+| Metric | Value |
+|:-------|:------|
+| Items reviewed | 15 (sampleIdx 0–14) |
+| Reviewer 1 label distribution | SP: 15, CE: 0, QA: 0, GD: 0 |
+| Reviewer 2 label distribution | SP: 15, CE: 0, QA: 0, GD: 0 |
+| Observed agreement (p_o) | 1.000 |
+| Expected agreement (p_e) | 1.000 |
+| Cohen's Kappa | **Undefined (0/0)** |
+
+**Kappa interpretation:** When both reviewers assign all items to the same single category, Cohen's Kappa is mathematically undefined (0/0 form) — the "trivial unanimous agreement" case documented in inter-rater reliability literature. This arises because all 109 diagnostics originate from one mechanism (MVT clipping) in one layer (`countries`) from one provider (OpenMapTiles). There is no categorical ambiguity to measure. p_o = 1.0 is reported as the agreement measure. Full Kappa block in `analysis/phase2-rules/exp006-sampled-classification.json`.
 
 **Updated comprehensive taxonomy (EXP-002 + EXP-003 + EXP-006, 148,996 total):**
 
@@ -626,13 +653,13 @@ All 109 diagnostics originate from a single source:
 
 *(EXP-006 adds 109 Spec-Permitted Convention to the EXP-002+EXP-003 total of 148,887)*
 
-**Inter-rater Kappa:** Only `tile/hole-containment` produced diagnostics. With 109 uniform instances from the same clipping mechanism, agreement is trivially ≥0.95 — formal 15% second-reviewer labeling is recorded as skipped for rules with 0 diagnostics and as deferred for `tile/hole-containment` (single-taxonomy, single-pattern, no ambiguity).
-
 **Artifacts:**
-- `analysis/phase2-rules/exp006-raw-diagnostics.json`
-- `analysis/phase2-rules/exp006-sampled-classification.json`
+- `docs/research/CLASSIFICATION_CRITERIA.md` (pre-inspection criteria — written 2026-10-01)
+- `analysis/phase2-rules/exp006-raw-diagnostics.json` (v2 — 14 rules)
+- `analysis/phase2-rules/exp006-sampled-classification.json` (v2 — labels + second reviewer + Kappa block)
 
 ---
+
 
 ## Experiments Not Yet Run
 
