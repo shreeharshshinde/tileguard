@@ -8,11 +8,12 @@
  *   - tile/coordinate-range  (EXP-002)
  *   - tile/self-intersection (EXP-003 / EXP-003b)
  *
- * Rules evaluated here (10):
+ * Rules evaluated here (14):
  *   tile/winding-order  tile/unclosed-ring  tile/zero-area-ring
  *   tile/hole-containment  tile/degenerate-geometry  tile/no-empty
  *   tile/required-layers  tile/required-properties
- *   perf/tile-size  perf/feature-density
+ *   tile/feature-count  tile/layer-feature-count
+ *   perf/tile-size  perf/vertex-budget  perf/feature-density  perf/layer-size
  *
  * Output:
  *   analysis/phase2-rules/exp006-raw-diagnostics.json
@@ -68,6 +69,8 @@ const DATASETS = [
 // ── Rules config (rules are set at engine creation time) ─────────────────────
 // required-layers / required-properties need options — empty lists = 0 diags
 // but confirms the rule runs without crashing.
+// feature-count / layer-feature-count: no min/max → rule short-circuits → 0 diags (correct).
+// perf/vertex-budget / perf/layer-size: no thresholds → short-circuits → 0 diags (correct).
 const RULES_CONFIG = {
   'tile/winding-order':        'error',
   'tile/unclosed-ring':        'error',
@@ -77,8 +80,12 @@ const RULES_CONFIG = {
   'tile/no-empty':             'warning',
   'tile/required-layers':      ['error', { layers: [] }],
   'tile/required-properties':  ['error', { layers: {} }],
+  'tile/feature-count':        ['warning', {}],
+  'tile/layer-feature-count':  ['warning', { layers: {} }],
   'perf/tile-size':            'warning',
+  'perf/vertex-budget':        'warning',
   'perf/feature-density':      'warning',
+  'perf/layer-size':           'warning',
 };
 
 const TARGET_RULE_IDS = Object.keys(RULES_CONFIG);
@@ -185,7 +192,7 @@ const rawOutput = {
     rulesEvaluated: TARGET_RULE_IDS,
     datasets:       DATASETS.map(d => d.name),
     excludedRules:  ['tile/coordinate-range', 'tile/self-intersection'],
-    note:           'tile/required-layers and tile/required-properties use empty options — structural run only.',
+    note:           'tile/required-layers and tile/required-properties use empty options — structural run only. tile/feature-count and tile/layer-feature-count use no bounds — short-circuits to 0 diagnostics, confirms structural correctness. perf/vertex-budget and perf/layer-size use no thresholds — short-circuits to 0 diagnostics.',
   },
   summaryTable:      summaryRows,
   diagnosticsByRule: rawByRule,
