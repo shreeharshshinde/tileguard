@@ -516,7 +516,7 @@
 | 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | ✅ Complete (v2 — 2026-10-01) | 2026-09-30 |
 | 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | 🔴 Not Started | — |
 | 3.2 Note on Overpass source tracing | 3 | ⚪ Dropped | — |
-| 3.3 EXP-008: z5–z14 corpus extension | 3 | 🔴 Not Started | — |
+| 3.3 EXP-008: z5–z14 corpus extension | 3 | ✅ Complete | 2026-10-01 |
 | 3.4 EXP-007: Headless high-res render diffs | 3 | 🔴 Not Started | — |
 | 4.1 Read 8 CS & Geospatial papers (corrected citations) | 4 | 🔴 Not Started | — |
 | 4.2 Write 2–3 page SE-framed proposal | 4 | 🔴 Not Started | — |

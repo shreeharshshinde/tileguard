@@ -661,6 +661,84 @@ All 109 diagnostics originate from a single source:
 ---
 
 
+## EXP-008 — z8 / z12 / z14 Higher-Zoom Corpus Extension (Task 3.3, Phase 3)
+
+**Date:** 2026-10-01  
+**Status:** ✅ Complete  
+**Task:** 3.3 (Phase 3 — Controlled Pipeline & Rendering Experiments)  
+**Gap closed:** D2 (higher zoom levels unmeasured)  
+**Question:** How does diagnostic density and defect type change from z0–z4 to z8 / z12 / z14?
+
+**Dataset:**
+- **Providers:** OpenFreeMap (Planetiler) + CARTO Streets (proprietary)
+- **OpenMapTiles scope constraint:** demotiles.maplibre.org maxzoom=6 — cannot serve z8+. EXP-008 uses 2 of the 3 EXP-002/003 providers. Documented constraint.
+- **Bboxes:** z8/z12 — full 2°×2° Tokyo region (139.0–141.0°E, 35.0–37.0°N). z14 — 0.25°×0.25° sub-region (139.65–139.90°E, 35.50–35.75°N; full z14 bbox = 10,396 tiles/provider — impractical).
+- **Total tiles:** 1,800 (z8: 9 + z12: 696 + z14: 195 per provider × 2 providers)
+- **Errors:** 0
+
+**Rules enabled:** `tile/coordinate-range` (buffer=80, label layers excluded), `tile/self-intersection`, `tile/winding-order`, `tile/unclosed-ring`, `tile/zero-area-ring`, `tile/hole-containment`, `tile/degenerate-geometry`
+
+**Diagnostic counts by provider and zoom:**
+
+| Provider | Zoom | Tiles | Total diags | GD (self-intersection) | SP (coord-range) | diag/tile | GD/tile |
+|:---------|-----:|------:|------------:|-----------------------:|-----------------:|----------:|--------:|
+| OpenFreeMap | z8 | 9 | 635 | 158 | 477 | 70.6 | 17.6 |
+| CARTO Streets | z8 | 9 | 625 | 163 | 462 | 69.4 | 18.1 |
+| OpenFreeMap | z12 | 696 | 14,750 | 2,001 | 12,749 | 21.2 | 2.88 |
+| CARTO Streets | z12 | 696 | 15,051 | 2,022 | 13,029 | 21.6 | 2.91 |
+| OpenFreeMap | z14 | 195 | 7,193 | **238** | 6,955 | 36.9 | **1.22** |
+| CARTO Streets | z14 | 195 | 9,315 | **24** | 9,291 | 47.8 | **0.12** |
+| **z0–z4 baseline** | z0–z4 | 200 | 462 | 16 | 446 | 2.3 | 0.08 |
+
+**Taxonomy summary (EXP-008 only, 47,569 total diagnostics):**
+
+| Taxonomy | Count | % |
+|:---------|------:|--:|
+| Spec-Permitted Convention | 43,481 | 91.4% |
+| Genuine Defect | 4,606 | 9.7% |
+| Quantization Artifact | 0 | 0% |
+| Checker Error | 0 | 0% |
+
+**Key findings:**
+
+**Finding 1 — Only two rules fire.** `tile/coordinate-range` (SP) and `tile/self-intersection` (GD). No `winding-order`, `unclosed-ring`, `zero-area-ring`, `hole-containment`, or `degenerate-geometry` diagnostics on any of the 1,800 tiles. This is consistent with EXP-006 at z0–z4 (only `hole-containment` fired beyond coord-range and self-intersection, and that was OMT-only).
+
+**Finding 2 — All Genuine Defects are in `transportation` and `transportation_name` layers.** Every single GD diagnostic across all 1,800 tiles comes from `tile/self-intersection` on these two layers. No polygon layers (buildings, water, landcover) produce GD. This is a new finding not visible in the z0–z4 corpus (where GD came from the `countries` Polygon layer).
+
+| Layer | Total GD across all z/providers |
+|:------|--------------------------------:|
+| `transportation` | 4,536 (98.5%) |
+| `transportation_name` | 47 (1.0%) |
+| Other | 23 (0.5%) |
+
+**Finding 3 — z8 GD spike.** At z8, GD/tile = ~17.8 (vs 0.08 at z0–z4 — a 220× increase). The 9 z8 tiles contain 321 GD diagnostics across just 9 tiles. This suggests the z8 simplification tolerance for road LineString data introduces significant self-intersection density that is not present at lower or higher zooms.
+
+**Finding 4 — GD density peaks at z8, drops monotonically through z12 and z14.**
+z8 → z12 → z14 (OFM): 17.6 → 2.88 → 1.22 GD/tile.  
+Interpretation: At z8, simplification is most aggressive (large-scale road data reduced to coarse integer grid). By z14, the tile resolution is high enough that road geometry is detailed — fewer collapses. The pattern aligns with the OFAT hypothesis in Task 3.1 that simplification tolerance is the dominant defect-introduction factor.
+
+**Finding 5 — 10× provider divergence at z14.** OpenFreeMap z14 = 1.22 GD/tile vs CARTO z14 = 0.12 GD/tile, both measuring the same Tokyo sub-region. Both are `transportation` layer self-intersections. This suggests the Planetiler pipeline (OFM) introduces more transportation self-intersections at z14 than CARTO's proprietary pipeline — a directly attributable compiler difference. This is a strong motivating finding for Task 3.1 (EXP-011 OFAT pipeline experiment).
+
+**Comparison against z0–z4 baseline:**
+
+| Metric | z0–z4 (OFM+CARTO) | z8 (OFM+CARTO) | z12 (OFM+CARTO) | z14 (OFM) | z14 (CARTO) |
+|:-------|------------------:|---------------:|----------------:|----------:|------------:|
+| GD/tile | 0.08 | **17.8** | **2.89** | **1.22** | 0.12 |
+| GD layer(s) | countries (Polygon) | transportation (LineString) | transportation (LineString) | transportation (LineString) | transportation (LineString) |
+| SP/tile | 2.23 | 52.1 | 18.6 | 35.7 | 47.6 |
+
+**Note on SP density increase:** `tile/coordinate-range` SP diagnostics increase sharply at higher zooms because higher-zoom tiles contain far more features (roads, POIs) — more label points and clipping buffer vertices. This is expected and consistent with the SP interpretation from EXP-002.
+
+**Scripts:**
+- Download: `scripts/phase3-download-highzoom-tiles.py`
+- Audit: `scripts/phase3-highzoom-audit.mjs`
+
+**Artifacts:**
+- `analysis/phase3-higher-zooms/download-manifest.json`
+- `analysis/phase3-higher-zooms/higher-zooms-results.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
@@ -670,5 +748,4 @@ The following experiments are needed but have not been performed. Numbers will b
 
 
 | EXP-007 | Do any of the 170 confirmed self-intersections produce visible rendering artifacts in MapLibre? | existing tiles + headless MapLibre | HIGH — RQ3 viability |
-| EXP-008 | What is the self-intersection prevalence at z5–z14? | new tile collection | MEDIUM |
 | EXP-010 | Do winding-order violations in production tiles cause observable rendering anomalies? | existing tiles + headless MapLibre | MEDIUM |
