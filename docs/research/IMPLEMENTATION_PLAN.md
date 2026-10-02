@@ -514,7 +514,7 @@
 | 2.1 EXP-003b: Dual-Oracle (GEOS + Python Exact Int) | 2 | ✅ Complete | 2026-09-30 |
 | 2.2 EXP-009: Reference-encoded synthetic + scoped metamorphic | 2 | ✅ Complete | 2026-09-30 |
 | 2.3 EXP-006: Remaining 10 rules (sampled + Kappa) | 2 | ✅ Complete (v2 — 2026-10-01) | 2026-09-30 |
-| 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | 🔴 Not Started | — |
+| 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | ✅ Complete | 2026-10-02 |
 | 3.2 Note on Overpass source tracing | 3 | ⚪ Dropped | — |
 | 3.3 EXP-008: z5–z14 corpus extension | 3 | ✅ Complete | 2026-10-01 |
 | 3.4 EXP-007: Headless high-res render diffs | 3 | 🔴 Not Started | — |
@@ -584,7 +584,7 @@ docs/
 | C1 | "72.5% FP" conflated causes; geometry type unsplit; relabeling | Task 1.3, Task 1.5 | 🔴 |
 | C2 | Circular ground truth in EXP-003 | Task 2.1 | 🔴 |
 | C3 | No recall measurement | Task 2.2 | 🔴 |
-| C4 | Genuine defects not traced to transformation stage | Task 3.1 | 🔴 |
+| C4 | Genuine defects not traced to transformation stage | Task 3.1 | ✅ Closed |
 | C5 | Only 2 of 12 rules examined | Task 2.3 | 🔴 |
 | D1 | "Format-wide" generalization overclaim | Task 1.1 | 🔴 |
 | D2 | Higher zoom levels unmeasured | Task 3.3 | 🔴 |

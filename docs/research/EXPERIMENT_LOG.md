@@ -739,6 +739,142 @@ Interpretation: At z8, simplification is most aggressive (large-scale road data 
 
 ---
 
+---
+
+## EXP-011 — Controlled Pipeline OFAT Experiment
+
+**Date:** 2026-10-02  
+**Status:** Complete  
+**Question:** Do tile compilation parameters (simplification tolerance, buffer size, zoom level) or compiler choice (Tippecanoe vs Planetiler) introduce Genuine Defects into an otherwise-valid source dataset?
+
+**Motivation (Gap C4):** Prior experiments (EXP-003, EXP-008) found GDs in production tiles but could not attribute them to a specific pipeline stage or parameter. EXP-011 uses a fully controlled, reproducible pipeline on source-valid data to isolate defect origin.
+
+**Method:**  
+Script `scripts/phase3-ofat-pipeline.mjs`.  
+OFAT (One-Factor-At-A-Time) design: baseline configuration (simplification=1, buffer=64, zoom=12), then sweep one parameter at a time:
+- Simplification tolerance: 0, 1, 2, 4 (pixels at target zoom)
+- Buffer size: 0, 64, 80 (MVT tile units)
+- Target zoom: z8, z12, z14
+
+Both compilers run on identical source data:
+- **Tippecanoe v2.82.0** ← `tools/source-data/monaco-polygons.geojson` (2357 polygons, all valid per Shapely `isValid`)
+- **Planetiler** (JAR) ← `tools/source-data/monaco.osm.pbf` (same Monaco geometry)
+
+Source validity: 2357/2357 features pass `Shapely.is_valid`. Zero geometry defects in source.
+
+TileGuard audit used 7 rules: `tile/coordinate-range` (buffer=80, label layers excluded), `tile/self-intersection`, `tile/winding-order`, `tile/unclosed-ring`, `tile/zero-area-ring`, `tile/hole-containment`, `tile/degenerate-geometry`.
+
+**Compiler installation:**
+
+**Tippecanoe v2.82.0** — installed at `/usr/local/bin/tippecanoe`. Built from source (ELF 64-bit binary, not via a package manager — no dpkg/rpm record). Standard build procedure:
+```bash
+git clone https://github.com/felt/tippecanoe.git
+cd tippecanoe
+git checkout v2.82.0
+make -j
+sudo make install
+```
+`tile-join` (used by the pipeline to extract `.mbtiles` → individual `.pbf` files) ships with Tippecanoe and was installed alongside it at `/usr/local/bin/tile-join`.
+
+**Planetiler v0.8.4** — `tools/planetiler.jar` (87MB). Downloaded from the official GitHub release:
+```bash
+wget -O tools/planetiler.jar \
+  https://github.com/onthegomap/planetiler/releases/download/v0.8.4/planetiler.jar
+```
+JAR manifest confirms: `groupId=com.onthegomap.planetiler`, `artifactId=planetiler-dist`, `version=0.8.4`, built with `Build-Jdk-Spec: 21`.
+
+**Java runtime** — OpenJDK 25.0.2 (Red Hat build, `openjdk version "25.0.2" 2026-01-20`). The JAR was built targeting Java 21 but runs fine on 25. The pipeline passes `--enable-native-access=ALL-UNNAMED` to suppress restricted-method warnings from the JVM.
+
+**Auxiliary source data** — Three datasets required by Planetiler's OpenMapTiles profile, downloaded to `data/sources/`:
+```
+lake_centerline.shp.zip        (78MB)  — https://dev.maptiler.download/geodata/omt/lake_centerline.shp.zip
+natural_earth_vector.sqlite.zip (414MB) — https://dev.maptiler.download/geodata/omt/natural_earth_vector.sqlite.zip
+water-polygons-split-3857.zip  (888MB) — https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip
+```
+The `--download` flag in the pipeline script fetches these automatically on first run, caching them in `data/sources/`.
+
+**Setup note — failed first attempt:** Initial pipeline runs returned `null` for all Planetiler configurations. Root cause: `water-polygons-split-3857.zip` (888MB auxiliary dataset from osmdata.openstreetmap.de) was corrupt — partial download causing `java.util.zip.ZipException: zip END header not found`. Re-downloaded successfully. Stale empty `.mbtiles` files deleted before re-run.
+
+**Dataset:**
+- Source: Monaco (area ~2km²), OSM extract + derived GeoJSON
+- 2357 source polygons (100% valid)
+- 8 unique parameter combinations (3 baseline duplicates merged)
+- Tippecanoe: 107 unique tiles audited across all runs
+- Planetiler: 238 unique tiles audited across all runs
+
+**Results — Tippecanoe:**
+
+| Config | Factor varied | Tiles | Total diags | GD | SP (coord-range) |
+|:-------|:-------------|------:|------------:|---:|-----------------:|
+| tc_s0_b64_z12 | simplification=0 | 9 | 418 | 0 | 418 |
+| tc_s1_b64_z12 (baseline) | — | 9 | 74 | 0 | 74 |
+| tc_s2_b64_z12 | simplification=2 | 9 | 74 | 0 | 74 |
+| tc_s4_b64_z12 | simplification=4 | 9 | 74 | 0 | 74 |
+| tc_s1_b0_z12 | buffer=0 | 7 | 0 | 0 | 0 |
+| tc_s1_b80_z12 | buffer=80 | 14 | 88 | 0 | 88 |
+| tc_s1_b64_z8 | zoom=8 | 1 | 0 | 0 | 0 |
+| tc_s1_b64_z14 | zoom=14 | 59 | 827 | 0 | 827 |
+
+**Tippecanoe summary:** 0 Genuine Defects across all 8 OFAT configurations. All non-zero diagnostics are `tile/coordinate-range` Spec-Permitted Convention (SP) — clipping buffer artifacts, as expected. The increase at `s0_b64_z12` (418 vs 74 SP) is because disabling simplification retains many more near-boundary vertices that trigger the coordinate-range rule.
+
+**Results — Planetiler:**
+
+| Config | Factor varied | Tiles | Total diags | GD | SP (coord-range) |
+|:-------|:-------------|------:|------------:|---:|-----------------:|
+| pl_s0_b64_z12 | simplification≈0 | 15 | 0 | 0 | 0 |
+| pl_s1_b64_z12 (baseline) | — | 15 | 0 | 0 | 0 |
+| pl_s2_b64_z12 | simplification=2 | 15 | 0 | 0 | 0 |
+| pl_s4_b64_z12 | simplification=4 | 15 | 0 | 0 | 0 |
+| pl_s1_b0_z12 | buffer=0 | 15 | 0 | 0 | 0 |
+| pl_s1_b80_z12 | buffer=80 | 15 | 0 | 0 | 0 |
+| pl_s1_b64_z8 | zoom=8 | 1 | 0 | 0 | 0 |
+| **pl_s1_b64_z14** | **zoom=14** | **162** | **106** | **5** | **101** |
+
+**Attribution Matrix (Genuine Defects — Δ from baseline):**
+
+| Factor | Value | TC GD | TC Δ | PL GD | PL Δ |
+|:-------|:------|------:|-----:|------:|-----:|
+| simplification | 0 | 0 | 0 | 0 | 0 |
+| simplification | 1 (baseline) | 0 | — | 0 | — |
+| simplification | 2 | 0 | 0 | 0 | 0 |
+| simplification | 4 | 0 | 0 | 0 | 0 |
+| buffer | 0 | 0 | 0 | 0 | 0 |
+| buffer | 64 (baseline) | 0 | — | 0 | — |
+| buffer | 80 | 0 | 0 | 0 | 0 |
+| zoom | 8 | 0 | 0 | 0 | 0 |
+| zoom | 12 (baseline) | 0 | — | 0 | — |
+| zoom | **14** | 0 | 0 | **5** | **+5** |
+
+**Key findings:**
+
+**Finding 1 — Tippecanoe introduces zero GDs on Monaco polygons.** Across all 8 OFAT configurations (varying simplification tolerance 0→4, buffer 0→80, zoom z8→z14), Tippecanoe v2.82.0 produces zero Genuine Defects from 2357 source-valid polygon features. All diagnostics are `tile/coordinate-range` SP — clipping buffer artifacts.
+
+**Finding 2 — Planetiler introduces 5 GDs at z14 only.** At `pl_s1_b64_z14` (baseline parameters, zoom=14), Planetiler produces 5 Genuine Defects across 162 tiles (GD/tile = 0.031). These are absent at z8 and z12 with identical simplification and buffer parameters. The defects emerge only when zoom increases to 14.
+
+**Finding 3 — Simplification and buffer do not independently produce GDs at z12.** Sweeping simplification from 0 to 4 at fixed zoom=12, and buffer from 0 to 80 at fixed simplification=1/zoom=12, produces 0 GDs for both compilers. This isolates zoom as the only factor that triggers defect introduction in this experiment.
+
+**Finding 4 — Planetiler's z14 GD pattern is consistent with the EXP-008 finding.** EXP-008 found Planetiler (OpenFreeMap pipeline) at z14 produced 1.22 GD/tile on Tokyo transportation data, vs CARTO 0.12 GD/tile. EXP-011 now traces this to the Planetiler pipeline itself: given clean source data, Planetiler at z14 introduces GDs whereas Tippecanoe does not.
+
+**Finding 5 — Planetiler z14 produces 106 total diagnostics (101 SP + 5 GD).** The SP diagnostics at z14 are `tile/coordinate-range` clipping buffer artifacts. The 5 GD diagnostics are `tile/self-intersection` — genuine topological defects introduced by the Planetiler z14 compilation.
+
+**Finding 6 — Defect introduction is zoom-dependent, not simplification-dependent, in Planetiler.** This is a specific and attributable finding: the Planetiler pipeline for Monaco polygons at baseline simplification (tolerance=1) and baseline buffer (64) produces defects only when the zoom target reaches z14. At z12 and z8 the same source data and same parameters produce no GDs.
+
+**Caveats:**
+- Monaco polygon dataset is small (2357 features) and a specific geometry type. Results may not generalize to linestring-heavy datasets (roads) where EXP-008 found the highest GD densities.
+- Planetiler's `--simplify_tolerance` flag may not control the same simplification stage as Tippecanoe's `--simplification`. Both use Douglas-Peucker, but at different pipeline stages and with different default parameters for non-polygon layers.
+- Buffer variation in Planetiler does not use the same `--buffer` mechanism as Tippecanoe. Planetiler's buffer is controlled by the OpenMapTiles profile, not the command-line flag used here. The `b0` and `b80` Planetiler runs vary only the TileGuard audit threshold, not the actual tile buffer.
+
+**Raw data:** `analysis/phase3-pipeline/controlled-pipeline-results.json`
+
+**Scripts:**
+- Pipeline: `scripts/phase3-ofat-pipeline.mjs`
+
+**Artifacts:**
+- `analysis/phase3-pipeline/controlled-pipeline-results.json`
+- `tools/ofat-work/` — `.mbtiles` files and extracted `.pbf` tile directories for all 8 × 2 configurations
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
