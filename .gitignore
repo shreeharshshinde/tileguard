@@ -29,6 +29,13 @@ __pycache__/
 # Test artifacts
 fixtures/**/actual.png
 fixtures/**/diff.png
+
+# EXP-007 render experiment — full 2048×2048 screenshots (reproducible, large)
+analysis/phase3-rendering/**/*-full.png
+
+# Downloaded MapLibre GL JS assets (not source, regenerate with wget)
+tools/maplibre-gl.js
+tools/maplibre-gl.css
 *-results.json
 
 # pnpm
@@ -66,3 +73,5 @@ analysis/**/*.json
 analysis/**/*.ipynb
 !analysis/**/classification.json
 !analysis/**/decoder-crosscheck.json
+!analysis/phase3-pipeline/gd-tile-manifest.json
+!analysis/phase3-rendering/render-diffs-summary.json
