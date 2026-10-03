@@ -1,0 +1,152 @@
+[
+  {
+    "path": "/home/shreeharsh157/Desktop/tileguard/tools/ofat-work/pl_s1_b64_z14_tiles/14/8529/5974.pbf",
+    "z": 14,
+    "x": 8529,
+    "y": 5974,
+    "tileBBox": {
+      "west": 7.40478515625,
+      "east": 7.4267578125,
+      "north": 43.739352079154706,
+      "south": 43.72347489611481
+    },
+    "layer": "transportation",
+    "featureIndex": 193,
+    "message": "Geometry in layer \"transportation\", feature \"193\" has intersecting segments \"0\" and \"3\".",
+    "featureBBox": {
+      "west": 7.410546541213989,
+      "east": 7.427101135253906,
+      "north": 43.7396001601397,
+      "south": 43.72547504905636,
+      "centerLng": 7.418823838233948,
+      "centerLat": 43.73253760459803,
+      "tilePixels": {
+        "minX": 1074,
+        "minY": -64,
+        "maxX": 4160,
+        "maxY": 3580,
+        "extent": 4096
+      }
+    }
+  },
+  {
+    "path": "/home/shreeharsh157/Desktop/tileguard/tools/ofat-work/pl_s1_b64_z14_tiles/14/8529/5974.pbf",
+    "z": 14,
+    "x": 8529,
+    "y": 5974,
+    "tileBBox": {
+      "west": 7.40478515625,
+      "east": 7.4267578125,
+      "north": 43.739352079154706,
+      "south": 43.72347489611481
+    },
+    "layer": "transportation_name",
+    "featureIndex": 2,
+    "message": "Geometry in layer \"transportation_name\", feature \"2\" has intersecting segments \"1\" and \"17\".",
+    "featureBBox": {
+      "west": 7.405391335487366,
+      "east": 7.412799596786499,
+      "north": 43.73511144481739,
+      "south": 43.72874274078063,
+      "centerLng": 7.409095466136932,
+      "centerLat": 43.73192709279901,
+      "tilePixels": {
+        "minX": 113,
+        "minY": 1094,
+        "maxX": 1494,
+        "maxY": 2737,
+        "extent": 4096
+      }
+    }
+  },
+  {
+    "path": "/home/shreeharsh157/Desktop/tileguard/tools/ofat-work/pl_s1_b64_z14_tiles/14/8529/5974.pbf",
+    "z": 14,
+    "x": 8529,
+    "y": 5974,
+    "tileBBox": {
+      "west": 7.40478515625,
+      "east": 7.4267578125,
+      "north": 43.739352079154706,
+      "south": 43.72347489611481
+    },
+    "layer": "transportation_name",
+    "featureIndex": 12,
+    "message": "Geometry in layer \"transportation_name\", feature \"12\" has intersecting segments \"2\" and \"7\".",
+    "featureBBox": {
+      "west": 7.412091493606567,
+      "east": 7.41326630115509,
+      "north": 43.72797911649869,
+      "south": 43.72706431786651,
+      "centerLng": 7.412678897380829,
+      "centerLat": 43.7275217171826,
+      "tilePixels": {
+        "minX": 1362,
+        "minY": 2934,
+        "maxX": 1581,
+        "maxY": 3170,
+        "extent": 4096
+      }
+    }
+  },
+  {
+    "path": "/home/shreeharsh157/Desktop/tileguard/tools/ofat-work/pl_s1_b64_z14_tiles/14/8529/5974.pbf",
+    "z": 14,
+    "x": 8529,
+    "y": 5974,
+    "tileBBox": {
+      "west": 7.40478515625,
+      "east": 7.4267578125,
+      "north": 43.739352079154706,
+      "south": 43.72347489611481
+    },
+    "layer": "transportation_name",
+    "featureIndex": 180,
+    "message": "Geometry in layer \"transportation_name\", feature \"180\" has intersecting segments \"2\" and \"4\".",
+    "featureBBox": {
+      "west": 7.417327165603638,
+      "east": 7.417686581611633,
+      "north": 43.73731316355925,
+      "south": 43.73715036041285,
+      "centerLng": 7.4175068736076355,
+      "centerLat": 43.737231761986045,
+      "tilePixels": {
+        "minX": 2338,
+        "minY": 526,
+        "maxX": 2405,
+        "maxY": 568,
+        "extent": 4096
+      }
+    }
+  },
+  {
+    "path": "/home/shreeharsh157/Desktop/tileguard/tools/ofat-work/pl_s1_b64_z14_tiles/14/8530/5973.pbf",
+    "z": 14,
+    "x": 8530,
+    "y": 5973,
+    "tileBBox": {
+      "west": 7.4267578125,
+      "east": 7.44873046875,
+      "north": 43.755225053069296,
+      "south": 43.739352079154706
+    },
+    "layer": "transportation",
+    "featureIndex": 63,
+    "message": "Geometry in layer \"transportation\", feature \"63\" has intersecting segments \"0\" and \"2\".",
+    "featureBBox": {
+      "west": 7.426629066467285,
+      "east": 7.439637780189514,
+      "north": 43.75107079817759,
+      "south": 43.73910406393729,
+      "centerLng": 7.4331334233284,
+      "centerLat": 43.74508743105744,
+      "tilePixels": {
+        "minX": -24,
+        "minY": 1072,
+        "maxX": 2401,
+        "maxY": 4160,
+        "extent": 4096
+      }
+    }
+  }
+]

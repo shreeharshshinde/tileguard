@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "experiment": "EXP-007",
+    "generated": "2026-10-02T11:11:25.797Z",
+    "description": "Headless MapLibre 2048×2048 render + 256×256 crop pixel-diff experiment",
+    "maplibreVersion": "4.7.1",
+    "playwrightVersion": "1.49.0",
+    "chromium": "Headless Shell 131.0.6778.33",
+    "renderResolution": "2048×2048",
+    "cropSize": "256×256 centred on defect coordinate",
+    "impactThresholds": {
+      "none": "maxDelta < 3",
+      "minimal": "changedFraction < 0.001  (<0.1% pixels)",
+      "minor": "changedFraction < 0.01   (<1%)",
+      "moderate": "changedFraction < 0.05   (<5%)",
+      "significant": "changedFraction >= 0.05  (≥5%)"
+    }
+  },
+  "results": [
+    {
+      "caseId": "syn-butterfly",
+      "label": "Synthetic — butterfly self-crossing polygon",
+      "tile": "z14/8529/5974",
+      "centre": {
+        "lng": 7.4128,
+        "lat": 43.7348
+      },
+      "mapZoom": 14,
+      "defectFullPng": "syn-butterfly/defect-full.png",
+      "controlFullPng": "syn-butterfly/control-full.png",
+      "defectCropPng": "syn-butterfly/defect-crop.png",
+      "controlCropPng": "syn-butterfly/control-crop.png",
+      "pixelDiff": {
+        "maxDelta": 193,
+        "meanDelta": 41.25406392415307,
+        "changedPixels": 33967,
+        "changedFraction": 0.5182952880859375
+      },
+      "renderImpact": "significant"
+    },
+    {
+      "caseId": "syn-hourglass",
+      "label": "Synthetic — hourglass polygon (figure-8 crossing)",
+      "tile": "z14/8529/5974",
+      "centre": {
+        "lng": 7.4128,
+        "lat": 43.7348
+      },
+      "mapZoom": 14,
+      "defectFullPng": "syn-hourglass/defect-full.png",
+      "controlFullPng": "syn-hourglass/control-full.png",
+      "defectCropPng": "syn-hourglass/defect-crop.png",
+      "controlCropPng": "syn-hourglass/control-crop.png",
+      "pixelDiff": {
+        "maxDelta": 193,
+        "meanDelta": 38.71977233886704,
+        "changedPixels": 30269,
+        "changedFraction": 0.4618682861328125
+      },
+      "renderImpact": "significant"
+    },
+    {
+      "caseId": "syn-crossing-hole",
+      "label": "Synthetic — polygon with self-crossing interior hole",
+      "tile": "z14/8529/5974",
+      "centre": {
+        "lng": 7.4128,
+        "lat": 43.7348
+      },
+      "mapZoom": 14,
+      "defectFullPng": "syn-crossing-hole/defect-full.png",
+      "controlFullPng": "syn-crossing-hole/control-full.png",
+      "defectCropPng": "syn-crossing-hole/defect-crop.png",
+      "controlCropPng": "syn-crossing-hole/control-crop.png",
+      "pixelDiff": {
+        "maxDelta": 119,
+        "meanDelta": 2.2809295654296893,
+        "changedPixels": 1622,
+        "changedFraction": 0.024749755859375
+      },
+      "renderImpact": "moderate"
+    },
+    {
+      "caseId": "prod-14-8529-5974",
+      "label": "Production — Planetiler z14/8529/5974 (4 GDs: transportation#193, transportation_name#2, transportation_name#12, transportation_name#180)",
+      "tile": "z14/8529/5974",
+      "centre": {
+        "lng": 7.418823838233948,
+        "lat": 43.73253760459803
+      },
+      "mapZoom": 16,
+      "defectFullPng": "prod-14-8529-5974/defect-full.png",
+      "controlFullPng": "prod-14-8529-5974/control-full.png",
+      "defectCropPng": "prod-14-8529-5974/defect-crop.png",
+      "controlCropPng": "prod-14-8529-5974/control-crop.png",
+      "pixelDiff": {
+        "maxDelta": 154.66666666666666,
+        "meanDelta": 52.71732584634484,
+        "changedPixels": 55447,
+        "changedFraction": 0.8460540771484375
+      },
+      "renderImpact": "significant"
+    },
+    {
+      "caseId": "prod-14-8530-5973",
+      "label": "Production — Planetiler z14/8530/5973 (1 GD: transportation#63)",
+      "tile": "z14/8530/5973",
+      "centre": {
+        "lng": 7.4331334233284,
+        "lat": 43.74508743105744
+      },
+      "mapZoom": 16,
+      "defectFullPng": "prod-14-8530-5973/defect-full.png",
+      "controlFullPng": "prod-14-8530-5973/control-full.png",
+      "defectCropPng": "prod-14-8530-5973/defect-crop.png",
+      "controlCropPng": "prod-14-8530-5973/control-crop.png",
+      "pixelDiff": {
+        "maxDelta": 138.33333333333334,
+        "meanDelta": 35.17315165202421,
+        "changedPixels": 45933,
+        "changedFraction": 0.7008819580078125
+      },
+      "renderImpact": "significant"
+    }
+  ],
+  "impactSummary": {
+    "none": 0,
+    "minimal": 0,
+    "minor": 0,
+    "moderate": 1,
+    "significant": 4,
+    "no_control": 0
+  }
+}
