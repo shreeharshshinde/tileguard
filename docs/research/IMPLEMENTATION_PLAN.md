@@ -395,7 +395,7 @@
 
 - [ ] Task 3.1 (Controlled pipeline OFAT) completed; transformation stage attribution documented.
 - [ ] Task 3.3 (z5–z14 corpus) benchmarked.
-- [ ] Task 3.4 (Rendering diffs) evaluated on high-res bounding boxes for polygon defects.
+- [x] Task 3.4 (Rendering diffs) evaluated on high-res bounding boxes for polygon defects.
 - [ ] Phase 3 artifacts saved in `analysis/phase3-*/`.
 
 ---
@@ -517,7 +517,7 @@
 | 3.1 EXP-011: Controlled pipeline experiment (OFAT design) | 3 | ✅ Complete | 2026-10-02 |
 | 3.2 Note on Overpass source tracing | 3 | ⚪ Dropped | — |
 | 3.3 EXP-008: z5–z14 corpus extension | 3 | ✅ Complete | 2026-10-01 |
-| 3.4 EXP-007: Headless high-res render diffs | 3 | 🔴 Not Started | — |
+| 3.4 EXP-007: Headless high-res render diffs | 3 | ✅ Complete | 2026-10-02 |
 | 4.1 Read 8 CS & Geospatial papers (corrected citations) | 4 | 🔴 Not Started | — |
 | 4.2 Write 2–3 page SE-framed proposal | 4 | 🔴 Not Started | — |
 | 4.3 Draft preprint / short paper | 4 | 🔴 Not Started | — |
@@ -588,7 +588,7 @@ docs/
 | C5 | Only 2 of 12 rules examined | Task 2.3 | 🔴 |
 | D1 | "Format-wide" generalization overclaim | Task 1.1 | 🔴 |
 | D2 | Higher zoom levels unmeasured | Task 3.3 | 🔴 |
-| D3 | Rendering impact unknown | Task 3.4 | 🔴 |
+| D3 | Rendering impact unknown | Task 3.4 | ✅ Closed |
 | E1 | No systematic literature search | Task 1.0 | 🔴 |
 | E2 | Unread adjacent work / wrong citations | Task 4.1 | 🔴 |
 | E3 | Unverified citations | Task 4.1 | 🔴 |

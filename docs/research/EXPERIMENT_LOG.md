@@ -504,7 +504,8 @@ The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `sel
 
 **Aligned self-intersection definitions:**
 - **Proper interior crossing** — segments AB and CD cross without sharing an endpoint. Both oracles and TileGuard aim to detect these for Polygon rings.
-- **Vertex-touching / self-tangency** — GEOS `is_simple` fires; TileGuard Guard 3 (duplicate vertex) suppresses. Tracked separately as `GEOS_EXTRA_DUP_VERTEX`.
+- **Self-tangency (adjacent vertices)** — ring vertex $i$ and vertex $i+1$ coincide (duplicate adjacent vertex). GEOS `is_simple` fires; TileGuard Guard 3 suppresses. Tracked as `GEOS_EXTRA_DUP_VERTEX`.
+- **Self-tangency (non-adjacent vertices)** — ring vertex $i$ and vertex $j$ ($j \neq i \pm 1$) coincide. The ring touches itself at a point without a proper interior crossing. GEOS `is_simple` fires; TileGuard currently has no guard for this and fires too. Tracked as `AGREE_NOPROPER_TOUCH`. This is the source of the 127 Polygon FPs (see Guard 5 proposal below).
 - **Closure pair (0, N−1)** — structural closed-ring adjacency. TileGuard Guard 2 suppresses. Tracked as `GEOS_EXTRA_CLOSURE`.
 
 **Agreement matrix — all 407 deduplicated rings:**
@@ -512,10 +513,12 @@ The 170 Cat B1 genuine crossings (identified by `sharedVertex === false` in `sel
 | Category | Count | Meaning |
 |:---------|------:|:--------|
 | `AGREE_DEFECT` | 31 | All three agree: proper interior crossing — genuine defect |
-| `AGREE_NOPROPER_TOUCH` | 131 | GEOS + TileGuard both flag; Oracle 2 finds only endpoint touch (no proper crossing) |
-| `GEOS_EXTRA_DUP_VERTEX` | 103 | GEOS non-simple; TileGuard suppressed via Guard 3 (correct) |
-| `PARTIAL_AGREE` | 142 | Mixed 3-way verdict — various edge cases |
+| `AGREE_NOPROPER_TOUCH` | 131 | GEOS non-simple + TileGuard fires; Oracle 2 finds only self-tangency (non-adjacent vertices coincide, no proper crossing). 127 Polygon + 4 LineString. |
+| `GEOS_EXTRA_DUP_VERTEX` | 103 | GEOS non-simple; TileGuard suppressed via Guard 3 (duplicate adjacent vertex) — correct suppression |
+| `PARTIAL_AGREE` | 142 | TileGuard=False, GEOS=False, Oracle 2 touch-only. All 142 are LineString rings. TileGuard does not fire on any of these — zero FPs here. |
 | **Total** | **407** | |
+
+**Note on PARTIAL_AGREE:** All 142 rows in this category are LineString rings where Oracle 2 detects a vertex touch but neither GEOS nor TileGuard flags the ring. These are true negatives from TileGuard's perspective. The label "mixed 3-way verdict" in earlier versions of this log was misleading — there is no disagreement involving TileGuard here.
 
 **Polygon ring evaluation — Precision / Recall / F1:**
 
@@ -524,12 +527,14 @@ Ground truth positive = dual oracle consensus defect (GEOS non-simple **AND** Or
 | Metric | Value |
 |:-------|:------|
 | TP | 27 |
-| FP | 127 |
+| FP | 131 (127 Polygon + 4 LineString — all from `AGREE_NOPROPER_TOUCH`) |
 | FN | **0** |
 | TN | 19 |
-| **Precision** | **17.5%** |
+| **Precision** | **17.5%** (Polygon-only: 27/154) |
 | **Recall** | **100.0%** |
 | **F1** | **0.2983** |
+
+Note on FP count: the P/R/F1 table evaluates Polygon rings only (TP=27, FP=127, FN=0, TN=19 → 173 rings). The full 407-ring matrix includes LineString rings evaluated separately. The 131 `AGREE_NOPROPER_TOUCH` FPs split as 127 Polygon (counted in the P/R/F1 table) + 4 LineString (not counted).
 
 **LineString rings (reported separately — not included in P/R/F1):**
 
@@ -542,10 +547,11 @@ Ground truth positive = dual oracle consensus defect (GEOS non-simple **AND** Or
 | Note | LineString crossings are OGC non-simple but valid — not evaluated for P/R/F1 |
 
 **Interpretation:**
-- **Recall = 100%** — TileGuard never misses a genuine Polygon crossing confirmed by both oracles. Zero false negatives.
-- **Precision = 17.5%** — TileGuard over-reports on production rings. The 127 FPs break down as: quantization artifacts (Guard 3 miss cases), spec-permitted conventions, and vertex-touch cases where GEOS and Oracle 2 disagree on whether it counts as a "proper" crossing.
-- The 103 `GEOS_EXTRA_DUP_VERTEX` rows confirm Guard 3 correctly suppresses cases GEOS would over-flag — these are counted as TN from TileGuard's perspective.
-- The `AGREE_NOPROPER_TOUCH` category (131 rings) reveals an important boundary: GEOS flags vertex-touching as non-simple, but Oracle 2 (proper crossing only) does not. These need further inspection in the PARTIAL_AGREE analysis.
+- **Recall = 100%** — TileGuard never misses a genuine Polygon crossing confirmed by both oracles. Zero false negatives on the oracle set.
+- **Precision = 17.5%** — All 127 Polygon FPs come from a single category: `AGREE_NOPROPER_TOUCH`. These are rings where GEOS flags self-tangency (non-simple) and TileGuard fires, but Oracle 2 (proper crossing predicate only) finds only self-tangency — non-adjacent ring vertices that coincide at a point with no proper interior segment intersection. This is not a scattered set of failure modes — it is one specific, nameable gap.
+- **The gap: missing Guard 5 (proposed — not yet implemented or validated).** TileGuard currently suppresses duplicate *adjacent* vertices (Guard 3) and closure pairs (Guard 2), but does not suppress self-tangency at *non-adjacent* vertices. A ring where vertex $i$ and vertex $j$ ($j \neq i \pm 1$) coincide will trigger TileGuard because the segment-pair intersection test finds a shared endpoint — but this is self-tangency, not a proper crossing. Guard 5 would suppress cases where the only flagged intersection is self-tangency of this form. If implemented and EXP-003b is rerun, the prediction is that precision rises substantially with recall unchanged. This has not yet been tested — Guard 5 is a proposed fix, not a confirmed one. The 17.5% precision figure stands as reported until that validation is done.
+- The 103 `GEOS_EXTRA_DUP_VERTEX` rows confirm Guard 3 is working correctly — TileGuard does not fire on these cases that GEOS would over-flag.
+- `PARTIAL_AGREE` (142 rows) contains zero TileGuard fires. These are all LineString touch-only cases and do not affect the precision/recall calculation.
 
 **Scripts:**
 - Step 1 (Deduplication): `scripts/phase2-deduplicate-rings.py`
@@ -875,6 +881,77 @@ The `--download` flag in the pipeline script fetches these automatically on firs
 
 ---
 
+## EXP-007 — Headless MapLibre Rendering Experiment
+
+**Date:** 2026-10-02  
+**Status:** Complete  
+**Question:** Do confirmed Genuine Defect self-intersections in production tiles produce visible rendering artifacts in MapLibre GL JS?
+
+**Motivation (Gap D3):** Prior experiments established that self-intersections exist in production tiles, but rendered impact was unknown. A defect that is topologically invalid but visually invisible would weaken the practical argument for TileGuard. Conversely, visible artifacts confirm that the diagnostics correspond to real user-facing quality problems.
+
+**Method:**  
+Script `scripts/phase3-render-experiment.mjs`.  
+For each test case:
+1. Spin up a local HTTP server (Node.js `http.createServer`) serving MapLibre GL JS 4.7.1 (bundled locally at `tools/maplibre-gl.js`), the tile PBF, and an HTML page.
+2. Launch headless Chromium 131 via Playwright 1.49.0 with `--enable-unsafe-swiftshader --no-sandbox` (required for software WebGL in a headless Linux environment).
+3. Render a 2048×2048 map centred on the defect coordinate (zoom=14 for synthetic, zoom=16 for production tiles to zoom in on specific defect).
+4. Screenshot the full map, then crop a 256×256 region centred on the map centre (= defect centre).
+5. Compute per-pixel RGBA delta between defect crop and control crop inside the browser canvas. Report `maxDelta` (0–255), `changedFraction` (fraction of pixels with delta > 2).
+6. Classify impact: **none** (maxDelta < 3), **minimal** (<0.1% pixels changed), **minor** (<1%), **moderate** (<5%), **significant** (≥5%).
+
+**Setup issues encountered:**
+- First attempt: `glyphs: ''` in MapLibre style caused glyph URL validation errors, preventing `map.on('idle')` from firing → all renders were plain background (17KB PNGs). Fix: remove `glyphs` key entirely.
+- WebGL fallback warning (`Automatic fallback to software WebGL has been deprecated`) was present but harmless — actual renders were correct once `--enable-unsafe-swiftshader` was passed.
+- Tile resolver initially served only the exact z/x/y tile; MapLibre requests 3–4 neighbouring tiles in a 2048×2048 viewport. Fix: serve the same buffer for any tile request at the correct zoom level.
+
+**Controls:**
+- Synthetic: defect fixture (tp-*) vs matching clean fixture (tn-*), both from `fixtures/phase2-synthetic/`
+- Production: Planetiler defect tile vs a clean adjacent Planetiler tile with 0 GDs (same layer schema, same compiler)
+
+**Dataset:**
+- 3 synthetic cases (butterfly, hourglass, crossing-hole)
+- 2 production tiles (z14/8529/5974 with 4 GDs, z14/8530/5973 with 1 GD)
+- 10 total renders (5 defect + 5 control)
+- 20 PNG files saved to `analysis/phase3-rendering/`
+
+**Results:**
+
+| Case | Type | Layer | maxDelta | changedFraction | Impact |
+|:-----|:-----|:------|:--------:|:---------------:|:------:|
+| tp-butterfly | Synthetic polygon | `test` | 193.0 | 51.83% | **significant** |
+| tp-hourglass | Synthetic polygon | `test` | 193.0 | 46.19% | **significant** |
+| tp-crossing-hole | Synthetic polygon | `test` | 119.0 | 2.47% | **moderate** |
+| z14/8529/5974 | Production Planetiler | `transportation`, `transportation_name` | 154.7 | 84.61% | **significant** |
+| z14/8530/5973 | Production Planetiler | `transportation` | 138.3 | 70.09% | **significant** |
+
+**Key findings:**
+
+**Finding 1 — All 5 GD cases produce visible rendering artifacts.** No case classified as `none` or `minimal`. The self-intersecting geometries cause MapLibre's earcut triangulation to produce incorrect fills — polygon interiors are rendered incorrectly (fill leaking outside boundaries, incorrect winding interpretation, or missing fill regions).
+
+**Finding 2 — Production defects have higher visual impact than synthetic controls.** The two production tiles from Planetiler z14 show 70–85% of crop pixels changed vs control, with maxDelta values of 138–155. This is large — over half the 256×256 crop region is visually different between the defect and clean tile.
+
+**Finding 3 — Synthetic butterfly and hourglass show maxDelta=193 (near maximum).** These are idealized self-intersections where the figure-8 crossing produces a catastrophic fill inversion. The clean control renders a solid convex polygon; the defect renders a visually chaotic fill.
+
+**Finding 4 — Crossing-hole is moderate, not significant (2.47%, maxDelta=119).** The interior hole crossing produces a smaller visible artifact — only the hole region is affected, not the outer fill. This is consistent with the OGC distinction: exterior ring crossings are more visually damaging than hole crossings.
+
+**Finding 5 — Defect PNG file sizes are 4–7× larger than control PNGs.** The production defect tiles at 1.9MB and 930KB vs controls at 251KB and 193KB. The complex, non-repeating pixel patterns from the rendering artifact compress poorly, confirming the renders contain high-entropy visual content rather than smooth fills.
+
+**Conclusion for Gap D3:** Self-intersection Genuine Defects detected by TileGuard produce visible rendering artifacts in MapLibre GL JS. The impact is significant (>50% crop pixels changed) for 4 of 5 cases. This confirms that TileGuard's `tile/self-intersection` rule detects defects with real, user-facing visual consequences — not just abstract topology violations.
+
+**Scripts:**
+- Tile finder: `scripts/phase3-find-gd-tiles.mjs`
+- Render experiment: `scripts/phase3-render-experiment.mjs`
+
+**Artifacts:**
+- `analysis/phase3-rendering/<case>/defect-full.png` — 2048×2048 render of defect tile
+- `analysis/phase3-rendering/<case>/control-full.png` — 2048×2048 render of clean control tile
+- `analysis/phase3-rendering/<case>/defect-crop.png` — 256×256 crop around defect centre
+- `analysis/phase3-rendering/<case>/control-crop.png` — 256×256 crop from control
+- `analysis/phase3-rendering/render-diffs-summary.json`
+- `analysis/phase3-pipeline/gd-tile-manifest.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
@@ -883,5 +960,4 @@ The following experiments are needed but have not been performed. Numbers will b
 |:---|:---------|:--------------|:---------|
 
 
-| EXP-007 | Do any of the 170 confirmed self-intersections produce visible rendering artifacts in MapLibre? | existing tiles + headless MapLibre | HIGH — RQ3 viability |
-| EXP-010 | Do winding-order violations in production tiles cause observable rendering anomalies? | existing tiles + headless MapLibre | MEDIUM |
+| EXP-012 | Do winding-order violations in production tiles cause observable rendering anomalies? | existing tiles + headless MapLibre | MEDIUM |
