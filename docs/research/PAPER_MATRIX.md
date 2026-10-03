@@ -114,7 +114,7 @@ These address rendering quality but not at the source data level.
 | **Storybook + Chromatic (visual regression)** | Component-level visual regression | UI components, not maps; no tile content validation | Mature visual regression tooling | No | chromatic.com |
 | **Playwright / Puppeteer screenshot tests** | Browser automation for visual comparison | No semantic knowledge of tile content; pixel-only; brittle | General purpose; many integrations | No | playwright.dev |
 
-**Gap identified:** Rendering tests catch what a rendered map looks like differently, but cannot explain why. They have no knowledge of which tile, which layer, which feature, or which geometry property caused the visual difference. TileGuard targets the explanatory layer: identifying structural or geometric defects in source data that can explain rendering anomalies. The connection between tile diagnostics and rendering anomalies is an open research question (EXP-007, EXP-010).
+**Gap identified:** Rendering tests catch what a rendered map looks like differently, but cannot explain why. They have no knowledge of which tile, which layer, which feature, or which geometry property caused the visual difference. TileGuard targets the explanatory layer: identifying structural or geometric defects in source data that can explain rendering anomalies. The connection between tile diagnostics and rendering anomalies is an open research question (EXP-007, EXP-012).
 
 ---
 
@@ -195,7 +195,7 @@ A configurable, plugin-based rule engine for post-generation tile validation (as
 *Requires: Category 0 and E search.*
 
 **Claim 4 — Source-to-render relationship (open empirical question).**  
-Whether automated structural diagnostics at the source level can identify or explain rendering anomalies in a web mapping renderer (MapLibre) is an open empirical question. Not a novelty claim — a research question to be investigated (EXP-007, EXP-010).  
+Whether automated structural diagnostics at the source level can identify or explain rendering anomalies in a web mapping renderer (MapLibre) is an open empirical question. Not a novelty claim — a research question to be investigated (EXP-007, EXP-012).  
 *Status: Requires experiment, not literature.*
 
 ---

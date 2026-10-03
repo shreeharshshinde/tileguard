@@ -313,6 +313,6 @@ Evidence that is referenced or needed but has not been produced:
 | EXP-007 — headless MapLibre rendering for 170 self-intersections | RQ3: source-to-render relationship | Visual comparison images; correlation table |
 | EXP-008 — z5–z14 tile corpus | RQ4: zoom generalisation | New benchmark dataset; diagnostic counts |
 | EXP-009 — precision/recall against synthetic tiles | RQ5: detection accuracy | TP/FP/TN/FN per rule; precision and recall figures |
-| EXP-010 — headless rendering for winding-order violations | RQ3 extension | Visual comparison images |
+| EXP-012 — headless rendering for winding-order violations | RQ3 extension | Visual comparison images |
 | Category E literature search results | Novelty verification; RQ-L1/L2/L3 | Paper matrix entries with confirmed reads |
 | Screenshot gallery — Inspector UI | FOSS4G demo material | Static images showing canvas rendering, diagnostics overlay, comparison view |

@@ -86,7 +86,7 @@ The FAQ documents state: "MapLibre wraps earcut in a try/catch, so incorrect win
 **What would answer it:**  
 A headless MapLibre rendering experiment (EXP-007): take the 170 confirmed self-intersecting geometries, render the affected tiles in headless MapLibre, compare with a corrected version, and record whether any visual difference is detectable at any zoom level.
 
-A parallel experiment for winding-order violations (EXP-010).
+A parallel experiment for winding-order violations (EXP-012).
 
 **Status:** Not answerable without EXP-007. This is the highest-value open question for the research framing. A result either way is meaningful.
 
@@ -188,7 +188,7 @@ In order of value to the research questions above:
 | 4 | **EXP-007** — Headless MapLibre rendering for 170 self-intersections | RQ3 | 3–5 days | Existing tiles; needs headless setup |
 | 5 | **EXP-009** — Precision/recall against synthetic known-defect tiles | RQ5 | 2–3 days | `generate-synthetic-fixtures.mts` exists |
 | 6 | **EXP-008** — z5–z14 tile collection and rule run | RQ4 | 5–7 days | New data collection required |
-| 7 | **EXP-010** — Headless rendering for winding-order violations | RQ3 extension | 3–4 days | Needs EXP-006 first |
+| 7 | **EXP-012** — Headless rendering for winding-order violations | RQ3 extension | 3–4 days | Needs EXP-006 first |
 
 ---
 
