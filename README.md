@@ -6,8 +6,11 @@
 [![CI](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml/badge.svg)](https://github.com/shreeharshshinde/tileguard/actions/workflows/tile-quality.yml)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![FOSS4G 2026](https://img.shields.io/badge/FOSS4G%202026-Hiroshima-red)](https://2026.foss4g.org)
+[![Research](https://img.shields.io/badge/research-8%20experiments-blue)](RESEARCH.md)
 
-Rule-based validation for vector tiles and MapLibre style files.
+Rule-based validation for vector tiles and MapLibre style files, grounded in a corpus study of 2,094 production tiles across three pipelines. Each rule ships with evidence for what it catches, what it ignores, and why.
+
+📄 **[Read the Research →](RESEARCH.md)**  — 8 experiments · 148,996 diagnostics classified · dual-oracle validation · rendering impact verified
 
 
 Vector tile bugs are silent. A self-intersecting polygon in your `countries` layer renders fine at z3, breaks earcut triangulation at z8, and nobody notices until a user files a report. A style referencing an undeclared source loads without error in development and fails in production. TileGuard catches these things before they ship.
