@@ -130,12 +130,14 @@ All three providers emit MVT spec-conformant clockwise exterior rings. TileGuard
 
 **Agreement matrix (407 rings):**
 
+Four categories emerged. The critical one is `AGREE_NOPROPER_TOUCH` (131 rings): GEOS and TileGuard both fire, but Oracle 2 finds only a collinear-endpoint contact — a vertex lying exactly on the line of a non-adjacent segment — rather than a proper interior crossing. This is one specific, nameable mechanism and the sole source of the 127 Polygon false positives.
+
 | Category | Count | Meaning |
 |:---------|------:|:--------|
-| `AGREE_DEFECT` | 31 | All three agree: proper interior crossing |
-| `AGREE_NOPROPER_TOUCH` | 131 | GEOS non-simple + TileGuard fires; Oracle 2 finds only collinear-endpoint contact |
-| `GEOS_EXTRA_DUP_VERTEX` | 103 | GEOS fires; TileGuard correctly suppressed via Guard 3 |
-| `PARTIAL_AGREE` | 142 | All LineString rings where Oracle 2 detects touch only; TileGuard silent — zero FPs |
+| `AGREE_DEFECT` | 31 | All three agree: proper interior crossing — genuine defect |
+| `AGREE_NOPROPER_TOUCH` | 131 | GEOS non-simple + TileGuard fires; Oracle 2 finds only collinear-endpoint contact, not a proper crossing |
+| `GEOS_EXTRA_DUP_VERTEX` | 103 | GEOS fires; TileGuard correctly suppressed via Guard 3 — confirms guard is working |
+| `PARTIAL_AGREE` | 142 | LineString rings where Oracle 2 detects a vertex touch; neither GEOS nor TileGuard fires — zero FPs here |
 
 **Polygon metrics (dual-oracle consensus as ground truth):**
 
@@ -272,13 +274,13 @@ All 5 GD cases produce visible artifacts. The two production tiles show 70–85%
 | **Genuine Defect** | **154** | **0.10%** |
 | **Total (z0–z4 corpus)** | **148,996** | |
 
-The overwhelming majority of diagnostics from a naively configured validator are not defects. The 0.10% that are genuine (154 Polygon crossings) all produce significant rendering artifacts.
+The overwhelming majority of diagnostics from a naively configured validator are not defects. Of every diagnostic produced on this corpus, only 1 in 1,000 is a genuine defect. That 0.10% matters: all 154 genuine Polygon crossings produce significant rendering artifacts in MapLibre GL JS (EXP-007). The research challenge is not finding defects — it is distinguishing them from the 99.9% that are encoding conventions the pipeline is supposed to produce.
 
 ---
 
 ## Open Questions
 
-**Guard 6 (collinear-endpoint contact suppression).** The 127 Polygon FPs in EXP-003b are collinear-endpoint contacts — a vertex of one segment lies exactly on the line of a non-adjacent segment (one `orient2d = 0`). TileGuard's `segmentsIntersect` fires; Oracle 2's strictly-straddling predicate does not. A Guard 6 that suppresses pairs where the only contact is a collinear-endpoint touch would bring Polygon precision to ~100% with recall unchanged (verified: all 27 TPs have all four orients nonzero).
+**Collinear-endpoint contact suppression (precision fix).** All 127 Polygon false positives share one geometric mechanism: a vertex of one segment lies exactly on the line of a non-adjacent segment, making one `orient2d = 0`. TileGuard's intersection test fires because `o1 ≠ o2 && o3 ≠ o4` holds when one orient is zero; Oracle 2's strictly-straddling predicate does not fire because it requires strictly opposite signs. Suppressing pairs where the sole contact is this collinear-endpoint touch — with no proper interior crossing — would bring Polygon precision from 17.5% to approximately 100%. Safety is verified: all 27 true positives have all four orients nonzero in their flagging pair, so this suppression carries no false-negative risk on this corpus.
 
 **Cross-tile boundary validation.** TileGuard validates individual tiles independently. Geometric continuity at tile seams is not addressed.
 
