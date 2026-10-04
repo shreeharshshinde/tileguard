@@ -180,9 +180,20 @@ function LayerDetailPanel({
   }
 
   const { layer } = resolved;
-  const paint = layer.paint ?? {};
-  const layout = layer.layout ?? {};
+  // paint and layout are ReadonlyMap<string, PropertyValue> — convert to plain objects for rendering
+  const paintEntries = Object.fromEntries(
+    [...layer.paint.entries()].map(([k, v]) => [k, v.raw]),
+  );
+  const layoutEntries = Object.fromEntries(
+    [...layer.layout.entries()].map(([k, v]) => [k, v.raw]),
+  );
   const filter = layer.filter;
+
+  // Diagnostics live on StyleAnalysis, not on ResolvedLayer.
+  // Filter to those whose location points at this layer.
+  const layerDiagnostics = analysis.diagnostics.filter(
+    (d) => d.location?.layerId === layerId,
+  );
 
   return (
     <WorkspacePanel
@@ -242,21 +253,21 @@ function LayerDetailPanel({
       </div>
 
       {/* Paint properties */}
-      {Object.keys(paint).length > 0 && (
+      {Object.keys(paintEntries).length > 0 && (
         <>
           <PanelDivider />
           <PanelSection title="Paint">
-            <PropertyList properties={paint as Record<string, unknown>} />
+            <PropertyList properties={paintEntries} />
           </PanelSection>
         </>
       )}
 
       {/* Layout properties */}
-      {Object.keys(layout).length > 0 && (
+      {Object.keys(layoutEntries).length > 0 && (
         <>
           <PanelDivider />
           <PanelSection title="Layout">
-            <PropertyList properties={layout as Record<string, unknown>} />
+            <PropertyList properties={layoutEntries} />
           </PanelSection>
         </>
       )}
@@ -276,11 +287,11 @@ function LayerDetailPanel({
       )}
 
       {/* Diagnostics for this layer */}
-      {resolved.diagnostics && resolved.diagnostics.length > 0 && (
+      {layerDiagnostics.length > 0 && (
         <>
           <PanelDivider />
-          <PanelSection title={`Diagnostics (${resolved.diagnostics.length})`}>
-            {resolved.diagnostics.map((d, i) => (
+          <PanelSection title={`Diagnostics (${layerDiagnostics.length})`}>
+            {layerDiagnostics.map((d, i) => (
               <div
                 key={i}
                 className="flex items-start gap-2 px-[var(--tg-space-md)] py-[var(--tg-space-xs)]"
@@ -466,7 +477,7 @@ export function StylePage({
                   <PanelHeader
                     title="Style Tree"
                     icon={FileJson}
-                    subtitle={fileName ?? undefined}
+                    {...(fileName !== null ? { subtitle: fileName } : {})}
                   />
                 }
               >
