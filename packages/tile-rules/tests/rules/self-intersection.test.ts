@@ -564,6 +564,183 @@ describe('tile/self-intersection — false-negative guard', () => {
   });
 });
 
+// ─── 7. Fix 5 — Self-tangency skip (Guard 5) ─────────────────────────────────
+//
+// Root cause: a ring that touches itself at a non-adjacent vertex (self-tangency)
+// causes two non-adjacent segments to share a common endpoint.  The orientation
+// test registers this as an intersection even though no proper interior crossing
+// exists.  GEOS `is_simple` fires for self-tangency; Oracle 2 (proper-crossing
+// predicate) does not.  TileGuard adopts Oracle 2's stricter definition.
+//
+// Corpus impact: 127 Polygon FPs in EXP-003b (AGREE_NOPROPER_TOUCH).
+// Reference: EXP-003b dual-oracle study — Guard 5 proposal.
+
+describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () => {
+  it('pass — Polygon ring that touches itself at one non-adjacent vertex (lollipop) is not flagged', async () => {
+    // Ring: A(0,0)→B(20,0)→C(20,20)→T(10,10)→D(0,20)→T(10,10)→A(0,0)
+    // Vertex T=(10,10) appears at index 3 and index 5.
+    // Segments seg[2]=(C→T) and seg[4]=(D→T) share T as a common non-adjacent endpoint.
+    // This is pure self-tangency: the ring touches itself at T but does not cross.
+    // Guard 5 must suppress this pair without suppressing the ring entirely.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },    // A — index 0
+                { x: 20, y: 0 },   // B — index 1
+                { x: 20, y: 20 },  // C — index 2
+                { x: 10, y: 10 },  // T — index 3 (first occurrence)
+                { x: 0, y: 20 },   // D — index 4
+                { x: 10, y: 10 },  // T — index 5 (non-adjacent repeat = self-tangency)
+                { x: 0, y: 0 },    // A — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('pass — closed LineString that touches itself at a non-adjacent vertex is not flagged', async () => {
+    // Same geometry as above but as a LineString (type=2, closed).
+    // Guard 5 must work on both feature types.
+    const diags = await run([
+      {
+        name: 'boundary',
+        features: [
+          {
+            type: 2,
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 20, y: 0 },
+                { x: 20, y: 20 },
+                { x: 10, y: 10 },  // T — first occurrence
+                { x: 0, y: 20 },
+                { x: 10, y: 10 },  // T — non-adjacent repeat
+                { x: 0, y: 0 },    // closing = first vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('fail — ring with BOTH a genuine crossing AND a non-adjacent vertex touch still reports the crossing', async () => {
+    // Critical false-negative guard for Guard 5.
+    //
+    // This ring has two independent topological events:
+    //   (a) Self-tangency: vertex T=(50,50) appears at indices 1 and 4 — two
+    //       non-adjacent segment pairs share T without a proper interior crossing.
+    //   (b) Genuine crossing: the bowtie formed by vertices at indices 5–8
+    //       creates a proper interior crossing at (75,75).
+    //
+    // Guard 5 must suppress ONLY the tangency pairs involving T.
+    // It must NOT suppress the ring entirely or skip the genuine crossing.
+    //
+    // Ring layout (closed):
+    //   (0,100)→T(50,50)→(100,0)→(0,0)→T(50,50)→(100,100)→(0,100)
+    //   ↑ tangency: T appears at idx 1 and idx 4
+    //   The segment (100,100)→(0,100) and something earlier cross — actually
+    //   use a cleaner bowtie: A(0,0)→B(100,100)→C(0,100)→D(100,0)→T(50,50)→E(0,50)→T(50,50)→A
+    //
+    // Simpler: build a ring that first does a proper bowtie, then adds a tangency.
+    //
+    // Ring: (0,0)→(100,100)→(0,100)→(100,0)→(0,0)  ← bowtie (crossing at (50,50))
+    // Add tangency: revisit vertex (50,100) which already appears non-adjacently.
+    //
+    // Concrete ring (indices 0-7 + close):
+    //   P0(0,0)→P1(100,100)→P2(0,100)→P3(100,0)→P0(0,0) = bowtie (segs 0 and 2 cross at (50,50))
+    // Then extend with a tangency vertex to verify Guard 5 only suppresses its own pair:
+    //
+    //   (0,0)→(40,20)→(80,40)→T(60,60)→(20,80)→T(60,60)→(0,0)
+    //   ↑ No proper crossing above — need a genuine crossing too.
+    //
+    // Cleanest approach: use a known-good bowtie ring (segs 0 and 2 cross),
+    // prepend a self-tangency touch that does NOT overlap with the crossing segments.
+    //
+    // Ring (closed, 8 interior vertices):
+    //   (0,200)→T(100,200)→(200,200)→T(100,200)→(200,100)→(0,0)→(200,0)→(0,100)→(0,200)
+    //           ↑ tangency at T=(100,200), indices 1 and 3
+    //                                              ↑ bowtie: segs 4 and 6 cross near (100,50)
+    //
+    // Segment 4: (200,100)→(0,0)
+    // Segment 6: (200,0)→(0,100)
+    // These two cross at (100,50) — a proper interior crossing independent of T.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 200 },    // P0 — index 0
+                { x: 100, y: 200 },  // T  — index 1 (first occurrence)
+                { x: 200, y: 200 },  // P2 — index 2
+                { x: 100, y: 200 },  // T  — index 3 (non-adjacent repeat = self-tangency)
+                { x: 200, y: 100 },  // P4 — index 4
+                { x: 0, y: 0 },      // P5 — index 5
+                { x: 200, y: 0 },    // P6 — index 6
+                { x: 0, y: 100 },    // P7 — index 7
+                { x: 0, y: 200 },    // P0 — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    // The ring has a genuine crossing (segs 4 and 6) that Guard 5 must NOT suppress.
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.data?.segments).toBeDefined();
+  });
+
+  it('pass — multiple non-adjacent vertex touches (multi-tangency) produce no diagnostic when no proper crossing exists', async () => {
+    // A ring that touches itself at two distinct non-adjacent vertices, T1 and T2.
+    // Neither touch involves a proper interior crossing.
+    // Guard 5 must handle multiple self-tangency vertices correctly.
+    //
+    // Ring: A(0,0)→T1(10,10)→B(20,0)→C(20,20)→T1(10,10)→D(0,20)→T2(0,10)→E(−5,15)→T2(0,10)→A(0,0)
+    // T1=(10,10) at indices 1 and 4; T2=(0,10) at indices 6 and 8.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },    // A  — index 0
+                { x: 10, y: 10 },  // T1 — index 1
+                { x: 20, y: 0 },   // B  — index 2
+                { x: 20, y: 20 },  // C  — index 3
+                { x: 10, y: 10 },  // T1 — index 4 (non-adjacent repeat)
+                { x: 0, y: 20 },   // D  — index 5
+                { x: 0, y: 10 },   // T2 — index 6
+                { x: -5, y: 15 },  // E  — index 7
+                { x: 0, y: 10 },   // T2 — index 8 (non-adjacent repeat)
+                { x: 0, y: 0 },    // A  — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+});
+
 // ── Multi-ring polygon tests ──────────────────────────────────────────────────
 
 describe('tile/self-intersection — multi-ring polygons', () => {

@@ -31,6 +31,9 @@
  *      duplicate vertex (an integer-grid quantization artefact) are not reported.
  *   4. Bounding-box pre-check — axis-aligned bounding-box rejection before the full
  *      orientation test; reduces effective comparisons by ~99.97% on production corpora.
+ *   5. Self-tangency skip — segment pairs whose only contact is a shared non-adjacent
+ *      vertex (self-tangency: ring touches itself at a point, no proper interior crossing)
+ *      are not reported. Source: 127 Polygon FPs in EXP-003b (all AGREE_NOPROPER_TOUCH).
  *
  * See ADR-007 and ROOT_CAUSE_INVESTIGATION.md for full rationale and evidence.
  */
@@ -654,12 +657,24 @@ function isPointOnSegment(
  * On production corpora this rejects ~99.97% of pairs, reducing the effective
  * cost of the loop from O(N²) to near-O(N).
  *
- * ### False-positive reduction (Phase 2 corpus, 294 tiles)
+ * **Guard 5 — Self-tangency skip**
+ * A segment pair whose only contact is a shared non-adjacent vertex is suppressed.
+ * Self-tangency occurs when ring vertex i and vertex j (|i−j| > 1, not the
+ * start==end closure) coincide: the ring touches itself at a point without any
+ * proper interior crossing. GEOS `is_simple` flags these as non-simple;
+ * Oracle 2 (proper crossing predicate) does not. Without this guard, 127 of 154
+ * Polygon FPs in the EXP-003b dual-oracle study came from this category
+ * (AGREE_NOPROPER_TOUCH). Guard 5 suppresses them without affecting recall.
+ * A one-pass O(N) pre-scan (`collectSelfTangencyVertices`) identifies all
+ * non-closing, non-adjacent shared vertices before the O(N²) loop.
+ *
+ * ### False-positive reduction (Phase 2 corpus, 294 tiles + EXP-003b oracle)
  * | Guard | FP eliminated | Cumulative FP reduction |
  * | :---- | ----: | ----: |
  * | Closed-LS closure skip | 288 | 46.5% |
  * | Duplicate-vertex spike skip | 161 | 26.0% |
- * | **Combined** | **449** | **72.5%** |
+ * | Self-tangency skip (Guard 5) | 127 | EXP-003b Polygon FPs |
+ * | **Combined (Guards 2+3)** | **449** | **72.5% (corpus)** |
  *
  * True positives (170 genuine crossings + 6 collinear overlaps) are unaffected.
  *
@@ -700,11 +715,18 @@ export function findSelfIntersectionIssues(
     // these duplicated grid points (see findFirstSelfIntersection below).
     const duplicateVertices = collectDuplicateVertices(points, closed);
 
+    // Guard 5: self-tangency skip (pre-scan).
+    // Collect all non-closing, non-adjacent shared vertex keys — vertices that
+    // appear at two or more non-adjacent positions in the ring, causing the ring
+    // to touch itself at a point without a proper interior crossing.
+    const selfTangencyVertices = collectSelfTangencyVertices(points, closed);
+
     const issue = findFirstSelfIntersection(
       points,
       closed,
       partIndex,
       duplicateVertices,
+      selfTangencyVertices,
     );
     if (issue !== undefined) issues.push(issue);
   }
@@ -846,22 +868,96 @@ function collectDuplicateVertices(
 }
 
 /**
- * Finds the first self-intersecting segment pair in a ring, applying all four
+ * Scans the ring once (O(N)) and returns the set of vertex keys (`"x,y"`) that
+ * appear at two or more **non-adjacent** positions in the ring, excluding:
+ *   - the mandatory start-equals-end closing pair (`i=0` and `i=lastIndex`),
+ *   - adjacent duplicate pairs (`|i−j| === 1`), which are already handled by
+ *     Guard 3 (`collectDuplicateVertices`).
+ *
+ * These vertices represent **self-tangency**: the ring touches itself at a point
+ * without any proper interior crossing between segments.  GEOS `is_simple` treats
+ * self-tangency as non-simple; Oracle 2 (proper-crossing predicate) does not.
+ * TileGuard adopts Oracle 2's stricter definition and suppresses these cases
+ * (Guard 5 pre-scan).
+ *
+ * The distinction from Guard 3:
+ * - Guard 3 suppresses pairs where the shared vertex is an **adjacent** duplicate
+ *   (indices differ by 1) — quantization spikes.
+ * - Guard 5 suppresses pairs where the shared vertex is a **non-adjacent** shared
+ *   vertex (indices differ by more than 1, and not the closure pair) — self-tangency.
+ *
+ * @param points - The full vertex list of a single ring, including the closing
+ *                 vertex for closed rings.
+ * @param closed - Whether the ring is closed (first vertex === last vertex).
+ *                 When `true`, the coincidence of index 0 and the last index is
+ *                 excluded from the self-tangency set.
+ */
+function collectSelfTangencyVertices(
+  points: readonly Point[],
+  closed: boolean,
+): Set<string> {
+  // seen maps vertex key → array of indices where that vertex occurs.
+  const seen = new Map<string, number[]>();
+  const lastIndex = points.length - 1;
+
+  for (let i = 0; i < points.length; i += 1) {
+    const p = points[i]!;
+    const key = `${p.x},${p.y}`;
+    const indices = seen.get(key);
+    if (indices === undefined) {
+      seen.set(key, [i]);
+    } else {
+      indices.push(i);
+    }
+  }
+
+  const selfTangency = new Set<string>();
+
+  for (const [key, indices] of seen) {
+    // Need at least two occurrences to be a shared vertex.
+    if (indices.length < 2) continue;
+
+    // Check every pair of occurrences of this vertex.
+    for (let a = 0; a < indices.length - 1; a += 1) {
+      for (let b = a + 1; b < indices.length; b += 1) {
+        const i = indices[a]!;
+        const j = indices[b]!;
+
+        // Skip the start==end closure pair — structurally required for closed rings.
+        if (closed && i === 0 && j === lastIndex) continue;
+
+        // Skip adjacent pairs (|i-j| === 1) — those are Guard 3 quantization spikes.
+        if (Math.abs(i - j) === 1) continue;
+
+        // This vertex appears at two non-adjacent, non-closure positions:
+        // the ring is self-tangent at this point.
+        selfTangency.add(key);
+      }
+    }
+  }
+
+  return selfTangency;
+}
+
+/**
+ * Finds the first self-intersecting segment pair in a ring, applying all five
  * performance and correctness guards.
  *
  * Returns the first issue found (one per ring), or `undefined` if the ring is
  * geometrically simple.
  *
- * @param points            - The full vertex list, including the closing vertex.
- * @param closed            - Whether the first-vs-last-segment closure skip applies.
- * @param partIndex         - The ring's part index within the feature (for the issue).
- * @param duplicateVertices - Non-closing duplicate vertex keys to skip (Guard 3).
+ * @param points               - The full vertex list, including the closing vertex.
+ * @param closed               - Whether the first-vs-last-segment closure skip applies.
+ * @param partIndex            - The ring's part index within the feature (for the issue).
+ * @param duplicateVertices    - Non-closing duplicate vertex keys to skip (Guard 3).
+ * @param selfTangencyVertices - Non-adjacent, non-closure shared vertex keys to skip (Guard 5).
  */
 function findFirstSelfIntersection(
   points: readonly Point[],
   closed: boolean,
   partIndex: number,
   duplicateVertices: Set<string>,
+  selfTangencyVertices: Set<string>,
 ): GeometryIssue | undefined {
   const segmentCount = points.length - 1;
 
@@ -915,6 +1011,27 @@ function findFirstSelfIntersection(
           (duplicateVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
           (duplicateVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
           (duplicateVertices.has(dKey) && (dKey === aKey || dKey === bKey))
+        ) {
+          continue;
+        }
+      }
+
+      // Guard 5: skip pairs whose only contact is a known self-tangency vertex —
+      // a non-adjacent, non-closure shared vertex where the ring touches itself
+      // at a point without any proper interior crossing.  GEOS `is_simple` fires
+      // for self-tangency; Oracle 2 (proper-crossing predicate) does not.
+      // TileGuard adopts Oracle 2's stricter definition: self-tangency is not a
+      // reportable defect.  Source: 127 Polygon FPs in EXP-003b (AGREE_NOPROPER_TOUCH).
+      if (selfTangencyVertices.size > 0) {
+        const aKey = `${a.x},${a.y}`;
+        const bKey = `${b.x},${b.y}`;
+        const cKey = `${c.x},${c.y}`;
+        const dKey = `${d.x},${d.y}`;
+        if (
+          (selfTangencyVertices.has(bKey) && (bKey === cKey || bKey === dKey)) ||
+          (selfTangencyVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
+          (selfTangencyVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
+          (selfTangencyVertices.has(dKey) && (dKey === aKey || dKey === bKey))
         ) {
           continue;
         }

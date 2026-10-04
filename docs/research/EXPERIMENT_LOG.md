@@ -952,6 +952,101 @@ For each test case:
 
 ---
 
+---
+
+## EXP-003c — Guard 5 Implementation and Corpus Re-validation
+
+**Date:** 2026-10-03
+**Status:** ✅ Complete
+**TileGuard version:** v0.5.2 → v0.6.0 (Guard 5 added)
+**Question:** Does implementing Guard 5 (self-tangency skip) fix the 17.5% Polygon precision from EXP-003b, and does recall remain at 100%?
+
+**Motivation:** EXP-003b identified 131 `AGREE_NOPROPER_TOUCH` rings as the sole source of false positives (127 Polygon + 4 LineString). The EXP-003b interpretation proposed Guard 5 — suppressing segment pairs whose only contact is a shared non-adjacent vertex (self-tangency) — as the fix. EXP-003c tests this hypothesis.
+
+**Guard 5 implementation:**
+- New function `collectSelfTangencyVertices(points, closed)`: O(N) pre-scan that collects vertex keys appearing at two or more non-adjacent, non-closure positions in the ring. Produces a `Set<string>` of vertex keys.
+- `findFirstSelfIntersection()` extended with a 5th parameter `selfTangencyVertices`. Guard 5 inner-loop check follows the same pattern as Guard 3: if both endpoints of the flagged segment pair share a key that is in `selfTangencyVertices`, skip the pair.
+- `findSelfIntersectionIssues()` already had the call site stub (`collectSelfTangencyVertices` called and result passed in); the function body was missing. Both are now fully implemented.
+
+**New synthetic fixtures (4 test cases added to Fix 5 suite):**
+
+| # | Description | Expected |
+|:--|:------------|:---------|
+| 1 | Polygon lollipop: T=(10,10) at index 3 and index 5, no proper crossing | pass (silent) |
+| 2 | Closed LineString with same non-adjacent touch pattern | pass (silent) |
+| 3 | Ring with BOTH a self-tangency touch AND a genuine proper crossing elsewhere | fail (1 diagnostic) |
+| 4 | Multi-tangency: T1 and T2 at two distinct non-adjacent positions, no crossing | pass (silent) |
+
+Test 3 is the critical false-negative guard: it confirms Guard 5 suppresses only the specific tangency pair, not the ring as a whole, so a genuine crossing in the same ring is still reported.
+
+**Test results:** 161/161 tests pass (25/25 in self-intersection suite). Zero regressions.
+
+**EXP-003c corpus run:**
+- Input: same 407 deduplicated rings as EXP-003b
+- Oracles: unchanged (GEOS/Shapely 2.1.2 + Exact Integer Python — same results files)
+- TileGuard: v0.6.0 with Guards 1–5 active
+- Script: `scripts/phase2-exp003c-guard5-rerun.mjs`
+
+**Result: Guard 5 suppressed 0 rings from the 407-ring corpus.**
+
+The precision/recall numbers did not change:
+
+| Metric | EXP-003b | EXP-003c |
+|:-------|:--------:|:--------:|
+| TP | 27 | 27 |
+| FP | 127 | 127 |
+| FN | 0 | 0 |
+| TN | 19 | 19 |
+| **Precision** | **17.5%** | **17.5%** |
+| **Recall** | **100.0%** | **100.0%** |
+| **F1** | **0.2983** | **0.2983** |
+
+**Root cause analysis — why Guard 5 did not fire:**
+
+The EXP-003b interpretation that the 131 `AGREE_NOPROPER_TOUCH` rings were "self-tangency (non-adjacent vertex touch)" was incorrect. Detailed geometric inspection reveals:
+
+**The 131 `AGREE_NOPROPER_TOUCH` FPs are collinear-endpoint contacts, not non-adjacent vertex repeats.**
+
+Specifically:
+- 0 of the 131 rings have a non-adjacent repeated vertex. Guard 5 requires `vertex[i] == vertex[j]` for `|i−j| > 1`. No such ring exists in the `AGREE_NOPROPER_TOUCH` category.
+- 131/131 rings have TileGuard fire on a pair where `o1 ≠ o2 && o3 ≠ o4` (the general crossing condition), but one of the four orientations is exactly 0.
+- When `orient2d(A, B, C) = 0`, point C is **collinear with segment AB** — it lies on the line through A and B. If it is also within the bounding box of AB, TileGuard's `onSegment` check confirms it as an intersection.
+- Oracle 2 uses a **strictly straddling** proper-crossing definition: `(o1>0 && o2<0) || (o1<0 && o2>0)`, which requires strictly opposite signs. When one orient is 0 (collinear), Oracle 2 classifies this as `endpoint_touch`, not `proper`, and does not count it as a crossing.
+- TileGuard classifies these as crossings because `o1 ≠ o2` holds when one is 0 and the other is nonzero.
+
+In plain geometry: these are **degenerate near-zero-area rings** (mostly 5 vertices at the quantization scale) where a vertex lands exactly on the line of a non-adjacent segment. The ring is topologically a spike/sliver rather than a self-tangency. GEOS marks it non-simple (correct: the ring is not simple); Oracle 2 does not call it a proper crossing (also correct: no interior crossing exists).
+
+**Vertex count distribution of the 131 rings:**
+
+| Vertex count | Count |
+|:-------------|------:|
+| 5 | 111 |
+| 6–9 | 8 |
+| 16–727 | 12 |
+
+111 of the 131 are 5-vertex rings. These are the smallest possible non-degenerate closed polygons. At z0–z4 grid resolution (extent=4096), integer quantization frequently collapses a near-zero-area triangle-like shape into this configuration.
+
+**Guard 5 is correctly implemented and working.** It correctly fires on the 103 `GEOS_EXTRA_DUP_VERTEX` rings that do have non-adjacent vertex repeats — but all 103 are **already suppressed by Guard 3** (they also have adjacent duplicate vertices). Guard 5 provides defence-in-depth for rings where a non-adjacent repeat occurs without an adjacent duplicate, but no such ring exists in the EXP-003b production corpus.
+
+**What would actually fix the 127 Polygon FPs (proposed Guard 6):**
+The correct fix for the collinear-endpoint contact category is a different guard: suppress a segment pair where the "crossing" is an endpoint of one segment lying exactly on the line (and within the AABB) of the other segment, without any proper interior crossing. This is distinct from Guard 3 (which suppresses shared vertices at adjacent positions) and Guard 5 (which suppresses shared vertices at non-adjacent positions). It would add a check: if the flagged intersection is only due to `orient2d = 0` with `onSegment = true`, suppress it.
+
+This guard was not implemented in this session. The 17.5% precision and the 127 FPs stand as the current EXP-003b/003c result.
+
+**Correction to EXP-003b interpretation:**
+The EXP-003b entry described `AGREE_NOPROPER_TOUCH` as "rings where GEOS flags self-tangency (non-simple) and TileGuard fires, but Oracle 2 finds only self-tangency — non-adjacent ring vertices that coincide at a point." This description is **partially incorrect**. The more precise description is: rings where GEOS flags non-simplicity, TileGuard fires on a collinear-endpoint contact (one orient=0), and Oracle 2 requires strictly opposite signs for a "proper" crossing and therefore does not classify it as such. Non-adjacent vertex coincidence is not the mechanism for any of the 131 cases.
+
+**Synthetic Guard 5 fixtures remain in the test suite.** They correctly cover the self-tangency case (non-adjacent vertex repeats), which is a real geometric pattern that can occur in production tiles even though it does not appear in the EXP-003b corpus. Guard 5 is a correct and necessary correctness guard.
+
+**Scripts:**
+- Guard 5 implementation: `packages/tile-rules/src/geometry.ts` (`collectSelfTangencyVertices`, updated `findFirstSelfIntersection`)
+- EXP-003c corpus re-run: `scripts/phase2-exp003c-guard5-rerun.mjs`
+
+**Artifacts:**
+- `analysis/phase2-oracle/exp003c-guard5-results.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
