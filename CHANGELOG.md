@@ -9,20 +9,30 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+---
+
+## [0.7.0] — 2026-10-04
+
+### Highlights
+
+Self-intersection precision milestone: `tile/self-intersection` now achieves **100% precision at 100% recall** on both the 407-ring dual-oracle tuning corpus (EXP-003d) and an independent held-out set of 1,800 higher-zoom tiles (EXP-003e). **1,848 tests passing** across 9 packages.
+
 ### Fixed
 
+- **tile/self-intersection** — Eliminated false positives caused by collinear-endpoint contact (Guard 6). Rings where a segment endpoint lies exactly on a non-adjacent segment's line — a quantization artifact of the `countries` Polygon layer at z0–z4 — were previously flagged as self-intersecting. The fix introduces `isProperCrossing()`, which requires all four `orient2d` values to be nonzero before a crossing is reported. Result: 27 true positives retained, 0 false positives, precision 100%, recall 100%, F1 100% (EXP-003d, 407-ring dual-oracle corpus). Validated on an independent held-out set of 2,535 unique rings from 1,800 higher-zoom tiles with zero false positives (EXP-003e).
 - **tile/winding-order** — No longer produces false positives on tiles using the OGC/GeoJSON winding convention (outer=CCW, holes=CW). The rule now auto-detects the convention from the first ring and only flags rings that are inconsistent with the detected pattern. Previously, all OGC-convention tiles (including OpenMapTiles/Planetiler output) were incorrectly flagged.
 - **tile/hole-containment** — No longer produces false positives on multi-polygon features. The rule now groups rings into logical polygons using convention-aware winding detection before checking containment. Previously, it naively assumed `parts[0]` was the only outer ring, causing every subsequent outer ring in a multi-polygon to be flagged as "a hole outside the shell."
 - **Inspector diagnostics** — Browser tile validation now runs actual rules instead of passing a hardcoded empty array. The Inspector previously showed all tiles as "clean" regardless of geometry errors.
 
 ### Added
 
+- `isProperCrossing(ax, ay, bx, by, cx, cy, dx, dy)` — Exact-integer proper-crossing predicate exported from `@tileguard/tile-rules`. Returns `true` only when two segments share an interior point with all four `orient2d` values nonzero. Used by `tile/self-intersection` (Guard 6) to distinguish genuine crossings from collinear-endpoint contacts.
 - `detectWindingConvention()` — Determines whether a tile uses MVT (CW=outer) or OGC (CCW=outer) convention based on the first ring's winding direction.
 - `groupRingsIntoPolygons()` — Splits a flat array of polygon rings into logical polygons (outer + holes) based on winding sign changes under the detected convention.
 - `WindingConvention` type and `LogicalPolygon` interface exported from `@tileguard/tile-rules`.
 - `runBrowserDiagnostics()` service in Inspector — executes all browser-safe tile rules against decoded artifacts.
 
-#### Pillar 1 — Performance & Profiling (v0.6.0)
+#### Pillar 1 — Performance & Profiling
 
 **Performance Rules (`@tileguard/tile-rules`)**
 - `perf/tile-size` — Validates raw and/or gzip-compressed tile byte size against configurable budgets. Reads existing `metadata.bytes` / `metadata.gzipped` fields — zero extra I/O.
@@ -45,6 +55,11 @@ TileGuard uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `docs/rules/perf/feature-density.md` — Full rule reference for layer feature density enforcement.
 - `docs/rules/perf/layer-size.md` — Full rule reference for single-layer vertex dominance detection.
 - `docs/rules/README.md` — Updated index with new `Performance Rules` section; rule count updated to 25.
+
+### Research
+
+- **EXP-003d** — Guard 6 dual-oracle validation on 407-ring corpus: precision 100%, recall 100%, F1 100%. The three-experiment chain (EXP-003b → 003c → 003d) documents a hypothesis-driven, evidence-grounded path from 82.5% to 100% precision with the negative EXP-003c result preserved transparently.
+- **EXP-003e** — Held-out generalization check: Guard 6 validated on 1,800 independent higher-zoom tiles (z8/z12/z14, OpenFreeMap + CARTO Streets). 2,535 unique flagged rings, all confirmed genuine proper crossings by both GEOS and exact-integer Oracle 2. Zero false positives on the held-out set.
 
 ---
 
