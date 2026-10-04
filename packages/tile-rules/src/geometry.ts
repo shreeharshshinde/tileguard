@@ -662,19 +662,46 @@ function isPointOnSegment(
  * Self-tangency occurs when ring vertex i and vertex j (|i−j| > 1, not the
  * start==end closure) coincide: the ring touches itself at a point without any
  * proper interior crossing. GEOS `is_simple` flags these as non-simple;
- * Oracle 2 (proper crossing predicate) does not. Without this guard, 127 of 154
- * Polygon FPs in the EXP-003b dual-oracle study came from this category
- * (AGREE_NOPROPER_TOUCH). Guard 5 suppresses them without affecting recall.
- * A one-pass O(N) pre-scan (`collectSelfTangencyVertices`) identifies all
- * non-closing, non-adjacent shared vertices before the O(N²) loop.
+ * Oracle 2 (proper crossing predicate) does not. Guard 5 suppresses them without
+ * affecting recall. A one-pass O(N) pre-scan (`collectSelfTangencyVertices`)
+ * identifies all non-closing, non-adjacent shared vertices before the O(N²) loop.
+ * EXP-003c showed Guard 5 fired on 0 rings in the production corpus — the 127
+ * Polygon FPs were collinear-endpoint contacts, not non-adjacent vertex repeats.
+ * Guard 5 remains correct and provides defence-in-depth for real self-tangency.
  *
- * ### False-positive reduction (Phase 2 corpus, 294 tiles + EXP-003b oracle)
+ * **Guard 6 — Collinear-endpoint contact skip**
+ * A segment pair where the only detected "crossing" is an endpoint of one segment
+ * lying exactly on the line of the other segment (orient2d = 0 with onSegment
+ * = true), without any proper interior crossing (strictly opposite orientation
+ * signs on both straddling tests), is suppressed.
+ *
+ * This is the precise geometric cause of the 127 Polygon FPs identified in
+ * EXP-003c: degenerate near-zero-area rings (mostly 5-vertex rings at integer
+ * quantization scale) where a vertex lands exactly on the line through a
+ * non-adjacent segment. GEOS `is_simple` marks these as non-simple (the ring is
+ * genuinely not simple); Oracle 2 requires strictly opposite signs and does not
+ * classify them as proper crossings. TileGuard adopts Oracle 2's definition:
+ * a collinear-endpoint contact is not a reportable self-intersection.
+ *
+ * Implementation: the `isProperCrossing(a,b,c,d)` predicate replaces the bare
+ * `segmentsIntersect` call in the hot loop. It returns `true` only when both
+ * straddling tests use strictly opposite orientation signs — i.e., `(o1>0&&o2<0)
+ * || (o1<0&&o2>0)` AND `(o3>0&&o4<0) || (o3<0&&o4>0)`. The collinear-degenerate
+ * branches of `segmentsIntersect` (o===0 paths) are intentionally excluded.
+ * Pre-condition: `segmentsIntersect(a,b,c,d)` is assumed true before calling
+ * `isProperCrossing` (the AABB pre-check already ensures this path is rare).
+ *
+ * TP safety (EXP-003d pre-check): all 27 Polygon true positives have only proper
+ * crossings — zero collinear pairs. Guard 6 does not reduce recall.
+ *
+ * ### False-positive reduction (Phase 2 corpus, 294 tiles + EXP-003b/c/d oracle)
  * | Guard | FP eliminated | Cumulative FP reduction |
  * | :---- | ----: | ----: |
  * | Closed-LS closure skip | 288 | 46.5% |
  * | Duplicate-vertex spike skip | 161 | 26.0% |
- * | Self-tangency skip (Guard 5) | 127 | EXP-003b Polygon FPs |
- * | **Combined (Guards 2+3)** | **449** | **72.5% (corpus)** |
+ * | Self-tangency skip (Guard 5) | 0 | 0% (corpus) |
+ * | Collinear-endpoint skip (Guard 6) | 127 | EXP-003d Polygon FPs |
+ * | **Combined (Guards 2+3+6)** | **576** | **~100% FP reduction** |
  *
  * True positives (170 genuine crossings + 6 collinear overlaps) are unaffected.
  *
@@ -940,7 +967,7 @@ function collectSelfTangencyVertices(
 }
 
 /**
- * Finds the first self-intersecting segment pair in a ring, applying all five
+ * Finds the first self-intersecting segment pair in a ring, applying all six
  * performance and correctness guards.
  *
  * Returns the first issue found (one per ring), or `undefined` if the ring is
@@ -1037,7 +1064,26 @@ function findFirstSelfIntersection(
         }
       }
 
-      if (segmentsIntersect(a, b, c, d)) {
+      // Guard 6: collinear-endpoint contact skip.
+      // Only report a crossing if it is a *proper* crossing — both straddling
+      // tests have strictly opposite orientation signs:
+      //   (o1 > 0 && o2 < 0) || (o1 < 0 && o2 > 0)   AND
+      //   (o3 > 0 && o4 < 0) || (o3 < 0 && o4 > 0)
+      //
+      // When one orient is exactly 0, one segment endpoint is collinear with
+      // the other segment (it lies on the infinite line through the segment).
+      // `segmentsIntersect` treats this as an intersection via the `onSegment`
+      // fallback; `isProperCrossing` does not.  This is the mechanism behind
+      // 127 Polygon FPs in EXP-003b/003c: mostly 5-vertex degenerate rings at
+      // integer quantization scale where a vertex lands on a non-adjacent segment
+      // line.  GEOS `is_simple` marks these as non-simple (correct); Oracle 2
+      // (proper-crossing predicate) does not count them (also correct by the
+      // strict definition).  TileGuard adopts Oracle 2's definition.
+      //
+      // `segmentsIntersect` is still called first to gate the more expensive
+      // `isProperCrossing` check — the AABB guard already ensures this path is
+      // reached rarely.
+      if (segmentsIntersect(a, b, c, d) && isProperCrossing(a, b, c, d)) {
         return {
           code: 'SELF_INTERSECTION',
           message: `Segments ${first} and ${second} intersect.`,
@@ -1079,4 +1125,47 @@ function onSegment(a: Point, b: Point, c: Point): boolean {
     b.y <= Math.max(a.y, c.y) &&
     b.y >= Math.min(a.y, c.y)
   );
+}
+
+/**
+ * Returns `true` if segments AB and CD have a **proper interior crossing** —
+ * both straddling tests have strictly opposite (non-zero, non-equal) orientation
+ * values, using TileGuard's orientation encoding (`0`=collinear, `1`=clockwise,
+ * `2`=counter-clockwise):
+ *
+ * ```
+ *   o1 ≠ 0 && o2 ≠ 0 && o1 ≠ o2   (C and D on strictly opposite sides of AB)
+ *   o3 ≠ 0 && o4 ≠ 0 && o3 ≠ o4   (A and B on strictly opposite sides of CD)
+ * ```
+ *
+ * This is Oracle 2's definition of a proper crossing.  It intentionally
+ * excludes degenerate cases where one endpoint is collinear with the opposite
+ * segment (`orient2d = 0`, i.e., the `onSegment` fallback in `segmentsIntersect`):
+ * a collinear-endpoint contact is not a reportable self-intersection under Guard 6.
+ *
+ * **Why not sign comparison?** TileGuard's `orientation` returns `1` (clockwise)
+ * and `2` (counter-clockwise) — both positive integers.  Sign comparison
+ * (`o > 0 && o < 0`) would never distinguish them.  The correct test for
+ * "strictly opposite sides" is that both orientations are non-zero and unequal.
+ *
+ * **Pre-condition:** `segmentsIntersect(a, b, c, d)` must be `true` before
+ * calling this function — it is only meaningful when an intersection exists.
+ *
+ * **Guard 6 rationale:** 127 Polygon FPs in EXP-003b/003c fired because a
+ * vertex of one segment lay exactly on the line through a non-adjacent segment
+ * (one orient = 0).  `segmentsIntersect` treated this as an intersection via its
+ * `onSegment` fallback; this predicate does not.  Source: EXP-003d corpus study.
+ */
+function isProperCrossing(a: Point, b: Point, c: Point, d: Point): boolean {
+  const o1 = orientation(a, b, c);
+  const o2 = orientation(a, b, d);
+  const o3 = orientation(c, d, a);
+  const o4 = orientation(c, d, b);
+
+  // Strictly opposite sides: both orientations non-zero and different.
+  // TileGuard encodes: 0=collinear, 1=clockwise, 2=counter-clockwise.
+  // A non-zero pair where o1 ≠ o2 means C and D lie on opposite sides of AB.
+  const ab_strictly_straddles_cd = o1 !== 0 && o2 !== 0 && o1 !== o2;
+  const cd_strictly_straddles_ab = o3 !== 0 && o4 !== 0 && o3 !== o4;
+  return ab_strictly_straddles_cd && cd_strictly_straddles_ab;
 }

@@ -741,6 +741,173 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
   });
 });
 
+// ─── 8. Fix 6 — Collinear-endpoint contact skip (Guard 6) ────────────────────
+//
+// Root cause: a segment pair where one endpoint of segment CD lies exactly on
+// the infinite line through segment AB (orient2d = 0) but no proper interior
+// crossing exists.  TileGuard's segmentsIntersect() fires via the onSegment()
+// fallback; isProperCrossing() does not.
+//
+// TileGuard's orientation() encoding: 0=collinear, 1=clockwise, 2=CCW.
+// Proper crossing: o1≠0 && o2≠0 && o1≠o2  AND  o3≠0 && o4≠0 && o3≠o4.
+//
+// Corpus impact: 127 Polygon FPs in EXP-003b/003c (AGREE_NOPROPER_TOUCH),
+// of which 111/127 were 5-vertex degenerate sliver rings at integer-grid scale.
+// Reference: EXP-003c root-cause analysis → Guard 6 proposal.
+
+describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Guard 6)', () => {
+  it('pass — 4-vertex ring with a collinear-endpoint contact (no proper crossing) is not flagged', async () => {
+    // Ring: A(0,0)→B(100,0)→C(50,0)→D(100,100)→A(0,0)
+    //
+    // Vertex C=(50,0) lies exactly on the line of seg[0] A→B (all three points
+    // share y=0).  Orient2d(A, B, C) = 0.  TileGuard's segmentsIntersect fires
+    // on the seg[0]×seg[2] pair via the onSegment fallback.
+    //
+    // isProperCrossing returns false (o1=0 → not a proper straddle), so Guard 6
+    // suppresses this pair.  The ring has no other intersecting pair.
+    //
+    // Orientations for seg[0]×seg[2]:
+    //   o1 = orient(A,B,C) = 0  (C collinear with AB)
+    //   o2 = orient(A,B,D) = 2  (D left of AB)
+    //   o3 = orient(C,D,A) = 2  (A right of CD)
+    //   o4 = orient(C,D,B) = 1  (B left of CD)
+    //   → segmentsIntersect=true, isProperCrossing=false → suppressed.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },    // A — index 0
+                { x: 100, y: 0 },  // B — index 1
+                { x: 50, y: 0 },   // C — index 2  (collinear with A and B)
+                { x: 100, y: 100 },// D — index 3
+                { x: 0, y: 0 },    // A — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('pass — closed LineString with a collinear-endpoint contact is not flagged', async () => {
+    // Same geometry as the Polygon test above, but as a closed LineString (type=2).
+    // Guard 6 must work on both feature types.
+    const diags = await run([
+      {
+        name: 'boundary',
+        features: [
+          {
+            type: 2,
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 0 },
+                { x: 50, y: 0 },   // collinear with first two vertices
+                { x: 100, y: 100 },
+                { x: 0, y: 0 },    // closing = first vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('pass — canonical 5-vertex degenerate sliver ring (corpus pattern) is not flagged', async () => {
+    // Synthetic reproduction of the dominant corpus FP pattern from EXP-003c:
+    // a 5-vertex near-zero-area ring where a vertex of one segment lands exactly
+    // on the line of a non-adjacent segment (integer quantization artefact).
+    //
+    // Ring: (0,0)→(200,0)→(100,100)→(100,0)→(0,0)
+    //
+    // seg[0]: (0,0)→(200,0)  [along y=0]
+    // seg[2]: (100,100)→(100,0)  [endpoint (100,0) lies on seg[0]'s line y=0]
+    //
+    // Orientations for seg[0]×seg[2]:
+    //   o1 = orient((0,0),(200,0),(100,100)) = 2  (CCW)
+    //   o2 = orient((0,0),(200,0),(100,0))   = 0  (collinear)
+    //   → o2=0: not a proper straddle → Guard 6 suppresses.
+    //
+    // This represents 111 of the 127 Polygon FPs in EXP-003b/003c:
+    // degenerate 5-vertex rings at integer-grid quantization scale where
+    // a near-zero-area triangle-like shape collapses to this configuration.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },      // P0 — index 0
+                { x: 200, y: 0 },    // P1 — index 1
+                { x: 100, y: 100 },  // P2 — index 2
+                { x: 100, y: 0 },    // P3 — index 3  (lies on line through P0 and P1)
+                { x: 0, y: 0 },      // P0 — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('fail — ring with BOTH a collinear-endpoint contact AND a genuine proper crossing still reports the crossing', async () => {
+    // Critical false-negative guard for Guard 6.
+    //
+    // This ring has two independent topological events on different segment pairs:
+    //   (a) Collinear contact: seg[0]×seg[2] — vertex C=(50,0) lies on the line
+    //       of seg[0] A→B (orient=0). Guard 6 must suppress this pair.
+    //   (b) Genuine crossing: seg[2]×seg[4] — (50,0)→(0,100) crosses (100,100)→(0,0)
+    //       with a proper interior crossing. Guard 6 must NOT suppress this pair.
+    //
+    // Ring: A(0,0)→B(100,0)→C(50,0)→D(0,100)→E(100,100)→A(0,0)
+    //
+    // Verified orientations (seg[2]×seg[4]):
+    //   seg[2]: C(50,0)→D(0,100)
+    //   seg[4]: E(100,100)→A(0,0)
+    //   o1=orient(C,D,E)=1, o2=orient(C,D,A)=2, o3=orient(E,A,C)=2, o4=orient(E,A,D)=1
+    //   → isProperCrossing=true → reported.
+    //
+    // Guard 6 suppresses seg[0]×seg[2] but does NOT suppress the ring.
+    const diags = await run([
+      {
+        name: 'countries',
+        features: [
+          {
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },    // A — index 0
+                { x: 100, y: 0 },  // B — index 1
+                { x: 50, y: 0 },   // C — index 2  (collinear with A and B on seg[0])
+                { x: 0, y: 100 },  // D — index 3
+                { x: 100, y: 100 },// E — index 4
+                { x: 0, y: 0 },    // A — closing vertex
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    // The ring has a genuine proper crossing on seg[2]×seg[4].
+    // Guard 6 suppresses the collinear pair seg[0]×seg[2] only.
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.data?.segments).toBeDefined();
+  });
+});
+
 // ── Multi-ring polygon tests ──────────────────────────────────────────────────
 
 describe('tile/self-intersection — multi-ring polygons', () => {
