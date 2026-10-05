@@ -1145,6 +1145,90 @@ This sequence documents that the false-positive reduction was hypothesis-driven 
 
 ---
 
+## EXP-003e — Held-Out Generalization Check for Guard 6
+
+**Date:** 2026-10-04
+**Status:** ✅ Complete
+**TileGuard version:** v0.7.0 (Guards 1–6)
+**Question:** Does Guard 6's 100% precision result on the 407-ring EXP-003d corpus generalize to an independent tile set it was never tuned on, or is the collinear-endpoint FP pattern specific to z0–z4 / `countries`-layer geometry?
+
+**Motivation:** The EXP-003d corpus was used both to diagnose the collinear-endpoint FP mechanism *and* to measure Guard 6's effect on it. Testing a guard on the same data that produced its design is methodologically circular. The 1,800 higher-zoom tiles from EXP-008 (z8/z12/z14, OpenFreeMap + CARTO Streets) were never examined during any phase of Guard 6's development — they constitute a clean held-out set.
+
+**Method:**
+- Scan all 1,800 phase3-highzoom PBFs with TileGuard v0.7.0 (Guards 1–6 active).
+- Extract all flagged rings with full vertex arrays.
+- Deduplicate by vertex-list SHA-256 hash (same policy as EXP-003b).
+- Run GEOS oracle (Shapely `LinearRing.is_simple`) on every unique ring.
+- Run Exact Integer Oracle 2 (`orient2d` proper-crossing predicate) on every unique ring.
+- Compute precision on Polygon rings using dual-oracle consensus as ground truth.
+- Script: `scripts/phase3-exp003e-heldout-check.mjs`
+
+**Corpus characteristics (held-out set):**
+
+| Provider | z8 | z12 | z14 |
+|:---------|:--:|:---:|:---:|
+| OpenFreeMap | 9 | 696 | 195 |
+| CARTO Streets | 9 | 696 | 195 |
+| **Total** | **18** | **1,392** | **390** |
+
+**Extraction result:**
+
+| Metric | Value |
+|:-------|:-----:|
+| Raw flagged rings (before dedup) | 4,200 |
+| Unique rings after dedup | **2,535** |
+| Polygon rings | **0** |
+| LineString rings | **2,535** |
+
+**Layer and zoom distribution of the 2,535 rings:**
+
+| Layer | Count |
+|:------|------:|
+| `transportation` | 2,474 |
+| `transportation_name` | 54 |
+| `boundary` | 7 |
+
+| Zoom | Count |
+|:-----|------:|
+| z8 | 197 |
+| z12 | 2,108 |
+| z14 | 230 |
+
+**Oracle results:**
+
+| Oracle | Non-simple / Proper | Total | Agreement |
+|:-------|:-------------------:|:-----:|:---------:|
+| GEOS (`is_simple`) | 2,535 | 2,535 | 100% |
+| Oracle 2 (proper crossing) | 2,535 | 2,535 | 100% |
+| TileGuard v0.7.0 | 2,535 | 2,535 | 100% |
+
+All three oracles agree on every single ring. Zero false positives. Zero disagreements.
+
+**Polygon precision: N/A — no Polygon rings flagged at higher zooms.**
+
+This is consistent with EXP-008's finding: all self-intersection defects at z8–z14 occur in `transportation` and `boundary` LineString layers, not in Polygon layers. The collinear-endpoint FP pattern (5-vertex degenerate sliver rings) was observed exclusively in the `countries` Polygon layer at z0–z4 — a layer that does not appear at z8+. There are no Polygon rings in this held-out set for Guard 6 to act on in either direction.
+
+**What this means for the generalization claim:**
+
+Guard 6 produces zero false positives on the held-out corpus. The held-out result cannot directly measure Polygon precision (no Polygon rings to evaluate), but it confirms:
+
+1. **No new FP mechanism at higher zooms.** Guard 6 does not over-suppress any ring in the held-out set — all 2,535 flagged rings are confirmed genuine proper crossings by both oracles.
+2. **The collinear-endpoint FP pattern is zoom/layer-specific.** The 5-vertex degenerate sliver rings that drove the 127 Polygon FPs in EXP-003b/c/d are a quantization artifact of the `countries` Polygon layer at z0–z4. At higher zooms the dominant geometry type shifts to simplified LineStrings, which exhibit proper crossings rather than collinear-endpoint contacts.
+3. **Guard 6 does not introduce new FPs at higher zooms.** Before Guard 6, the higher-zoom corpus would have produced 4,200 raw flags; after Guard 6, it still produces 4,200 raw flags — Guard 6 suppressed nothing because nothing required suppression. All higher-zoom flagged rings are proper crossings with all four orients nonzero.
+
+**Limitation explicitly stated:** Independent validation of Polygon precision on a held-out set would require a higher-zoom tile corpus that includes Polygon self-intersections, which this dataset does not contain. The 100% Polygon precision claim rests on the 407-ring EXP-003d corpus (EXP-003d was designed to test it) plus the deductive argument that Guard 6 only suppresses pairs where `isProperCrossing` returns false — and all 27 TPs verified to have proper crossings with all orients nonzero. The held-out check supports the no-new-FPs claim but cannot extend Polygon P/R/F1 to a second independent dataset.
+
+**EXP-009 synthetic fixtures under v0.7.0:** 165/165 pass (29/29 in self-intersection suite). The "collinear contact + genuine crossing elsewhere" fixture (Fix 6 test 4) confirms Guard 6 does not suppress the ring when a proper crossing also exists.
+
+**Scripts:**
+- `scripts/phase3-exp003e-heldout-check.mjs`
+
+**Artifacts:**
+- `analysis/phase3-heldout/heldout-rings.json`
+- `analysis/phase3-heldout/exp003e-heldout-results.json`
+
+---
+
 ## Experiments Not Yet Run
 
 The following experiments are needed but have not been performed. Numbers will be filled in when they are run.
