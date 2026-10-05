@@ -198,7 +198,34 @@ Four categories emerged. The critical one is `AGREE_NOPROPER_TOUCH` (131 rings):
 
 Guard 6 suppressed all 131 collinear-endpoint contact rings. 111 of 131 (84.7%) were 5-vertex degenerate slivers — exactly the pattern EXP-003c diagnosed. Vertex counts span 5–727; all are confirmed collinear-endpoint contacts, not proper crossings.
 
-**The 003b → 003c → 003d evidence chain** documents that the precision fix was hypothesis-driven and falsifiable: one hypothesis (Guard 5 / vertex repeat) tested and disproved on the corpus; the correct mechanism (orient = 0 / collinear contact) diagnosed from data; Guard 6 verified both synthetically and on the full 407-ring set.
+**The 003b → 003c → 003d evidence chain** documents that the precision fix was hypothesis-driven and falsifiable: one hypothesis (Guard 5 / vertex repeat) tested and disproved on the corpus; the correct mechanism (orient = 0 / collinear contact) diagnosed from data; Guard 6 verified both synthetically and on the full 407-ring set. Independent held-out validation on the higher-zoom corpus is in EXP-003e.
+
+---
+
+### EXP-003e — Held-Out Generalization Check for Guard 6
+
+**Question:** Does Guard 6's 100% precision result generalize to a tile set it was never tuned on?
+
+**Concern:** The 407-ring EXP-003d corpus was used both to diagnose the FP mechanism and to measure the fix — methodologically circular. The 1,800 higher-zoom tiles from EXP-008 were never examined during Guard 6's development and serve as a clean held-out set.
+
+**Result: 2,535 unique rings flagged. All 2,535 confirmed genuine by both oracles. Zero false positives.**
+
+| Oracle | Agreement | Total |
+|:-------|:---------:|:-----:|
+| GEOS `is_simple` | 2,535/2,535 | 100% |
+| Oracle 2 proper crossing | 2,535/2,535 | 100% |
+| TileGuard v0.7.0 | 2,535/2,535 | 100% |
+
+All rings are LineStrings (transportation/boundary layers at z8–z14). No Polygon rings appear in the held-out set — consistent with EXP-008's finding that higher-zoom self-intersection defects are entirely in simplified LineString layers.
+
+**Polygon precision on the held-out set: N/A.** The collinear-endpoint FP pattern (5-vertex degenerate slivers) is specific to the `countries` Polygon layer at z0–z4, which does not appear at z8+. Guard 6 suppressed nothing in the held-out corpus because all 2,535 flagged rings are proper crossings — it had nothing to suppress.
+
+**What this confirms:**
+- Guard 6 introduces zero new FPs at higher zooms.
+- The 5-vertex sliver pattern is zoom/layer-specific: a quantization artefact of low-zoom Polygon simplification, not a general geometry type that appears across all zooms.
+- The 100% Polygon precision result from EXP-003d is not contradicted by the held-out data, but independent Polygon P/R validation on a second corpus remains an open gap (stated as a limitation below).
+
+EXP-009 fixtures: 165/165 pass under v0.7.0, including the "collinear contact + genuine crossing elsewhere" fixture that specifically guards against Guard 6 being too aggressive.
 
 ---
 
