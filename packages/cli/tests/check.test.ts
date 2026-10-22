@@ -207,4 +207,65 @@ describe('runCheck', () => {
     expect(result).not.toBeInstanceOf(Error);
     expect(typeof result.exitCode).toBe('number');
   });
+
+  // ── --stdin flag ─────────────────────────────────────────────────────
+
+  it('reads source paths from stdin when --stdin is set', async () => {
+    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' } });
+    const fakeEngine = makeFakeEngine(true);
+    mockCreateEngine.mockReturnValueOnce(fakeEngine);
+
+    // Provide a mock Readable that emits one path then ends
+    const { Readable } = await import('node:stream');
+    const mockStream = Readable.from(['/nonexistent/from-stdin.pbf\n']);
+
+    const result = await runCheck([], { reporter: 'text', stdin: true }, mockStream);
+
+    // Engine was called — the stdin path was discovered and handed over
+    expect(mockCreateEngine).toHaveBeenCalledOnce();
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('merges positional sources and stdin sources', async () => {
+    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' } });
+    const fakeEngine = makeFakeEngine(true);
+    mockCreateEngine.mockReturnValueOnce(fakeEngine);
+
+    const { Readable } = await import('node:stream');
+    const mockStream = Readable.from(['/nonexistent/from-stdin.pbf\n']);
+
+    // Both positional + stdin sources together should reach the engine
+    const result = await runCheck(
+      ['/nonexistent/positional.pbf'],
+      { reporter: 'text', stdin: true },
+      mockStream,
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(mockCreateEngine).toHaveBeenCalledOnce();
+  });
+
+  it('returns exitCode 2 when --stdin is set and no paths are found anywhere', async () => {
+    mockLoadConfig.mockResolvedValueOnce({ config: {} });
+
+    const { Readable } = await import('node:stream');
+    // Empty stream — no paths from stdin, no positional args
+    const mockStream = Readable.from(['']);
+
+    const result = await runCheck([], { stdin: true }, mockStream);
+
+    expect(result.exitCode).toBe(2);
+    expect(result.message).toContain('--stdin');
+  });
+
+  it('resolves "jsonl" as a valid reporter', async () => {
+    mockLoadConfig.mockResolvedValueOnce({ config: {} });
+    mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
+
+    const result = await runCheck(['/nonexistent/tile.pbf'], {
+      reporter: 'jsonl',
+    });
+
+    expect(result.exitCode).toBe(0);
+  });
 });
