@@ -80,19 +80,23 @@ program
 program
   .command('check')
   .description('Validate geospatial artifacts against configured rules')
-  .argument('<sources...>', 'Files, directories, globs, or "." to validate')
+  .argument('[sources...]', 'Files, directories, globs, or "." to validate')
   .option(
     '-c, --config <path>',
     'Path to config file (auto-discovered if omitted)',
   )
-  .option('-r, --reporter <id>', 'Reporter to use: text | json')
+  .option('-r, --reporter <id>', 'Reporter to use: text | json | jsonl | sarif')
   .option(
     '--max-diagnostics <n>',
     'Maximum total diagnostics to collect',
     (v: string) => parseInt(v, 10),
   )
+  .option(
+    '--stdin',
+    'Read additional source paths from stdin (one per line)',
+  )
   .action(async (sources: string[], flags) => {
-    const result = await runCheck(sources, flags);
+    const result = await runCheck(sources, flags, process.stdin);
     present(result);
   });
 
