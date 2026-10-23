@@ -22,6 +22,14 @@ export type {
 } from './json-reporter.js';
 // JSON reporter — structured output for CI and tools
 export { createJsonReporter, jsonReporter } from './json-reporter.js';
+// JSONL reporter — streaming newline-delimited JSON for large corpora and pipelines
+export type {
+  JsonlDiagnosticLine,
+  JsonlReporterOptions,
+  JsonlSummaryLine,
+  WriteFn as JsonlWriteFn,
+} from './jsonl-reporter.js';
+export { createJsonlReporter, jsonlReporter } from './jsonl-reporter.js';
 export type {
   AppendixFeatureGroup,
   ComparisonInput,
