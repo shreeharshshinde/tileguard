@@ -37,6 +37,12 @@ describe('resolveReporterById', () => {
     expect(reporter.id).toBe('sarif');
   });
 
+  it('resolves "jsonl" to the jsonl reporter', () => {
+    const reporter = resolveReporterById('jsonl');
+    expect(reporter).toBeDefined();
+    expect(reporter.id).toBe('jsonl');
+  });
+
   it('throws CliUsageError for an unknown reporter ID', () => {
     expect(() => resolveReporterById('junit')).toThrow(CliUsageError);
   });
@@ -56,6 +62,7 @@ describe('resolveReporterById', () => {
     const message = (caught as CliUsageError).message;
     expect(message).toContain('text');
     expect(message).toContain('json');
+    expect(message).toContain('jsonl');
     expect(message).toContain('sarif');
   });
 });
