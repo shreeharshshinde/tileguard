@@ -16,7 +16,12 @@
  */
 
 import type { Reporter } from '@tileguard/core';
-import { createSarifReporter, jsonReporter, textReporter } from '@tileguard/reporters';
+import {
+  createSarifReporter,
+  jsonlReporter,
+  jsonReporter,
+  textReporter,
+} from '@tileguard/reporters';
 import { CliUsageError } from './errors.js';
 
 /**
@@ -28,6 +33,8 @@ import { CliUsageError } from './errors.js';
 const BUILTIN_REPORTERS = new Map<string, Reporter>([
   ['text', textReporter],
   ['json', jsonReporter],
+  // JSONL — newline-delimited JSON, one line per diagnostic; streaming-friendly.
+  ['jsonl', jsonlReporter],
   // SARIF 2.1.0 — writes to ./tileguard-results.sarif by default.
   // Users can override the output path via --sarif-output (future flag).
   ['sarif', createSarifReporter()],
