@@ -75,11 +75,25 @@ export interface CheckFlags {
   /** Explicit config file path. Auto-discovered via upward traversal if omitted. */
   config?: string;
 
-  /** Reporter ID string (e.g. `'text'`, `'json'`). Defaults to `'text'`. */
+  /** Reporter ID string (e.g. `'text'`, `'json'`, `'jsonl'`). Defaults to `'text'`. */
   reporter?: string;
 
   /** Maximum total diagnostics to collect across the entire run. */
   maxDiagnostics?: number;
+
+  /**
+   * When `true`, read additional source paths from stdin (one path per line).
+   *
+   * Sources passed as positional arguments and sources read from stdin are
+   * merged and deduplicated. This allows patterns such as:
+   *
+   *   find ./tiles -name "*.pbf" | tileguard check --stdin
+   *   git diff --name-only HEAD -- '*.pbf' | tileguard check --stdin
+   *
+   * Stdin is read to EOF before validation begins. Empty lines and lines
+   * consisting entirely of whitespace are silently skipped.
+   */
+  stdin?: boolean;
 }
 
 /** Flags accepted by the `init` command. */
