@@ -48,7 +48,9 @@ npm install @tileguard/core @tileguard/tile-rules @tileguard/style-rules
 ```bash
 tileguard check ./tiles/ ./style.json          # validate tiles and styles
 tileguard check ./tiles/ --reporter json        # JSON output for CI
+tileguard check ./tiles/ --reporter jsonl       # newline-delimited JSON stream for large datasets
 tileguard check ./tiles/ --reporter sarif       # SARIF for GitHub Code Scanning
+find ./tiles -name "*.pbf" | tileguard check --stdin  # batch input via stdin
 tileguard compare ./v1.pbf ./v2.pbf            # diff two tile versions
 tileguard profile ./tile.pbf                   # size, vertex count, layer breakdown
 tileguard report ./v1.pbf ./v2.pbf --format markdown
@@ -176,7 +178,7 @@ const engine = createEngine({
 const result = await engine.run(['./tile.pbf', './style.json']);
 
 console.log(result.summary.pass);        // true | false
-console.log(result.summary.errorCount);  // number of errors
+console.log(result.summary.errors);      // number of errors
 console.log(result.diagnostics);         // full structured findings
 ```
 
@@ -245,9 +247,9 @@ Rules never print. Reporters never validate. The separation is strict — adding
 | [`@tileguard/tile-rules`](packages/tile-rules) | MVT provider + 12 tile validation + 4 performance rules |
 | [`@tileguard/style-rules`](packages/style-rules) | Style provider + 9 lint rules |
 | [`@tileguard/config`](packages/config) | Config file discovery, loading, validation |
-| [`@tileguard/reporters`](packages/reporters) | Text, JSON, SARIF reporters + Markdown/HTML/JSON report engine |
+| [`@tileguard/reporters`](packages/reporters) | Text, JSON, JSONL, SARIF reporters + Markdown/HTML/JSON report engine |
 | [`@tileguard/analysis`](packages/analysis) | Tile comparison and regression detection |
-| [`@tileguard/cli`](packages/cli) | CLI — 12 commands |
+| [`@tileguard/cli`](packages/cli) | CLI — 13 commands |
 | [`@tileguard/inspector`](packages/inspector) | Browser-based tile debugger — canvas geometry, diagnostic overlays |
 
 `@tileguard/core` has zero runtime dependencies. Install only the packages you need.
@@ -260,7 +262,7 @@ git clone https://github.com/shreeharshshinde/tileguard.git
 cd tileguard
 pnpm install
 pnpm build
-pnpm test        # 1,847 tests across 9 packages
+pnpm test        # 1,848 tests across 9 packages
 ```
 
 The main extension point is writing rules. They're small (typically under 25 lines), isolated, and testable without the full engine. See [CONTRIBUTING.md](CONTRIBUTING.md).
