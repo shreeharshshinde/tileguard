@@ -17,7 +17,7 @@ pnpm install
 # Build all packages
 pnpm build
 
-# Run all tests (~1,838 tests across 9 packages)
+# Run all tests (1,848 tests across 9 packages)
 pnpm test
 
 # Start the Inspector dev server
@@ -34,12 +34,12 @@ TileGuard is a pnpm monorepo. Each package has a focused responsibility:
 |---------|------|---------|
 | `@tileguard/core` | `packages/core` | Framework contracts (Diagnostic, Artifact, Rule, Plugin, Reporter, Engine) |
 | `@tileguard/shared` | `packages/shared` | Shared utilities across packages |
-| `@tileguard/tile-rules` | `packages/tile-rules` | Vector tile provider + 10 validation rules |
+| `@tileguard/tile-rules` | `packages/tile-rules` | Vector tile provider + 16 validation rules (12 geometry + 4 perf) |
 | `@tileguard/style-rules` | `packages/style-rules` | Style provider + 9 lint rules |
 | `@tileguard/config` | `packages/config` | Configuration discovery, loading, validation |
-| `@tileguard/reporters` | `packages/reporters` | Text, JSON, Markdown, HTML report renderers |
+| `@tileguard/reporters` | `packages/reporters` | Text, JSON, JSONL, SARIF reporters + report engine |
 | `@tileguard/analysis` | `packages/analysis` | Comparison and regression analysis engine |
-| `@tileguard/cli` | `packages/cli` | Command-line interface |
+| `@tileguard/cli` | `packages/cli` | Command-line interface (13 commands) |
 | `@tileguard/inspector` | `packages/inspector` | Visual debugging environment (browser) |
 
 ---
