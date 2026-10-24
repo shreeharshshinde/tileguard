@@ -119,6 +119,8 @@ graph TD
     subgraph ReportersPkg["@tileguard/reporters"]
         TextReporter["Text Reporter"]
         JsonReporter["JSON Reporter"]
+        JsonlReporter["JSONL Reporter"]
+        SarifReporter["SARIF Reporter"]
         ReportEngine["Report Engine (Markdown, HTML, JSON)"]
     end
 
@@ -131,7 +133,7 @@ graph TD
     end
 
     subgraph CLI["@tileguard/cli"]
-        CLIApp["CLI Application (12 commands)"]
+        CLIApp["CLI Application (13 commands)"]
     end
 
     subgraph InspectorPkg["@tileguard/inspector (private)"]
@@ -142,6 +144,8 @@ graph TD
     CLIApp --> ConfigLoader
     CLIApp --> TextReporter
     CLIApp --> JsonReporter
+    CLIApp --> JsonlReporter
+    CLIApp --> SarifReporter
     CLIApp --> Analysis
 
     TileRules --> Rule

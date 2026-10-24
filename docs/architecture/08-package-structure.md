@@ -216,12 +216,12 @@ tileguard/
 |:--------|:---------|:---------------|
 | `core` | `@tileguard/core` | Framework contracts: types, interfaces, engine |
 | `shared` | `@tileguard/shared` | Shared utilities and helpers used across packages |
-| `tile-rules` | `@tileguard/tile-rules` | VectorTile provider + 10 tile validation rules |
+| `tile-rules` | `@tileguard/tile-rules` | VectorTile provider + 16 tile validation rules (12 geometry + 4 performance) |
 | `style-rules` | `@tileguard/style-rules` | StyleSpecification provider + 9 style lint rules + parser/resolver/validator subsystem |
 | `config` | `@tileguard/config` | Configuration file discovery, loading, and schema validation |
-| `reporters` | `@tileguard/reporters` | Output reporters: text, JSON, plus report engine (Markdown, HTML, JSON reports) |
+| `reporters` | `@tileguard/reporters` | Output reporters: text, JSON, JSONL, SARIF, plus report engine (Markdown, HTML, JSON reports) |
 | `analysis` | `@tileguard/analysis` | Comparison and regression analysis engine (ComparisonEngine, RegressionEngine, FeatureMatcher, GeometryDiffer) |
-| `cli` | `@tileguard/cli` | CLI application: 12 commands (analyze, check, compare, doctor, hook, init, profile, report, rules, stats, style, version) |
+| `cli` | `@tileguard/cli` | CLI application: 13 commands (analyze, check, compare, doctor, help, hook, init, profile, report, rules, stats, style, ver/version) |
 | `inspector` | `@tileguard/inspector` | Private visual debugging environment (React + Canvas, not published to npm) |
 
 ### Why `cli` Is Published as `@tileguard/cli`

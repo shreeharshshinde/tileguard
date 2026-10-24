@@ -133,20 +133,30 @@ consumption, and piping to other tools.
 }
 ```
 
-### SARIF Reporter (Future)
+### JSONL Reporter
 
-Produces SARIF 2.1.0 output for integration with GitHub Code Scanning and
-other SARIF-consuming tools. SARIF output includes:
+Produces newline-delimited JSON (JSON Lines), where each diagnostic is written as an
+independent single-line JSON object followed by a summary object. Designed for streaming
+large tile corpuses with constant memory footprint and immediate downstream processing.
+
+```jsonl
+{"type":"diagnostic","ruleId":"tile/self-intersection","severity":"error","message":"...","location":{"layer":"water","featureIndex":12}}
+{"type":"summary","errors":1,"warnings":0,"infos":0,"pass":false,"sources":1,"duration":28}
+```
+
+### SARIF Reporter
+
+Produces SARIF 2.1.0 output for native integration with GitHub Code Scanning and
+other SARIF-consuming static analysis tooling. SARIF output includes:
 
 - Tool information (TileGuard version, rules executed)
 - Results mapped from diagnostics
 - Rule metadata (description, help text, docs URL)
 - Artifact locations mapped from artifact refs
 
-SARIF is the most demanding reporter because it requires structured metadata
-about every rule that produced a diagnostic. This is why `RuleMeta` includes
-`description` and `docsUrl` — these fields map directly to SARIF's `rule`
-reporting descriptors.
+SARIF requires structured metadata about every rule that produced a diagnostic.
+This is why `RuleMeta` includes `description` and `docsUrl` — these fields map
+directly to SARIF's `rule` reporting descriptors.
 
 ### GitHub Annotation Reporter (Future)
 
@@ -204,7 +214,8 @@ reporters have different natural destinations:
 |:---------|:-------------------|:-------------|
 | Text | stdout | No |
 | JSON | stdout | Yes (--output flag) |
-| SARIF | File (required) | Yes (output path) |
+| JSONL | stdout | Yes (--output flag) |
+| SARIF | stdout / File | Yes (--output flag) |
 | GitHub | stdout (workflow commands) | No |
 
 Reporters that write to stdout should use the provided `write` function rather
