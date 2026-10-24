@@ -74,7 +74,7 @@ const program = new Command();
 program
   .name('tileguard')
   .description('Quality analysis framework for geospatial artifacts')
-  .version('0.6.0');
+  .version('0.7.0');
 
 // ── check ─────────────────────────────────────────────────────────────────
 program
