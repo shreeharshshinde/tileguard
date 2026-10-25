@@ -114,7 +114,7 @@ export function SidebarNav({
               TileGuard
             </h3>
             <p className="mt-0.5 text-[9px] font-mono text-[var(--tg-text-muted)]">
-              v1.0.0
+              v0.7.0
             </p>
           </div>
         )}
