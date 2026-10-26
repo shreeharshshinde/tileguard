@@ -38,8 +38,8 @@ const logoAnim = {
 
 const STAT_ITEMS = [
   { value: '25', label: 'Rules', icon: Layers },
-  { value: '12', label: 'CLI Commands', icon: Zap },
-  { value: '1,678', label: 'Tests Passing', icon: Shield },
+  { value: '13', label: 'CLI Commands', icon: Zap },
+  { value: '1,848', label: 'Tests Passing', icon: Shield },
   { value: 'CI', label: 'Ready', icon: GitCompare },
 ];
 

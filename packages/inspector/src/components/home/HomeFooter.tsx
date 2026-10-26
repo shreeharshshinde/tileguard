@@ -26,7 +26,7 @@ export function HomeFooter(): JSX.Element {
           </div>
           <span className="text-sm font-bold text-white">TileGuard</span>
           <span className="rounded-full border border-[var(--tg-accent)]/20 bg-[var(--tg-accent)]/5 px-2 py-0.5 font-mono text-[10px] text-[var(--tg-accent)]">
-            v0.5.0-rc.1
+            v0.7.0
           </span>
         </div>
 

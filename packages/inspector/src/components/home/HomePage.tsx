@@ -233,7 +233,7 @@ function _AboutRail(): JSX.Element {
         <div className="flex justify-between items-center">
           <span>Version</span>
           <span className="rounded bg-[var(--tg-accent)]/10 border border-[var(--tg-accent)]/20 px-1.5 py-0.5 font-mono text-[10px] text-[var(--tg-accent)]">
-            v0.5.0-rc.1
+            v0.7.0
           </span>
         </div>
         <div className="flex justify-between items-center">
@@ -585,7 +585,7 @@ export function HomePage({
                 </span>
               </a>
               <span className="flex h-8 items-center rounded-full bg-[var(--tg-accent)]/10 border border-[var(--tg-accent)]/20 px-3 font-mono text-[11px] font-semibold tracking-wider text-[var(--tg-accent)]">
-                v0.5.0-rc.1
+                v0.7.0
               </span>
             </div>
           </div>

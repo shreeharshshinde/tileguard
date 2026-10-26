@@ -277,7 +277,7 @@ export function HelpOverlay({ onClose }: HelpOverlayProps): JSX.Element {
                   TileGuard Inspector
                 </p>
                 <p className="font-mono text-[10px] text-[var(--tg-text-muted)]">
-                  v1.0.0 · MIT License
+                  v0.7.0 · MIT License
                 </p>
               </div>
             </div>
