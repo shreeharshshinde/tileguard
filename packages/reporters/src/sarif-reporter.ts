@@ -38,8 +38,8 @@
  * @packageDocumentation
  */
 
-import { writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import type { Diagnostic, Reporter, ReporterContext, Severity } from '@tileguard/core';
 
 // ---------------------------------------------------------------------------
@@ -228,9 +228,12 @@ export function createSarifReporter(
   options: SarifReporterOptions = {},
 ): Reporter {
   const outputPath = options.outputPath ?? './tileguard-results.sarif';
-  const toolVersion = options.toolVersion ?? '0.6.0';
-  const writeFn = options.write ?? ((path, content) => {
-    writeFileSync(resolve(path), content, 'utf-8');
+  const toolVersion = options.toolVersion ?? '0.7.0';
+  const writeFn = options.write ?? ((filePath, content) => {
+    if (typeof fs.writeFileSync === 'function') {
+      const resolved = typeof path.resolve === 'function' ? path.resolve(filePath) : filePath;
+      fs.writeFileSync(resolved, content, 'utf-8');
+    }
   });
 
   return {

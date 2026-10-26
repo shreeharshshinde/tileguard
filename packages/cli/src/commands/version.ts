@@ -14,7 +14,7 @@ import type { CliCommandResult } from '../runner/CommandRunner.js';
 // Constants
 // ---------------------------------------------------------------------------
 
-const TILEGUARD_VERSION = '0.5.0';
+const TILEGUARD_VERSION = '0.7.0';
 const _NODE_MIN = '18.0.0';
 
 // ---------------------------------------------------------------------------

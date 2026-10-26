@@ -61,7 +61,7 @@ export async function runReport(
 
   // Generate report
   logger.phase(`Generating ${args.format} report`);
-  const engine = createReportEngine({ tileguardVersion: '0.5.0' });
+  const engine = createReportEngine({ tileguardVersion: '0.7.0' });
   const result = engine.generate(
     comparison.asReportInput,
     regression.asReportInput,
