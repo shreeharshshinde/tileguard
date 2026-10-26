@@ -243,7 +243,7 @@ export function QuickActions({
             </div>,
             'View Docs',
             'Quick-start guide & rule reference',
-            () => window.open('https://shreeharshshinde.github.io/tileguard/', '_blank', 'noopener,noreferrer'),
+            () => window.open('https://docs-tileguard.vercel.app', '_blank', 'noopener,noreferrer'),
             'Open TileGuard documentation',
             'md:col-span-2 lg:col-span-1 lg:row-span-1',
           )}

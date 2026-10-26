@@ -30,7 +30,7 @@ const STEPS = [
     icon: GitCompare,
     title: 'Run Diagnostics',
     description:
-      'Apply 10 tile rules and 9 style rules against your tile. Violations are ranked by severity and surfaced with full diagnostic context.',
+      'Apply 16 tile rules and 9 style rules against your tile. Violations are ranked by severity and surfaced with full diagnostic context.',
     accent: '#a3ff00',
   },
   {
