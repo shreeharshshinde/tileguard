@@ -402,7 +402,7 @@ export function SettingsOverlay({
               <div className={rowClass}>
                 <div>
                   <p className={labelClass}>Version</p>
-                  <p className={descClass}>TileGuard Inspector v1.0.0</p>
+                  <p className={descClass}>TileGuard Inspector v0.7.0</p>
                 </div>
               </div>
               <div className={rowClass}>

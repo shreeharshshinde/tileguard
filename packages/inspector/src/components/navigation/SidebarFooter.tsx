@@ -25,7 +25,7 @@ export function SidebarFooter(): JSX.Element {
               TileGuard
             </p>
             <p className="font-mono text-[9px] text-[var(--tg-text-muted)]">
-              v1.0.0
+              v0.7.0
             </p>
           </div>
         </div>
