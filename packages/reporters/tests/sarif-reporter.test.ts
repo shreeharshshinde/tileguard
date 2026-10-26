@@ -128,9 +128,9 @@ describe('sarifReporter', () => {
       expect(log.runs[0]?.tool.driver.name).toBe('TileGuard');
     });
 
-    it('tool driver version defaults to "0.6.0"', () => {
+    it('tool driver version defaults to "0.7.0"', () => {
       const { log } = captureSarif([]);
-      expect(log.runs[0]?.tool.driver.version).toBe('0.6.0');
+      expect(log.runs[0]?.tool.driver.version).toBe('0.7.0');
     });
 
     it('custom toolVersion is embedded in driver', () => {
