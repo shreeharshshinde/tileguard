@@ -28,10 +28,10 @@ Key decisions that shaped the system:
 
 ```mermaid
 graph TD
-    CLI["@tileguard/cli<br/>(12 commands)"]
+    CLI["@tileguard/cli<br/>(13 commands)"]
     CONFIG["@tileguard/config"]
     REPORTERS["@tileguard/reporters"]
-    TILE["@tileguard/tile-rules<br/>(12 rules)"]
+    TILE["@tileguard/tile-rules<br/>(16 rules: 12 tile + 4 perf)"]
     STYLE["@tileguard/style-rules<br/>(9 rules)"]
     ANALYSIS["@tileguard/analysis"]
     CORE["@tileguard/core<br/>(Engine, Diagnostic, Rule, Plugin, Artifact)"]
