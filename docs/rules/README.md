@@ -95,4 +95,4 @@ Performance rules detect tiles that will cause rendering bottlenecks — oversiz
 
 ---
 
-*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.6.0*
+*Part of the [TileGuard Architecture Handbook](../architecture/README.md) · v0.7.0*
