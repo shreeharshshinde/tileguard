@@ -1,6 +1,6 @@
 # @tileguard/reporters
 
-Text, JSON, and SARIF CLI reporters for terminal and CI output, plus a full engineering report engine generating Markdown, HTML, and JSON reports.
+Text, JSON, JSONL, and SARIF CLI reporters for terminal and CI output, plus a full engineering report engine generating Markdown, HTML, and JSON reports.
 
 ```bash
 npm install @tileguard/reporters @tileguard/core
@@ -15,18 +15,23 @@ Real-time diagnostic output for terminal and CI.
 | Export | Type | Description |
 |:-------|:-----|:------------|
 | `textReporter` | Reporter | Colored terminal output (default) |
-| `jsonReporter` | Reporter | Machine-readable JSON output |
+| `jsonReporter` | Reporter | Machine-readable structured JSON output |
+| `jsonlReporter` | Reporter | Streaming newline-delimited JSON (NDJSON) output |
 | `sarifReporter` | Reporter | SARIF 2.1.0 file output for GitHub Code Scanning |
 | `createTextReporter` | Function | Create text reporter with custom options |
 | `createJsonReporter` | Function | Create JSON reporter with custom options |
+| `createJsonlReporter` | Function | Create JSONL reporter with custom options |
 | `createSarifReporter` | Function | Create SARIF reporter with custom output path |
 
 ```typescript
-import { textReporter, jsonReporter } from '@tileguard/reporters';
-import { createTextReporter, createJsonReporter } from '@tileguard/reporters';
+import { textReporter, jsonReporter, jsonlReporter, sarifReporter } from '@tileguard/reporters';
+import { createTextReporter, createJsonReporter, createJsonlReporter, createSarifReporter } from '@tileguard/reporters';
 
 // Default reporters
 const engine = createEngine({ plugins: [...], reporter: textReporter });
+
+// Streaming JSONL reporter (flat memory for large sets)
+const streaming = createJsonlReporter();
 
 // Custom text reporter (no color, for CI logs)
 const plainReporter = createTextReporter({ color: false });
@@ -47,7 +52,14 @@ const prettyJson = createJsonReporter({ indent: 2 });
 
 | Option | Type | Default | Description |
 |:-------|:-----|:--------|:------------|
-| `indent` | number | `0` | JSON indentation (0 = minified) |
+| `indent` | number | `2` | JSON indentation (0 = compact) |
+| `write` | WriteFn | `stdout` | Injectable write function |
+
+### JSONL Reporter Options
+
+| Option | Type | Default | Description |
+|:-------|:-----|:--------|:------------|
+| `write` | WriteFn | `stdout` | Injectable write function |
 
 ### SARIF Reporter Options
 
@@ -57,7 +69,7 @@ file to GitHub Code Scanning for inline PR annotations.
 | Option | Type | Default | Description |
 |:-------|:-----|:--------|:------------|
 | `outputPath` | string | `./tileguard-results.sarif` | Output file path |
-| `toolVersion` | string | `'0.6.0'` | Version embedded in the SARIF envelope |
+| `toolVersion` | string | `'0.7.0'` | Version embedded in the SARIF envelope |
 
 ```typescript
 import { createSarifReporter, sarifReporter } from '@tileguard/reporters';
@@ -79,12 +91,6 @@ const customSarif = createSarifReporter({ outputPath: './ci/results.sarif' });
     sarif_file: tileguard-results.sarif
 ```
 :::
-
-### JSON Reporter Options
-
-| Option | Type | Default | Description |
-|:-------|:-----|:--------|:------------|
-| `indent` | number | `0` | JSON indentation (0 = minified) |
 
 ---
 
