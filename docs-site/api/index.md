@@ -7,12 +7,12 @@ TileGuard's public API is distributed across 7 packages. Each has a focused resp
 | Package | Purpose | Install |
 |:--------|:--------|:--------|
 | [`@tileguard/core`](/api/core) | Framework contracts — Engine, Diagnostic, Rule, Plugin, Artifact | `npm i @tileguard/core` |
-| [`@tileguard/tile-rules`](/api/tile-rules) | MVT provider + 12 tile validation rules | `npm i @tileguard/tile-rules` |
+| [`@tileguard/tile-rules`](/api/tile-rules) | MVT provider + 16 rules (12 tile validation + 4 performance) | `npm i @tileguard/tile-rules` |
 | [`@tileguard/style-rules`](/api/style-rules) | Style provider + 9 lint rules + parser/resolver/validator | `npm i @tileguard/style-rules` |
 | [`@tileguard/analysis`](/api/analysis) | Comparison engine, regression detection, statistics | `npm i @tileguard/analysis` |
-| [`@tileguard/reporters`](/api/reporters) | Text & JSON CLI reporters + engineering report engine | `npm i @tileguard/reporters` |
+| [`@tileguard/reporters`](/api/reporters) | Text, JSON, JSONL & SARIF CLI reporters + engineering report engine | `npm i @tileguard/reporters` |
 | [`@tileguard/config`](/api/config) | Config file discovery, loading, and validation | `npm i @tileguard/config` |
-| [`@tileguard/cli`](/api/cli) | CLI with 12 commands (includes all packages) | `npm i -g @tileguard/cli` |
+| [`@tileguard/cli`](/api/cli) | CLI with 13 commands (includes all packages) | `npm i -g @tileguard/cli` |
 
 ## Dependency Graph
 
