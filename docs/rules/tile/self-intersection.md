@@ -27,6 +27,21 @@ Delegates to `findSelfIntersectionIssues()` from `geometry.ts`. One diagnostic i
 
 Runs only on artifacts of type `vector-tile`.
 
+### Research Grounding & Suppression Guards
+
+In empirical validation across 2,094 production vector tiles (EXP-003, EXP-008), bare segment-intersection testing yielded high false-positive rates on quantization artifacts and collinear contact points. TileGuard applies a cascade of six suppression guards in `geometry.ts`:
+
+1. **Guard 1 (Minimum-vertex skip):** Rings with `< 4` vertices are delegated to `tile/degenerate-geometry`.
+2. **Guard 2 (LineString closure skip):** Skips the artificial junction between first and last segments on closed LineStrings.
+3. **Guard 3 (Duplicate-vertex pre-scan):** Suppresses adjacent duplicate vertex pairs before edge evaluations.
+4. **Guard 4 (AABB pre-check):** Axis-aligned bounding box pruning prior to pairwise edge tests.
+5. **Guard 5 (Self-tangency skip):** Isolated non-adjacent vertex touches.
+6. **Guard 6 (Collinear-endpoint contact skip — `isProperCrossing`):** Replaces bare segment intersection with strict proper crossing detection. Requires all four orientation values to be non-zero (`orient ≠ 0`) with strictly straddling endpoints (`o1 ≠ o2 && o3 ≠ o4`), eliminating degenerate 5-vertex quantization slivers where a vertex touches a non-adjacent segment line without crossing.
+
+**Empirical Performance (EXP-003d & EXP-003e):**
+- **100% Precision & 100% Recall** on the 407-ring low-zoom validation corpus (`F1 = 1.0000`, 0 false positives).
+- **Zero false positives** across 2,535 rings flagged in the 1,800-tile held-out set (EXP-003e, z8–z14).
+
 ---
 
 ## Diagnostic
