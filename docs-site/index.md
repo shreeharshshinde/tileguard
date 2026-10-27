@@ -694,7 +694,7 @@ layout: page
 <div class="tg-tubelight"></div>
 
 <div class="tg-hero">
-  <div class="tg-badge" style="margin-bottom: 1.5rem;"><span class="indicator"></span> v0.5.0-rc.1 · 25 rules · MIT</div>
+  <div class="tg-badge" style="margin-bottom: 1.5rem;"><span class="indicator"></span> v0.7.0 · 25 rules · MIT</div>
   <h1>TileGuard <span class="accent">Docs</span></h1>
   <p class="subtitle">
     Rule-based validation for vector tiles and MapLibre styles. Quality gates for your geospatial pipeline — from local dev to CI.
@@ -734,15 +734,15 @@ layout: page
       <div class="tg-terminal-body">
         <span class="p">$</span> <span class="c">tileguard doctor</span><br>
         <br>
-        <span class="info">ℹ</span> <span class="d">TileGuard v0.5.0-rc.1 · Environment check</span><br>
+        <span class="info">ℹ</span> <span class="d">TileGuard v0.7.0 · Environment check</span><br>
         <br>
         <span class="ok">✓</span> <span class="m">Node.js</span> <span class="d">22.4.0</span><br>
-        <span class="ok">✓</span> <span class="m">pnpm</span> <span class="d">9.6.0</span><br>
-        <span class="ok">✓</span> <span class="m">@tileguard/core</span> <span class="d">0.5.0-rc.1</span><br>
-        <span class="ok">✓</span> <span class="m">@tileguard/cli</span> <span class="d">0.5.0-rc.1</span><br>
-        <span class="ok">✓</span> <span class="m">@tileguard/inspector</span> <span class="d">0.5.0-rc.1</span><br>
+        <span class="ok">✓</span> <span class="m">pnpm</span> <span class="d">9.15.9</span><br>
+        <span class="ok">✓</span> <span class="m">@tileguard/core</span> <span class="d">0.7.0</span><br>
+        <span class="ok">✓</span> <span class="m">@tileguard/cli</span> <span class="d">0.7.0</span><br>
+        <span class="ok">✓</span> <span class="m">@tileguard/inspector</span> <span class="d">0.7.0</span><br>
         <br>
-        <span class="ok">✓</span> <span class="m">12 tile rules · 9 style rules loaded</span><br>
+        <span class="ok">✓</span> <span class="m">16 tile rules · 9 style rules loaded</span><br>
         <span class="w">⚠</span> <span class="d">No tileguard.config.ts — using defaults.</span><br>
         <span class="m">&nbsp; Run: tileguard init</span><br>
         <br>
@@ -795,8 +795,8 @@ layout: page
   <div class="tg-stat"><div class="num">12</div><div class="label">Tile Rules</div></div>
   <div class="tg-stat"><div class="num">4</div><div class="label">Perf Rules</div></div>
   <div class="tg-stat"><div class="num">9</div><div class="label">Style Rules</div></div>
-  <div class="tg-stat"><div class="num">12</div><div class="label">CLI Commands</div></div>
-  <div class="tg-stat"><div class="num">1,838</div><div class="label">Tests Passing</div></div>
+  <div class="tg-stat"><div class="num">13</div><div class="label">CLI Commands</div></div>
+  <div class="tg-stat"><div class="num">1,848</div><div class="label">Tests Passing</div></div>
 </div>
 
 <div class="tg-section">
