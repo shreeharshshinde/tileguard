@@ -15,13 +15,15 @@ npm install -g @tileguard/cli
 Validate geospatial artifacts against configured rules.
 
 ```bash
-tileguard check <sources...> [options]
+tileguard check [sources...] [options]
 ```
 
 | Option | Description |
 |:-------|:------------|
-| `--reporter <format>` | Output format: `text` (default), `json`, or `sarif` |
-| `--config <path>` | Explicit config file path |
+| `-r, --reporter <id>` | Output format: `text` (default), `json`, `jsonl`, or `sarif` |
+| `--stdin` | Read additional source paths from stdin (one path per line) |
+| `-c, --config <path>` | Explicit config file path (auto-discovered if omitted) |
+| `--max-diagnostics <n>` | Maximum total diagnostics to collect across the entire run |
 
 ```bash
 # Single file
@@ -30,8 +32,14 @@ tileguard check ./tile.pbf
 # Directory (recursive)
 tileguard check ./tiles/
 
-# Multiple sources
-tileguard check ./tiles/ ./styles/ --reporter json
+# Multiple sources with streaming JSONL
+tileguard check ./tiles/ ./styles/ --reporter jsonl
+
+# Batch validation via stdin
+find ./tiles/ -name "*.pbf" | tileguard check --stdin
+
+# GitHub Code Scanning SARIF
+tileguard check ./tiles/ --reporter sarif
 
 # Style file
 tileguard check ./styles/map.json
