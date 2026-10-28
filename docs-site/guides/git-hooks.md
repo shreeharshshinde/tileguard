@@ -60,7 +60,7 @@ tileguard hook status
 ```text
 ✓ pre-commit hook installed
   Path: .git/hooks/pre-commit
-  Version: tileguard v0.6.0
+  Version: tileguard v0.7.0
 ```
 
 ## Remove the Hook
