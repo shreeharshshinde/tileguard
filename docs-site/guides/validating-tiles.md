@@ -169,6 +169,34 @@ tileguard check ./tiles/ --reporter json
 
 Produces machine-readable output for CI integration, custom dashboards, or programmatic consumption.
 
+### Streaming JSONL Output
+
+```bash
+tileguard check ./tiles/ --reporter jsonl
+```
+
+Emits one compact JSON object per line as diagnostics are output, followed by a trailing `{"_type":"summary",...}` line. Ideal for memory-efficient streaming, pipes, and large corpus runs.
+
+### SARIF Output (GitHub Code Scanning)
+
+```bash
+tileguard check ./tiles/ --reporter sarif
+```
+
+Writes an OASIS SARIF 2.1.0 file to `./tileguard-results.sarif` for uploading to GitHub Code Scanning.
+
+## Batch & Stdin Input Mode
+
+When validating thousands of tiles or running in a CI diff workflow, avoid command-line argument length limits (`ARG_MAX`) by piping paths via `--stdin`:
+
+```bash
+# Validate tiles found dynamically
+find ./tiles/ -name "*.pbf" | tileguard check --stdin
+
+# Diff-aware CI: only validate tiles changed in a PR
+git diff --name-only origin/main -- '*.pbf' | tileguard check --stdin --reporter sarif
+```
+
 ## Programmatic API
 
 Validate tiles from your own code:
