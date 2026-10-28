@@ -33,17 +33,17 @@ tileguard ver
 ```
 
 ```text
-tileguard v0.5.0
+tileguard v0.7.0
 node     v22.x.x
 platform linux (x64)
 
 Packages:
-  @tileguard/core         0.5.0
-  @tileguard/tile-rules   0.5.0
-  @tileguard/style-rules  0.5.0
-  @tileguard/reporters    0.5.0
-  @tileguard/config       0.5.0
-  @tileguard/cli          0.5.0
+  @tileguard/core         0.7.0
+  @tileguard/tile-rules   0.7.0
+  @tileguard/style-rules  0.7.0
+  @tileguard/reporters    0.7.0
+  @tileguard/config       0.7.0
+  @tileguard/cli          0.7.0
 ```
 
 Run the health check to confirm rules are loaded and configuration is found:
@@ -54,7 +54,7 @@ tileguard doctor
 
 ```text
 ✓ Node.js version    v22.x.x (≥20 required)
-✓ Core loaded        @tileguard/core 0.6.0
+✓ Core loaded        @tileguard/core 0.7.0
 ✓ Tile rules         12 rules registered
 ✓ Performance rules  4 rules registered (opt-in)
 ✓ Style rules        9 rules registered
@@ -244,6 +244,22 @@ tileguard check ./tiles/ ./styles/ --reporter json
 ```
 
 JSON output is machine-readable. Pipe it into CI gates, dashboards, or custom tooling.
+
+### Streaming JSONL for large datasets
+
+```bash
+tileguard check ./tiles/ --reporter jsonl
+```
+
+Produces newline-delimited JSON (NDJSON) with one line per diagnostic and a final `{"_type":"summary",...}` line. Memory usage stays constant regardless of corpus size.
+
+### Batch validation via stdin
+
+```bash
+# Validate only files found or modified
+find ./tiles -name "*.pbf" | tileguard check --stdin
+git diff --name-only main -- '*.pbf' | tileguard check --stdin --reporter jsonl
+```
 
 ### SARIF output for GitHub Code Scanning
 
