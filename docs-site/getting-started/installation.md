@@ -91,18 +91,21 @@ npm install @tileguard/reporters @tileguard/core
 ## Verify Installation
 
 ```bash
-tileguard version
+tileguard ver
 ```
 
 ```text
-@tileguard/cli 0.5.0
-  @tileguard/core        0.5.0
-  @tileguard/tile-rules  0.5.0
-  @tileguard/style-rules 0.5.0
-  @tileguard/reporters   0.5.0
-  @tileguard/analysis    0.5.0
-  @tileguard/config      0.5.0
-  node                   v22.x.x
+tileguard v0.7.0
+node     v22.x.x
+platform linux (x64)
+
+Packages:
+  @tileguard/core         0.7.0
+  @tileguard/tile-rules   0.7.0
+  @tileguard/style-rules  0.7.0
+  @tileguard/reporters    0.7.0
+  @tileguard/config       0.7.0
+  @tileguard/cli          0.7.0
 ```
 
 Check that the system is healthy:
@@ -113,8 +116,8 @@ tileguard doctor
 
 ```text
 ✓ Node.js version    v22.x.x (≥20 required)
-✓ Core loaded        @tileguard/core 0.5.0
-✓ Tile rules         12 rules registered
+✓ Core loaded        @tileguard/core 0.7.0
+✓ Tile rules         16 rules registered (12 geometry + 4 performance)
 ✓ Style rules        9 rules registered
 ✓ Config discovery   tileguard.config.ts found
 ✓ Reporter           text (default)
