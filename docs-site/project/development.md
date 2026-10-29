@@ -26,7 +26,7 @@ cd packages/core && pnpm build
 ## Test
 
 ```bash
-# Run all tests (~1,838 tests across 9 packages)
+# Run all tests (1,848 tests across 9 packages)
 pnpm test
 
 # Run tests for a specific package
@@ -57,9 +57,9 @@ tileguard/
 │   ├── tile-rules/     ← MVT provider + 12 tile validation + 4 perf rules
 │   ├── style-rules/    ← Style provider + 9 lint rules
 │   ├── config/         ← Config discovery and loading
-│   ├── reporters/      ← Text, JSON, SARIF, report engine
+│   ├── reporters/      ← Text, JSON, JSONL, SARIF, report engine
 │   ├── analysis/       ← Comparison + regression
-│   ├── cli/            ← 12 CLI commands
+│   ├── cli/            ← 13 CLI commands
 │   └── inspector/      ← Visual debugging (Vite + React)
 ├── demo/               ← Demo tile fixtures (Tokyo)
 ├── docs/               ← Internal engineering docs
