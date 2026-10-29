@@ -51,4 +51,4 @@ export default config;
 
 - [**Profiling Tiles →**](/guides/profiling-tiles) — use `tileguard profile` to
   understand your numbers before setting budgets
-- [**Tile Rules →**](/rules/tile/) — geometry and structural validation
+- [**Tile Rules →**](/rules/#tile-validation-rules) — geometry and structural validation
