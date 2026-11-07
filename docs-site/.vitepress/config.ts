@@ -55,6 +55,7 @@ export default withMermaid(
         },
         { text: 'Rules', link: '/rules/' },
         { text: 'Architecture', link: '/architecture/overview' },
+        { text: 'Research', link: '/learn/research' },
         { text: 'API', link: '/api/' },
       ],
 
@@ -73,6 +74,7 @@ export default withMermaid(
             { text: 'What is TileGuard?', link: '/learn/what-is-tileguard' },
             { text: 'How It Works', link: '/learn/how-it-works' },
             { text: 'Concepts', link: '/learn/concepts' },
+            { text: 'Research & Evidence', link: '/learn/research' },
           ],
         },
         {
