@@ -2,7 +2,7 @@
 
 TileGuard is built on a corpus study of vector tile quality across three production pipelines at zoom levels z0–z14. This document summarises the empirical work behind the tool's rule defaults, suppression guards, and diagnostic taxonomy.
 
-Full methodology, raw data, and per-experiment notes live in [`docs/research/EXPERIMENT_LOG.md`](docs/research/EXPERIMENT_LOG.md). Classification criteria are in [`docs/research/CLASSIFICATION_CRITERIA.md`](docs/research/CLASSIFICATION_CRITERIA.md).
+Full methodology, raw data, and per-experiment notes live in [`docs/research/EXPERIMENT_LOG.md`](docs/research/EXPERIMENT_LOG.md). Classification criteria are in [`docs/research/CLASSIFICATION_CRITERIA.md`](docs/research/CLASSIFICATION_CRITERIA.md). Publication-grade figures and statistical visualizations are cataloged in [`docs/research/FIGURES.md`](docs/research/FIGURES.md).
 
 ---
 
@@ -359,7 +359,7 @@ The overwhelming majority of diagnostics from a naively configured validator are
 | Polygon F1 (dual-oracle, v0.7.0) | **1.0000** |
 | Defect rendering impact (5 cases tested) | 5 / 5 significant or moderate |
 | Controlled pipeline experiment (OFAT) | Tippecanoe: 0 GDs · Planetiler: 5 GDs at z14 only |
-| Tests | 1,847 across 9 packages |
+| Tests | 1,848 across 9 packages |
 | Experiments run | 10 complete |
 
 ---
@@ -368,6 +368,7 @@ The overwhelming majority of diagnostics from a naively configured validator are
 
 ```
 docs/research/
+├── FIGURES.md                 — complete catalog of all 11 statistical visualization figures
 ├── EXPERIMENT_LOG.md          — per-experiment methodology, results, raw data refs
 ├── CLASSIFICATION_CRITERIA.md — pre-inspection taxonomy definitions
 ├── RESEARCH_QUESTIONS.md      — formal RQ hierarchy
