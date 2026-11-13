@@ -7,7 +7,7 @@ export default withMermaid(
     description: 'Automated quality gates for geospatial software.',
     lang: 'en-US',
     appearance: 'dark',
-    lastUpdated: true,
+    lastUpdated: false,
 
     head: [
       ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
