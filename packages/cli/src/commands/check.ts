@@ -108,7 +108,7 @@ export async function runCheck(
       : `   Edit ${CONFIG_FILENAME} to customize rules and plugins.`;
 
     process.stderr.write(
-      `${icon}  No ${CONFIG_FILENAME} found — created starter configuration.\n${subtext}\n\n`,
+      `${icon}  No ${CONFIG_FILENAME} found, created starter configuration.\n${subtext}\n\n`,
     );
     // Reload so the engine uses the freshly written config.
     try {
