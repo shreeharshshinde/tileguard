@@ -307,7 +307,7 @@ Produces a structured engineering report with:
 
 ## Configure Rules
 
-Create `tileguard.config.ts` at your project root (or run `tileguard init`):
+TileGuard automatically scaffolds a starter `tileguard.config.ts` the first time you run `tileguard check`. You can also create it manually or scaffold it using `tileguard init`:
 
 ```typescript
 import type { TileGuardConfig } from '@tileguard/core';
@@ -329,7 +329,7 @@ const config: TileGuardConfig = {
 export default config;
 ```
 
-Without a config file, all recommended rules run at their default severities.
+Without customization, all recommended rules run at their default severities.
 
 ## More Commands
 

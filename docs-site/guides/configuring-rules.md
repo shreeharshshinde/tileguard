@@ -4,7 +4,7 @@ TileGuard works with zero configuration — all recommended rules run at their d
 
 ## Configuration File
 
-Run `tileguard init` to scaffold a config file, or create `tileguard.config.ts` manually:
+TileGuard automatically creates a starter `tileguard.config.ts` the first time you run `tileguard check`. You can also scaffold one explicitly using `tileguard init`, or write `tileguard.config.ts` by hand:
 
 ```typescript
 import type { TileGuardConfig } from '@tileguard/core';

@@ -20,6 +20,17 @@ tileguard check ./tiles/
 tileguard check ./tile.pbf
 ```
 
+::: tip First-time run, No Configuartion ?
+If you don't have a configuration file yet, TileGuard automatically creates a starter `tileguard.config.ts` with recommended defaults and proceeds with the check immediately:
+
+```text
+ℹ  No tileguard.config.ts found — created starter configuration.
+   Edit tileguard.config.ts to customize rules and plugins.
+
+TileGuard — checking 1 source(s)...
+```
+:::
+
 TileGuard decodes the tile, runs all 12 tile validation rules against it, and reports any findings:
 
 ```text

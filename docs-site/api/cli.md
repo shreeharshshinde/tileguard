@@ -47,6 +47,10 @@ tileguard check ./styles/map.json
 
 **Exit codes:** `0` = pass (no errors), `1` = fail (errors found)
 
+::: tip Zero-Config First Run
+When `tileguard check` is executed in a project without a configuration file, it automatically creates a starter `tileguard.config.ts` enabled with default plugins (`tilePlugin`, `stylePlugin`) and proceeds with the check immediately. All startup notices are printed exclusively to `stderr` so standard output redirection (`--reporter json | jq`) remains clean.
+:::
+
 ---
 
 ### `tileguard compare`
@@ -222,7 +226,11 @@ Create a starter `tileguard.config.ts` in the current directory.
 tileguard init
 ```
 
-Generates a config file with all recommended rules at default severities. Won't overwrite an existing config.
+Generates a config file with all recommended rules at default severities. Won't overwrite an existing config unless `--force` is passed.
+
+::: tip Automatic Scaffolding
+Running `tileguard check` in a project with no config automatically creates `tileguard.config.ts`. You only need `tileguard init` if you want to scaffold the file ahead of time or re-initialize with `--force`.
+:::
 
 ---
 
