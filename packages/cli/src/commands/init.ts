@@ -18,36 +18,10 @@
 
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { CONFIG_FILENAME, CONFIG_TEMPLATE } from '../config-template.js';
 import { CliUsageError } from '../errors.js';
 import { toUsageResult } from '../exit.js';
 import type { CommandResult, InitFlags } from '../types.js';
-
-/** Filename written by `tileguard init`. */
-const CONFIG_FILENAME = 'tileguard.config.ts';
-
-/**
- * Starter config template.
- *
- * Uses single quotes for string literals to match the project's Biome
- * formatter settings and the style established in other package configs.
- */
-const CONFIG_TEMPLATE = `import type { TileGuardConfig } from '@tileguard/core';
-import { tilePlugin } from '@tileguard/tile-rules';
-import { stylePlugin } from '@tileguard/style-rules';
-
-const config: TileGuardConfig = {
-  plugins: [tilePlugin, stylePlugin],
-  rules: {
-    // Customize rule severities and options here.
-    // 'tile/required-layers': ['error', { layers: ['water', 'roads', 'buildings'] }],
-    // 'tile/self-intersection': 'warning',
-    // 'tile/no-empty': 'off',
-  },
-  reporter: 'text',
-};
-
-export default config;
-`;
 
 /**
  * Executes `tileguard init`.
