@@ -28,6 +28,8 @@
 import { loadConfig } from '@tileguard/config';
 import type { TileGuardConfig } from '@tileguard/core';
 import { createEngine } from '@tileguard/core';
+import { stylePlugin } from '@tileguard/style-rules';
+import { tilePlugin } from '@tileguard/tile-rules';
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
@@ -96,14 +98,29 @@ export async function runCheck(
         // the user can investigate manually.
       }
     }
+    const isColor =
+      typeof process !== 'undefined' &&
+      process.stderr?.isTTY === true &&
+      !process.env.NO_COLOR;
+    const icon = isColor ? '\x1b[36mℹ\x1b[0m' : 'ℹ';
+    const subtext = isColor
+      ? `   \x1b[2mEdit ${CONFIG_FILENAME} to customize rules and plugins.\x1b[0m`
+      : `   Edit ${CONFIG_FILENAME} to customize rules and plugins.`;
+
     process.stderr.write(
-      `No tileguard.config.ts found — created one with defaults. Edit it to customise rules.\n`,
+      `${icon}  No ${CONFIG_FILENAME} found — created starter configuration.\n${subtext}\n\n`,
     );
     // Reload so the engine uses the freshly written config.
     try {
       ({ config: fileConfig, configPath } = await loadConfig({}));
     } catch {
-      // Fall through with the empty fileConfig already set above.
+      // If loading the generated config file failed (e.g. jiti cannot resolve
+      // packages in a standalone directory outside node_modules), fallback
+      // to the built-in plugins so the check can still succeed.
+      fileConfig = { plugins: [tilePlugin, stylePlugin] };
+    }
+    if (!fileConfig.plugins || fileConfig.plugins.length === 0) {
+      fileConfig = { ...fileConfig, plugins: [tilePlugin, stylePlugin] };
     }
   }
 
@@ -153,9 +170,16 @@ export async function runCheck(
   // ── 7. Startup banner — stderr only, never stdout (D9) ─────────────────
   // Written unconditionally so `--reporter json | jq .` is never at risk
   // of interleaved non-JSON output on stdout.
-  process.stderr.write(
-    `TileGuard — checking ${expandedSources.length} source(s)...\n`,
-  );
+  const isColor =
+    typeof process !== 'undefined' &&
+    process.stderr?.isTTY === true &&
+    !process.env.NO_COLOR;
+  const brand = isColor ? '\x1b[1mTileGuard\x1b[0m' : 'TileGuard';
+  const detail = isColor
+    ? `\x1b[2mchecking ${expandedSources.length} source(s)...\x1b[0m`
+    : `checking ${expandedSources.length} source(s)...`;
+
+  process.stderr.write(`${brand} — ${detail}\n\n`);
 
   // ── 8. Run the engine ──────────────────────────────────────────────────
   const engine = createEngine({ ...mergedConfig, reporter });
