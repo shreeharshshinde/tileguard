@@ -294,7 +294,7 @@ describe('runCheck', () => {
     expect(writtenFiles[0][1]).toContain('tilePlugin');
     // Should print the hint to stderr
     expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('No tileguard.config.ts found'),
+      expect.stringMatching(/No .*tileguard\.config\.ts.* found/),
     );
     // Should proceed normally and pass
     expect(result.exitCode).toBe(0);
@@ -357,7 +357,7 @@ describe('runCheck', () => {
 
     // Still prints the hint (we notify the user even if write failed)
     expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('No tileguard.config.ts found'),
+      expect.stringMatching(/No .*tileguard\.config\.ts.* found/),
     );
     // And proceeds with whatever config was reloaded
     expect(result.exitCode).toBe(0);

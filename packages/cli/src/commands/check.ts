@@ -102,13 +102,14 @@ export async function runCheck(
       typeof process !== 'undefined' &&
       process.stderr?.isTTY === true &&
       !process.env.NO_COLOR;
-    const icon = isColor ? '\x1b[36mℹ\x1b[0m' : 'ℹ';
+    const icon = isColor ? '\x1b[1;32mℹ\x1b[0m' : 'ℹ';
+    const configName = isColor ? `\x1b[1m${CONFIG_FILENAME}\x1b[0m` : CONFIG_FILENAME;
     const subtext = isColor
-      ? `   \x1b[2mEdit ${CONFIG_FILENAME} to customize rules and plugins.\x1b[0m`
+      ? `   \x1b[2mEdit \x1b[0m${configName}\x1b[2m to customize rules and plugins.\x1b[0m`
       : `   Edit ${CONFIG_FILENAME} to customize rules and plugins.`;
 
     process.stderr.write(
-      `${icon}  No ${CONFIG_FILENAME} found, created starter configuration.\n${subtext}\n\n`,
+      `${icon}  No ${configName} found — created starter configuration.\n${subtext}\n\n`,
     );
     // Reload so the engine uses the freshly written config.
     try {
