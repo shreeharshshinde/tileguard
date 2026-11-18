@@ -64,7 +64,9 @@ describe('perf/tile-size', () => {
         plugins: [plugin],
         rules: { 'perf/tile-size': ['warning', { maxBytes: 1 }] },
       });
-      const source = await makeTile([{ name: 'buildings', features: [polygon] }]);
+      const source = await makeTile([
+        { name: 'buildings', features: [polygon] },
+      ]);
       const result = await engine.run([source]);
       expect(result.diagnostics[0]?.data).toHaveProperty('bytes');
       expect(result.diagnostics[0]?.data).toHaveProperty('maxBytes');
@@ -91,10 +93,9 @@ describe('perf/tile-size', () => {
         rules: { 'perf/tile-size': ['warning', { maxGzipBytes: 1 }] },
       });
       // gzip: true → tile is written gzip-compressed; metadata.gzipped=true
-      const source = await makeTile(
-        [{ name: 'roads', features: [polygon] }],
-        { gzip: true },
-      );
+      const source = await makeTile([{ name: 'roads', features: [polygon] }], {
+        gzip: true,
+      });
       const result = await engine.run([source]);
       expect(result.diagnostics).toHaveLength(1);
       expect(result.diagnostics[0]?.ruleId).toBe('perf/tile-size');
@@ -107,12 +108,13 @@ describe('perf/tile-size', () => {
     it('fail — both exceeded produces two diagnostics', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/tile-size': ['warning', { maxBytes: 1, maxGzipBytes: 1 }] },
+        rules: {
+          'perf/tile-size': ['warning', { maxBytes: 1, maxGzipBytes: 1 }],
+        },
       });
-      const source = await makeTile(
-        [{ name: 'roads', features: [polygon] }],
-        { gzip: true },
-      );
+      const source = await makeTile([{ name: 'roads', features: [polygon] }], {
+        gzip: true,
+      });
       const result = await engine.run([source]);
       // Both raw bytes (after decompression via decodedBytes) and gzip bytes exceeded
       expect(result.diagnostics.length).toBeGreaterThanOrEqual(1);

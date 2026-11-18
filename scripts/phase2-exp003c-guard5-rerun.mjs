@@ -20,24 +20,41 @@
  * Usage: node scripts/phase2-exp003c-guard5-rerun.mjs
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = resolve(__dirname, '..');
+const ROOT = resolve(__dirname, '..');
 
 // ── Load existing data ────────────────────────────────────────────────────────
 
-const dedup   = JSON.parse(readFileSync(`${ROOT}/analysis/phase2-oracle/deduplicated-rings.json`, 'utf8'));
-const agreeEB = JSON.parse(readFileSync(`${ROOT}/analysis/phase2-oracle/agreement-matrix.json`, 'utf8'));
-const o2data  = JSON.parse(readFileSync(`${ROOT}/analysis/phase2-oracle/exact-integer-oracle-results.json`, 'utf8'));
-const geosData = JSON.parse(readFileSync(`${ROOT}/analysis/phase2-oracle/geos-oracle-results.json`, 'utf8'));
+const dedup = JSON.parse(
+  readFileSync(
+    `${ROOT}/analysis/phase2-oracle/deduplicated-rings.json`,
+    'utf8',
+  ),
+);
+const agreeEB = JSON.parse(
+  readFileSync(`${ROOT}/analysis/phase2-oracle/agreement-matrix.json`, 'utf8'),
+);
+const o2data = JSON.parse(
+  readFileSync(
+    `${ROOT}/analysis/phase2-oracle/exact-integer-oracle-results.json`,
+    'utf8',
+  ),
+);
+const geosData = JSON.parse(
+  readFileSync(
+    `${ROOT}/analysis/phase2-oracle/geos-oracle-results.json`,
+    'utf8',
+  ),
+);
 
-const rings    = dedup.rings;
-const o2Map    = Object.fromEntries(o2data.results.map(r => [r.id, r]));
-const geosMap  = Object.fromEntries(geosData.results.map(r => [r.id, r]));
-const eb3bRows = Object.fromEntries(agreeEB.rows.map(r => [r.id, r]));
+const rings = dedup.rings;
+const o2Map = Object.fromEntries(o2data.results.map((r) => [r.id, r]));
+const geosMap = Object.fromEntries(geosData.results.map((r) => [r.id, r]));
+const eb3bRows = Object.fromEntries(agreeEB.rows.map((r) => [r.id, r]));
 
 console.log(`Loaded ${rings.length} deduplicated rings.`);
 
@@ -55,8 +72,10 @@ function orientation(ax, ay, bx, by, cx, cy) {
 
 function onSegment(ax, ay, bx, by, cx, cy) {
   return (
-    bx <= Math.max(ax, cx) && bx >= Math.min(ax, cx) &&
-    by <= Math.max(ay, cy) && by >= Math.min(ay, cy)
+    bx <= Math.max(ax, cx) &&
+    bx >= Math.min(ax, cx) &&
+    by <= Math.max(ay, cy) &&
+    by >= Math.min(ay, cy)
   );
 }
 
@@ -135,17 +154,21 @@ function tileguardFlaggedV6(pts, closed) {
   // Guard 1: minimum-vertex guard
   if (pts.length < 4) return false;
 
-  const duplicateVertices    = collectDuplicateVertices(pts, closed);
+  const duplicateVertices = collectDuplicateVertices(pts, closed);
   const selfTangencyVertices = collectSelfTangencyVertices(pts, closed);
 
   const segCount = pts.length - 1;
 
   for (let first = 0; first < segCount; first++) {
-    const ax = pts[first].x,     ay = pts[first].y;
-    const bx = pts[first+1].x,   by = pts[first+1].y;
+    const ax = pts[first].x,
+      ay = pts[first].y;
+    const bx = pts[first + 1].x,
+      by = pts[first + 1].y;
 
-    const aMinX = Math.min(ax, bx), aMaxX = Math.max(ax, bx);
-    const aMinY = Math.min(ay, by), aMaxY = Math.max(ay, by);
+    const aMinX = Math.min(ax, bx),
+      aMaxX = Math.max(ax, bx);
+    const aMinY = Math.min(ay, by),
+      aMaxY = Math.max(ay, by);
 
     for (let second = first + 1; second < segCount; second++) {
       // Adjacency skip
@@ -153,31 +176,51 @@ function tileguardFlaggedV6(pts, closed) {
       // Guard 2: closure skip
       if (closed && first === 0 && second === segCount - 1) continue;
 
-      const cx = pts[second].x,   cy = pts[second].y;
-      const dx = pts[second+1].x, dy = pts[second+1].y;
+      const cx = pts[second].x,
+        cy = pts[second].y;
+      const dx = pts[second + 1].x,
+        dy = pts[second + 1].y;
 
       // Guard 4: AABB pre-check
-      if (aMinX > Math.max(cx, dx) || aMaxX < Math.min(cx, dx) ||
-          aMinY > Math.max(cy, dy) || aMaxY < Math.min(cy, dy)) continue;
+      if (
+        aMinX > Math.max(cx, dx) ||
+        aMaxX < Math.min(cx, dx) ||
+        aMinY > Math.max(cy, dy) ||
+        aMaxY < Math.min(cy, dy)
+      )
+        continue;
 
       // Guard 3: duplicate-vertex skip
       if (duplicateVertices.size > 0) {
-        const aKey = `${ax},${ay}`, bKey = `${bx},${by}`;
-        const cKey = `${cx},${cy}`, dKey = `${dx},${dy}`;
-        if ((duplicateVertices.has(bKey) && (bKey === cKey || bKey === dKey)) ||
-            (duplicateVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
-            (duplicateVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
-            (duplicateVertices.has(dKey) && (dKey === aKey || dKey === bKey))) continue;
+        const aKey = `${ax},${ay}`,
+          bKey = `${bx},${by}`;
+        const cKey = `${cx},${cy}`,
+          dKey = `${dx},${dy}`;
+        if (
+          (duplicateVertices.has(bKey) && (bKey === cKey || bKey === dKey)) ||
+          (duplicateVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
+          (duplicateVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
+          (duplicateVertices.has(dKey) && (dKey === aKey || dKey === bKey))
+        )
+          continue;
       }
 
       // Guard 5: self-tangency skip
       if (selfTangencyVertices.size > 0) {
-        const aKey = `${ax},${ay}`, bKey = `${bx},${by}`;
-        const cKey = `${cx},${cy}`, dKey = `${dx},${dy}`;
-        if ((selfTangencyVertices.has(bKey) && (bKey === cKey || bKey === dKey)) ||
-            (selfTangencyVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
-            (selfTangencyVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
-            (selfTangencyVertices.has(dKey) && (dKey === aKey || dKey === bKey))) continue;
+        const aKey = `${ax},${ay}`,
+          bKey = `${bx},${by}`;
+        const cKey = `${cx},${cy}`,
+          dKey = `${dx},${dy}`;
+        if (
+          (selfTangencyVertices.has(bKey) &&
+            (bKey === cKey || bKey === dKey)) ||
+          (selfTangencyVertices.has(aKey) &&
+            (aKey === cKey || aKey === dKey)) ||
+          (selfTangencyVertices.has(cKey) &&
+            (cKey === aKey || cKey === bKey)) ||
+          (selfTangencyVertices.has(dKey) && (dKey === aKey || dKey === bKey))
+        )
+          continue;
       }
 
       if (segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy)) return true;
@@ -190,21 +233,24 @@ function tileguardFlaggedV6(pts, closed) {
 
 console.log('\nRe-running TileGuard v0.6.0 (Guard 5 active) on all rings...');
 
-const ringId = r =>
+const ringId = (r) =>
   `${r.dataset}|${r.tile}|${r.layer}|fi${r.featureIndex}|pi${r.partIndex}`;
 
 let guard5Suppressed = 0;
-let unchanged        = 0;
+let unchanged = 0;
 
 const updatedRows = [];
 
 for (const ring of rings) {
-  const rid    = ringId(ring);
-  const pts    = ring.vertices;
+  const rid = ringId(ring);
+  const pts = ring.vertices;
   // For polygons, first === last (closed). For LineStrings, may or may not be closed.
-  const firstPt = pts[0], lastPt = pts[pts.length - 1];
-  const isClosedLS = ring.geometryType === 'LineString' &&
-                     firstPt.x === lastPt.x && firstPt.y === lastPt.y;
+  const firstPt = pts[0],
+    lastPt = pts[pts.length - 1];
+  const isClosedLS =
+    ring.geometryType === 'LineString' &&
+    firstPt.x === lastPt.x &&
+    firstPt.y === lastPt.y;
   const closed = ring.geometryType === 'Polygon' || isClosedLS;
 
   // v0.6.0 verdict (Guards 1–5)
@@ -228,14 +274,18 @@ for (const ring of rings) {
   const eb3b = eb3bRows[rid];
 
   const geosFlagged = geo ? (geo.geos_non_simple ?? false) : false;
-  const o2Proper    = o2 ? o2.oracle2_has_proper_crossing : false;
+  const o2Proper = o2 ? o2.oracle2_has_proper_crossing : false;
   const dualConsensus = geosFlagged && o2Proper;
 
   // Re-classify
   let category;
   if (tgV6Flagged && geosFlagged && o2Proper) {
     category = 'AGREE_DEFECT';
-  } else if (!tgV6Flagged && !geosFlagged && !(o2 ? o2.oracle2_self_intersects : false)) {
+  } else if (
+    !tgV6Flagged &&
+    !geosFlagged &&
+    !(o2 ? o2.oracle2_self_intersects : false)
+  ) {
     category = 'AGREE_CLEAN';
   } else if (geosFlagged && !tgV6Flagged) {
     if (ring.hasDuplicateVertices) {
@@ -258,19 +308,19 @@ for (const ring of rings) {
   }
 
   updatedRows.push({
-    id:                rid,
-    dataset:           ring.dataset,
-    geometryType:      ring.geometryType,
-    layer:             ring.layer,
-    sharedVertex_eb3b: ring.sharedVertex,   // original v0.5.2 verdict
-    tgV52Flagged:      tgEB3bFlagged,       // v0.5.2 flagged?
-    tgV6Flagged:       tgV6Flagged,         // v0.6.0 (Guard 5) flagged?
-    guard5Changed:     changed,             // Guard 5 suppressed this ring?
-    geos_flagged:      geosFlagged,
-    o2_proper:         o2Proper,
+    id: rid,
+    dataset: ring.dataset,
+    geometryType: ring.geometryType,
+    layer: ring.layer,
+    sharedVertex_eb3b: ring.sharedVertex, // original v0.5.2 verdict
+    tgV52Flagged: tgEB3bFlagged, // v0.5.2 flagged?
+    tgV6Flagged: tgV6Flagged, // v0.6.0 (Guard 5) flagged?
+    guard5Changed: changed, // Guard 5 suppressed this ring?
+    geos_flagged: geosFlagged,
+    o2_proper: o2Proper,
     dual_consensus_defect: dualConsensus,
-    category_eb3b:     eb3b ? eb3b.category : 'N/A',
-    category_ec3c:     category,
+    category_eb3b: eb3b ? eb3b.category : 'N/A',
+    category_ec3c: category,
   });
 }
 
@@ -286,61 +336,87 @@ for (const row of updatedRows) {
 }
 
 console.log('\nEXP-003c agreement categories (all 407 rings):');
-for (const [cat, count] of Object.entries(catCounts).sort((a,b) => b[1]-a[1])) {
+for (const [cat, count] of Object.entries(catCounts).sort(
+  (a, b) => b[1] - a[1],
+)) {
   const eb3bCount = agreeEB.categoryCounts[cat] ?? 0;
   const delta = count - eb3bCount;
-  const deltaStr = delta === 0 ? '(no change)' : (delta > 0 ? `(+${delta})` : `(${delta})`);
+  const deltaStr =
+    delta === 0 ? '(no change)' : delta > 0 ? `(+${delta})` : `(${delta})`;
   console.log(`  ${cat.padEnd(35)} ${count}  ${deltaStr}`);
 }
 
 // ── Precision / Recall / F1 (Polygon rings only) ──────────────────────────────
 
-const polyRows = updatedRows.filter(r => r.geometryType === 'Polygon');
+const polyRows = updatedRows.filter((r) => r.geometryType === 'Polygon');
 
-const TP = polyRows.filter(r => r.tgV6Flagged && r.dual_consensus_defect).length;
-const FP = polyRows.filter(r => r.tgV6Flagged && !r.dual_consensus_defect).length;
-const FN = polyRows.filter(r => !r.tgV6Flagged && r.dual_consensus_defect).length;
-const TN = polyRows.filter(r => !r.tgV6Flagged && !r.dual_consensus_defect).length;
+const TP = polyRows.filter(
+  (r) => r.tgV6Flagged && r.dual_consensus_defect,
+).length;
+const FP = polyRows.filter(
+  (r) => r.tgV6Flagged && !r.dual_consensus_defect,
+).length;
+const FN = polyRows.filter(
+  (r) => !r.tgV6Flagged && r.dual_consensus_defect,
+).length;
+const TN = polyRows.filter(
+  (r) => !r.tgV6Flagged && !r.dual_consensus_defect,
+).length;
 
 const precision = TP + FP > 0 ? TP / (TP + FP) : null;
-const recall    = TP + FN > 0 ? TP / (TP + FN) : null;
-const f1        = precision !== null && recall !== null && precision + recall > 0
-                    ? 2 * precision * recall / (precision + recall) : null;
+const recall = TP + FN > 0 ? TP / (TP + FN) : null;
+const f1 =
+  precision !== null && recall !== null && precision + recall > 0
+    ? (2 * precision * recall) / (precision + recall)
+    : null;
 
 console.log('\nPolygon ring metrics (EXP-003c, Guard 5 active):');
 console.log(`  TP=${TP}  FP=${FP}  FN=${FN}  TN=${TN}`);
-if (precision !== null) console.log(`  Precision: ${(precision*100).toFixed(1)}%`);
-if (recall    !== null) console.log(`  Recall:    ${(recall*100).toFixed(1)}%`);
-if (f1        !== null) console.log(`  F1:        ${f1.toFixed(4)}`);
+if (precision !== null)
+  console.log(`  Precision: ${(precision * 100).toFixed(1)}%`);
+if (recall !== null) console.log(`  Recall:    ${(recall * 100).toFixed(1)}%`);
+if (f1 !== null) console.log(`  F1:        ${f1.toFixed(4)}`);
 
 // Compare with EXP-003b
 const eb3b = agreeEB.polygonMetrics;
 console.log(`\nComparison (EXP-003b → EXP-003c):`);
-console.log(`  Precision: ${(eb3b.precision*100).toFixed(1)}% → ${precision !== null ? (precision*100).toFixed(1)+'%' : 'n/a'}`);
-console.log(`  Recall:    ${(eb3b.recall*100).toFixed(1)}% → ${recall !== null ? (recall*100).toFixed(1)+'%' : 'n/a'}`);
-console.log(`  F1:        ${eb3b.f1.toFixed(4)} → ${f1 !== null ? f1.toFixed(4) : 'n/a'}`);
+console.log(
+  `  Precision: ${(eb3b.precision * 100).toFixed(1)}% → ${precision !== null ? (precision * 100).toFixed(1) + '%' : 'n/a'}`,
+);
+console.log(
+  `  Recall:    ${(eb3b.recall * 100).toFixed(1)}% → ${recall !== null ? (recall * 100).toFixed(1) + '%' : 'n/a'}`,
+);
+console.log(
+  `  F1:        ${eb3b.f1.toFixed(4)} → ${f1 !== null ? f1.toFixed(4) : 'n/a'}`,
+);
 
 // LineString breakdown
-const lsRows = updatedRows.filter(r => r.geometryType === 'LineString');
-const lsTG   = lsRows.filter(r => r.tgV6Flagged).length;
-const lsGeos = lsRows.filter(r => r.geos_flagged).length;
-const lsO2   = lsRows.filter(r => r.o2_proper).length;
+const lsRows = updatedRows.filter((r) => r.geometryType === 'LineString');
+const lsTG = lsRows.filter((r) => r.tgV6Flagged).length;
+const lsGeos = lsRows.filter((r) => r.geos_flagged).length;
+const lsO2 = lsRows.filter((r) => r.o2_proper).length;
 console.log(`\nLineString rings: ${lsRows.length} total`);
-console.log(`  TileGuard v0.6.0 flagged: ${lsTG}, GEOS flagged: ${lsGeos}, Oracle2 proper: ${lsO2}`);
+console.log(
+  `  TileGuard v0.6.0 flagged: ${lsTG}, GEOS flagged: ${lsGeos}, Oracle2 proper: ${lsO2}`,
+);
 
 // ── Save results ───────────────────────────────────────────────────────────────
 
 const outPath = `${ROOT}/analysis/phase2-oracle/exp003c-guard5-results.json`;
-const output  = {
+const output = {
   meta: {
     experiment: 'EXP-003c',
-    description: 'Re-run of EXP-003b dual-oracle comparison with TileGuard Guard 5 (self-tangency skip) active',
+    description:
+      'Re-run of EXP-003b dual-oracle comparison with TileGuard Guard 5 (self-tangency skip) active',
     generated: new Date().toISOString(),
     guardVersion: 'v0.6.0 (Guards 1–5)',
     oracles: {
-      oracle1: 'GEOS via Shapely 2.1.2 — LinearRing.is_simple (unchanged from EXP-003b)',
-      oracle2: 'Exact Integer Predicates — Python int orient2d (unchanged from EXP-003b)',
-      tileguard: 'TileGuard v0.6.0 — Guards 1–5 active (Guard 5 = self-tangency skip)',
+      oracle1:
+        'GEOS via Shapely 2.1.2 — LinearRing.is_simple (unchanged from EXP-003b)',
+      oracle2:
+        'Exact Integer Predicates — Python int orient2d (unchanged from EXP-003b)',
+      tileguard:
+        'TileGuard v0.6.0 — Guards 1–5 active (Guard 5 = self-tangency skip)',
     },
     inputFiles: [
       'analysis/phase2-oracle/deduplicated-rings.json',
@@ -358,10 +434,14 @@ const output  = {
   categoryCounts: catCounts,
   categoryCounts_eb3b: agreeEB.categoryCounts,
   polygonMetrics: {
-    TP, FP, FN, TN,
-    precision: precision !== null ? Math.round(precision * 10000) / 10000 : null,
-    recall:    recall    !== null ? Math.round(recall    * 10000) / 10000 : null,
-    f1:        f1        !== null ? Math.round(f1        * 10000) / 10000 : null,
+    TP,
+    FP,
+    FN,
+    TN,
+    precision:
+      precision !== null ? Math.round(precision * 10000) / 10000 : null,
+    recall: recall !== null ? Math.round(recall * 10000) / 10000 : null,
+    f1: f1 !== null ? Math.round(f1 * 10000) / 10000 : null,
   },
   polygonMetrics_eb3b: eb3b,
   lineStringMetrics: {
@@ -382,14 +462,22 @@ console.log(`  EXP-003c — Guard 5 Re-Run Results`);
 console.log(`${'═'.repeat(62)}`);
 console.log(`  Rings processed:            ${rings.length}`);
 console.log(`  Newly suppressed by Guard 5: ${guard5Suppressed}`);
-for (const [cat, count] of Object.entries(catCounts).sort((a,b) => b[1]-a[1])) {
+for (const [cat, count] of Object.entries(catCounts).sort(
+  (a, b) => b[1] - a[1],
+)) {
   console.log(`  ${cat.padEnd(35)} ${count}`);
 }
 console.log(`${'─'.repeat(62)}`);
 if (precision !== null) {
-  console.log(`  Polygon Precision:   ${(eb3b.precision*100).toFixed(1)}% → ${(precision*100).toFixed(1)}%`);
-  console.log(`  Polygon Recall:      ${(eb3b.recall*100).toFixed(1)}% → ${(recall*100).toFixed(1)}%`);
-  console.log(`  Polygon F1:          ${eb3b.f1.toFixed(4)} → ${f1.toFixed(4)}`);
+  console.log(
+    `  Polygon Precision:   ${(eb3b.precision * 100).toFixed(1)}% → ${(precision * 100).toFixed(1)}%`,
+  );
+  console.log(
+    `  Polygon Recall:      ${(eb3b.recall * 100).toFixed(1)}% → ${(recall * 100).toFixed(1)}%`,
+  );
+  console.log(
+    `  Polygon F1:          ${eb3b.f1.toFixed(4)} → ${f1.toFixed(4)}`,
+  );
 }
 console.log(`${'═'.repeat(62)}`);
 console.log(`\nOutput: ${outPath}`);

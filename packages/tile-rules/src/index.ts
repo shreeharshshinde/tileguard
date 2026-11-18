@@ -111,6 +111,15 @@ export type { LayerFeatureCountOptions } from './rules/layer-feature-count.js';
 export { layerFeatureCountRule } from './rules/layer-feature-count.js';
 export type { NoEmptyOptions } from './rules/no-empty.js';
 export { noEmptyRule } from './rules/no-empty.js';
+// ── Performance Rules ─────────────────────────────────────────────────────
+export type { FeatureDensityOptions } from './rules/perf-feature-density.js';
+export { perfFeatureDensityRule } from './rules/perf-feature-density.js';
+export type { LayerSizeOptions } from './rules/perf-layer-size.js';
+export { perfLayerSizeRule } from './rules/perf-layer-size.js';
+export type { TileSizeOptions } from './rules/perf-tile-size.js';
+export { perfTileSizeRule } from './rules/perf-tile-size.js';
+export type { VertexBudgetOptions } from './rules/perf-vertex-budget.js';
+export { perfVertexBudgetRule } from './rules/perf-vertex-budget.js';
 export type { RequiredLayersOptions } from './rules/required-layers.js';
 export { requiredLayersRule } from './rules/required-layers.js';
 export type { RequiredPropertiesOptions } from './rules/required-properties.js';
@@ -121,15 +130,6 @@ export { unclosedRingRule } from './rules/unclosed-ring.js';
 export { windingOrderRule } from './rules/winding-order.js';
 export type { ZeroAreaRingOptions } from './rules/zero-area-ring.js';
 export { zeroAreaRingRule } from './rules/zero-area-ring.js';
-// ── Performance Rules ─────────────────────────────────────────────────────
-export type { FeatureDensityOptions } from './rules/perf-feature-density.js';
-export { perfFeatureDensityRule } from './rules/perf-feature-density.js';
-export type { LayerSizeOptions } from './rules/perf-layer-size.js';
-export { perfLayerSizeRule } from './rules/perf-layer-size.js';
-export type { TileSizeOptions } from './rules/perf-tile-size.js';
-export { perfTileSizeRule } from './rules/perf-tile-size.js';
-export type { VertexBudgetOptions } from './rules/perf-vertex-budget.js';
-export { perfVertexBudgetRule } from './rules/perf-vertex-budget.js';
 // ── Domain types ──────────────────────────────────────────────────────────
 export type {
   GeometryType,

@@ -21,8 +21,13 @@
  *   2 — no git repository found
  */
 
-import { existsSync, readFileSync, writeFileSync, chmodSync } from 'node:fs';
-import { mkdirSync } from 'node:fs';
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { CliCommandResult } from '../runner/CommandRunner.js';
 
@@ -144,9 +149,7 @@ function install(cwd: string): CliCommandResult {
   // Mark executable (chmod +x)
   chmodSync(hookPath, 0o755);
 
-  const location = isHusky
-    ? `${hookPath} (Husky)`
-    : hookPath;
+  const location = isHusky ? `${hookPath} (Husky)` : hookPath;
 
   return {
     exitCode: 0,

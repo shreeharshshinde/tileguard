@@ -16,11 +16,14 @@
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import { gunzipSync } from 'node:zlib';
-import { decodeMvt } from '@tileguard/tile-rules';
 import type { VectorTileFeature } from '@tileguard/tile-rules';
+import { decodeMvt } from '@tileguard/tile-rules';
 import type { OutputFormat } from '../output/OutputFormatter.js';
 import { createOutputFormatter } from '../output/OutputFormatter.js';
-import type { CliCommandResult, CommandContext } from '../runner/CommandRunner.js';
+import type {
+  CliCommandResult,
+  CommandContext,
+} from '../runner/CommandRunner.js';
 
 // ---------------------------------------------------------------------------
 // Args
@@ -86,9 +89,14 @@ function countFeatureVertices(feature: VectorTileFeature): number {
 
 function buildProfile(filePath: string, topN: number): TileProfile {
   const rawBuffer = readFileSync(filePath);
-  const rawBytes = new Uint8Array(rawBuffer.buffer, rawBuffer.byteOffset, rawBuffer.byteLength);
+  const rawBytes = new Uint8Array(
+    rawBuffer.buffer,
+    rawBuffer.byteOffset,
+    rawBuffer.byteLength,
+  );
 
-  const gzipped = rawBytes.length >= 2 && rawBytes[0] === 0x1f && rawBytes[1] === 0x8b;
+  const gzipped =
+    rawBytes.length >= 2 && rawBytes[0] === 0x1f && rawBytes[1] === 0x8b;
   const bytes = gzipped ? gunzipSync(rawBytes) : rawBytes;
   const gzipBytes = gzipped ? rawBytes.length : null;
 
@@ -110,7 +118,11 @@ function buildProfile(filePath: string, topN: number): TileProfile {
         worst = { layer: layerName, featureIndex: i, vertexCount: v };
       }
     }
-    layerStats.push({ name: layerName, features: layer.features.length, vertices: layerVertices });
+    layerStats.push({
+      name: layerName,
+      features: layer.features.length,
+      vertices: layerVertices,
+    });
     totalVertices += layerVertices;
     totalFeatures += layer.features.length;
   }
@@ -162,9 +174,10 @@ function formatTextOutput(profile: TileProfile): string {
   sections.push(fmt.heading(title));
 
   // Overview
-  const sizeDisplay = profile.gzipBytes !== null
-    ? `${formatBytes(profile.bytes)} (gzip: ${formatBytes(profile.gzipBytes)})`
-    : formatBytes(profile.bytes);
+  const sizeDisplay =
+    profile.gzipBytes !== null
+      ? `${formatBytes(profile.bytes)} (gzip: ${formatBytes(profile.gzipBytes)})`
+      : formatBytes(profile.bytes);
 
   sections.push(
     fmt.summary('Overview', [
@@ -176,7 +189,9 @@ function formatTextOutput(profile: TileProfile): string {
   );
 
   // Layer breakdown table
-  sections.push('\n Layer Breakdown (by vertex count)\n' + ' ' + '─'.repeat(72) + '\n');
+  sections.push(
+    '\n Layer Breakdown (by vertex count)\n' + ' ' + '─'.repeat(72) + '\n',
+  );
   sections.push(
     fmt.table(
       ['Layer', 'Features', 'Vertices', 'Share', 'Est. Size'],
@@ -199,7 +214,10 @@ function formatTextOutput(profile: TileProfile): string {
       );
     }
   }
-  if (profile.worstFeature !== null && profile.worstFeature.vertexCount > 3000) {
+  if (
+    profile.worstFeature !== null &&
+    profile.worstFeature.vertexCount > 3000
+  ) {
     warnings.push(
       `  ⚠  Feature #${profile.worstFeature.featureIndex} in "${profile.worstFeature.layer}"` +
         ` has ${profile.worstFeature.vertexCount.toLocaleString()} vertices — exceeds 3,000 recommended`,

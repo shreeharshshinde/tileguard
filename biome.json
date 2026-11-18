@@ -18,7 +18,7 @@
       "!**/pnpm-lock.yaml",
       "!packages/inspector",
       "!docs-site/.vitepress/theme/*.css",
-      "!docs-site/public/**"
+      "!docs-site/public"
     ]
   },
   "formatter": {

@@ -622,13 +622,13 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
             type: 3,
             points: [
               [
-                { x: 0, y: 0 },    // A — index 0
-                { x: 20, y: 0 },   // B — index 1
-                { x: 20, y: 20 },  // C — index 2
-                { x: 10, y: 10 },  // T — index 3 (first occurrence)
-                { x: 0, y: 20 },   // D — index 4
-                { x: 10, y: 10 },  // T — index 5 (non-adjacent repeat = self-tangency)
-                { x: 0, y: 0 },    // A — closing vertex
+                { x: 0, y: 0 }, // A — index 0
+                { x: 20, y: 0 }, // B — index 1
+                { x: 20, y: 20 }, // C — index 2
+                { x: 10, y: 10 }, // T — index 3 (first occurrence)
+                { x: 0, y: 20 }, // D — index 4
+                { x: 10, y: 10 }, // T — index 5 (non-adjacent repeat = self-tangency)
+                { x: 0, y: 0 }, // A — closing vertex
               ],
             ],
             props: {},
@@ -654,10 +654,10 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
                   { x: 0, y: 0 },
                   { x: 20, y: 0 },
                   { x: 20, y: 20 },
-                  { x: 10, y: 10 },  // T — first occurrence
+                  { x: 10, y: 10 }, // T — first occurrence
                   { x: 0, y: 20 },
-                  { x: 10, y: 10 },  // T — non-adjacent repeat
-                  { x: 0, y: 0 },    // closing = first vertex
+                  { x: 10, y: 10 }, // T — non-adjacent repeat
+                  { x: 0, y: 0 }, // closing = first vertex
                 ],
               ],
               props: {},
@@ -719,15 +719,15 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
             type: 3,
             points: [
               [
-                { x: 0, y: 200 },    // P0 — index 0
-                { x: 100, y: 200 },  // T  — index 1 (first occurrence)
-                { x: 200, y: 200 },  // P2 — index 2
-                { x: 100, y: 200 },  // T  — index 3 (non-adjacent repeat = self-tangency)
-                { x: 200, y: 100 },  // P4 — index 4
-                { x: 0, y: 0 },      // P5 — index 5
-                { x: 200, y: 0 },    // P6 — index 6
-                { x: 0, y: 100 },    // P7 — index 7
-                { x: 0, y: 200 },    // P0 — closing vertex
+                { x: 0, y: 200 }, // P0 — index 0
+                { x: 100, y: 200 }, // T  — index 1 (first occurrence)
+                { x: 200, y: 200 }, // P2 — index 2
+                { x: 100, y: 200 }, // T  — index 3 (non-adjacent repeat = self-tangency)
+                { x: 200, y: 100 }, // P4 — index 4
+                { x: 0, y: 0 }, // P5 — index 5
+                { x: 200, y: 0 }, // P6 — index 6
+                { x: 0, y: 100 }, // P7 — index 7
+                { x: 0, y: 200 }, // P0 — closing vertex
               ],
             ],
             props: {},
@@ -755,16 +755,16 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
             type: 3,
             points: [
               [
-                { x: 0, y: 0 },    // A  — index 0
-                { x: 10, y: 10 },  // T1 — index 1
-                { x: 20, y: 0 },   // B  — index 2
-                { x: 20, y: 20 },  // C  — index 3
-                { x: 10, y: 10 },  // T1 — index 4 (non-adjacent repeat)
-                { x: 0, y: 20 },   // D  — index 5
-                { x: 0, y: 10 },   // T2 — index 6
-                { x: -5, y: 15 },  // E  — index 7
-                { x: 0, y: 10 },   // T2 — index 8 (non-adjacent repeat)
-                { x: 0, y: 0 },    // A  — closing vertex
+                { x: 0, y: 0 }, // A  — index 0
+                { x: 10, y: 10 }, // T1 — index 1
+                { x: 20, y: 0 }, // B  — index 2
+                { x: 20, y: 20 }, // C  — index 3
+                { x: 10, y: 10 }, // T1 — index 4 (non-adjacent repeat)
+                { x: 0, y: 20 }, // D  — index 5
+                { x: 0, y: 10 }, // T2 — index 6
+                { x: -5, y: 15 }, // E  — index 7
+                { x: 0, y: 10 }, // T2 — index 8 (non-adjacent repeat)
+                { x: 0, y: 0 }, // A  — closing vertex
               ],
             ],
             props: {},
@@ -815,11 +815,11 @@ describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Gua
             type: 3,
             points: [
               [
-                { x: 0, y: 0 },    // A — index 0
-                { x: 100, y: 0 },  // B — index 1
-                { x: 50, y: 0 },   // C — index 2  (collinear with A and B)
-                { x: 100, y: 100 },// D — index 3
-                { x: 0, y: 0 },    // A — closing vertex
+                { x: 0, y: 0 }, // A — index 0
+                { x: 100, y: 0 }, // B — index 1
+                { x: 50, y: 0 }, // C — index 2  (collinear with A and B)
+                { x: 100, y: 100 }, // D — index 3
+                { x: 0, y: 0 }, // A — closing vertex
               ],
             ],
             props: {},
@@ -844,9 +844,9 @@ describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Gua
                 [
                   { x: 0, y: 0 },
                   { x: 100, y: 0 },
-                  { x: 50, y: 0 },   // collinear with first two vertices
+                  { x: 50, y: 0 }, // collinear with first two vertices
                   { x: 100, y: 100 },
-                  { x: 0, y: 0 },    // closing = first vertex
+                  { x: 0, y: 0 }, // closing = first vertex
                 ],
               ],
               props: {},
@@ -885,11 +885,11 @@ describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Gua
             type: 3,
             points: [
               [
-                { x: 0, y: 0 },      // P0 — index 0
-                { x: 200, y: 0 },    // P1 — index 1
-                { x: 100, y: 100 },  // P2 — index 2
-                { x: 100, y: 0 },    // P3 — index 3  (lies on line through P0 and P1)
-                { x: 0, y: 0 },      // P0 — closing vertex
+                { x: 0, y: 0 }, // P0 — index 0
+                { x: 200, y: 0 }, // P1 — index 1
+                { x: 100, y: 100 }, // P2 — index 2
+                { x: 100, y: 0 }, // P3 — index 3  (lies on line through P0 and P1)
+                { x: 0, y: 0 }, // P0 — closing vertex
               ],
             ],
             props: {},
@@ -926,12 +926,12 @@ describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Gua
             type: 3,
             points: [
               [
-                { x: 0, y: 0 },    // A — index 0
-                { x: 100, y: 0 },  // B — index 1
-                { x: 50, y: 0 },   // C — index 2  (collinear with A and B on seg[0])
-                { x: 0, y: 100 },  // D — index 3
-                { x: 100, y: 100 },// E — index 4
-                { x: 0, y: 0 },    // A — closing vertex
+                { x: 0, y: 0 }, // A — index 0
+                { x: 100, y: 0 }, // B — index 1
+                { x: 50, y: 0 }, // C — index 2  (collinear with A and B on seg[0])
+                { x: 0, y: 100 }, // D — index 3
+                { x: 100, y: 100 }, // E — index 4
+                { x: 0, y: 0 }, // A — closing vertex
               ],
             ],
             props: {},

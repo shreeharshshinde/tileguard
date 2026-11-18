@@ -32,7 +32,10 @@ function captureLines(
   });
   reporter.report(diagnostics, context);
   // Split on newlines, filter out the final empty string after trailing \n
-  return chunks.join('').split('\n').filter((l) => l.length > 0);
+  return chunks
+    .join('')
+    .split('\n')
+    .filter((l) => l.length > 0);
 }
 
 /** Parse all lines and return typed objects. */
@@ -69,8 +72,7 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
   return {
     ruleId: overrides.ruleId ?? 'tile/self-intersection',
     severity: overrides.severity ?? 'error',
-    message:
-      overrides.message ?? 'Ring 0 in feature 7 crosses itself.',
+    message: overrides.message ?? 'Ring 0 in feature 7 crosses itself.',
     artifact: overrides.artifact ?? {
       type: 'VectorTile',
       source: 'test.pbf',
@@ -151,11 +153,13 @@ describe('jsonlReporter', () => {
       const diag = makeDiagnostic();
       const parsed = parseLines([diag], makeContext());
       const first = parsed[0] as JsonlDiagnosticLine;
-      expect(Object.prototype.hasOwnProperty.call(first, 'location')).toBe(false);
+      expect(Object.hasOwn(first, 'location')).toBe(false);
     });
 
     it('includes suggestion when present', () => {
-      const diag = makeDiagnostic({ suggestion: 'Rebuild with corrected geometry.' });
+      const diag = makeDiagnostic({
+        suggestion: 'Rebuild with corrected geometry.',
+      });
       const parsed = parseLines([diag], makeContext());
       expect((parsed[0] as JsonlDiagnosticLine).suggestion).toBe(
         'Rebuild with corrected geometry.',
@@ -185,7 +189,7 @@ describe('jsonlReporter', () => {
     it('does not include _type on diagnostic lines', () => {
       const diag = makeDiagnostic();
       const parsed = parseLines([diag], makeContext());
-      expect(Object.prototype.hasOwnProperty.call(parsed[0], '_type')).toBe(false);
+      expect(Object.hasOwn(parsed[0], '_type')).toBe(false);
     });
 
     it('preserves input order for multiple diagnostics', () => {
@@ -194,8 +198,12 @@ describe('jsonlReporter', () => {
       const d3 = makeDiagnostic({ ruleId: 'tile/no-empty' });
       const parsed = parseLines([d1, d2, d3], makeContext());
 
-      expect((parsed[0] as JsonlDiagnosticLine).ruleId).toBe('tile/required-layers');
-      expect((parsed[1] as JsonlDiagnosticLine).ruleId).toBe('tile/winding-order');
+      expect((parsed[0] as JsonlDiagnosticLine).ruleId).toBe(
+        'tile/required-layers',
+      );
+      expect((parsed[1] as JsonlDiagnosticLine).ruleId).toBe(
+        'tile/winding-order',
+      );
       expect((parsed[2] as JsonlDiagnosticLine).ruleId).toBe('tile/no-empty');
     });
   });

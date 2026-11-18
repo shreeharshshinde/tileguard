@@ -133,9 +133,9 @@ describe('runRulesList', () => {
     for (const entry of parsed) {
       expect(typeof entry.id).toBe('string');
       // tilePlugin includes both tile/* geometry rules and perf/* performance rules
-      expect(
-        entry.id.startsWith('tile/') || entry.id.startsWith('perf/'),
-      ).toBe(true);
+      expect(entry.id.startsWith('tile/') || entry.id.startsWith('perf/')).toBe(
+        true,
+      );
       expect(typeof entry.description).toBe('string');
       expect(typeof entry.defaultSeverity).toBe('string');
       expect(typeof entry.recommended).toBe('boolean');

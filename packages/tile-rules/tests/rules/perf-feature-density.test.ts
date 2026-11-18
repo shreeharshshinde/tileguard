@@ -4,7 +4,7 @@
 import { createEngine } from '@tileguard/core';
 import { describe, expect, it } from 'vitest';
 import { perfFeatureDensityRule, tileProvider } from '../../src/index.js';
-import { makeTile, type FeatureDesc } from '../helpers.js';
+import { type FeatureDesc, makeTile } from '../helpers.js';
 
 const plugin = {
   id: 'test',
@@ -28,7 +28,9 @@ describe('perf/feature-density', () => {
     it('pass — layer within global default budget', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/feature-density': ['warning', { maxFeaturesPerLayer: 100 }] },
+        rules: {
+          'perf/feature-density': ['warning', { maxFeaturesPerLayer: 100 }],
+        },
       });
       const source = await makeTile([
         { name: 'poi', features: makePoints(50) },
@@ -40,7 +42,9 @@ describe('perf/feature-density', () => {
     it('fail — layer exceeds global default budget', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/feature-density': ['warning', { maxFeaturesPerLayer: 10 }] },
+        rules: {
+          'perf/feature-density': ['warning', { maxFeaturesPerLayer: 10 }],
+        },
       });
       const source = await makeTile([
         { name: 'poi', features: makePoints(50) },
@@ -57,7 +61,9 @@ describe('perf/feature-density', () => {
     it('fail — multiple layers exceeding budget each produce a diagnostic', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/feature-density': ['warning', { maxFeaturesPerLayer: 5 }] },
+        rules: {
+          'perf/feature-density': ['warning', { maxFeaturesPerLayer: 5 }],
+        },
       });
       const source = await makeTile([
         { name: 'poi', features: makePoints(20) },
@@ -73,7 +79,9 @@ describe('perf/feature-density', () => {
     it('edge — exactly at the limit passes', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/feature-density': ['warning', { maxFeaturesPerLayer: 10 }] },
+        rules: {
+          'perf/feature-density': ['warning', { maxFeaturesPerLayer: 10 }],
+        },
       });
       const source = await makeTile([
         { name: 'poi', features: makePoints(10) },
@@ -88,10 +96,13 @@ describe('perf/feature-density', () => {
       const engine = createEngine({
         plugins: [plugin],
         rules: {
-          'perf/feature-density': ['warning', {
-            maxFeaturesPerLayer: 5,
-            layers: { poi: { maxFeatures: 100 } },
-          }],
+          'perf/feature-density': [
+            'warning',
+            {
+              maxFeaturesPerLayer: 5,
+              layers: { poi: { maxFeatures: 100 } },
+            },
+          ],
         },
       });
       const source = await makeTile([
@@ -106,10 +117,13 @@ describe('perf/feature-density', () => {
       const engine = createEngine({
         plugins: [plugin],
         rules: {
-          'perf/feature-density': ['warning', {
-            maxFeaturesPerLayer: 1000,
-            layers: { poi: { maxFeatures: 10 } },
-          }],
+          'perf/feature-density': [
+            'warning',
+            {
+              maxFeaturesPerLayer: 1000,
+              layers: { poi: { maxFeatures: 10 } },
+            },
+          ],
         },
       });
       const source = await makeTile([
@@ -124,11 +138,14 @@ describe('perf/feature-density', () => {
       const engine = createEngine({
         plugins: [plugin],
         rules: {
-          'perf/feature-density': ['warning', {
-            maxFeaturesPerLayer: 5,
-            // roads listed but no maxFeatures → skip for roads
-            layers: { roads: {} },
-          }],
+          'perf/feature-density': [
+            'warning',
+            {
+              maxFeaturesPerLayer: 5,
+              // roads listed but no maxFeatures → skip for roads
+              layers: { roads: {} },
+            },
+          ],
         },
       });
       const source = await makeTile([
@@ -143,9 +160,12 @@ describe('perf/feature-density', () => {
         plugins: [plugin],
         // No global default, no layer entry for 'water'
         rules: {
-          'perf/feature-density': ['warning', {
-            layers: { poi: { maxFeatures: 100 } },
-          }],
+          'perf/feature-density': [
+            'warning',
+            {
+              layers: { poi: { maxFeatures: 100 } },
+            },
+          ],
         },
       });
       const source = await makeTile([

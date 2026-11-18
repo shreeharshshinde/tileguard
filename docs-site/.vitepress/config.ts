@@ -173,7 +173,10 @@ export default withMermaid(
                 { text: 'Overview', link: '/rules/perf/' },
                 { text: 'tile-size', link: '/rules/perf/tile-size' },
                 { text: 'vertex-budget', link: '/rules/perf/vertex-budget' },
-                { text: 'feature-density', link: '/rules/perf/feature-density' },
+                {
+                  text: 'feature-density',
+                  link: '/rules/perf/feature-density',
+                },
                 { text: 'layer-size', link: '/rules/perf/layer-size' },
               ],
             },

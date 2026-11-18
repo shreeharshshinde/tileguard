@@ -39,17 +39,17 @@
  * Usage: node scripts/phase1-winding-audit.mjs
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, resolve, join } from 'path';
 import { VectorTile } from '@mapbox/vector-tile';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { dirname, join, resolve } from 'path';
 import { PbfReader as Pbf } from 'pbf';
+import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = resolve(__dirname, '..');
+const ROOT = resolve(__dirname, '..');
 const CACHE_DIR = join(ROOT, 'fixtures', 'benchmark-cache');
-const OUT_DIR   = join(ROOT, 'analysis', 'phase1-winding');
-const OUT_PATH  = join(OUT_DIR, 'winding-convention-counts.json');
+const OUT_DIR = join(ROOT, 'analysis', 'phase1-winding');
+const OUT_PATH = join(OUT_DIR, 'winding-convention-counts.json');
 
 const DATASETS = ['OpenMapTiles', 'OpenFreeMap', 'CARTO Streets'];
 
@@ -86,17 +86,17 @@ function loadTile(filepath) {
 // Accumulator structure per dataset
 function makeAccumulator() {
   return {
-    tilesProcessed:         0,
+    tilesProcessed: 0,
     polygonFeaturesAudited: 0,
-    ringsAudited:           0,
+    ringsAudited: 0,
     // Per-feature winding classification (based on exterior/first non-zero ring)
-    featuresSpecConformantMVT:  0,  // exterior ring has SignedArea > 0
-    featuresOGCStyle:           0,  // exterior ring has SignedArea < 0
-    featuresDegenerate:         0,  // all rings have SignedArea = 0
+    featuresSpecConformantMVT: 0, // exterior ring has SignedArea > 0
+    featuresOGCStyle: 0, // exterior ring has SignedArea < 0
+    featuresDegenerate: 0, // all rings have SignedArea = 0
     // Per-ring raw counts
-    ringsCW:      0,   // SignedArea > 0 (CW in Y-down = MVT exterior)
-    ringsCCW:     0,   // SignedArea < 0 (CCW in Y-down = OGC exterior)
-    ringsZero:    0,   // SignedArea = 0 (degenerate)
+    ringsCW: 0, // SignedArea > 0 (CW in Y-down = MVT exterior)
+    ringsCCW: 0, // SignedArea < 0 (CCW in Y-down = OGC exterior)
+    ringsZero: 0, // SignedArea = 0 (degenerate)
     // Intra-feature inconsistency: feature where exterior rings have mixed winding
     featuresIntraInconsistent: 0,
     // Sample of inconsistent feature locations for audit trail
@@ -107,16 +107,16 @@ function makeAccumulator() {
 const results = {};
 for (const ds of DATASETS) results[ds] = makeAccumulator();
 
-let grandTotalTiles    = 0;
+let grandTotalTiles = 0;
 let grandTotalFeatures = 0;
-let grandTotalRings    = 0;
+let grandTotalRings = 0;
 
 for (const dataset of DATASETS) {
-  const acc   = results[dataset];
-  const dir   = join(CACHE_DIR, dataset);
+  const acc = results[dataset];
+  const dir = join(CACHE_DIR, dataset);
   const files = readdirSync(dir)
-    .filter(f => f.endsWith('.pbf'))
-    .map(f => join(dir, f));
+    .filter((f) => f.endsWith('.pbf'))
+    .map((f) => join(dir, f));
 
   console.log(`\nProcessing ${dataset} (${files.length} tiles)...`);
 
@@ -149,7 +149,7 @@ for (const dataset of DATASETS) {
         if (!geom || geom.length === 0) continue;
 
         // Track winding of each ring in this feature
-        const ringWindings = [];  // 'cw' | 'ccw' | 'zero' per ring
+        const ringWindings = []; // 'cw' | 'ccw' | 'zero' per ring
 
         for (const ring of geom) {
           acc.ringsAudited++;
@@ -170,7 +170,7 @@ for (const dataset of DATASETS) {
         }
 
         // Classify feature by its EXTERIOR (first non-zero) ring winding
-        const firstNonZero = ringWindings.find(w => w !== 'zero');
+        const firstNonZero = ringWindings.find((w) => w !== 'zero');
 
         if (!firstNonZero) {
           acc.featuresDegenerate++;
@@ -190,8 +190,8 @@ for (const dataset of DATASETS) {
         // Per MVT encoding rules: rings alternate outer/hole by convention flip.
         // We detect if any ring that *should* be an outer (CW in detected conv or CCW)
         // has the opposite sign — indicating mixed producer behavior.
-        const exteriorWindings = ringWindings.filter(w => w !== 'zero');
-        const dominantWinding  = firstNonZero;
+        const exteriorWindings = ringWindings.filter((w) => w !== 'zero');
+        const dominantWinding = firstNonZero;
         const hasContradiction = exteriorWindings.some((w, idx) => {
           // In a well-formed polygon, rings alternate outer/hole.
           // Odd-indexed rings in the flat array are holes; even-indexed are outers.
@@ -205,8 +205,8 @@ for (const dataset of DATASETS) {
           if (acc.inconsistentSamples.length < 5) {
             const fn = filepath.split('/').pop();
             acc.inconsistentSamples.push({
-              tile:         fn,
-              layer:        layerName,
+              tile: fn,
+              layer: layerName,
               featureIndex: fi,
               ringWindings,
             });
@@ -216,10 +216,18 @@ for (const dataset of DATASETS) {
     }
   }
 
-  console.log(`  Tiles: ${acc.tilesProcessed}, Polygon features: ${acc.polygonFeaturesAudited}, Rings: ${acc.ringsAudited}`);
-  console.log(`  Features — MVT spec-conformant (CW exterior): ${acc.featuresSpecConformantMVT}, OGC-style (CCW exterior): ${acc.featuresOGCStyle}, Degenerate: ${acc.featuresDegenerate}`);
-  console.log(`  Rings    — CW: ${acc.ringsCW}, CCW: ${acc.ringsCCW}, Zero: ${acc.ringsZero}`);
-  console.log(`  Intra-inconsistent features: ${acc.featuresIntraInconsistent}`);
+  console.log(
+    `  Tiles: ${acc.tilesProcessed}, Polygon features: ${acc.polygonFeaturesAudited}, Rings: ${acc.ringsAudited}`,
+  );
+  console.log(
+    `  Features — MVT spec-conformant (CW exterior): ${acc.featuresSpecConformantMVT}, OGC-style (CCW exterior): ${acc.featuresOGCStyle}, Degenerate: ${acc.featuresDegenerate}`,
+  );
+  console.log(
+    `  Rings    — CW: ${acc.ringsCW}, CCW: ${acc.ringsCCW}, Zero: ${acc.ringsZero}`,
+  );
+  console.log(
+    `  Intra-inconsistent features: ${acc.featuresIntraInconsistent}`,
+  );
 }
 
 // ── geometry.ts comment audit ─────────────────────────────────────────────────
@@ -253,13 +261,17 @@ const geometryTsAudit = {
   signedAreaDocstring: {
     current: '"positive result indicates counter-clockwise winding order"',
     interpretation: 'Cartesian / Y-up mathematical convention',
-    mvtTileSpaceReality: 'In MVT Y-down tile coordinates, SignedArea > 0 = CW (clockwise) = MVT exterior ring per §4.3.2.1',
-    verdict: 'INCONSISTENT_COMMENT — the formula and internal logic are correct but the JSDoc is written in cartesian Y-up terms, not MVT tile-space terms',
-    recommendedAddition: 'Add note: "NOTE: In MVT tile-space (Y-down), a positive value indicates CW (clockwise) — the MVT spec exterior ring direction. This comment describes the cartesian/Y-up mathematical interpretation."',
+    mvtTileSpaceReality:
+      'In MVT Y-down tile coordinates, SignedArea > 0 = CW (clockwise) = MVT exterior ring per §4.3.2.1',
+    verdict:
+      'INCONSISTENT_COMMENT — the formula and internal logic are correct but the JSDoc is written in cartesian Y-up terms, not MVT tile-space terms',
+    recommendedAddition:
+      'Add note: "NOTE: In MVT tile-space (Y-down), a positive value indicates CW (clockwise) — the MVT spec exterior ring direction. This comment describes the cartesian/Y-up mathematical interpretation."',
   },
   detectWindingConvention: {
     logic: 'area < 0 → "mvt" (CW outer), area > 0 → "ogc" (CCW outer)',
-    verdict: 'FUNCTIONALLY_CORRECT — correctly identifies OGC-convention tiles (which produce area < 0 in Y-down = treated as "mvt" CW by the cartesian interpretation, but the label assignment is right for production tile behavior)',
+    verdict:
+      'FUNCTIONALLY_CORRECT — correctly identifies OGC-convention tiles (which produce area < 0 in Y-down = treated as "mvt" CW by the cartesian interpretation, but the label assignment is right for production tile behavior)',
     note: 'The label names "mvt" and "ogc" map to producer behavior, not raw sign. Logic is correct, naming is slightly confusing.',
   },
 };
@@ -267,25 +279,29 @@ const geometryTsAudit = {
 // ── Build output document ─────────────────────────────────────────────────────
 const output = {
   meta: {
-    task:          '1.2',
-    description:   'Winding convention audit — independent raw shoelace signed area per provider',
-    generated:     new Date().toISOString(),
-    corpusSize:    `${grandTotalTiles} tiles across 3 providers (z0–z4)`,
+    task: '1.2',
+    description:
+      'Winding convention audit — independent raw shoelace signed area per provider',
+    generated: new Date().toISOString(),
+    corpusSize: `${grandTotalTiles} tiles across 3 providers (z0–z4)`,
     specReference: 'Mapbox Vector Tile Specification v2.1, Section 4.3.2.1',
-    gapsClosed:    ['B1'],
-    independence:  'Raw shoelace formula computed in this script. TileGuard detectWindingConvention() NOT used.',
+    gapsClosed: ['B1'],
+    independence:
+      'Raw shoelace formula computed in this script. TileGuard detectWindingConvention() NOT used.',
   },
   signConvention: {
-    formula:    'SignedArea = (1/2) * Σ (x_i * y_{i+1} - x_{i+1} * y_i)',
+    formula: 'SignedArea = (1/2) * Σ (x_i * y_{i+1} - x_{i+1} * y_i)',
     coordinate: 'MVT tile coordinates — Y-axis points DOWNWARD (screen space)',
-    positiveSign: 'SignedArea > 0 → Clockwise (CW) in screen/tile space → MVT spec EXTERIOR ring (§4.3.2.1)',
-    negativeSign: 'SignedArea < 0 → Counter-Clockwise (CCW) in screen/tile space → OGC/GeoJSON style EXTERIOR ring',
-    zeroSign:     'SignedArea = 0 → Degenerate ring (collinear, zero area)',
+    positiveSign:
+      'SignedArea > 0 → Clockwise (CW) in screen/tile space → MVT spec EXTERIOR ring (§4.3.2.1)',
+    negativeSign:
+      'SignedArea < 0 → Counter-Clockwise (CCW) in screen/tile space → OGC/GeoJSON style EXTERIOR ring',
+    zeroSign: 'SignedArea = 0 → Degenerate ring (collinear, zero area)',
   },
   summary: {
-    totalTiles:    grandTotalTiles,
+    totalTiles: grandTotalTiles,
     totalPolygonFeatures: grandTotalFeatures,
-    totalRings:    grandTotalRings,
+    totalRings: grandTotalRings,
   },
   perProvider: {},
   geometryTsAudit,
@@ -294,44 +310,67 @@ const output = {
 // Build clean per-provider summary
 for (const dataset of DATASETS) {
   const acc = results[dataset];
-  const totalClassified = acc.featuresSpecConformantMVT + acc.featuresOGCStyle + acc.featuresDegenerate;
+  const totalClassified =
+    acc.featuresSpecConformantMVT +
+    acc.featuresOGCStyle +
+    acc.featuresDegenerate;
 
   output.perProvider[dataset] = {
-    tilesProcessed:           acc.tilesProcessed,
-    polygonFeaturesAudited:   acc.polygonFeaturesAudited,
-    ringsAudited:             acc.ringsAudited,
+    tilesProcessed: acc.tilesProcessed,
+    polygonFeaturesAudited: acc.polygonFeaturesAudited,
+    ringsAudited: acc.ringsAudited,
     featureClassification: {
       specConformantMVT: {
         count: acc.featuresSpecConformantMVT,
-        pct:   totalClassified > 0
-          ? +((acc.featuresSpecConformantMVT / totalClassified) * 100).toFixed(2)
-          : 0,
-        description: 'Exterior ring has SignedArea > 0 (CW in Y-down tile space — MVT §4.3.2.1 compliant)',
+        pct:
+          totalClassified > 0
+            ? +(
+                (acc.featuresSpecConformantMVT / totalClassified) *
+                100
+              ).toFixed(2)
+            : 0,
+        description:
+          'Exterior ring has SignedArea > 0 (CW in Y-down tile space — MVT §4.3.2.1 compliant)',
       },
       ogcStyle: {
         count: acc.featuresOGCStyle,
-        pct:   totalClassified > 0
-          ? +((acc.featuresOGCStyle / totalClassified) * 100).toFixed(2)
-          : 0,
-        description: 'Exterior ring has SignedArea < 0 (CCW in Y-down = CW cartesian — OGC/GeoJSON convention)',
+        pct:
+          totalClassified > 0
+            ? +((acc.featuresOGCStyle / totalClassified) * 100).toFixed(2)
+            : 0,
+        description:
+          'Exterior ring has SignedArea < 0 (CCW in Y-down = CW cartesian — OGC/GeoJSON convention)',
       },
       degenerate: {
         count: acc.featuresDegenerate,
-        pct:   totalClassified > 0
-          ? +((acc.featuresDegenerate / totalClassified) * 100).toFixed(2)
-          : 0,
+        pct:
+          totalClassified > 0
+            ? +((acc.featuresDegenerate / totalClassified) * 100).toFixed(2)
+            : 0,
         description: 'All rings have SignedArea = 0 (collinear / zero-area)',
       },
       intraInconsistent: {
         count: acc.featuresIntraInconsistent,
-        description: 'Feature where rings have mixed winding directions (not all CW or all CCW)',
+        description:
+          'Feature where rings have mixed winding directions (not all CW or all CCW)',
         samples: acc.inconsistentSamples,
       },
     },
     ringBreakdown: {
-      cw:   { count: acc.ringsCW,   description: 'SignedArea > 0 — CW in Y-down (MVT spec exterior direction)' },
-      ccw:  { count: acc.ringsCCW,  description: 'SignedArea < 0 — CCW in Y-down (OGC convention exterior direction)' },
-      zero: { count: acc.ringsZero, description: 'SignedArea = 0 — degenerate' },
+      cw: {
+        count: acc.ringsCW,
+        description:
+          'SignedArea > 0 — CW in Y-down (MVT spec exterior direction)',
+      },
+      ccw: {
+        count: acc.ringsCCW,
+        description:
+          'SignedArea < 0 — CCW in Y-down (OGC convention exterior direction)',
+      },
+      zero: {
+        count: acc.ringsZero,
+        description: 'SignedArea = 0 — degenerate',
+      },
     },
   };
 }
@@ -345,20 +384,36 @@ console.log(`\nOutput written to: ${OUT_PATH}`);
 console.log('\n═══════════════════════════════════════════════════════════');
 console.log('  Task 1.2 — Winding Convention Audit Results');
 console.log('═══════════════════════════════════════════════════════════');
-console.log(`  Corpus: ${grandTotalTiles} tiles | ${grandTotalFeatures} Polygon features | ${grandTotalRings} rings`);
+console.log(
+  `  Corpus: ${grandTotalTiles} tiles | ${grandTotalFeatures} Polygon features | ${grandTotalRings} rings`,
+);
 console.log('');
 for (const dataset of DATASETS) {
   const p = output.perProvider[dataset];
   const fc = p.featureClassification;
   console.log(`  ${dataset}:`);
-  console.log(`    MVT spec-conformant (CW exterior):  ${fc.specConformantMVT.count}  (${fc.specConformantMVT.pct}%)`);
-  console.log(`    OGC-style (CCW exterior):            ${fc.ogcStyle.count}  (${fc.ogcStyle.pct}%)`);
-  console.log(`    Degenerate (zero area):              ${fc.degenerate.count}  (${fc.degenerate.pct}%)`);
-  console.log(`    Intra-inconsistent:                  ${fc.intraInconsistent.count}`);
-  console.log(`    Rings — CW: ${p.ringBreakdown.cw.count}, CCW: ${p.ringBreakdown.ccw.count}, Zero: ${p.ringBreakdown.zero.count}`);
+  console.log(
+    `    MVT spec-conformant (CW exterior):  ${fc.specConformantMVT.count}  (${fc.specConformantMVT.pct}%)`,
+  );
+  console.log(
+    `    OGC-style (CCW exterior):            ${fc.ogcStyle.count}  (${fc.ogcStyle.pct}%)`,
+  );
+  console.log(
+    `    Degenerate (zero area):              ${fc.degenerate.count}  (${fc.degenerate.pct}%)`,
+  );
+  console.log(
+    `    Intra-inconsistent:                  ${fc.intraInconsistent.count}`,
+  );
+  console.log(
+    `    Rings — CW: ${p.ringBreakdown.cw.count}, CCW: ${p.ringBreakdown.ccw.count}, Zero: ${p.ringBreakdown.zero.count}`,
+  );
   console.log('');
 }
 console.log('  geometry.ts audit:');
-console.log(`    signedArea() comment: ${output.geometryTsAudit.signedAreaDocstring.verdict}`);
-console.log(`    detectWindingConvention(): ${output.geometryTsAudit.detectWindingConvention.verdict}`);
+console.log(
+  `    signedArea() comment: ${output.geometryTsAudit.signedAreaDocstring.verdict}`,
+);
+console.log(
+  `    detectWindingConvention(): ${output.geometryTsAudit.detectWindingConvention.verdict}`,
+);
 console.log('═══════════════════════════════════════════════════════════');

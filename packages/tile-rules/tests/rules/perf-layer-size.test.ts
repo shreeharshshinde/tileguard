@@ -8,7 +8,7 @@
 import { createEngine } from '@tileguard/core';
 import { describe, expect, it } from 'vitest';
 import { perfLayerSizeRule, tileProvider } from '../../src/index.js';
-import { makeTile, type FeatureDesc } from '../helpers.js';
+import { type FeatureDesc, makeTile } from '../helpers.js';
 
 const plugin = {
   id: 'test',
@@ -139,7 +139,7 @@ describe('perf/layer-size', () => {
       const result = await engine.run([source]);
       // 1 layer = 100% → exceeds 99% limit
       expect(result.diagnostics).toHaveLength(1);
-      expect((result.diagnostics[0]?.data?.estimatedFraction as number)).toBe(1);
+      expect(result.diagnostics[0]?.data?.estimatedFraction as number).toBe(1);
     });
   });
 });

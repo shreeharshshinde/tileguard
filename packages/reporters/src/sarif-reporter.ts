@@ -40,7 +40,12 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import type { Diagnostic, Reporter, ReporterContext, Severity } from '@tileguard/core';
+import type {
+  Diagnostic,
+  Reporter,
+  ReporterContext,
+  Severity,
+} from '@tileguard/core';
 
 // ---------------------------------------------------------------------------
 // Public API types
@@ -153,7 +158,8 @@ function buildResultMessage(diagnostic: Diagnostic): string {
     const loc = diagnostic.location;
     const parts: string[] = [];
     if (loc.layer !== undefined) parts.push(`layer: ${loc.layer}`);
-    if (loc.featureIndex !== undefined) parts.push(`feature: ${loc.featureIndex}`);
+    if (loc.featureIndex !== undefined)
+      parts.push(`feature: ${loc.featureIndex}`);
     if (loc.jsonPath !== undefined) parts.push(loc.jsonPath);
     if (parts.length > 0) {
       text += ` [${parts.join(', ')}]`;
@@ -229,12 +235,17 @@ export function createSarifReporter(
 ): Reporter {
   const outputPath = options.outputPath ?? './tileguard-results.sarif';
   const toolVersion = options.toolVersion ?? '0.7.0';
-  const writeFn = options.write ?? ((filePath, content) => {
-    if (typeof fs.writeFileSync === 'function') {
-      const resolved = typeof path.resolve === 'function' ? path.resolve(filePath) : filePath;
-      fs.writeFileSync(resolved, content, 'utf-8');
-    }
-  });
+  const writeFn =
+    options.write ??
+    ((filePath, content) => {
+      if (typeof fs.writeFileSync === 'function') {
+        const resolved =
+          typeof path.resolve === 'function'
+            ? path.resolve(filePath)
+            : filePath;
+        fs.writeFileSync(resolved, content, 'utf-8');
+      }
+    });
 
   return {
     id: 'sarif',

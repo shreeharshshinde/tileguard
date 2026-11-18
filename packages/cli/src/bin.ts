@@ -91,10 +91,7 @@ program
     'Maximum total diagnostics to collect',
     (v: string) => parseInt(v, 10),
   )
-  .option(
-    '--stdin',
-    'Read additional source paths from stdin (one per line)',
-  )
+  .option('--stdin', 'Read additional source paths from stdin (one per line)')
   .action(async (sources: string[], flags) => {
     const result = await runCheck(sources, flags, process.stdin);
     present(result);

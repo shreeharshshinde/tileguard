@@ -10,40 +10,46 @@
  * Usage: node scripts/phase3-find-gd-tiles.mjs
  */
 
-import { createEngine }     from '../packages/core/dist/index.js';
-import { tilePlugin }       from '../packages/tile-rules/dist/index.js';
-import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join, dirname }    from 'node:path';
-import { fileURLToPath }    from 'node:url';
+import {
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { VectorTile } from '@mapbox/vector-tile';
 import { PbfReader as Pbf } from 'pbf';
-import { VectorTile }       from '@mapbox/vector-tile';
+import { createEngine } from '../packages/core/dist/index.js';
+import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = join(__dirname, '..');
+const ROOT = join(__dirname, '..');
 const TILES_DIR = join(ROOT, 'tools', 'ofat-work', 'pl_s1_b64_z14_tiles');
-const OUT_DIR   = join(ROOT, 'analysis', 'phase3-pipeline');
+const OUT_DIR = join(ROOT, 'analysis', 'phase3-pipeline');
 mkdirSync(OUT_DIR, { recursive: true });
 
 // TileGuard engine — only geometry rules, same as pipeline
 const engine = createEngine({
   plugins: [tilePlugin],
   rules: {
-    'tile/self-intersection':   'error',
-    'tile/coordinate-range':    'off',
-    'tile/winding-order':       'off',
-    'tile/unclosed-ring':       'off',
-    'tile/zero-area-ring':      'off',
-    'tile/hole-containment':    'off',
+    'tile/self-intersection': 'error',
+    'tile/coordinate-range': 'off',
+    'tile/winding-order': 'off',
+    'tile/unclosed-ring': 'off',
+    'tile/zero-area-ring': 'off',
+    'tile/hole-containment': 'off',
     'tile/degenerate-geometry': 'off',
-    'tile/no-empty':            'off',
-    'tile/required-layers':     'off',
+    'tile/no-empty': 'off',
+    'tile/required-layers': 'off',
     'tile/required-properties': 'off',
-    'tile/feature-count':       'off',
+    'tile/feature-count': 'off',
     'tile/layer-feature-count': 'off',
-    'perf/tile-size':           'off',
-    'perf/vertex-budget':       'off',
-    'perf/feature-density':     'off',
-    'perf/layer-size':          'off',
+    'perf/tile-size': 'off',
+    'perf/vertex-budget': 'off',
+    'perf/feature-density': 'off',
+    'perf/layer-size': 'off',
   },
 });
 
@@ -75,9 +81,9 @@ function parseTileCoords(path) {
  * Standard Web Mercator tile bounds.
  */
 function tileBBox(z, x, y) {
-  const n = Math.pow(2, z);
-  const west  = (x / n) * 360 - 180;
-  const east  = ((x + 1) / n) * 360 - 180;
+  const n = 2 ** z;
+  const west = (x / n) * 360 - 180;
+  const east = ((x + 1) / n) * 360 - 180;
   const northRad = Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n)));
   const southRad = Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 1)) / n)));
   return {
@@ -93,16 +99,19 @@ function tileBBox(z, x, y) {
  * of all its geometry rings, then convert to WGS84.
  */
 function featureBBoxWGS84(z, x, y, layerName, featureIndex) {
-  const buf  = readFileSync(join(TILES_DIR, String(z), String(x), `${y}.pbf`));
+  const buf = readFileSync(join(TILES_DIR, String(z), String(x), `${y}.pbf`));
   const tile = new VectorTile(new Pbf(buf));
   const layer = tile.layers[layerName];
   if (!layer) return null;
 
   const feature = layer.feature(featureIndex);
-  const geom    = feature.loadGeometry(); // array of rings, each ring = [{x,y}]
-  const extent  = layer.extent ?? 4096;
+  const geom = feature.loadGeometry(); // array of rings, each ring = [{x,y}]
+  const extent = layer.extent ?? 4096;
 
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
   for (const ring of geom) {
     for (const pt of ring) {
       if (pt.x < minX) minX = pt.x;
@@ -114,12 +123,12 @@ function featureBBoxWGS84(z, x, y, layerName, featureIndex) {
 
   // Convert tile pixel coords to WGS84
   const tileBb = tileBBox(z, x, y);
-  const tileW  = tileBb.east  - tileBb.west;
-  const tileH  = tileBb.north - tileBb.south;
+  const tileW = tileBb.east - tileBb.west;
+  const tileH = tileBb.north - tileBb.south;
 
   return {
-    west:  tileBb.west  + (minX / extent) * tileW,
-    east:  tileBb.west  + (maxX / extent) * tileW,
+    west: tileBb.west + (minX / extent) * tileW,
+    east: tileBb.west + (maxX / extent) * tileW,
     north: tileBb.north - (minY / extent) * tileH,
     south: tileBb.north - (maxY / extent) * tileH,
     centerLng: tileBb.west + ((minX + maxX) / 2 / extent) * tileW,
@@ -130,7 +139,7 @@ function featureBBoxWGS84(z, x, y, layerName, featureIndex) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const pbfs   = collectPbfs(TILES_DIR);
+const pbfs = collectPbfs(TILES_DIR);
 const gdTiles = [];
 
 console.log(`Scanning ${pbfs.length} tiles for Genuine Defects…`);
@@ -143,30 +152,38 @@ for (const pbf of pbfs) {
     continue;
   }
 
-  const gds = result.diagnostics.filter(d => d.ruleId === 'tile/self-intersection');
+  const gds = result.diagnostics.filter(
+    (d) => d.ruleId === 'tile/self-intersection',
+  );
   if (gds.length === 0) continue;
 
   const { z, x, y } = parseTileCoords(pbf);
   const tileBb = tileBBox(z, x, y);
 
   for (const diag of gds) {
-    const layer        = diag.location?.layer        ?? 'unknown';
+    const layer = diag.location?.layer ?? 'unknown';
     const featureIndex = diag.location?.featureIndex ?? 0;
-    const featureBb    = featureBBoxWGS84(z, x, y, layer, featureIndex);
+    const featureBb = featureBBoxWGS84(z, x, y, layer, featureIndex);
 
     gdTiles.push({
       path: pbf,
-      z, x, y,
+      z,
+      x,
+      y,
       tileBBox: tileBb,
       layer,
       featureIndex,
-      message:   diag.message,
+      message: diag.message,
       featureBBox: featureBb,
     });
 
-    console.log(`  GD found: z${z}/${x}/${y}  layer=${layer}  featureIdx=${featureIndex}`);
+    console.log(
+      `  GD found: z${z}/${x}/${y}  layer=${layer}  featureIdx=${featureIndex}`,
+    );
     if (featureBb) {
-      console.log(`    center: ${featureBb.centerLat.toFixed(6)}, ${featureBb.centerLng.toFixed(6)}`);
+      console.log(
+        `    center: ${featureBb.centerLat.toFixed(6)}, ${featureBb.centerLng.toFixed(6)}`,
+      );
     }
   }
 }

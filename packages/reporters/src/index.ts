@@ -88,12 +88,12 @@ export {
   renderJson,
   renderMarkdown,
 } from './report/index.js';
+// SARIF reporter — GitHub Code Scanning / OASIS SARIF 2.1.0 output
+export type { SarifReporterOptions } from './sarif-reporter.js';
+export { createSarifReporter, sarifReporter } from './sarif-reporter.js';
 export type {
   TextReporterOptions,
   WriteFn as TextWriteFn,
 } from './text-reporter.js';
 // Text reporter — the default, human-readable terminal output
 export { createTextReporter, textReporter } from './text-reporter.js';
-// SARIF reporter — GitHub Code Scanning / OASIS SARIF 2.1.0 output
-export type { SarifReporterOptions } from './sarif-reporter.js';
-export { createSarifReporter, sarifReporter } from './sarif-reporter.js';

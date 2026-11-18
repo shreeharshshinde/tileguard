@@ -15,16 +15,16 @@
  * Usage: node scripts/phase3-highzoom-audit.mjs
  */
 
-import { createEngine }  from '../packages/core/dist/index.js';
-import { tilePlugin }    from '../packages/tile-rules/dist/index.js';
-import { readdirSync, mkdirSync, writeFileSync, statSync } from 'node:fs';
-import { join, dirname, basename } from 'node:path';
+import { mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createEngine } from '../packages/core/dist/index.js';
+import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = join(__dirname, '..');
+const ROOT = join(__dirname, '..');
 const TILE_ROOT = join(ROOT, 'fixtures', 'phase3-highzoom');
-const OUT_DIR   = join(ROOT, 'analysis', 'phase3-higher-zooms');
+const OUT_DIR = join(ROOT, 'analysis', 'phase3-higher-zooms');
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -32,22 +32,35 @@ mkdirSync(OUT_DIR, { recursive: true });
 const engine = createEngine({
   plugins: [tilePlugin],
   rules: {
-    'tile/coordinate-range':    ['error', { buffer: 80, excludeLayers: ['place', 'water_name', 'centroids', 'poi_label', 'place_label', 'transit_stop_label'] }],
-    'tile/self-intersection':   'error',
-    'tile/winding-order':       'error',
-    'tile/unclosed-ring':       'error',
-    'tile/zero-area-ring':      'error',
-    'tile/hole-containment':    'error',
+    'tile/coordinate-range': [
+      'error',
+      {
+        buffer: 80,
+        excludeLayers: [
+          'place',
+          'water_name',
+          'centroids',
+          'poi_label',
+          'place_label',
+          'transit_stop_label',
+        ],
+      },
+    ],
+    'tile/self-intersection': 'error',
+    'tile/winding-order': 'error',
+    'tile/unclosed-ring': 'error',
+    'tile/zero-area-ring': 'error',
+    'tile/hole-containment': 'error',
     'tile/degenerate-geometry': 'error',
-    'tile/no-empty':            'off',
-    'tile/required-layers':     'off',
+    'tile/no-empty': 'off',
+    'tile/required-layers': 'off',
     'tile/required-properties': 'off',
-    'tile/feature-count':       'off',
+    'tile/feature-count': 'off',
     'tile/layer-feature-count': 'off',
-    'perf/tile-size':           'off',
-    'perf/vertex-budget':       'off',
-    'perf/feature-density':     'off',
-    'perf/layer-size':          'off',
+    'perf/tile-size': 'off',
+    'perf/vertex-budget': 'off',
+    'perf/feature-density': 'off',
+    'perf/layer-size': 'off',
   },
 });
 
@@ -104,13 +117,20 @@ for (const providerDir of readdirSync(TILE_ROOT)) {
     const zoomPath = join(provPath, zoomDir);
     if (!statSync(zoomPath).isDirectory()) continue;
     const z = parseInt(zoomDir.replace('z', ''), 10);
-    const files = readdirSync(zoomPath).filter(f => f.endsWith('.pbf'));
-    PROVIDERS_ZOOMS.push({ provider: providerDir.replace('_', ' '), z, dir: zoomPath, files });
+    const files = readdirSync(zoomPath).filter((f) => f.endsWith('.pbf'));
+    PROVIDERS_ZOOMS.push({
+      provider: providerDir.replace('_', ' '),
+      z,
+      dir: zoomPath,
+      files,
+    });
   }
 }
 
 // Sort: provider asc, zoom asc
-PROVIDERS_ZOOMS.sort((a, b) => a.provider.localeCompare(b.provider) || a.z - b.z);
+PROVIDERS_ZOOMS.sort(
+  (a, b) => a.provider.localeCompare(b.provider) || a.z - b.z,
+);
 
 // ── Run audit ─────────────────────────────────────────────────────────────────
 const results = [];
@@ -144,33 +164,41 @@ for (const { provider, z, dir, files } of PROVIDERS_ZOOMS) {
     for (const diag of result.diagnostics) {
       const taxonomy = classify(diag.ruleId, diag);
       if (!tallies[key][diag.ruleId]) tallies[key][diag.ruleId] = {};
-      tallies[key][diag.ruleId][taxonomy] = (tallies[key][diag.ruleId][taxonomy] ?? 0) + 1;
+      tallies[key][diag.ruleId][taxonomy] =
+        (tallies[key][diag.ruleId][taxonomy] ?? 0) + 1;
       tileDiagCount++;
 
       results.push({
         provider,
         z,
-        tile:       `${tz}/${tx}/${ty}`,
-        ruleId:     diag.ruleId,
-        severity:   diag.severity,
-        layer:      diag.location?.layer ?? null,
+        tile: `${tz}/${tx}/${ty}`,
+        ruleId: diag.ruleId,
+        severity: diag.severity,
+        layer: diag.location?.layer ?? null,
         featureIdx: diag.location?.featureIndex ?? null,
         taxonomy,
-        message:    diag.message,
+        message: diag.message,
       });
     }
   }
 
-  totalTiles  += tileCount;
+  totalTiles += tileCount;
   totalErrors += tileErrors;
-  console.log(`  ${provider} z${z}: ${tileCount} tiles, ${tileDiagCount} diagnostics  (${tileErrors} errors)`);
+  console.log(
+    `  ${provider} z${z}: ${tileCount} tiles, ${tileDiagCount} diagnostics  (${tileErrors} errors)`,
+  );
 }
 
 // ── Summary table ─────────────────────────────────────────────────────────────
 
 // Taxonomy totals per provider+zoom
 function taxTotals(tally) {
-  const t = { 'Checker Error': 0, 'Quantization Artifact': 0, 'Spec-Permitted Convention': 0, 'Genuine Defect': 0 };
+  const t = {
+    'Checker Error': 0,
+    'Quantization Artifact': 0,
+    'Spec-Permitted Convention': 0,
+    'Genuine Defect': 0,
+  };
   for (const ruleCounts of Object.values(tally)) {
     for (const [tax, cnt] of Object.entries(ruleCounts)) {
       t[tax] = (t[tax] ?? 0) + cnt;
@@ -187,7 +215,8 @@ for (const { provider, z, files } of PROVIDERS_ZOOMS) {
   const tax = taxTotals(tallies[key]);
   const nTiles = files.length;
   const diagPerTile = nTiles > 0 ? +(tax.total / nTiles).toFixed(3) : 0;
-  const genuinePerTile = nTiles > 0 ? +(tax['Genuine Defect'] / nTiles).toFixed(3) : 0;
+  const genuinePerTile =
+    nTiles > 0 ? +(tax['Genuine Defect'] / nTiles).toFixed(3) : 0;
   if (!zoomSummary[z]) zoomSummary[z] = {};
   zoomSummary[z][provider] = { nTiles, ...tax, diagPerTile, genuinePerTile };
 }
@@ -200,7 +229,8 @@ for (const { provider, z, files } of PROVIDERS_ZOOMS) {
 // From EXP-006 hole-containment: 0 for OFM and CARTO
 // Approximate per-tile baselines for OFM+CARTO only:
 const Z04_BASELINE = {
-  provider_note: "OFM+CARTO, z0-z4, 200 tiles (OMT excluded to match EXP-008 scope)",
+  provider_note:
+    'OFM+CARTO, z0-z4, 200 tiles (OMT excluded to match EXP-008 scope)',
   nTiles: 200,
   // SP from coord-range (OFM 223 + CARTO 223 = 446)
   // GD from self-intersection (OFM 8 + CARTO 8 = 16 Polygon crossings)
@@ -214,23 +244,27 @@ const Z04_BASELINE = {
 };
 
 // ── Print results ─────────────────────────────────────────────────────────────
-console.log('\n════════════════════════════════════════════════════════════════');
+console.log(
+  '\n════════════════════════════════════════════════════════════════',
+);
 console.log('  EXP-008 — Diagnostic Summary by Zoom Level');
 console.log('════════════════════════════════════════════════════════════════');
-console.log(`  ${'Provider+Zoom'.padEnd(32)} ${'Tiles'.padStart(6)} ${'Total'.padStart(7)} ${'GD'.padStart(5)} ${'QA'.padStart(5)} ${'SP'.padStart(7)} ${'CE'.padStart(5)} ${'diag/tile'.padStart(10)} ${'GD/tile'.padStart(8)}`);
+console.log(
+  `  ${'Provider+Zoom'.padEnd(32)} ${'Tiles'.padStart(6)} ${'Total'.padStart(7)} ${'GD'.padStart(5)} ${'QA'.padStart(5)} ${'SP'.padStart(7)} ${'CE'.padStart(5)} ${'diag/tile'.padStart(10)} ${'GD/tile'.padStart(8)}`,
+);
 console.log('  ' + '─'.repeat(85));
 
 for (const z of [8, 12, 14]) {
   for (const [prov, s] of Object.entries(zoomSummary[z] ?? {})) {
     console.log(
-      `  ${(prov + ' z' + z).padEnd(32)} ${String(s.nTiles).padStart(6)} ${String(s.total).padStart(7)} ${String(s['Genuine Defect']).padStart(5)} ${String(s['Quantization Artifact']).padStart(5)} ${String(s['Spec-Permitted Convention']).padStart(7)} ${String(s['Checker Error']).padStart(5)} ${String(s.diagPerTile).padStart(10)} ${String(s.genuinePerTile).padStart(8)}`
+      `  ${(prov + ' z' + z).padEnd(32)} ${String(s.nTiles).padStart(6)} ${String(s.total).padStart(7)} ${String(s['Genuine Defect']).padStart(5)} ${String(s['Quantization Artifact']).padStart(5)} ${String(s['Spec-Permitted Convention']).padStart(7)} ${String(s['Checker Error']).padStart(5)} ${String(s.diagPerTile).padStart(10)} ${String(s.genuinePerTile).padStart(8)}`,
     );
   }
 }
 
 console.log('  ' + '─'.repeat(85));
 console.log(
-  `  ${'z0-z4 baseline (OFM+CARTO)'.padEnd(32)} ${String(Z04_BASELINE.nTiles).padStart(6)} ${String(Z04_BASELINE.total).padStart(7)} ${String(Z04_BASELINE['Genuine Defect']).padStart(5)} ${String(Z04_BASELINE['Quantization Artifact']).padStart(5)} ${String(Z04_BASELINE['Spec-Permitted Convention']).padStart(7)} ${String(Z04_BASELINE['Checker Error']).padStart(5)} ${String(Z04_BASELINE.diagPerTile).padStart(10)} ${String(Z04_BASELINE.genuinePerTile).padStart(8)}`
+  `  ${'z0-z4 baseline (OFM+CARTO)'.padEnd(32)} ${String(Z04_BASELINE.nTiles).padStart(6)} ${String(Z04_BASELINE.total).padStart(7)} ${String(Z04_BASELINE['Genuine Defect']).padStart(5)} ${String(Z04_BASELINE['Quantization Artifact']).padStart(5)} ${String(Z04_BASELINE['Spec-Permitted Convention']).padStart(7)} ${String(Z04_BASELINE['Checker Error']).padStart(5)} ${String(Z04_BASELINE.diagPerTile).padStart(10)} ${String(Z04_BASELINE.genuinePerTile).padStart(8)}`,
 );
 console.log('════════════════════════════════════════════════════════════════');
 console.log(`  Total tiles run: ${totalTiles}  |  Errors: ${totalErrors}`);
@@ -238,20 +272,26 @@ console.log(`  Total tiles run: ${totalTiles}  |  Errors: ${totalErrors}`);
 // ── Write output ──────────────────────────────────────────────────────────────
 const output = {
   meta: {
-    task:        '3.3',
-    experiment:  'EXP-008',
-    description: 'Higher-zoom corpus (z8/z12/z14) benchmark — defect density vs z0-z4 baseline',
-    generated:   new Date().toISOString(),
-    gapsClosed:  ['D2'],
+    task: '3.3',
+    experiment: 'EXP-008',
+    description:
+      'Higher-zoom corpus (z8/z12/z14) benchmark — defect density vs z0-z4 baseline',
+    generated: new Date().toISOString(),
+    gapsClosed: ['D2'],
     bbox: {
-      z8_z12:  { lon: [139.0, 141.0], lat: [35.0, 37.0], size: '2°×2°' },
-      z14:     { lon: [139.65, 139.90], lat: [35.50, 35.75], size: '0.25°×0.25°',
-                 note: 'Full 2°×2° at z14 = 10,396 tiles/provider — impractical. Sub-region used.' },
+      z8_z12: { lon: [139.0, 141.0], lat: [35.0, 37.0], size: '2°×2°' },
+      z14: {
+        lon: [139.65, 139.9],
+        lat: [35.5, 35.75],
+        size: '0.25°×0.25°',
+        note: 'Full 2°×2° at z14 = 10,396 tiles/provider — impractical. Sub-region used.',
+      },
     },
-    providers:    ['OpenFreeMap (Planetiler)', 'CARTO Streets (proprietary)'],
-    omt_note:    'OpenMapTiles (demotiles.maplibre.org) has maxzoom=6; cannot serve z8+. EXP-008 uses 2 of 3 providers.',
-    tilesTotal:  totalTiles,
-    tileErrors:  totalErrors,
+    providers: ['OpenFreeMap (Planetiler)', 'CARTO Streets (proprietary)'],
+    omt_note:
+      'OpenMapTiles (demotiles.maplibre.org) has maxzoom=6; cannot serve z8+. EXP-008 uses 2 of 3 providers.',
+    tilesTotal: totalTiles,
+    tileErrors: totalErrors,
     rulesEnabled: [
       'tile/coordinate-range (buffer=80)',
       'tile/self-intersection',
@@ -262,10 +302,10 @@ const output = {
       'tile/degenerate-geometry',
     ],
   },
-  baseline_z04:  Z04_BASELINE,
+  baseline_z04: Z04_BASELINE,
   zoomSummary,
   talliesByProviderZoom: tallies,
-  diagnostics:   results,
+  diagnostics: results,
 };
 
 const outPath = join(OUT_DIR, 'higher-zooms-results.json');

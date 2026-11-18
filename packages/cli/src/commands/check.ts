@@ -25,14 +25,14 @@
  * embedding context. See Decision D3.
  */
 
+import { existsSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Readable } from 'node:stream';
 import { loadConfig } from '@tileguard/config';
 import type { TileGuardConfig } from '@tileguard/core';
 import { createEngine } from '@tileguard/core';
 import { stylePlugin } from '@tileguard/style-rules';
 import { tilePlugin } from '@tileguard/tile-rules';
-import { existsSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import type { Readable } from 'node:stream';
 import { CONFIG_FILENAME, CONFIG_TEMPLATE } from '../config-template.js';
 import { CliUsageError } from '../errors.js';
 import { toRunResult, toUsageResult } from '../exit.js';
@@ -103,7 +103,9 @@ export async function runCheck(
       process.stderr?.isTTY === true &&
       !process.env.NO_COLOR;
     const icon = isColor ? '\x1b[1;32mℹ\x1b[0m' : 'ℹ';
-    const configName = isColor ? `\x1b[1m${CONFIG_FILENAME}\x1b[0m` : CONFIG_FILENAME;
+    const configName = isColor
+      ? `\x1b[1m${CONFIG_FILENAME}\x1b[0m`
+      : CONFIG_FILENAME;
     const subtext = isColor
       ? `   \x1b[2mEdit \x1b[0m${configName}\x1b[2m to customize rules and plugins.\x1b[0m`
       : `   Edit ${CONFIG_FILENAME} to customize rules and plugins.`;

@@ -102,7 +102,10 @@ describe('runCheck', () => {
   });
 
   it('returns exitCode 2 when no sources remain after expansion', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: {}, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: {},
+      configPath: '/proj/tileguard.config.ts',
+    });
     // Empty sources array → expandSources([]) → [] → empty-sources branch
     const result = await runCheck([], {});
 
@@ -110,7 +113,10 @@ describe('runCheck', () => {
   });
 
   it('returns exitCode 2 when the resolved reporter ID is unknown', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'junit' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'junit' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     // Nonexistent path passes through expandSources unchanged
     const result = await runCheck(['/nonexistent/tile.pbf'], {});
 
@@ -120,7 +126,10 @@ describe('runCheck', () => {
   // ── Exit code 0: pass ────────────────────────────────────────────────
 
   it('returns exitCode 0 when the engine run passes', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     const result = await runCheck(['/nonexistent/tile.pbf'], {
@@ -134,7 +143,10 @@ describe('runCheck', () => {
   // ── Exit code 1: validation failure ─────────────────────────────────
 
   it('returns exitCode 1 when the engine run fails', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(false, 1));
 
     const result = await runCheck(['/nonexistent/tile.pbf'], {
@@ -150,7 +162,10 @@ describe('runCheck', () => {
 
   it('CLI --reporter flag wins over config.reporter (D4)', async () => {
     // Config file specifies 'json' but CLI passes 'text' via flags
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'json' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'json' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     const fakeEngine = makeFakeEngine(true);
     mockCreateEngine.mockReturnValueOnce(fakeEngine);
 
@@ -167,7 +182,10 @@ describe('runCheck', () => {
   // ── D9: startup banner goes to stderr, never stdout ─────────────────
 
   it('writes the startup banner to stderr and not to stdout (D9)', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
@@ -188,7 +206,10 @@ describe('runCheck', () => {
       throw new Error('process.exit must not be called from runCheck');
     });
 
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' });
@@ -211,7 +232,10 @@ describe('runCheck', () => {
   // ── --stdin flag ─────────────────────────────────────────────────────
 
   it('reads source paths from stdin when --stdin is set', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     const fakeEngine = makeFakeEngine(true);
     mockCreateEngine.mockReturnValueOnce(fakeEngine);
 
@@ -219,7 +243,11 @@ describe('runCheck', () => {
     const { Readable } = await import('node:stream');
     const mockStream = Readable.from(['/nonexistent/from-stdin.pbf\n']);
 
-    const result = await runCheck([], { reporter: 'text', stdin: true }, mockStream);
+    const result = await runCheck(
+      [],
+      { reporter: 'text', stdin: true },
+      mockStream,
+    );
 
     // Engine was called — the stdin path was discovered and handed over
     expect(mockCreateEngine).toHaveBeenCalledOnce();
@@ -227,7 +255,10 @@ describe('runCheck', () => {
   });
 
   it('merges positional sources and stdin sources', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     const fakeEngine = makeFakeEngine(true);
     mockCreateEngine.mockReturnValueOnce(fakeEngine);
 
@@ -246,7 +277,10 @@ describe('runCheck', () => {
   });
 
   it('returns exitCode 2 when --stdin is set and no paths are found anywhere', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: {}, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: {},
+      configPath: '/proj/tileguard.config.ts',
+    });
 
     const { Readable } = await import('node:stream');
     // Empty stream — no paths from stdin, no positional args
@@ -259,7 +293,10 @@ describe('runCheck', () => {
   });
 
   it('resolves "jsonl" as a valid reporter', async () => {
-    mockLoadConfig.mockResolvedValueOnce({ config: {}, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: {},
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     const result = await runCheck(['/nonexistent/tile.pbf'], {
@@ -275,7 +312,10 @@ describe('runCheck', () => {
     // First loadConfig call returns no configPath → triggers auto-init
     mockLoadConfig.mockResolvedValueOnce({ config: {}, configPath: undefined });
     // Second call (after auto-init write) returns a usable config
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/tmp/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/tmp/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     // Injectable fs ops — capture what was written without touching disk
@@ -287,7 +327,12 @@ describe('runCheck', () => {
       },
     };
 
-    const result = await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' }, process.stdin, fakeFsOps);
+    const result = await runCheck(
+      ['/nonexistent/tile.pbf'],
+      { reporter: 'text' },
+      process.stdin,
+      fakeFsOps,
+    );
 
     // Should write the config template once
     expect(writtenFiles).toHaveLength(1);
@@ -302,20 +347,32 @@ describe('runCheck', () => {
 
   it('does NOT auto-init when configPath is returned (config already exists)', async () => {
     // loadConfig returned a configPath → file exists, no auto-init
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/proj/tileguard.config.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/proj/tileguard.config.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     const writtenFiles: string[] = [];
     const fakeFsOps = {
       existsSync: (_p: string) => true,
-      writeFileSync: (p: string, _d: string, _e: BufferEncoding) => { writtenFiles.push(p); },
+      writeFileSync: (p: string, _d: string, _e: BufferEncoding) => {
+        writtenFiles.push(p);
+      },
     };
 
-    await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' }, process.stdin, fakeFsOps);
+    await runCheck(
+      ['/nonexistent/tile.pbf'],
+      { reporter: 'text' },
+      process.stdin,
+      fakeFsOps,
+    );
 
     expect(writtenFiles).toHaveLength(0);
     // No "No tileguard.config.ts found" hint should appear
-    const stderrMessages = stderrSpy.mock.calls.map((c) => String(c[0])).join('');
+    const stderrMessages = stderrSpy.mock.calls
+      .map((c) => String(c[0]))
+      .join('');
     expect(stderrMessages).not.toContain('No tileguard.config.ts found');
   });
 
@@ -323,16 +380,26 @@ describe('runCheck', () => {
     // When --config is passed, loadConfig uses that explicit path.
     // Even if configPath is undefined (file missing), we do NOT auto-init —
     // an explicit missing path is a user error, not a first-run situation.
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: '/explicit/path.ts' });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: '/explicit/path.ts',
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     const writtenFiles: string[] = [];
     const fakeFsOps = {
       existsSync: (_p: string) => false,
-      writeFileSync: (p: string, _d: string, _e: BufferEncoding) => { writtenFiles.push(p); },
+      writeFileSync: (p: string, _d: string, _e: BufferEncoding) => {
+        writtenFiles.push(p);
+      },
     };
 
-    await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text', config: '/explicit/path.ts' }, process.stdin, fakeFsOps);
+    await runCheck(
+      ['/nonexistent/tile.pbf'],
+      { reporter: 'text', config: '/explicit/path.ts' },
+      process.stdin,
+      fakeFsOps,
+    );
 
     // Auto-init must NOT fire because flags.config was set
     expect(writtenFiles).toHaveLength(0);
@@ -341,7 +408,10 @@ describe('runCheck', () => {
   it('continues gracefully when auto-init write fails (read-only fs)', async () => {
     mockLoadConfig.mockResolvedValueOnce({ config: {}, configPath: undefined });
     // After failed write, reload still returns a usable config
-    mockLoadConfig.mockResolvedValueOnce({ config: { reporter: 'text' }, configPath: undefined });
+    mockLoadConfig.mockResolvedValueOnce({
+      config: { reporter: 'text' },
+      configPath: undefined,
+    });
     mockCreateEngine.mockReturnValueOnce(makeFakeEngine(true));
 
     // Simulate a read-only filesystem error on write
@@ -353,7 +423,12 @@ describe('runCheck', () => {
     };
 
     // Should not throw — graceful degradation
-    const result = await runCheck(['/nonexistent/tile.pbf'], { reporter: 'text' }, process.stdin, fakeFsOps);
+    const result = await runCheck(
+      ['/nonexistent/tile.pbf'],
+      { reporter: 'text' },
+      process.stdin,
+      fakeFsOps,
+    );
 
     // Still prints the hint (we notify the user even if write failed)
     expect(stderrSpy).toHaveBeenCalledWith(

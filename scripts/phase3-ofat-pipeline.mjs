@@ -22,62 +22,88 @@
  * Usage: node scripts/phase3-ofat-pipeline.mjs
  */
 
-import { createEngine }  from '../packages/core/dist/index.js';
-import { tilePlugin }    from '../packages/tile-rules/dist/index.js';
-import {
-  mkdirSync, writeFileSync, readdirSync, statSync, rmSync, existsSync,
-} from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { execSync, spawnSync } from 'node:child_process';
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createEngine } from '../packages/core/dist/index.js';
+import { tilePlugin } from '../packages/tile-rules/dist/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = join(__dirname, '..');
+const ROOT = join(__dirname, '..');
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
-const OSM_PBF   = join(ROOT, 'tools', 'source-data', 'monaco.osm.pbf');
-const GEOJSON   = join(ROOT, 'tools', 'source-data', 'monaco-polygons.geojson');
-const PJAR      = join(ROOT, 'tools', 'planetiler.jar');
-const WORK_DIR  = join(ROOT, 'tools', 'ofat-work');   // temp tiles go here
-const OUT_DIR   = join(ROOT, 'analysis', 'phase3-pipeline');
+const OSM_PBF = join(ROOT, 'tools', 'source-data', 'monaco.osm.pbf');
+const GEOJSON = join(ROOT, 'tools', 'source-data', 'monaco-polygons.geojson');
+const PJAR = join(ROOT, 'tools', 'planetiler.jar');
+const WORK_DIR = join(ROOT, 'tools', 'ofat-work'); // temp tiles go here
+const OUT_DIR = join(ROOT, 'analysis', 'phase3-pipeline');
 
 mkdirSync(WORK_DIR, { recursive: true });
-mkdirSync(OUT_DIR,  { recursive: true });
+mkdirSync(OUT_DIR, { recursive: true });
 
 // ── TileGuard engine — same rule set as EXP-008 ───────────────────────────────
 const engine = createEngine({
   plugins: [tilePlugin],
   rules: {
-    'tile/coordinate-range':    ['error', { buffer: 80, excludeLayers: ['place', 'water_name', 'centroids', 'poi_label', 'place_label', 'transit_stop_label'] }],
-    'tile/self-intersection':   'error',
-    'tile/winding-order':       'error',
-    'tile/unclosed-ring':       'error',
-    'tile/zero-area-ring':      'error',
-    'tile/hole-containment':    'error',
+    'tile/coordinate-range': [
+      'error',
+      {
+        buffer: 80,
+        excludeLayers: [
+          'place',
+          'water_name',
+          'centroids',
+          'poi_label',
+          'place_label',
+          'transit_stop_label',
+        ],
+      },
+    ],
+    'tile/self-intersection': 'error',
+    'tile/winding-order': 'error',
+    'tile/unclosed-ring': 'error',
+    'tile/zero-area-ring': 'error',
+    'tile/hole-containment': 'error',
     'tile/degenerate-geometry': 'error',
-    'tile/no-empty':            'off',
-    'tile/required-layers':     'off',
+    'tile/no-empty': 'off',
+    'tile/required-layers': 'off',
     'tile/required-properties': 'off',
-    'tile/feature-count':       'off',
+    'tile/feature-count': 'off',
     'tile/layer-feature-count': 'off',
-    'perf/tile-size':           'off',
-    'perf/vertex-budget':       'off',
-    'perf/feature-density':     'off',
-    'perf/layer-size':          'off',
+    'perf/tile-size': 'off',
+    'perf/vertex-budget': 'off',
+    'perf/feature-density': 'off',
+    'perf/layer-size': 'off',
   },
 });
 
 // ── 4-way taxonomy classifier (same logic as EXP-008) ────────────────────────
 function classify(ruleId) {
   switch (ruleId) {
-    case 'tile/coordinate-range':    return 'Spec-Permitted Convention';
-    case 'tile/hole-containment':    return 'Spec-Permitted Convention';
-    case 'tile/winding-order':       return 'Quantization Artifact';
-    case 'tile/zero-area-ring':      return 'Quantization Artifact';
-    case 'tile/degenerate-geometry': return 'Quantization Artifact';
-    case 'tile/self-intersection':   return 'Genuine Defect';
-    case 'tile/unclosed-ring':       return 'Genuine Defect';
-    default:                         return 'Genuine Defect';
+    case 'tile/coordinate-range':
+      return 'Spec-Permitted Convention';
+    case 'tile/hole-containment':
+      return 'Spec-Permitted Convention';
+    case 'tile/winding-order':
+      return 'Quantization Artifact';
+    case 'tile/zero-area-ring':
+      return 'Quantization Artifact';
+    case 'tile/degenerate-geometry':
+      return 'Quantization Artifact';
+    case 'tile/self-intersection':
+      return 'Genuine Defect';
+    case 'tile/unclosed-ring':
+      return 'Genuine Defect';
+    default:
+      return 'Genuine Defect';
   }
 }
 
@@ -86,27 +112,55 @@ const BASELINE = { simplification: 1, buffer: 64, zoom: 12 };
 
 const OFAT_RUNS = [
   // ── Vary simplification (buffer=64, zoom=12) ──
-  { factor: 'simplification', value: 0,  simplification: 0,  buffer: 64, zoom: 12 },
-  { factor: 'simplification', value: 1,  simplification: 1,  buffer: 64, zoom: 12 }, // baseline
-  { factor: 'simplification', value: 2,  simplification: 2,  buffer: 64, zoom: 12 },
-  { factor: 'simplification', value: 4,  simplification: 4,  buffer: 64, zoom: 12 },
+  {
+    factor: 'simplification',
+    value: 0,
+    simplification: 0,
+    buffer: 64,
+    zoom: 12,
+  },
+  {
+    factor: 'simplification',
+    value: 1,
+    simplification: 1,
+    buffer: 64,
+    zoom: 12,
+  }, // baseline
+  {
+    factor: 'simplification',
+    value: 2,
+    simplification: 2,
+    buffer: 64,
+    zoom: 12,
+  },
+  {
+    factor: 'simplification',
+    value: 4,
+    simplification: 4,
+    buffer: 64,
+    zoom: 12,
+  },
 
   // ── Vary buffer (simplification=1, zoom=12) ──
-  { factor: 'buffer',         value: 0,  simplification: 1,  buffer: 0,  zoom: 12 },
-  { factor: 'buffer',         value: 64, simplification: 1,  buffer: 64, zoom: 12 }, // baseline (dup — re-used)
-  { factor: 'buffer',         value: 80, simplification: 1,  buffer: 80, zoom: 12 },
+  { factor: 'buffer', value: 0, simplification: 1, buffer: 0, zoom: 12 },
+  { factor: 'buffer', value: 64, simplification: 1, buffer: 64, zoom: 12 }, // baseline (dup — re-used)
+  { factor: 'buffer', value: 80, simplification: 1, buffer: 80, zoom: 12 },
 
   // ── Vary zoom (simplification=1, buffer=64) ──
-  { factor: 'zoom',           value: 8,  simplification: 1,  buffer: 64, zoom: 8  },
-  { factor: 'zoom',           value: 12, simplification: 1,  buffer: 64, zoom: 12 }, // baseline (dup)
-  { factor: 'zoom',           value: 14, simplification: 1,  buffer: 64, zoom: 14 },
+  { factor: 'zoom', value: 8, simplification: 1, buffer: 64, zoom: 8 },
+  { factor: 'zoom', value: 12, simplification: 1, buffer: 64, zoom: 12 }, // baseline (dup)
+  { factor: 'zoom', value: 14, simplification: 1, buffer: 64, zoom: 14 },
 ];
 
 // Deduplicate runs with identical (simplification, buffer, zoom) — run once, attribute to both
 const seen = new Map(); // key → run entry
 for (const run of OFAT_RUNS) {
   const key = `s${run.simplification}_b${run.buffer}_z${run.zoom}`;
-  if (!seen.has(key)) seen.set(key, { ...run, aliases: [{ factor: run.factor, value: run.value }] });
+  if (!seen.has(key))
+    seen.set(key, {
+      ...run,
+      aliases: [{ factor: run.factor, value: run.value }],
+    });
   else seen.get(key).aliases.push({ factor: run.factor, value: run.value });
 }
 const UNIQUE_RUNS = [...seen.values()];
@@ -122,12 +176,11 @@ function extractMbtiles(mbtiles, outDir) {
   mkdirSync(outDir, { recursive: true });
   // Use tile-join (ships with tippecanoe) to explode mbtiles → individual pbf files
   // tile-join --no-tile-size-limit --no-tile-compression -e <dir> <mbtiles>
-  const r = spawnSync('tile-join', [
-    '--no-tile-size-limit',
-    '--no-tile-compression',
-    '-e', outDir,
-    mbtiles,
-  ], { encoding: 'utf8' });
+  const r = spawnSync(
+    'tile-join',
+    ['--no-tile-size-limit', '--no-tile-compression', '-e', outDir, mbtiles],
+    { encoding: 'utf8' },
+  );
   if (r.status !== 0) {
     console.error('tile-join error:', r.stderr);
     throw new Error(`tile-join failed on ${mbtiles}`);
@@ -150,11 +203,16 @@ function collectPbfs(dir) {
 
 /** Run TileGuard on a directory of .pbf tiles, return taxonomy tallies */
 async function auditTiles(pbfDir) {
-  const pbfs  = collectPbfs(pbfDir);
-  const tally = { 'Checker Error': 0, 'Quantization Artifact': 0, 'Spec-Permitted Convention': 0, 'Genuine Defect': 0 };
+  const pbfs = collectPbfs(pbfDir);
+  const tally = {
+    'Checker Error': 0,
+    'Quantization Artifact': 0,
+    'Spec-Permitted Convention': 0,
+    'Genuine Defect': 0,
+  };
   const byRule = {};
   let tileCount = 0;
-  let errCount  = 0;
+  let errCount = 0;
 
   for (const pbf of pbfs) {
     let result;
@@ -180,15 +238,16 @@ async function auditTiles(pbfDir) {
     total,
     tally,
     byRule,
-    diagPerTile:    tileCount > 0 ? +(total / tileCount).toFixed(3) : 0,
-    genuinePerTile: tileCount > 0 ? +(tally['Genuine Defect'] / tileCount).toFixed(3) : 0,
+    diagPerTile: tileCount > 0 ? +(total / tileCount).toFixed(3) : 0,
+    genuinePerTile:
+      tileCount > 0 ? +(tally['Genuine Defect'] / tileCount).toFixed(3) : 0,
   };
 }
 
 // ── Run Tippecanoe OFAT ───────────────────────────────────────────────────────
 async function runTippecanoe(run) {
-  const tag      = `tc_s${run.simplification}_b${run.buffer}_z${run.zoom}`;
-  const mbtiles  = join(WORK_DIR, `${tag}.mbtiles`);
+  const tag = `tc_s${run.simplification}_b${run.buffer}_z${run.zoom}`;
+  const mbtiles = join(WORK_DIR, `${tag}.mbtiles`);
   const tilesDir = join(WORK_DIR, `${tag}_tiles`);
 
   if (existsSync(tilesDir)) {
@@ -206,7 +265,8 @@ async function runTippecanoe(run) {
       '--no-feature-limit',
       '--no-tile-size-limit',
       '--force',
-      '-o', mbtiles,
+      '-o',
+      mbtiles,
       GEOJSON,
     ];
     if (run.simplification === 0) {
@@ -224,14 +284,16 @@ async function runTippecanoe(run) {
   }
 
   const audit = await auditTiles(tilesDir);
-  console.log(`  [Tippecanoe] ${tag} — ${audit.tileCount} tiles, ${audit.total} diags (${audit.tally['Genuine Defect']} GD)`);
+  console.log(
+    `  [Tippecanoe] ${tag} — ${audit.tileCount} tiles, ${audit.total} diags (${audit.tally['Genuine Defect']} GD)`,
+  );
   return audit;
 }
 
 // ── Run Planetiler OFAT ───────────────────────────────────────────────────────
 async function runPlanetiler(run) {
-  const tag      = `pl_s${run.simplification}_b${run.buffer}_z${run.zoom}`;
-  const mbtiles  = join(WORK_DIR, `${tag}.mbtiles`);
+  const tag = `pl_s${run.simplification}_b${run.buffer}_z${run.zoom}`;
+  const mbtiles = join(WORK_DIR, `${tag}.mbtiles`);
   const tilesDir = join(WORK_DIR, `${tag}_tiles`);
 
   if (existsSync(tilesDir)) {
@@ -244,7 +306,8 @@ async function runPlanetiler(run) {
     const args = [
       `--enable-native-access=ALL-UNNAMED`,
       `-Xmx2g`,
-      `-jar`, PJAR,
+      `-jar`,
+      PJAR,
       `--area=monaco`,
       `--osm_path=${OSM_PBF}`,
       `--output=${mbtiles}`,
@@ -256,12 +319,20 @@ async function runPlanetiler(run) {
       `--download`,
     ];
     console.log(`  [Planetiler] ${tag} — compiling…`);
-    const r = spawnSync('java', args, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+    const r = spawnSync('java', args, {
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+    });
     if (r.status !== 0) {
       // Filter out known JVM noise lines before checking for real errors
       const realError = (r.stderr ?? '')
         .split('\n')
-        .filter(l => !l.includes('WARNING:') && !l.includes('restricted method') && l.trim())
+        .filter(
+          (l) =>
+            !l.includes('WARNING:') &&
+            !l.includes('restricted method') &&
+            l.trim(),
+        )
         .join('\n');
       if (realError) {
         console.error(`  Planetiler failed:\n${realError.slice(0, 500)}`);
@@ -276,7 +347,9 @@ async function runPlanetiler(run) {
   }
 
   const audit = await auditTiles(tilesDir);
-  console.log(`  [Planetiler] ${tag} — ${audit.tileCount} tiles, ${audit.total} diags (${audit.tally['Genuine Defect']} GD)`);
+  console.log(
+    `  [Planetiler] ${tag} — ${audit.tileCount} tiles, ${audit.total} diags (${audit.tally['Genuine Defect']} GD)`,
+  );
   return audit;
 }
 
@@ -285,7 +358,9 @@ const results = [];
 
 for (const run of UNIQUE_RUNS) {
   const label = `s${run.simplification}_b${run.buffer}_z${run.zoom}`;
-  console.log(`\n── Run: ${label} (factor: ${run.aliases.map(a => `${a.factor}=${a.value}`).join(', ')}) ──`);
+  console.log(
+    `\n── Run: ${label} (factor: ${run.aliases.map((a) => `${a.factor}=${a.value}`).join(', ')}) ──`,
+  );
 
   const [tcResult, plResult] = await Promise.all([
     runTippecanoe(run),
@@ -295,12 +370,13 @@ for (const run of UNIQUE_RUNS) {
   results.push({
     run: {
       simplification: run.simplification,
-      buffer:         run.buffer,
-      zoom:           run.zoom,
-      aliases:        run.aliases,
-      isBaseline:     run.simplification === BASELINE.simplification
-                      && run.buffer === BASELINE.buffer
-                      && run.zoom   === BASELINE.zoom,
+      buffer: run.buffer,
+      zoom: run.zoom,
+      aliases: run.aliases,
+      isBaseline:
+        run.simplification === BASELINE.simplification &&
+        run.buffer === BASELINE.buffer &&
+        run.zoom === BASELINE.zoom,
     },
     tippecanoe: tcResult,
     planetiler: plResult,
@@ -310,25 +386,31 @@ for (const run of UNIQUE_RUNS) {
 // ── Attribution matrix ────────────────────────────────────────────────────────
 // For each OFAT factor, compute the delta in Genuine Defects vs baseline
 function buildAttributionMatrix(results) {
-  const baseline = results.find(r => r.run.isBaseline);
+  const baseline = results.find((r) => r.run.isBaseline);
   if (!baseline) return {};
 
   const matrix = {};
   for (const factor of ['simplification', 'buffer', 'zoom']) {
     matrix[factor] = {};
-    const runs = results.filter(r => r.run.aliases.some(a => a.factor === factor));
+    const runs = results.filter((r) =>
+      r.run.aliases.some((a) => a.factor === factor),
+    );
     for (const r of runs) {
-      const alias = r.run.aliases.find(a => a.factor === factor);
-      const val   = alias?.value ?? r.run[factor];
+      const alias = r.run.aliases.find((a) => a.factor === factor);
+      const val = alias?.value ?? r.run[factor];
       matrix[factor][val] = {
-        tippecanoe_gd:       r.tippecanoe?.tally?.['Genuine Defect'] ?? null,
-        tippecanoe_gd_delta: r.tippecanoe && baseline.tippecanoe
-          ? r.tippecanoe.tally['Genuine Defect'] - baseline.tippecanoe.tally['Genuine Defect']
-          : null,
-        planetiler_gd:       r.planetiler?.tally?.['Genuine Defect'] ?? null,
-        planetiler_gd_delta: r.planetiler && baseline.planetiler
-          ? r.planetiler.tally['Genuine Defect'] - baseline.planetiler.tally['Genuine Defect']
-          : null,
+        tippecanoe_gd: r.tippecanoe?.tally?.['Genuine Defect'] ?? null,
+        tippecanoe_gd_delta:
+          r.tippecanoe && baseline.tippecanoe
+            ? r.tippecanoe.tally['Genuine Defect'] -
+              baseline.tippecanoe.tally['Genuine Defect']
+            : null,
+        planetiler_gd: r.planetiler?.tally?.['Genuine Defect'] ?? null,
+        planetiler_gd_delta:
+          r.planetiler && baseline.planetiler
+            ? r.planetiler.tally['Genuine Defect'] -
+              baseline.planetiler.tally['Genuine Defect']
+            : null,
       };
     }
   }
@@ -338,47 +420,54 @@ function buildAttributionMatrix(results) {
 const attributionMatrix = buildAttributionMatrix(results);
 
 // ── Print summary ─────────────────────────────────────────────────────────────
-console.log('\n════════════════════════════════════════════════════════════════');
+console.log(
+  '\n════════════════════════════════════════════════════════════════',
+);
 console.log('  EXP-011 — Attribution Matrix (Genuine Defects)');
 console.log('════════════════════════════════════════════════════════════════');
 
 for (const [factor, values] of Object.entries(attributionMatrix)) {
   console.log(`\n  Factor: ${factor}`);
-  console.log(`  ${'Value'.padEnd(8)} ${'TC GD'.padStart(8)} ${'TC Δ'.padStart(8)} ${'PL GD'.padStart(8)} ${'PL Δ'.padStart(8)}`);
+  console.log(
+    `  ${'Value'.padEnd(8)} ${'TC GD'.padStart(8)} ${'TC Δ'.padStart(8)} ${'PL GD'.padStart(8)} ${'PL Δ'.padStart(8)}`,
+  );
   console.log('  ' + '─'.repeat(44));
   for (const [val, v] of Object.entries(values)) {
     console.log(
-      `  ${String(val).padEnd(8)} ${String(v.tippecanoe_gd ?? 'N/A').padStart(8)} ${String(v.tippecanoe_gd_delta ?? 'N/A').padStart(8)} ${String(v.planetiler_gd ?? 'N/A').padStart(8)} ${String(v.planetiler_gd_delta ?? 'N/A').padStart(8)}`
+      `  ${String(val).padEnd(8)} ${String(v.tippecanoe_gd ?? 'N/A').padStart(8)} ${String(v.tippecanoe_gd_delta ?? 'N/A').padStart(8)} ${String(v.planetiler_gd ?? 'N/A').padStart(8)} ${String(v.planetiler_gd_delta ?? 'N/A').padStart(8)}`,
     );
   }
 }
 
-console.log('\n════════════════════════════════════════════════════════════════\n');
+console.log(
+  '\n════════════════════════════════════════════════════════════════\n',
+);
 
 // ── Write output ──────────────────────────────────────────────────────────────
 const output = {
   meta: {
-    task:        '3.1',
-    experiment:  'EXP-011',
-    description: 'Controlled pipeline OFAT experiment — defect origin attribution across compilers and parameters',
-    generated:   new Date().toISOString(),
-    gapsClosed:  ['C4'],
+    task: '3.1',
+    experiment: 'EXP-011',
+    description:
+      'Controlled pipeline OFAT experiment — defect origin attribution across compilers and parameters',
+    generated: new Date().toISOString(),
+    gapsClosed: ['C4'],
     source: {
-      osm_pbf:   OSM_PBF,
-      geojson:   GEOJSON,
-      area:      'Monaco',
-      features:  2357,
-      validity:  '2357/2357 valid (Shapely isValid)',
+      osm_pbf: OSM_PBF,
+      geojson: GEOJSON,
+      area: 'Monaco',
+      features: 2357,
+      validity: '2357/2357 valid (Shapely isValid)',
     },
-    baseline:    BASELINE,
+    baseline: BASELINE,
     compilers: {
       tippecanoe: execSync('tippecanoe --version 2>&1').toString().trim(),
       planetiler: 'tools/planetiler.jar (version from jar manifest)',
     },
     ofat_factors: {
       simplification: [0, 1, 2, 4],
-      buffer:         [0, 64, 80],
-      zoom:           [8, 12, 14],
+      buffer: [0, 64, 80],
+      zoom: [8, 12, 14],
     },
     rulesEnabled: [
       'tile/coordinate-range (buffer=80)',

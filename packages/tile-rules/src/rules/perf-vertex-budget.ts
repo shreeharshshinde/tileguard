@@ -94,8 +94,7 @@ export const perfVertexBudgetRule: Rule<VertexBudgetOptions> = {
   artifactTypes: [VECTOR_TILE_ARTIFACT_TYPE],
 
   create(context) {
-    const { maxVerticesPerFeature, maxVerticesPerTile } =
-      context.options ?? {};
+    const { maxVerticesPerFeature, maxVerticesPerTile } = context.options ?? {};
     if (maxVerticesPerFeature === undefined && maxVerticesPerTile === undefined)
       return;
 
@@ -103,7 +102,11 @@ export const perfVertexBudgetRule: Rule<VertexBudgetOptions> = {
     let totalVertices = 0;
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
-      for (let featureIndex = 0; featureIndex < layer.features.length; featureIndex++) {
+      for (
+        let featureIndex = 0;
+        featureIndex < layer.features.length;
+        featureIndex++
+      ) {
         const feature = layer.features[featureIndex]!;
         const parts = getFeatureParts(feature);
         const vertexCount = countFeatureVertices(parts);

@@ -30,7 +30,9 @@ describe('perf/vertex-budget', () => {
     it('pass — feature within per-feature vertex budget', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 100 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 100 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(10)] },
@@ -42,7 +44,9 @@ describe('perf/vertex-budget', () => {
     it('fail — feature exceeds per-feature vertex budget', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 5 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 5 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(10)] },
@@ -60,7 +64,9 @@ describe('perf/vertex-budget', () => {
     it('fail — multiple offending features each get their own diagnostic', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 3 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 3 }],
+        },
       });
       const source = await makeTile([
         {
@@ -77,7 +83,9 @@ describe('perf/vertex-budget', () => {
     it('fail — offending features in multiple layers are all reported', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 3 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 3 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(10)] },
@@ -93,7 +101,9 @@ describe('perf/vertex-budget', () => {
     it('edge — exactly at the limit passes', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 10 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 10 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(10)] },
@@ -105,7 +115,9 @@ describe('perf/vertex-budget', () => {
     it('edge — one vertex over the limit fails', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 10 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerFeature: 10 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(11)] },
@@ -119,7 +131,9 @@ describe('perf/vertex-budget', () => {
     it('pass — tile within total vertex budget', async () => {
       const engine = createEngine({
         plugins: [plugin],
-        rules: { 'perf/vertex-budget': ['warning', { maxVerticesPerTile: 1000 }] },
+        rules: {
+          'perf/vertex-budget': ['warning', { maxVerticesPerTile: 1000 }],
+        },
       });
       const source = await makeTile([
         { name: 'roads', features: [makeLineWithVertices(10)] },
@@ -151,10 +165,13 @@ describe('perf/vertex-budget', () => {
       const engine = createEngine({
         plugins: [plugin],
         rules: {
-          'perf/vertex-budget': ['warning', {
-            maxVerticesPerFeature: 3,
-            maxVerticesPerTile: 5,
-          }],
+          'perf/vertex-budget': [
+            'warning',
+            {
+              maxVerticesPerFeature: 3,
+              maxVerticesPerTile: 5,
+            },
+          ],
         },
       });
       const source = await makeTile([

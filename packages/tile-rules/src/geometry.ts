@@ -1059,9 +1059,12 @@ function findFirstSelfIntersection(
         const cKey = `${c.x},${c.y}`;
         const dKey = `${d.x},${d.y}`;
         if (
-          (selfTangencyVertices.has(bKey) && (bKey === cKey || bKey === dKey)) ||
-          (selfTangencyVertices.has(aKey) && (aKey === cKey || aKey === dKey)) ||
-          (selfTangencyVertices.has(cKey) && (cKey === aKey || cKey === bKey)) ||
+          (selfTangencyVertices.has(bKey) &&
+            (bKey === cKey || bKey === dKey)) ||
+          (selfTangencyVertices.has(aKey) &&
+            (aKey === cKey || aKey === dKey)) ||
+          (selfTangencyVertices.has(cKey) &&
+            (cKey === aKey || cKey === bKey)) ||
           (selfTangencyVertices.has(dKey) && (dKey === aKey || dKey === bKey))
         ) {
           continue;

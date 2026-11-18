@@ -22,21 +22,26 @@
  *   analysis/phase3-rendering/render-diffs-summary.json
  */
 
-import { chromium }         from 'playwright';
-import { createServer }     from 'node:http';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { join, dirname, extname } from 'node:path';
-import { fileURLToPath }    from 'node:url';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createServer } from 'node:http';
+import { dirname, extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { VectorTile } from '@mapbox/vector-tile';
 import { PbfReader as Pbf } from 'pbf';
-import { VectorTile }       from '@mapbox/vector-tile';
+import { chromium } from 'playwright';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = join(__dirname, '..');
+const ROOT = join(__dirname, '..');
 
-const OUT_DIR        = join(ROOT, 'analysis', 'phase3-rendering');
-const SYNTHETIC_DIR  = join(ROOT, 'fixtures', 'phase2-synthetic');
+const OUT_DIR = join(ROOT, 'analysis', 'phase3-rendering');
+const SYNTHETIC_DIR = join(ROOT, 'fixtures', 'phase2-synthetic');
 const PROD_TILES_DIR = join(ROOT, 'tools', 'ofat-work', 'pl_s1_b64_z14_tiles');
-const MANIFEST_PATH  = join(ROOT, 'analysis', 'phase3-pipeline', 'gd-tile-manifest.json');
+const MANIFEST_PATH = join(
+  ROOT,
+  'analysis',
+  'phase3-pipeline',
+  'gd-tile-manifest.json',
+);
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -44,23 +49,24 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 /** Tile z/x/y → WGS84 centre */
 function tileCentre(z, x, y) {
-  const n   = Math.pow(2, z);
+  const n = 2 ** z;
   const lng = ((x + 0.5) / n) * 360 - 180;
-  const lat = (Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 0.5)) / n))) * 180) / Math.PI;
+  const lat =
+    (Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 0.5)) / n))) * 180) / Math.PI;
   return { lng, lat };
 }
 
 /** Tile pixel coord → WGS84 */
 function tilePixelToLngLat(z, x, y, px, py, extent = 4096) {
-  const n      = Math.pow(2, z);
-  const tileW  = 360 / n;
-  const west   = (x / n) * 360 - 180;
+  const n = 2 ** z;
+  const tileW = 360 / n;
+  const west = (x / n) * 360 - 180;
   const northR = Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n)));
   const southR = Math.atan(Math.sinh(Math.PI * (1 - (2 * (y + 1)) / n)));
-  const north  = (northR * 180) / Math.PI;
-  const south  = (southR * 180) / Math.PI;
-  const lng    = west  + (px / extent) * tileW;
-  const lat    = north - (py / extent) * (north - south);
+  const north = (northR * 180) / Math.PI;
+  const south = (southR * 180) / Math.PI;
+  const lng = west + (px / extent) * tileW;
+  const lat = north - (py / extent) * (north - south);
   return { lng, lat };
 }
 
@@ -103,8 +109,11 @@ function prodFeatureCentre(gd) {
 // ── Local tile server ─────────────────────────────────────────────────────────
 
 // MapLibre assets served locally (downloaded to tools/)
-const MAPLIBRE_JS  = readFileSync(join(ROOT, 'tools', 'maplibre-gl.js'),  'utf8');
-const MAPLIBRE_CSS = readFileSync(join(ROOT, 'tools', 'maplibre-gl.css'), 'utf8');
+const MAPLIBRE_JS = readFileSync(join(ROOT, 'tools', 'maplibre-gl.js'), 'utf8');
+const MAPLIBRE_CSS = readFileSync(
+  join(ROOT, 'tools', 'maplibre-gl.css'),
+  'utf8',
+);
 
 /**
  * Start an HTTP server that serves:
@@ -287,8 +296,11 @@ async function renderCase({
   label,
   defectTileBuffer,
   controlTileBuffer,
-  tileZ, tileX, tileY,
-  centreLng, centreLat,
+  tileZ,
+  tileX,
+  tileY,
+  centreLng,
+  centreLat,
   mapZoom,
   browser,
   port,
@@ -310,52 +322,79 @@ async function renderCase({
     // Serve the tile buffer for any request at tileZ — MapLibre requests
     // neighbouring tiles too; fill them all with the same data so the
     // viewport is fully covered and the defect geometry is visible.
-    const tileResolver = (z, x, y) => z === tileZ ? tileBuf : null;
+    const tileResolver = (z, x, y) => (z === tileZ ? tileBuf : null);
 
     // Build HTML with correct port injected
-    const html = buildHtmlPage(centreLng, centreLat, mapZoom, tileZ, tileX, tileY)
-      .replaceAll('__PORT__', String(variantPort));
+    const html = buildHtmlPage(
+      centreLng,
+      centreLat,
+      mapZoom,
+      tileZ,
+      tileX,
+      tileY,
+    ).replaceAll('__PORT__', String(variantPort));
 
     const server = await startServer(tileResolver, html, variantPort);
-    const page   = await browser.newPage();
-    page.on('console', m => {
+    const page = await browser.newPage();
+    page.on('console', (m) => {
       if (!m.text().includes('GL Driver') && !m.text().includes('GroupMarker'))
         process.stdout.write(`    [${variant}] ${m.type()}: ${m.text()}\n`);
     });
-    page.on('pageerror', e => process.stdout.write(`    [${variant}] PAGEERR: ${e.message}\n`));
+    page.on('pageerror', (e) =>
+      process.stdout.write(`    [${variant}] PAGEERR: ${e.message}\n`),
+    );
     await page.setViewportSize({ width: 2048, height: 2048 });
     await page.goto(`http://127.0.0.1:${variantPort}/`);
 
     // Wait for map idle (max 12s), fallback fires at 8s inside page
-    await page.waitForFunction(() => window.__mapReady === true, { timeout: 12000 });
+    await page.waitForFunction(() => window.__mapReady === true, {
+      timeout: 12000,
+    });
     await page.waitForTimeout(500); // extra settle for GPU raster
 
     const screenshotBuf = await page.screenshot({ type: 'png' });
     writeFileSync(join(caseDir, `${variant}-full.png`), screenshotBuf);
 
     // Crop 256×256 centred on (1024, 1024) — the map centre = defect centre
-    const cropDataUrl = await page.evaluate(({ b64, cx, cy }) => {
-      const img = new Image();
-      return new Promise(resolve => {
-        img.onload = () => {
-          const c = document.createElement('canvas');
-          c.width = 256; c.height = 256;
-          c.getContext('2d').drawImage(img, cx - 128, cy - 128, 256, 256, 0, 0, 256, 256);
-          resolve(c.toDataURL('image/png'));
-        };
-        img.src = 'data:image/png;base64,' + b64;
-      });
-    }, { b64: screenshotBuf.toString('base64'), cx: 1024, cy: 1024 });
+    const cropDataUrl = await page.evaluate(
+      ({ b64, cx, cy }) => {
+        const img = new Image();
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = 256;
+            c.height = 256;
+            c.getContext('2d').drawImage(
+              img,
+              cx - 128,
+              cy - 128,
+              256,
+              256,
+              0,
+              0,
+              256,
+              256,
+            );
+            resolve(c.toDataURL('image/png'));
+          };
+          img.src = 'data:image/png;base64,' + b64;
+        });
+      },
+      { b64: screenshotBuf.toString('base64'), cx: 1024, cy: 1024 },
+    );
 
     writeFileSync(
       join(caseDir, `${variant}-crop.png`),
-      Buffer.from(cropDataUrl.replace(/^data:image\/png;base64,/, ''), 'base64'),
+      Buffer.from(
+        cropDataUrl.replace(/^data:image\/png;base64,/, ''),
+        'base64',
+      ),
     );
 
     results[variant] = { cropDataUrl };
 
     await page.close();
-    await new Promise(r => server.close(r));
+    await new Promise((r) => server.close(r));
   }
 
   // Pixel diff inside a bare browser page
@@ -366,20 +405,33 @@ async function renderCase({
     diff = await page.evaluate(
       ({ imgA, imgB, diffJs }) => {
         // eslint-disable-next-line no-new-func
-        return new Function('imgA', 'imgB', `${diffJs}; return pixelDiff(imgA, imgB);`)(imgA, imgB);
+        return new Function(
+          'imgA',
+          'imgB',
+          `${diffJs}; return pixelDiff(imgA, imgB);`,
+        )(imgA, imgB);
       },
-      { imgA: results.defect.cropDataUrl, imgB: results.control.cropDataUrl, diffJs: DIFF_JS },
+      {
+        imgA: results.defect.cropDataUrl,
+        imgB: results.control.cropDataUrl,
+        diffJs: DIFF_JS,
+      },
     );
     await page.close();
   }
 
   return {
-    caseId, label,
-    tileZ, tileX, tileY,
-    centreLng, centreLat, mapZoom,
-    defectFullPng:  `${caseId}/defect-full.png`,
+    caseId,
+    label,
+    tileZ,
+    tileX,
+    tileY,
+    centreLng,
+    centreLat,
+    mapZoom,
+    defectFullPng: `${caseId}/defect-full.png`,
     controlFullPng: results.control ? `${caseId}/control-full.png` : null,
-    defectCropPng:  `${caseId}/defect-crop.png`,
+    defectCropPng: `${caseId}/defect-crop.png`,
     controlCropPng: results.control ? `${caseId}/control-crop.png` : null,
     pixelDiff: diff,
     renderImpact: classifyImpact(diff),
@@ -388,17 +440,17 @@ async function renderCase({
 
 function classifyImpact(diff) {
   if (!diff) return 'no-control';
-  if (diff.maxDelta < 3)    return 'none';           // imperceptible
+  if (diff.maxDelta < 3) return 'none'; // imperceptible
   if (diff.changedFraction < 0.001) return 'minimal'; // <0.1% pixels changed
-  if (diff.changedFraction < 0.01)  return 'minor';   // <1%
-  if (diff.changedFraction < 0.05)  return 'moderate'; // <5%
+  if (diff.changedFraction < 0.01) return 'minor'; // <1%
+  if (diff.changedFraction < 0.05) return 'moderate'; // <5%
   return 'significant';
 }
 
 // ── Build test cases ──────────────────────────────────────────────────────────
 
 function loadSyntheticCase(tpName, tnName) {
-  const defect  = readFileSync(join(SYNTHETIC_DIR, `${tpName}.pbf`));
+  const defect = readFileSync(join(SYNTHETIC_DIR, `${tpName}.pbf`));
   const control = readFileSync(join(SYNTHETIC_DIR, `${tnName}.pbf`));
   return { defect, control };
 }
@@ -421,18 +473,39 @@ for (const gd of manifest) {
 }
 
 const SYNTHETIC_CASES = [
-  { id: 'syn-butterfly',    tp: 'tp-butterfly',    tn: 'tn-convex-square',  label: 'Synthetic — butterfly self-crossing polygon' },
-  { id: 'syn-hourglass',    tp: 'tp-hourglass',    tn: 'tn-convex-square',  label: 'Synthetic — hourglass polygon (figure-8 crossing)' },
-  { id: 'syn-crossing-hole',tp: 'tp-crossing-hole', tn: 'tn-valid-buffer',   label: 'Synthetic — polygon with self-crossing interior hole' },
+  {
+    id: 'syn-butterfly',
+    tp: 'tp-butterfly',
+    tn: 'tn-convex-square',
+    label: 'Synthetic — butterfly self-crossing polygon',
+  },
+  {
+    id: 'syn-hourglass',
+    tp: 'tp-hourglass',
+    tn: 'tn-convex-square',
+    label: 'Synthetic — hourglass polygon (figure-8 crossing)',
+  },
+  {
+    id: 'syn-crossing-hole',
+    tp: 'tp-crossing-hole',
+    tn: 'tn-valid-buffer',
+    label: 'Synthetic — polygon with self-crossing interior hole',
+  },
 ];
 
 console.log('EXP-007 — Headless MapLibre Rendering Experiment');
 console.log(`Synthetic cases: ${SYNTHETIC_CASES.length}`);
-console.log(`Production GD tiles: ${Object.keys(gdByTile).length} tiles, ${manifest.length} defects\n`);
+console.log(
+  `Production GD tiles: ${Object.keys(gdByTile).length} tiles, ${manifest.length} defects\n`,
+);
 
 const browser = await chromium.launch({
   headless: true,
-  args: ['--enable-unsafe-swiftshader', '--no-sandbox', '--disable-setuid-sandbox'],
+  args: [
+    '--enable-unsafe-swiftshader',
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ],
 });
 const allResults = [];
 
@@ -452,53 +525,63 @@ for (const sc of SYNTHETIC_CASES) {
   // Synthetic tiles have no real z/x/y — serve them claiming a real Monaco
   // tile coordinate so MapLibre requests exactly one tile and renders it.
   const result = await renderCase({
-    caseId:            sc.id,
-    label:             sc.label,
-    defectTileBuffer:  defect,
+    caseId: sc.id,
+    label: sc.label,
+    defectTileBuffer: defect,
     controlTileBuffer: control,
-    tileZ: 14, tileX: 8529, tileY: 5974,
-    centreLng:  7.4128,
-    centreLat:  43.7348,
-    mapZoom:    14,
+    tileZ: 14,
+    tileX: 8529,
+    tileY: 5974,
+    centreLng: 7.4128,
+    centreLat: 43.7348,
+    mapZoom: 14,
     browser,
     port: 7779,
   });
 
-  console.log(`    → impact: ${result.renderImpact}  maxDelta: ${result.pixelDiff?.maxDelta?.toFixed(1) ?? 'N/A'}  changedPx: ${result.pixelDiff?.changedFraction !== undefined ? (result.pixelDiff.changedFraction * 100).toFixed(2) + '%' : 'N/A'}`);
+  console.log(
+    `    → impact: ${result.renderImpact}  maxDelta: ${result.pixelDiff?.maxDelta?.toFixed(1) ?? 'N/A'}  changedPx: ${result.pixelDiff?.changedFraction !== undefined ? (result.pixelDiff.changedFraction * 100).toFixed(2) + '%' : 'N/A'}`,
+  );
   allResults.push(result);
 }
 
 // ── Production GD tiles ───────────────────────────────────────────────────────
 console.log('\n── Production GD tiles (Planetiler z14) ──');
 for (const [tileKey, gds] of Object.entries(gdByTile)) {
-  const gd       = gds[0];
-  const centre   = prodFeatureCentre(gd);
+  const gd = gds[0];
+  const centre = prodFeatureCentre(gd);
   const defectBuf = loadProdGD(gd);
 
   // Control: clean Planetiler tile (same layer schema, 0 GDs)
-  const cleanPath  = CLEAN_PL_TILES[`${gd.z}/${gd.x}/${gd.y}`];
-  const controlBuf = cleanPath && existsSync(cleanPath) ? readFileSync(cleanPath) : null;
+  const cleanPath = CLEAN_PL_TILES[`${gd.z}/${gd.x}/${gd.y}`];
+  const controlBuf =
+    cleanPath && existsSync(cleanPath) ? readFileSync(cleanPath) : null;
 
   const caseId = `prod-${gd.z}-${gd.x}-${gd.y}`;
-  const label  = `Production — Planetiler z${gd.z}/${gd.x}/${gd.y} (${gds.length} GD${gds.length > 1 ? 's' : ''}: ${gds.map(g => g.layer + '#' + g.featureIndex).join(', ')})`;
+  const label = `Production — Planetiler z${gd.z}/${gd.x}/${gd.y} (${gds.length} GD${gds.length > 1 ? 's' : ''}: ${gds.map((g) => g.layer + '#' + g.featureIndex).join(', ')})`;
 
   console.log(`  ${label}`);
-  if (!controlBuf) console.log(`    ⚠ no Tippecanoe control tile found for this z/x/y`);
+  if (!controlBuf)
+    console.log(`    ⚠ no Tippecanoe control tile found for this z/x/y`);
 
   const result = await renderCase({
     caseId,
     label,
-    defectTileBuffer:  defectBuf,
+    defectTileBuffer: defectBuf,
     controlTileBuffer: controlBuf,
-    tileZ: gd.z, tileX: gd.x, tileY: gd.y,
-    centreLng:  centre.lng,
-    centreLat:  centre.lat,
-    mapZoom:    16,  // zoom in on the specific defect coordinate
+    tileZ: gd.z,
+    tileX: gd.x,
+    tileY: gd.y,
+    centreLng: centre.lng,
+    centreLat: centre.lat,
+    mapZoom: 16, // zoom in on the specific defect coordinate
     browser,
     port: 7779,
   });
 
-  console.log(`    → impact: ${result.renderImpact}  maxDelta: ${result.pixelDiff?.maxDelta?.toFixed(1) ?? 'N/A'}  changedPx: ${result.pixelDiff?.changedFraction !== undefined ? (result.pixelDiff.changedFraction * 100).toFixed(2) + '%' : 'N/A'}`);
+  console.log(
+    `    → impact: ${result.renderImpact}  maxDelta: ${result.pixelDiff?.maxDelta?.toFixed(1) ?? 'N/A'}  changedPx: ${result.pixelDiff?.changedFraction !== undefined ? (result.pixelDiff.changedFraction * 100).toFixed(2) + '%' : 'N/A'}`,
+  );
   allResults.push(result);
 }
 
@@ -507,42 +590,45 @@ await browser.close();
 // ── Write summary ─────────────────────────────────────────────────────────────
 const summary = {
   meta: {
-    experiment:  'EXP-007',
-    generated:   new Date().toISOString(),
-    description: 'Headless MapLibre 2048×2048 render + 256×256 crop pixel-diff experiment',
+    experiment: 'EXP-007',
+    generated: new Date().toISOString(),
+    description:
+      'Headless MapLibre 2048×2048 render + 256×256 crop pixel-diff experiment',
     maplibreVersion: '4.7.1',
     playwrightVersion: '1.49.0',
     chromium: 'Headless Shell 131.0.6778.33',
     renderResolution: '2048×2048',
     cropSize: '256×256 centred on defect coordinate',
     impactThresholds: {
-      none:       'maxDelta < 3',
-      minimal:    'changedFraction < 0.001  (<0.1% pixels)',
-      minor:      'changedFraction < 0.01   (<1%)',
-      moderate:   'changedFraction < 0.05   (<5%)',
-      significant:'changedFraction >= 0.05  (≥5%)',
+      none: 'maxDelta < 3',
+      minimal: 'changedFraction < 0.001  (<0.1% pixels)',
+      minor: 'changedFraction < 0.01   (<1%)',
+      moderate: 'changedFraction < 0.05   (<5%)',
+      significant: 'changedFraction >= 0.05  (≥5%)',
     },
   },
-  results: allResults.map(r => ({
-    caseId:         r.caseId,
-    label:          r.label,
-    tile:           `z${r.tileZ}/${r.tileX}/${r.tileY}`,
-    centre:         { lng: r.centreLng, lat: r.centreLat },
-    mapZoom:        r.mapZoom,
-    defectFullPng:  r.defectFullPng,
+  results: allResults.map((r) => ({
+    caseId: r.caseId,
+    label: r.label,
+    tile: `z${r.tileZ}/${r.tileX}/${r.tileY}`,
+    centre: { lng: r.centreLng, lat: r.centreLat },
+    mapZoom: r.mapZoom,
+    defectFullPng: r.defectFullPng,
     controlFullPng: r.controlFullPng,
-    defectCropPng:  r.defectCropPng,
+    defectCropPng: r.defectCropPng,
     controlCropPng: r.controlCropPng,
-    pixelDiff:      r.pixelDiff,
-    renderImpact:   r.renderImpact,
+    pixelDiff: r.pixelDiff,
+    renderImpact: r.renderImpact,
   })),
   impactSummary: {
-    none:        allResults.filter(r => r.renderImpact === 'none').length,
-    minimal:     allResults.filter(r => r.renderImpact === 'minimal').length,
-    minor:       allResults.filter(r => r.renderImpact === 'minor').length,
-    moderate:    allResults.filter(r => r.renderImpact === 'moderate').length,
-    significant: allResults.filter(r => r.renderImpact === 'significant').length,
-    no_control:  allResults.filter(r => r.renderImpact === 'no-control').length,
+    none: allResults.filter((r) => r.renderImpact === 'none').length,
+    minimal: allResults.filter((r) => r.renderImpact === 'minimal').length,
+    minor: allResults.filter((r) => r.renderImpact === 'minor').length,
+    moderate: allResults.filter((r) => r.renderImpact === 'moderate').length,
+    significant: allResults.filter((r) => r.renderImpact === 'significant')
+      .length,
+    no_control: allResults.filter((r) => r.renderImpact === 'no-control')
+      .length,
   },
 };
 

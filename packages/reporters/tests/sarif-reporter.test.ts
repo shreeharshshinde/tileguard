@@ -62,7 +62,9 @@ function captureSarif(
 }
 
 /** Build a minimal ReporterContext for tests. */
-function makeContext(overrides: Partial<ReporterContext> = {}): ReporterContext {
+function makeContext(
+  overrides: Partial<ReporterContext> = {},
+): ReporterContext {
   return {
     duration: overrides.duration ?? 100,
     sources: overrides.sources ?? ['tile.pbf'],
@@ -86,7 +88,9 @@ function makeDiagnostic(overrides: Partial<Diagnostic> = {}): Diagnostic {
     message: overrides.message ?? 'Required layer "buildings" is missing.',
     artifact: overrides.artifact ?? { type: 'VectorTile', source: 'tile.pbf' },
     ...(overrides.location !== undefined && { location: overrides.location }),
-    ...(overrides.suggestion !== undefined && { suggestion: overrides.suggestion }),
+    ...(overrides.suggestion !== undefined && {
+      suggestion: overrides.suggestion,
+    }),
     ...(overrides.docsUrl !== undefined && { docsUrl: overrides.docsUrl }),
     ...(overrides.data !== undefined && { data: overrides.data }),
   };
@@ -137,7 +141,9 @@ describe('sarifReporter', () => {
       let content = '';
       const reporter = createSarifReporter({
         toolVersion: '1.2.3',
-        write: (_, c) => { content = c; },
+        write: (_, c) => {
+          content = c;
+        },
       });
       reporter.report([], makeContext());
       const log = JSON.parse(content) as SarifLog;
@@ -156,7 +162,10 @@ describe('sarifReporter', () => {
 
     it('uses custom outputPath when specified', () => {
       const write = vi.fn();
-      const reporter = createSarifReporter({ outputPath: 'out/custom.sarif', write });
+      const reporter = createSarifReporter({
+        outputPath: 'out/custom.sarif',
+        write,
+      });
       reporter.report([], makeContext());
       const capturedPath = (write.mock.calls[0] as [string, string])[0];
       expect(capturedPath).toContain('custom.sarif');
@@ -175,15 +184,21 @@ describe('sarifReporter', () => {
     });
 
     it('maps ruleId correctly', () => {
-      const { log } = captureSarif([makeDiagnostic({ ruleId: 'perf/tile-size' })]);
+      const { log } = captureSarif([
+        makeDiagnostic({ ruleId: 'perf/tile-size' }),
+      ]);
       expect(log.runs[0]?.results[0]?.ruleId).toBe('perf/tile-size');
     });
 
     it('maps artifact source to physicalLocation uri', () => {
       const { log } = captureSarif([
-        makeDiagnostic({ artifact: { type: 'VectorTile', source: 'tiles/city.pbf' } }),
+        makeDiagnostic({
+          artifact: { type: 'VectorTile', source: 'tiles/city.pbf' },
+        }),
       ]);
-      const uri = log.runs[0]?.results[0]?.locations[0]?.physicalLocation.artifactLocation.uri;
+      const uri =
+        log.runs[0]?.results[0]?.locations[0]?.physicalLocation.artifactLocation
+          .uri;
       expect(uri).toBe('tiles/city.pbf');
     });
 
@@ -191,7 +206,9 @@ describe('sarifReporter', () => {
       const { log } = captureSarif([
         makeDiagnostic({ message: 'Tile is too large.' }),
       ]);
-      expect(log.runs[0]?.results[0]?.message.text).toContain('Tile is too large.');
+      expect(log.runs[0]?.results[0]?.message.text).toContain(
+        'Tile is too large.',
+      );
     });
   });
 
@@ -217,7 +234,9 @@ describe('sarifReporter', () => {
       const { log } = captureSarif([
         makeDiagnostic({ location: { layer: 'buildings' } }),
       ]);
-      expect(log.runs[0]?.results[0]?.message.text).toContain('layer: buildings');
+      expect(log.runs[0]?.results[0]?.message.text).toContain(
+        'layer: buildings',
+      );
     });
 
     it('embeds featureIndex in message text when present', () => {
@@ -261,7 +280,9 @@ describe('sarifReporter', () => {
         makeDiagnostic({ ruleId: 'tile/required-layers' }),
       ]);
       expect(log.runs[0]?.tool.driver.rules).toHaveLength(1);
-      expect(log.runs[0]?.tool.driver.rules[0]?.id).toBe('tile/required-layers');
+      expect(log.runs[0]?.tool.driver.rules[0]?.id).toBe(
+        'tile/required-layers',
+      );
     });
 
     it('deduplicates rules — same ruleId appears only once', () => {
