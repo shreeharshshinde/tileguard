@@ -29,11 +29,32 @@ import type { Rule } from '@tileguard/core';
 import { findSelfIntersectionIssues } from '../geometry.js';
 import { getVectorTile, VECTOR_TILE_ARTIFACT_TYPE } from '../types.js';
 
-export const selfIntersectionRule: Rule = {
+/**
+ * Configuration options for the `tile/self-intersection` rule.
+ */
+export interface SelfIntersectionOptions {
+  /**
+   * Whether to check LineString features (`type === 2`) for self-intersection.
+   *
+   * LineStrings frequently cross themselves legitimately — footpaths, switchback
+   * trails, highway cloverleaf ramps, and elevated bridges all produce valid
+   * self-crossing lines with no rendering consequence. Self-intersection is only
+   * a hard error for Polygons (broken earcut triangulation, ambiguous fill).
+   *
+   * When `false` (default), only Polygon geometries are checked.
+   * Set to `true` to enforce simple-geometry constraints on LineStrings as well
+   * (e.g. for routing-network or utility-network layers).
+   *
+   * @default false
+   */
+  readonly checkLines?: boolean;
+}
+
+export const selfIntersectionRule: Rule<SelfIntersectionOptions> = {
   id: 'tile/self-intersection',
   meta: {
     description:
-      'Vector tile line and polygon geometries must not self-intersect.',
+      'Vector tile polygon geometries must not self-intersect. LineString checking is opt-in via checkLines.',
     defaultSeverity: 'error',
     docsUrl: 'https://tileguard.dev/rules/tile/self-intersection',
     recommended: true,
@@ -43,6 +64,7 @@ export const selfIntersectionRule: Rule = {
 
   create(context) {
     const tile = getVectorTile(context.artifact);
+    const checkLines = context.options?.checkLines ?? false;
 
     for (const [layerName, layer] of Object.entries(tile.layers)) {
       for (
@@ -51,7 +73,7 @@ export const selfIntersectionRule: Rule = {
         featureIndex += 1
       ) {
         const feature = layer.features[featureIndex]!;
-        for (const issue of findSelfIntersectionIssues(feature)) {
+        for (const issue of findSelfIntersectionIssues(feature, checkLines)) {
           const segments = issue.segments ?? ['?', '?'];
           context.report({
             message: `Geometry in layer "${layerName}", feature "${featureIndex}" has intersecting segments "${segments[0]}" and "${segments[1]}".`,
