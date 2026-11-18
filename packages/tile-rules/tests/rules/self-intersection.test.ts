@@ -37,7 +37,11 @@
 
 import { createEngine } from '@tileguard/core';
 import { describe, expect, it } from 'vitest';
-import { selfIntersectionRule, tileProvider } from '../../src/index.js';
+import {
+  selfIntersectionRule,
+  tileProvider,
+  type SelfIntersectionOptions,
+} from '../../src/index.js';
 import { makeTile } from '../helpers.js';
 
 // ─── Shared engine plugin ─────────────────────────────────────────────────────
@@ -53,9 +57,19 @@ const plugin = {
 /**
  * Builds a tile from `layers`, runs the engine, and returns only the
  * `tile/self-intersection` diagnostics for easy assertion.
+ *
+ * Pass `options` to override rule configuration (e.g. `{ checkLines: true }`).
  */
-async function run(layers: Parameters<typeof makeTile>[0]) {
-  const engine = createEngine({ plugins: [plugin] });
+async function run(
+  layers: Parameters<typeof makeTile>[0],
+  options?: SelfIntersectionOptions,
+) {
+  const engine = createEngine({
+    plugins: [plugin],
+    ...(options !== undefined && {
+      rules: { 'tile/self-intersection': ['error', options] },
+    }),
+  });
   const source = await makeTile(layers);
   const result = await engine.run([source]);
   return result.diagnostics.filter(
@@ -121,8 +135,9 @@ describe('tile/self-intersection — baseline', () => {
     expect(diags[0]?.location?.layer).toBe('buildings');
   });
 
-  it('fail — figure-8 open LineString produces a self-intersection diagnostic', async () => {
-    // (0,0)→(10,10)→(10,0)→(0,10): the two crossing diagonals form a figure-8.
+  it('pass — figure-8 open LineString produces no diagnostic (checkLines is false by default)', async () => {
+    // (0,0)→(10,10)→(10,0)→(0,10): diagonals cross, but LineStrings are
+    // exempt by default. A footpath or road crossing itself is valid.
     const diags = await run([
       {
         name: 'roads',
@@ -142,7 +157,7 @@ describe('tile/self-intersection — baseline', () => {
         ],
       },
     ]);
-    expect(diags).toHaveLength(1);
+    expect(diags).toHaveLength(0);
   });
 
   it('pass — Point features are not subject to the self-intersection check', async () => {
@@ -172,75 +187,84 @@ describe('tile/self-intersection — Fix 1: closed-LineString closure skip', () 
     // A→B→C→A (3 interior vertices plus the closing repeat of A).
     // seg[0] = A→B and seg[2] = C→A share endpoint A — this must be treated as the
     // logically adjacent closure, not as a crossing.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 100, y: 100 },
-                { x: 200, y: 100 },
-                { x: 150, y: 200 },
-                { x: 100, y: 100 }, // start == end: closed
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 100, y: 100 },
+                  { x: 200, y: 100 },
+                  { x: 150, y: 200 },
+                  { x: 100, y: 100 }, // start == end: closed
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
   it('pass — closed-LineString quadrilateral loop is not self-intersecting', async () => {
     // A simple square loop: A→B→C→D→A.  No interior crossing.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 10, y: 10 },
-                { x: 50, y: 10 },
-                { x: 50, y: 50 },
-                { x: 10, y: 50 },
-                { x: 10, y: 10 }, // start == end: closed
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 10, y: 10 },
+                  { x: 50, y: 10 },
+                  { x: 50, y: 50 },
+                  { x: 10, y: 50 },
+                  { x: 10, y: 10 }, // start == end: closed
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
   it('pass — open LineString simple path is not self-intersecting', async () => {
     // Regression: Fix 1 must not suppress the intersection check on non-closed
     // LineStrings.  A straight path with 4 vertices has no crossing.
-    const diags = await run([
-      {
-        name: 'roads',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 100, y: 0 },
-                { x: 200, y: 0 },
-                { x: 300, y: 10 },
+    const diags = await run(
+      [
+        {
+          name: 'roads',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 0 },
+                  { x: 200, y: 0 },
+                  { x: 300, y: 10 },
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
@@ -250,26 +274,29 @@ describe('tile/self-intersection — Fix 1: closed-LineString closure skip', () 
     // The interior diagonals cross at (5,5) — a non-closure segment pair.
     // Fix 1 must suppress only the closure-pair contact; the interior crossing
     // must still be reported.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 10, y: 10 },
-                { x: 0, y: 10 },
-                { x: 10, y: 0 },
-                { x: 0, y: 0 }, // closed, interior crossing present
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 10, y: 10 },
+                  { x: 0, y: 10 },
+                  { x: 10, y: 0 },
+                  { x: 0, y: 0 }, // closed, interior crossing present
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(1);
   });
 });
@@ -319,26 +346,29 @@ describe('tile/self-intersection — Fix 2: duplicate-vertex spike skip', () => 
     // Path: (0,0)→P(10,0)→(20,10)→P(10,0)→(30,0)
     // P appears at index 1 and index 3.  The hairpin created by P is a
     // quantization artefact, not a real crossing.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 10, y: 0 }, // P — first occurrence
-                { x: 20, y: 10 },
-                { x: 10, y: 0 }, // P — duplicate
-                { x: 30, y: 0 },
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 10, y: 0 }, // P — first occurrence
+                  { x: 20, y: 10 },
+                  { x: 10, y: 0 }, // P — duplicate
+                  { x: 30, y: 0 },
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
@@ -430,24 +460,27 @@ describe('tile/self-intersection — Fix 3: bounding-box pre-check (output uncha
 describe('tile/self-intersection — Fix 4: minimum-vertex guard', () => {
   it('pass — LineString with exactly 3 vertices (2 segments) produces no diagnostic', async () => {
     // segCount = 2.  The only candidate pair is (0,1), which is adjacent — skipped.
-    const diags = await run([
-      {
-        name: 'roads',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 50, y: 50 },
-                { x: 100, y: 0 },
+    const diags = await run(
+      [
+        {
+          name: 'roads',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 50, y: 50 },
+                  { x: 100, y: 0 },
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
@@ -511,9 +544,8 @@ describe('tile/self-intersection — false-negative guard', () => {
     expect(diags[0]?.location?.layer).toBe('water');
   });
 
-  it('fail — canonical figure-8 open LineString is always caught', async () => {
-    // Open LineString with two crossing diagonals — not a closed loop, no duplicate
-    // vertices.  None of the guards should fire.
+  it('pass — canonical figure-8 open LineString produces no diagnostic by default (checkLines: false)', async () => {
+    // Open LineString with two crossing diagonals — not flagged unless checkLines: true.
     const diags = await run([
       {
         name: 'roads',
@@ -533,7 +565,7 @@ describe('tile/self-intersection — false-negative guard', () => {
         ],
       },
     ]);
-    expect(diags).toHaveLength(1);
+    expect(diags).toHaveLength(0);
   });
 
   it('fail — bowtie polygon in an arbitrary layer is always caught', async () => {
@@ -610,28 +642,31 @@ describe('tile/self-intersection — Fix 5: self-tangency skip (Guard 5)', () =>
   it('pass — closed LineString that touches itself at a non-adjacent vertex is not flagged', async () => {
     // Same geometry as above but as a LineString (type=2, closed).
     // Guard 5 must work on both feature types.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 20, y: 0 },
-                { x: 20, y: 20 },
-                { x: 10, y: 10 },  // T — first occurrence
-                { x: 0, y: 20 },
-                { x: 10, y: 10 },  // T — non-adjacent repeat
-                { x: 0, y: 0 },    // closing = first vertex
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 20, y: 0 },
+                  { x: 20, y: 20 },
+                  { x: 10, y: 10 },  // T — first occurrence
+                  { x: 0, y: 20 },
+                  { x: 10, y: 10 },  // T — non-adjacent repeat
+                  { x: 0, y: 0 },    // closing = first vertex
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
@@ -798,26 +833,29 @@ describe('tile/self-intersection — Fix 6: collinear-endpoint contact skip (Gua
   it('pass — closed LineString with a collinear-endpoint contact is not flagged', async () => {
     // Same geometry as the Polygon test above, but as a closed LineString (type=2).
     // Guard 6 must work on both feature types.
-    const diags = await run([
-      {
-        name: 'boundary',
-        features: [
-          {
-            type: 2,
-            points: [
-              [
-                { x: 0, y: 0 },
-                { x: 100, y: 0 },
-                { x: 50, y: 0 },   // collinear with first two vertices
-                { x: 100, y: 100 },
-                { x: 0, y: 0 },    // closing = first vertex
+    const diags = await run(
+      [
+        {
+          name: 'boundary',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 0 },
+                  { x: 50, y: 0 },   // collinear with first two vertices
+                  { x: 100, y: 100 },
+                  { x: 0, y: 0 },    // closing = first vertex
+                ],
               ],
-            ],
-            props: {},
-          },
-        ],
-      },
-    ]);
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
     expect(diags).toHaveLength(0);
   });
 
@@ -1013,5 +1051,195 @@ describe('tile/self-intersection — multi-ring polygons', () => {
     const partIndices = diags.map((d) => d.data?.partIndex);
     expect(partIndices).toContain(0);
     expect(partIndices).toContain(1);
+  });
+});
+
+// ─── 9. checkLines opt-in behavior ───────────────────────────────────────────
+//
+// When `{ checkLines: true }` is passed, LineString self-intersections are
+// reported just like Polygon ones. When omitted (default), all LineString
+// features pass regardless of their geometry.
+
+describe('tile/self-intersection — checkLines option', () => {
+  it('meta — default rule description reflects polygons-only default', () => {
+    expect(selfIntersectionRule.meta.description).toMatch(/polygon/i);
+  });
+
+  // ── Default (checkLines not set) ───────────────────────────────────────────
+
+  it('default — self-crossing footpath LineString produces no diagnostic', async () => {
+    // The canonical Mac Xiang footpath case: a path that doubles back and
+    // crosses itself. Valid cartography, must not be flagged.
+    const diags = await run([
+      {
+        name: 'footpaths',
+        features: [
+          {
+            type: 2,
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 100, y: 100 },
+                { x: 100, y: 0 },
+                { x: 0, y: 100 },
+              ],
+            ],
+            props: { highway: 'footway' },
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(0);
+  });
+
+  it('default — polygon in same tile is still caught while LineString is not', async () => {
+    // Confirms the default skips only LineStrings, not Polygons.
+    const diags = await run([
+      {
+        name: 'mixed',
+        features: [
+          {
+            // self-crossing line — should pass
+            type: 2,
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 50, y: 50 },
+                { x: 50, y: 0 },
+                { x: 0, y: 50 },
+              ],
+            ],
+            props: {},
+          },
+          {
+            // bowtie polygon — should fail
+            type: 3,
+            points: [
+              [
+                { x: 0, y: 0 },
+                { x: 50, y: 50 },
+                { x: 0, y: 50 },
+                { x: 50, y: 0 },
+                { x: 0, y: 0 },
+              ],
+            ],
+            props: {},
+          },
+        ],
+      },
+    ]);
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.location?.featureIndex).toBe(1);
+  });
+
+  // ── checkLines: true ───────────────────────────────────────────────────────
+
+  it('checkLines: true — self-crossing open LineString is flagged', async () => {
+    const diags = await run(
+      [
+        {
+          name: 'roads',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 100 },
+                  { x: 100, y: 0 },
+                  { x: 0, y: 100 },
+                ],
+              ],
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.ruleId).toBe('tile/self-intersection');
+    expect(diags[0]?.data?.segments).toHaveLength(2);
+  });
+
+  it('checkLines: true — simple non-crossing LineString still passes', async () => {
+    const diags = await run(
+      [
+        {
+          name: 'roads',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 100, y: 0 },
+                  { x: 200, y: 50 },
+                  { x: 300, y: 0 },
+                ],
+              ],
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
+    expect(diags).toHaveLength(0);
+  });
+
+  it('checkLines: true — both a crossing LineString and a bowtie polygon each produce a diagnostic', async () => {
+    const diags = await run(
+      [
+        {
+          name: 'mixed',
+          features: [
+            {
+              type: 2,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 50, y: 50 },
+                  { x: 50, y: 0 },
+                  { x: 0, y: 50 },
+                ],
+              ],
+              props: {},
+            },
+            {
+              type: 3,
+              points: [
+                [
+                  { x: 0, y: 0 },
+                  { x: 50, y: 50 },
+                  { x: 0, y: 50 },
+                  { x: 50, y: 0 },
+                  { x: 0, y: 0 },
+                ],
+              ],
+              props: {},
+            },
+          ],
+        },
+      ],
+      { checkLines: true },
+    );
+    expect(diags).toHaveLength(2);
+    const featureIndices = diags.map((d) => d.location?.featureIndex);
+    expect(featureIndices).toContain(0);
+    expect(featureIndices).toContain(1);
+  });
+
+  it('checkLines: true — Point features are still exempt', async () => {
+    const diags = await run(
+      [
+        {
+          name: 'poi',
+          features: [{ type: 1, points: [[{ x: 5, y: 5 }]], props: {} }],
+        },
+      ],
+      { checkLines: true },
+    );
+    expect(diags).toHaveLength(0);
   });
 });

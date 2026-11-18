@@ -705,12 +705,16 @@ function isPointOnSegment(
  *
  * True positives (170 genuine crossings + 6 collinear overlaps) are unaffected.
  *
- * @param feature - The decoded MVT feature to inspect.
+ * @param feature    - The decoded MVT feature to inspect.
+ * @param checkLines - When `false` (default), LineString features (`type === 2`)
+ *                     are skipped. Set to `true` to check them as well.
  * @returns A list of `SELF_INTERSECTION` issues, at most one per ring.
  */
 export function findSelfIntersectionIssues(
   feature: VectorTileFeature,
+  checkLines = false,
 ): readonly GeometryIssue[] {
+  if (feature.type === 2 && !checkLines) return [];
   if (feature.type !== 2 && feature.type !== 3) return [];
 
   const issues: GeometryIssue[] = [];

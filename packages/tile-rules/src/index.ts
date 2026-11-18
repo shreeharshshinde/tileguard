@@ -116,6 +116,7 @@ export { requiredLayersRule } from './rules/required-layers.js';
 export type { RequiredPropertiesOptions } from './rules/required-properties.js';
 export { requiredPropertiesRule } from './rules/required-properties.js';
 export { selfIntersectionRule } from './rules/self-intersection.js';
+export type { SelfIntersectionOptions } from './rules/self-intersection.js';
 export { unclosedRingRule } from './rules/unclosed-ring.js';
 export { windingOrderRule } from './rules/winding-order.js';
 export type { ZeroAreaRingOptions } from './rules/zero-area-ring.js';
