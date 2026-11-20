@@ -66,7 +66,7 @@ Each rule is exported for custom plugin composition:
 |:-------|:--------|:-----------------|
 | `requiredLayersRule` | `tile/required-layers` | error |
 | `requiredPropertiesRule` | `tile/required-properties` | error |
-| `coordinateRangeRule` | `tile/coordinate-range` | error |
+| `coordinateRangeRule` | `tile/coordinate-range` | warning |
 | `featureCountRule` | `tile/feature-count` | warning |
 | `layerFeatureCountRule` | `tile/layer-feature-count` | warning |
 | `unclosedRingRule` | `tile/unclosed-ring` | error |
@@ -105,11 +105,16 @@ const geometryPlugin: Plugin = {
 | `CoordinateRangeOptions` | `tile/coordinate-range` | `buffer`, `excludeLayers`, `skipCrossTileFeatures` |
 | `FeatureCountOptions` | `tile/feature-count` | `min`, `max` |
 | `LayerFeatureCountOptions` | `tile/layer-feature-count` | `layers: Record<string, {min?, max?}>` |
+| `SelfIntersectionOptions` | `tile/self-intersection` | `checkLines: boolean` |
 | `NoEmptyOptions` | `tile/no-empty` | `allowEmpty: boolean` |
 | `ZeroAreaRingOptions` | `tile/zero-area-ring` | `minArea: number` |
 
 ```typescript
-import type { RequiredLayersOptions, CoordinateRangeOptions } from '@tileguard/tile-rules';
+import type {
+  RequiredLayersOptions,
+  CoordinateRangeOptions,
+  SelfIntersectionOptions,
+} from '@tileguard/tile-rules';
 ```
 
 ---

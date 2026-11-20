@@ -98,9 +98,9 @@ rules: {
 
 ```typescript
 rules: {
-  'tile/self-intersection': 'off',       // disable
+  'tile/self-intersection': ['error', { checkLines: true }], // check lines as well as polygons
   'tile/no-empty': 'error',              // promote to error
-  'tile/coordinate-range': ['error', { buffer: 128 }],  // custom options
+  'tile/coordinate-range': ['warning', { buffer: 256 }], // custom options
 }
 ```
 

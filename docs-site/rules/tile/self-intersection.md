@@ -4,11 +4,15 @@
 
 ## What it checks
 
-Line and polygon geometries must not self-intersect. Non-adjacent segments that cross produce invalid topologies.
+Polygon geometries must not self-intersect. Non-adjacent segments that cross produce invalid topologies that break earcut triangulation and fill rendering.
+
+By default, LineString features (such as footpaths, hiking trails, switchbacks, and highway cloverleaf loops) are skipped because self-crossing lines are valid cartography and render safely with stroke shaders. LineString checking can be opted into via `checkLines: true`.
 
 ## Why it matters
 
-Self-intersecting geometry violates the OGC Simple Features specification. It causes unpredictable behavior in fill extrusion (twisted or inverted faces), incorrect area calculations (negative or double-counted regions), and broken clip operations. Different renderers handle self-intersections differently — the same tile looks different in MapLibre vs QGIS vs deck.gl.
+Self-intersecting polygon geometry violates the OGC Simple Features specification. In WebGL renderers like MapLibre GL JS, polygons rely on triangulation algorithms (`earcut`) and winding rules: when a polygon boundary self-intersects, it causes inverted faces, torn fills, incorrect area calculations, and visual flickering.
+
+In contrast, vector tile renderers draw LineStrings using stroke shaders (`line-color`, `line-width`), which handle self-intersections naturally without triangulation errors. Therefore, TileGuard checks only polygons by default, eliminating false positives on real-world basemap trails and road networks while offering strict line topology checking when needed.
 
 ## Diagnostic output
 
@@ -45,13 +49,21 @@ In the Inspector, this produces:
 
 ## Configuration
 
-No configuration options.
-
 ```typescript
 rules: {
-  'tile/self-intersection': 'error',  // or 'warning' or 'off'
+  // Default: check polygons only (footpaths and road loops pass cleanly)
+  'tile/self-intersection': 'error',
+
+  // Opt-in: enforce line simplicity (e.g. for routing or utility networks)
+  'tile/self-intersection': ['error', {
+    checkLines: true,
+  }],
 }
 ```
+
+| Option | Type | Default | Description |
+|:-------|:-----|:--------|:------------|
+| `checkLines` | `boolean` | `false` | Whether to check LineString features (`type === 2`). When `false`, only Polygon geometries are checked. |
 
 ## Remediation
 
