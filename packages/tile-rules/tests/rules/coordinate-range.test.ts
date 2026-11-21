@@ -35,6 +35,10 @@ describe('tile/coordinate-range', () => {
     expect(result.diagnostics).toHaveLength(0);
   });
 
+  it('meta — default severity is warning', () => {
+    expect(coordinateRangeRule.meta.defaultSeverity).toBe('warning');
+  });
+
   it('fail — coordinate far below zero reports diagnostic with point in data', async () => {
     const engine = createEngine({ plugins: [plugin] });
     const source = await makeTile([
@@ -45,7 +49,7 @@ describe('tile/coordinate-range', () => {
             type: 2,
             points: [
               [
-                { x: -200, y: 0 },
+                { x: -500, y: 0 },
                 { x: 10, y: 10 },
               ],
             ],
@@ -57,7 +61,8 @@ describe('tile/coordinate-range', () => {
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(1);
     expect(result.diagnostics[0]?.ruleId).toBe('tile/coordinate-range');
-    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: -200, y: 0 });
+    expect(result.diagnostics[0]?.severity).toBe('warning');
+    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: -500, y: 0 });
     expect(result.diagnostics[0]?.location?.layer).toBe('roads');
   });
 
@@ -167,7 +172,7 @@ describe('tile/coordinate-range', () => {
     expect(result.diagnostics).toHaveLength(2);
   });
 
-  // ── Group 1 — Default buffer boundary tests (buffer=80) ─────────────────
+  // ── Group 1 — Default buffer boundary tests (buffer=256) ────────────────
 
   it('default buffer — coordinate at exactly 0 is valid', async () => {
     const engine = createEngine({ plugins: [plugin] });
@@ -215,7 +220,7 @@ describe('tile/coordinate-range', () => {
     expect(result.diagnostics).toHaveLength(0);
   });
 
-  it('default buffer — coordinate at exactly extent+80 is valid', async () => {
+  it('default buffer — coordinate at exactly extent+256 is valid', async () => {
     const engine = createEngine({ plugins: [plugin] });
     const source = await makeTile([
       {
@@ -226,7 +231,7 @@ describe('tile/coordinate-range', () => {
             points: [
               [
                 { x: 0, y: 0 },
-                { x: 4176, y: 0 },
+                { x: 4352, y: 0 },
               ],
             ],
             props: {},
@@ -238,7 +243,7 @@ describe('tile/coordinate-range', () => {
     expect(result.diagnostics).toHaveLength(0);
   });
 
-  it('default buffer — coordinate at extent+81 triggers diagnostic', async () => {
+  it('default buffer — coordinate at extent+257 triggers diagnostic', async () => {
     const engine = createEngine({ plugins: [plugin] });
     const source = await makeTile([
       {
@@ -249,7 +254,7 @@ describe('tile/coordinate-range', () => {
             points: [
               [
                 { x: 0, y: 0 },
-                { x: 4177, y: 0 },
+                { x: 4353, y: 0 },
               ],
             ],
             props: {},
@@ -259,10 +264,10 @@ describe('tile/coordinate-range', () => {
     ]);
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(1);
-    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: 4177, y: 0 });
+    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: 4353, y: 0 });
   });
 
-  it('default buffer — coordinate at exactly -80 is valid', async () => {
+  it('default buffer — coordinate at exactly -256 is valid', async () => {
     const engine = createEngine({ plugins: [plugin] });
     const source = await makeTile([
       {
@@ -272,7 +277,7 @@ describe('tile/coordinate-range', () => {
             type: 2,
             points: [
               [
-                { x: -80, y: 0 },
+                { x: -256, y: 0 },
                 { x: 10, y: 10 },
               ],
             ],
@@ -285,7 +290,7 @@ describe('tile/coordinate-range', () => {
     expect(result.diagnostics).toHaveLength(0);
   });
 
-  it('default buffer — coordinate at -81 triggers diagnostic', async () => {
+  it('default buffer — coordinate at -257 triggers diagnostic', async () => {
     const engine = createEngine({ plugins: [plugin] });
     const source = await makeTile([
       {
@@ -295,7 +300,7 @@ describe('tile/coordinate-range', () => {
             type: 2,
             points: [
               [
-                { x: -81, y: 0 },
+                { x: -257, y: 0 },
                 { x: 10, y: 10 },
               ],
             ],
@@ -306,7 +311,7 @@ describe('tile/coordinate-range', () => {
     ]);
     const result = await engine.run([source]);
     expect(result.diagnostics).toHaveLength(1);
-    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: -81, y: 0 });
+    expect(result.diagnostics[0]?.data?.point).toMatchObject({ x: -257, y: 0 });
   });
 
   // ── Group 2 — Default layer exclusion tests ─────────────────────────────

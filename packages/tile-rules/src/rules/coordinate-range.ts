@@ -15,8 +15,9 @@
  * The rule accounts for legitimate out-of-extent coordinates:
  *
  * 1. **Clipping buffers**: Tile generators intentionally extend geometry
- *    beyond tile edges (typically 64–80 units) to prevent rendering seams.
- *    The configurable `buffer` option (default: 80) sets this tolerance.
+ *    beyond tile edges (typically 128–256 units on a 4096 grid) to prevent
+ *    rendering seams. The configurable `buffer` option (default: 256) sets
+ *    this tolerance.
  *
  * 2. **Cross-tile feature duplication**: Label layers duplicate point
  *    features across tile boundaries for rendering continuity. The rule
@@ -25,9 +26,9 @@
  *
  * @example
  * ```ts
- * // Allow a wider buffer for tiles with aggressive clipping
+ * // Customize buffer or elevate severity for strict pipelines
  * rules: {
- *   'tile/coordinate-range': ['error', { buffer: 128 }]
+ *   'tile/coordinate-range': ['error', { buffer: 256 }]
  * }
  * ```
  *
@@ -46,6 +47,10 @@ import {
  * Configuration options for the `tile/coordinate-range` rule.
  */
 export interface CoordinateRangeOptions {
+  /**
+   * Allowed clipping buffer beyond extent on each axis.
+   * Defaults to 256 units (matching Planetiler, OpenMapTiles, and MapLibre standards).
+   */
   readonly buffer?: number;
   /**
    * Layers to skip entirely. Defaults to common label/name layers that use
@@ -107,7 +112,7 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
   id: 'tile/coordinate-range',
   meta: {
     description: 'Vector tile coordinates must stay within each layer extent.',
-    defaultSeverity: 'error',
+    defaultSeverity: 'warning',
     docsUrl: 'https://tileguard.dev/rules/tile/coordinate-range',
     recommended: true,
     since: '0.3.0',
@@ -117,8 +122,9 @@ export const coordinateRangeRule: Rule<CoordinateRangeOptions> = {
   create(context) {
     const tile = getVectorTile(context.artifact);
 
-    // Default clipping buffer derived from empirical evaluation of production vector tiles.
-    const buffer = context.options?.buffer ?? 80;
+    // Default clipping buffer (256 units = 6.25% of 4096 extent), standard for
+    // Planetiler, OpenMapTiles, and modern MapLibre vector tile pipelines.
+    const buffer = context.options?.buffer ?? 256;
 
     // Two-layer false positive suppression:
     // 1. Named layer exclusion (handles known label layers with mixed in/out coordinates)
