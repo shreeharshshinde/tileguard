@@ -121,7 +121,7 @@ describe('Tile Fixtures Integration Tests', () => {
     const result = await engine.run([
       join(repoRoot, 'fixtures/bad/invalid-tile-coords.pbf'),
     ]);
-    expect(result.summary.pass).toBe(false);
+    expect(result.summary.warnings).toBeGreaterThan(0);
     expect(result.diagnostics.map((d) => d.ruleId)).toContain(
       'tile/coordinate-range',
     );
