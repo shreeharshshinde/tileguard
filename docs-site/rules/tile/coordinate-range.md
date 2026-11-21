@@ -1,6 +1,6 @@
 # tile/coordinate-range
 
-> Severity: `error` · Since: v0.3.0 · Package: `@tileguard/tile-rules`
+> Severity: `warning` · Since: v0.3.0 · Package: `@tileguard/tile-rules`
 
 ## What it checks
 
@@ -13,8 +13,8 @@ Each tile layer declares an `extent` (commonly 4096). Coordinates outside this r
 ## Diagnostic output
 
 ```text
-✗ tile/coordinate-range
-  Coordinate "4200,−50" in layer "roads" is outside allowed range [−80, 4176] (extent: 4096, buffer: 80).
+⚠ tile/coordinate-range
+  Coordinate "4500,−50" in layer "roads" is outside allowed range [−256, 4352] (extent: 4096, buffer: 256).
   at ./tile.pbf → layer: roads, feature: 7, part: 0
   ℹ Clamp, simplify, or reproject geometries so all coordinates fit within the allowed range.
 ```
@@ -23,8 +23,8 @@ Each tile layer declares an `extent` (commonly 4096). Coordinates outside this r
 
 ```typescript
 rules: {
-  'tile/coordinate-range': ['error', {
-    buffer: 80,
+  'tile/coordinate-range': ['warning', {
+    buffer: 256,
     excludeLayers: ['label', 'place'],
     skipCrossTileFeatures: true,
   }],
@@ -33,7 +33,7 @@ rules: {
 
 | Option | Type | Default | Description |
 |:-------|:-----|:--------|:------------|
-| `buffer` | `number` | `80` | Allowed margin outside extent on each axis |
+| `buffer` | `number` | `256` | Allowed margin outside extent on each axis (standard for Planetiler & OpenMapTiles) |
 | `excludeLayers` | `string[]` | 9 label/centroid layers | Layers to skip (often labels extend beyond extent) |
 | `skipCrossTileFeatures` | `boolean` | `true` | Skip features that intentionally cross tile boundaries |
 
