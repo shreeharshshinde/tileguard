@@ -41,7 +41,7 @@ These rules validate the geometric integrity of vector tile features.
 | [`tile/winding-order`](/rules/tile/winding-order) | error | Rings wound in the wrong direction: convention-aware (auto-detects MVT vs OGC) |
 | [`tile/hole-containment`](/rules/tile/hole-containment) | error | Hole rings that extend outside their parent shell: multi-polygon aware |
 | [`tile/degenerate-geometry`](/rules/tile/degenerate-geometry) | warning | Lines with < 2 vertices or polygons with < 4 vertices: structurally invalid |
-| [`tile/coordinate-range`](/rules/tile/coordinate-range) | error | Vertices outside the valid tile extent (0–4096 by default) |
+| [`tile/coordinate-range`](/rules/tile/coordinate-range) | warning | Vertices outside the valid tile extent + buffer (buffer 256 by default) |
 
 ### Structural Rules
 
